@@ -263,7 +263,7 @@ dir("_site", full.names = T, recursive = T) %>%
 
 gert::git_add(".")
 gert::git_commit("example")
-gert::git_push()
+gert::git_push(force = T)
 
 
 
