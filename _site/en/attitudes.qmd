@@ -1,0 +1,392 @@
+---
+description-meta: ""
+execute:
+  echo: false
+---
+
+
+
+```{r, echo = F, warning=F, message=F}
+## this is important to keep for some reason ##
+library(tippy)
+tippy_this(
+  elementId = "firstNavItem",
+  tooltip = "Your tooltip text here...",
+  animation = "scale",
+  duration = 1000,
+  placement = "bottom"
+)
+
+```
+
+
+
+```{r setup, include=FALSE}
+# here::i_am("wtm_gb.Rproj")
+
+
+## Global options
+knitr::opts_chunk$set(
+    cache = F,
+    echo = F,
+    warning = F,
+    message = F,
+    cache.lazy = FALSE
+)
+
+
+pacman::p_load(htmltools, tidyverse, highcharter, gt, gtExtras, rvest, haven)
+
+options(scipen = 999)
+
+source("utils.R")
+```
+
+
+The page is divided into three main sections: 
+
+
+```{=html}
+<center>
+<div class="button-container">
+```
+ 
+
+
+
+  <a href="#iconify-fluent-emoji-high-contrast-detective-detecting-ai-generated-content" class="buttontop">
+    {{< iconify fluent-emoji-high-contrast detective >}} Detecting AI-Generated Content
+  </a>
+  <a href="#iconify-mingcute-safe-lock-fill-trust-in-adm-systems" class="buttontop">
+    {{< iconify mingcute safe-lock-fill >}} Trust in ADM Systems
+  </a>
+  <a href="#iconify-game-icons-sands-of-time-future-of-adm-systems" class="buttontop">
+    {{< iconify game-icons sands-of-time >}} Future of ADM Systems 
+  </a>
+
+```{=html}
+</div>
+</center>
+```
+
+
+Each section allows you to examine overall trends as well as breakdowns by age, gender, education level, and political leaning.  
+
+
+# {{< iconify fluent-emoji-high-contrast detective >}} Detecting AI-Generated Content {.tabset .tabset-fade .tabset-pills .break} 
+
+
+
+<blockquote class="question-text">
+ How confident are you that the following groups can tell the difference between content created by AI and content created by people?
+
+</blockquote>
+
+::: {.panel-tabset}
+
+## Overall
+
+```{r}
+var_labels <- c(
+  "People from the general population",
+  "Members of Parliament",
+  "Judges",
+  "Journalists",
+  "Police officers",
+  "Doctors",
+  "Friends/family",
+  "Yourself"
+)
+
+categories_dat <- c("Confident (5-7)", "Somewhat confident (4)", "Not confident (1-3)")
+
+
+viz_general(vecc("CONF", 1:8), 
+            var_labels, 
+            categories_dat)
+
+```
+
+## By Age 
+
+::: {.panel-tabset}
+
+```{r, results='asis'}
+
+viz_general(vecc("CONF", 1:8), 
+            var_labels,
+            categories_dat, 
+            "age_groups",
+            T)
+
+```
+
+
+
+::: 
+
+## By Gender
+
+::: {.panel-tabset}
+
+
+```{r, results='asis'}
+
+
+viz_general(vecc("CONF", 1:8), 
+            var_labels,
+            categories_dat, 
+            "geslacht",
+            T)
+
+```
+
+::: 
+
+## By Education
+
+::: {.panel-tabset}
+
+
+```{r, results='asis'}
+
+viz_general(vecc("CONF", 1:8), 
+            var_labels,
+            categories_dat, 
+            "oplcat",
+            T)
+
+```
+
+::: 
+
+## By Politics
+
+::: {.panel-tabset}
+
+```{r, results='asis'}
+
+viz_general(vecc("CONF", 1:8), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+::: 
+
+:::
+
+# {{< iconify mingcute safe-lock-fill >}} Trust in ADM Systems {.tabset .tabset-fade .tabset-pills .break}
+
+> We ask you a number of additional questions about automatic decision-making (ADM) systems. These are computer programs that make decisions that used to be made by people. These decisions are made automatically by computers based on data. 
+
+
+
+<blockquote class="question-text">
+How much do you trust automated decision-making systems to properly determine...
+
+</blockquote>
+
+::: {.panel-tabset}
+
+## Overall
+
+```{r}
+var_labels <- c(
+  "Social Welfare",
+  "The News You See",
+  "Cancer Diagnosis"
+)
+
+# categories_dat <- c("confident", "neither", "not confident")
+categories_dat <- c("Trust (5-7)", "Somewhat trust (4)", "Little trust (1-3)")
+
+
+viz_general(vecc("TADS", 1:3), 
+            var_labels, 
+            categories_dat)
+```
+
+## By Age 
+
+::: {.panel-tabset}
+
+```{r, results='asis'}
+
+viz_general(vecc("TADS", 1:3), 
+            var_labels,
+            categories_dat, 
+            "age_groups",
+            T)
+
+```
+
+
+
+::: 
+
+## By Gender
+
+::: {.panel-tabset}
+
+
+```{r, results='asis'}
+
+
+viz_general(vecc("TADS", 1:3), 
+            var_labels,
+            categories_dat, 
+            "geslacht",
+            T)
+
+```
+
+::: 
+
+## By Education
+
+::: {.panel-tabset}
+
+
+```{r, results='asis'}
+
+viz_general(vecc("TADS", 1:3), 
+            var_labels,
+            categories_dat, 
+            "oplcat",
+            T)
+
+```
+
+::: 
+
+## By Politics
+
+::: {.panel-tabset}
+
+```{r, results='asis'}
+
+viz_general(vecc("TADS", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+::: 
+
+:::
+
+
+
+# {{< iconify game-icons sands-of-time >}} Future of ADM Systems {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+<blockquote class="question-text">
+If automated decision-making (ADM) becomes more common in the future, what do you think will happen?
+
+</blockquote>
+
+::: {.panel-tabset}
+
+## Overall
+
+```{r}
+var_labels <- c(
+  "If the news is automated, journalists will be able to focus more on investigative journalism.",
+  "I will only get news items that interest me.",
+  "It will make reporting fairer and more balanced.",
+  "If certain law enforcement tasks are automated, the police will have more time to focus on major crimes.",
+  "It will make the determination of social benefits fairer and more balanced."
+)
+
+categories_dat <- c("Agree (5-7)", "Neither agree or disagree (4)", "Disagree (1-3)")
+
+viz_general(vecc("ADSO", 1:5), 
+            var_labels, 
+            categories_dat)
+```
+
+## By Age 
+
+::: {.panel-tabset}
+
+```{r, results='asis'}
+
+viz_general(vecc("ADSO", 1:5), 
+            var_labels,
+            categories_dat, 
+            "age_groups",
+            T)
+
+```
+
+
+
+::: 
+
+## By Gender
+
+::: {.panel-tabset}
+
+
+```{r, results='asis'}
+
+
+viz_general(vecc("ADSO", 1:5), 
+            var_labels,
+            categories_dat, 
+            "geslacht",
+            T)
+
+```
+
+::: 
+
+## By Education
+
+::: {.panel-tabset}
+
+
+```{r, results='asis'}
+
+viz_general(vecc("ADSO", 1:5), 
+            var_labels,
+            categories_dat, 
+            "oplcat",
+            T)
+
+```
+
+::: 
+
+## By Politics
+
+::: {.panel-tabset}
+
+```{r, results='asis'}
+
+viz_general(vecc("ADSO", 1:5), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+::: 
+
+:::
+
+
+
+
+<br>
+
+<center>
+
+<img src="algosoclogo.png" width="13%">
+
+
+</center>
+
+
+

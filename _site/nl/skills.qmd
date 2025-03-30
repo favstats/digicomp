@@ -1,0 +1,1406 @@
+---
+title: ""
+format:
+  html:
+    theme: lumen
+    page-layout: full
+    self-contained: true
+    code-fold: true
+    code-overflow: wrap
+    html-math-method: mathjax
+    include-after-body:
+      text: |
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+              var toc = document.createElement("div");
+              toc.id = "custom-toc";
+              toc.style.position = "fixed";
+              toc.style.top = "0";
+              toc.style.right = "-300px";  // Start hidden
+              toc.style.width = "260px";
+              toc.style.height = "100%";
+              toc.style.background = "white";
+              toc.style.padding = "10px";
+              toc.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+              toc.style.transition = "right 0.3s ease-in-out";
+              toc.style.overflowY = "auto";
+          
+              var tocTitle = document.createElement("h3");
+              tocTitle.innerText = "Navigation";
+              toc.appendChild(tocTitle);
+          
+              var headers = document.querySelectorAll("h2, h3, h4");
+              headers.forEach(function (header, index) {
+                  if (!header.id) {
+                      header.id = "section-" + index;
+                  }
+          
+                  var link = document.createElement("a");
+                  link.innerText = header.innerText;
+                  link.href = "#" + header.id;
+                  link.style.display = "block";
+                  link.style.padding = "5px 0";
+                  link.style.color = "#007bff";
+                  link.style.textDecoration = "none";
+          
+                  toc.appendChild(link);
+              });
+          
+              document.body.appendChild(toc);
+          
+              // Create toggle button (📑 icon)
+              var button = document.createElement("button");
+              button.id = "toggle-toc";
+              button.innerHTML = "📑";
+              button.style.position = "fixed";
+              button.style.top = "15px";
+              button.style.right = "15px";
+              button.style.backgroundColor = "white";
+              button.style.color = "#333";
+              button.style.border = "2px solid #ccc"; // Slightly thicker border
+              button.style.padding = "10px 12px"; // Increased padding
+              button.style.cursor = "pointer";
+              button.style.borderRadius = "8px"; // More rounded
+              button.style.fontSize = "22px"; // Larger icon
+              button.style.zIndex = "1000";
+              button.style.boxShadow = "0px 3px 6px rgba(0, 0, 0, 0.2)";
+              button.style.width = "50px"; // Increase button size
+              button.style.height = "50px"; // Make it square
+          
+              document.body.appendChild(button);
+          
+              // Click event to toggle the ToC
+              button.addEventListener("click", function () {
+                  if (toc.style.right === "0px") {
+                      toc.style.right = "-300px"; // Hide ToC
+                  } else {
+                      toc.style.right = "0px"; // Show ToC
+                  }
+              });
+          });
+          document.addEventListener("DOMContentLoaded", function () {
+              document.querySelectorAll("a[href='https://favstats.github.io/de25/']").forEach(function(link) {
+                  link.addEventListener("click", function(event) {
+                      event.preventDefault(); // Prevent default behavior
+                      window.open(link.href, "_blank"); // Open in a new tab/window
+                  });
+              });
+          });
+        </script>
+    includes:
+      in-header: |
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+---
+
+```{r, echo = F, warning=F, message=F}
+## this is important to keep for some reason ##
+library(tippy)
+tippy_this(
+  elementId = "firstNavItem",
+  tooltip = "Your tooltip text here...",
+  animation = "scale",
+  duration = 1000,
+  placement = "bottom"
+)
+```
+
+De pagina is verdeeld in vier hoofdsecties: 
+
+
+```{=html}
+<center>
+<div class="button-container">
+```
+ 
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+
+<a href="#iconify-fluent-text-grammar-settings-20-regular-strategic-information-skills" class="buttontop">
+  {{< iconify fluent text-grammar-settings-20-regular >}} Strategic Information Skills
+</a>
+
+<a href="#iconify-material-symbols-light-interactive-space-outline-rounded-critical-information-skills" class="buttontop">
+  {{< iconify material-symbols-light interactive-space-outline-rounded >}} Critical Information Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-netiquette-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} Netiquette Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-digital-content-creation-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} Digital Content Creation Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-safety-and-control-of-information-and-devices-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} Safety and Control of Information and Devices Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-digital-health-and-wellbeing-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} Digital Health and Wellbeing Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-sustainablegreen-digital-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} Sustainable/Green Digital Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-digital-problem-solving-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} Digital Problem Solving Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-transactional-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} Transactional Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-ai-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} AI Skills
+</a>
+
+<a href="#iconify-lets-icons-view-light-genai-skills" class="buttontop">
+  {{< iconify lets-icons view-light >}} genAI Skills
+</a>
+  
+
+</div>
+
+```{=html}
+</div>
+</center>
+```
+
+
+Je kunt algemene trends onderzoeken in de verschillende secties, met de mogelijkheid om te differentiëren  naar leeftijd, geslacht, opleidingsniveau en politieke voorkeur.  
+
+```{r setup, include=FALSE}
+# here::i_am("wtm_gb.Rproj")
+
+
+## Global options
+knitr::opts_chunk$set(
+    cache = F,
+    echo = F,
+    warning = F,
+    message = F,
+    cache.lazy = FALSE
+)
+
+
+pacman::p_load(htmltools, tidyverse, highcharter, gt, gtExtras, rvest, haven)
+
+options(scipen = 999)
+
+source("utils.R")
+
+data <- read_csv("../../data/df.csv") %>% #table()
+  mutate(age_groups = case_when(
+    Age %in% 16:17 ~ "16-17",
+    Age %in% 18:24 ~ "18-24",
+    Age %in% 25:34 ~ "25-34",
+    Age %in% 35:44 ~ "35-44",
+    Age %in% 45:54 ~ "45-54",
+    Age %in% 55:64 ~ "55-64",
+    Age %in% 65:150 ~ "65+",
+  )) %>%
+  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric)
+```
+
+
+
+
+
+
+# {{< iconify fluent text-grammar-settings-20-regular >}} Strategic Information Skills {.tabset .tabset-fade .tabset-pills .break}
+
+> Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ 
+
+
+<blockquote class="question-text">
+   Do you recognize yourself in the following statements? 
+</blockquote>
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r}
+
+var_labels <- c(
+  "I know how to choose good keywords for online searches (for example with Google).",
+  "I know how I can find answers to my questions on the internet.",
+  "I know how I can use search functions in search engines (for example with Google)."
+)
+
+thevarlabs <- var_labels
+
+categories_dat <- c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)")
+
+# debugonce(viz_general)
+viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+
+
+# media_rec
+# 
+# media_rec %>%
+#       # mutate(key = fct_relevel(key, theorder)) %>%
+#       arrange(key) %>%
+#       hchart("bar", hcaes(x = key, y = perc, group = value))  %>% 
+#       hc_plotOptions(bar = list(stacking = "percent")) %>%
+#       hc_yAxis(title = list(text = ""), max = 100) %>%
+#       hc_colors(colors) %>%
+#       hc_xAxis(title = list(text = "")) %>%
+#       hc_legend(enabled = TRUE) 
+# 
+# fin  %>% 
+#       gather(key, value, -weight_var) %>% 
+#       mutate(value = case_when(
+#         value %in% range1 ~ categories_dat[3],
+#         value %in% range2 ~ categories_dat[2],
+#         value %in% range3 ~ categories_dat[1]
+#       )) %>% 
+#       group_by(key) %>% 
+#       count(value, wt = weight_var) %>% 
+#       ungroup() 
+```
+
+
+
+## Op Leeftijd 
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+
+viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+
+```
+
+
+
+::: 
+
+## Op Geslacht
+
+::: {.panel-tabset}
+
+
+```{r, results='asis', eval = T}
+
+
+
+viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+::: 
+
+## Op Opleiding
+
+::: {.panel-tabset}
+
+
+```{r, results='asis', eval = T}
+
+viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+::: 
+
+## Op Politiek
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("DIGIQ", 1:5), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+::: 
+
+:::
+
+
+
+# {{< iconify material-symbols-light interactive-space-outline-rounded >}} Critical Information Skills {.tabset .tabset-fade .tabset-pills .break}
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+::: {.panel-tabset}
+
+
+## Algemeen
+
+```{r, eval = T}
+
+
+
+
+var_labels <- c("I know how I can check if the information I find on the internet is true.", 
+                    "I know how I can check if a website is reliable.",
+                "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).")
+
+# categories_dat <- c("Vaak (5-7)", "Soms (4)", "Zeldzaam (1-3)")
+
+the_vars <- c("SInfo5N", "SInfo6N", "SInfo7N")
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("ADM", 1:2), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+
+# {{< iconify lets-icons view-light >}} Netiquette Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I know when I should ask for permission to share something online.", "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).", "I know which things I should not share online.", "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).")
+
+
+the_vars <- c("SCom1_V2N", "SCom2N", "SCom4_V2N", "SCom5N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+
+# {{< iconify lets-icons view-light >}} Digital Content Creation Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I can make a presentation on the computer (for example in Powerpoint)", "I can make something that combines different digital media (for example a movie with music).", "I can change existing digital images, music, and video.", "I can make a photo or video more attractive (for example with a filter or Photoshop).")
+
+
+
+the_vars <- c("SCrea2N", "SCrea3N", "SCrea4N", "SCrea5N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, 
+            weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+# {{< iconify lets-icons view-light >}} Safety and Control of Information and Devices Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I know how to protect a device against access (e.g.  a PIN code or fingerprint).", "I know how to protect devices against viruses.", "I know how to adjust the privacy settings on a mobile phone or tablet.", "I know how to change the location settings on a mobile phone or tablet.", "I know how to identify suspicious e-mail messages that try to get my personal data.", "I know how to delete the history of websites that I have visited before.", "I know how to block messages from someone that I don’t want to hear from.")
+
+
+the_vars <- c("SSafDev1N", "SSafDev2N" , "SPriv1N", "SPriv2N", "SPriv3N", "SPriv4N", "SCom3N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+
+# {{< iconify lets-icons view-light >}} Digital Health and Wellbeing Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I know how to control how much time I spend on the internet.", "I know how to make sure my phone does not distract me.", "I know how I can stop using my phone and computer for a while, if I want to.")
+
+
+the_vars <- c("SHealth1N", "SHealth2_V2N", "SHealth3_V2")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+# {{< iconify lets-icons view-light >}} Sustainable/Green Digital Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I know how to reduce the battery use of a phone or computer.", "I know how I can buy a phone or computer in a “green” or sustainable way.", "I know how to have a phone or computer recycled.")
+
+
+the_vars <- c("SEnv1N", "SEnv2N", "SEnv3N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+# {{< iconify lets-icons view-light >}} Digital Problem Solving Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I know where or from whom I can get help to improve my digital skills.", "I know where or from whom I can get help if I’m unable to do something on the internet.")
+
+
+
+the_vars <- c("SProbl1N", "SProbl2N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "oplcat",
+            T)
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+# {{< iconify lets-icons view-light >}} Transactional skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I know how to handle things online for the tax authority (“belastingdienst”) (for example file my tax returns or apply for a wage tax for my (part-time) job.", "I know how to do digital payments on the computer or smartphone(for example online banking, online shopping, using iDeal).", "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).", "I know how to apply for a DigID and how to use it.", "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).")
+
+
+
+the_vars <- c("Strans1N", "Strans2N", "Strans3N", "Strans4N", "Strans5N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "oplcat",
+            T)
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+
+# {{< iconify lets-icons view-light >}} AI Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I recognize when a website or app uses AI to adjust the content to me.", "I recognize when specific content is recommended to me by AI.")
+
+
+
+the_vars <- c("SAI1N", "SAI2N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "oplcat",
+            T)
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+
+# {{< iconify lets-icons view-light >}} genAI Skills {.tabset .tabset-fade .tabset-pills .break}
+
+
+
+
+<blockquote class="question-text">
+  Do you recognize yourself in the following statements? 
+</blockquote>
+
+
+
+
+::: {.panel-tabset}
+
+## Algemeen
+
+```{r, eval = T}
+var_labels <- c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.", "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person")
+
+
+
+
+the_vars <- c("SGAI1N", "SGAI2N", "SGAI3N")
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat, weight_var = "weging_GAMO")
+```
+
+
+## Op Leeftijd
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "age_groups",
+            T,
+            weight_var = "weging_GAMO")
+```
+
+:::
+
+
+## Op Geslacht
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = T}
+
+viz_general(the_vars, 
+            var_labels, 
+            categories_dat,
+            "geslacht",
+            T,
+            weight_var = "weging_GAMO")
+
+
+```
+
+
+:::
+
+
+## Op Opleiding
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "oplcat",
+            T)
+```
+
+:::
+
+
+## Op Politiek
+
+
+
+::: {.panel-tabset}
+
+```{r, results='asis', eval = F}
+
+viz_general(vecc("EXPO", 1:3), 
+            var_labels,
+            categories_dat, 
+            "pol_cat",
+            T)
+```
+
+:::
+
+:::
+
+
+<br>
+
+<center>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg/1200px-Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg" width="33%">
+
+
+</center>
+
+

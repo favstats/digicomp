@@ -1,0 +1,295 @@
+---
+title: "Recoding DigIQ Items"
+output: html_document
+date: "2025-03-12"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+df <- read.csv("data/DigIQ2r1_mockdataset.csv")
+```
+
+
+# Recoding Skills items
+
+```{r Skill items recode, include=FALSE}
+
+###Making numeric variables
+
+df <- df  %>% 
+  mutate(SInfo1N = as.numeric(SInfo1),
+         SInfo3_V2N = as.numeric(SInfo3_V2),
+         SInfo4N = as.numeric(SInfo4),
+         SInfo5N = as.numeric(SInfo5),
+         SInfo6N = as.numeric(SInfo6),
+         SInfo7N = as.numeric(SInfo7),
+         SCom1_V2N = as.numeric(SCom1_V2),
+         SCom2N = as.numeric(SCom2),
+         SCom3N = as.numeric(SCom3),
+         SCom4_V2N = as.numeric(SCom4_V2),
+         SCom5N = as.numeric(SCom5),
+         SCrea2N = as.numeric(SCrea2),
+         SCrea3N = as.numeric(SCrea3),
+         SCrea4N = as.numeric(SCrea4),
+         SCrea5N = as.numeric(SCrea5),
+         SSafDev1N = as.numeric(SSafDev1),
+         SSafDev2N = as.numeric(SSafDev2),
+         SPriv1N = as.numeric(SPriv1),
+         SPriv2N = as.numeric(SPriv2),
+         SPriv3N = as.numeric(SPriv3),
+         SPriv4N = as.numeric(SPriv4),
+         SHealth1N = as.numeric(SHealth1),
+         SHealth2_V2N = as.numeric(SHealth2_V2),
+         SHealth3_V2N = as.numeric(SHealth3_V2),
+         SEnv1N = as.numeric(SEnv1),
+         SEnv2N = as.numeric(SEnv2),
+         SEnv3N = as.numeric(SEnv3),
+         SProbl1N = as.numeric(SProbl1),
+         SProbl2N = as.numeric(SProbl2),
+         Strans1N = as.numeric(Strans1),
+         Strans2N = as.numeric(Strans2),
+         Strans3N = as.numeric(Strans3),
+         Strans4N = as.numeric(Strans4),
+         Strans5N = as.numeric(Strans5),
+         SAI1N = as.numeric(SAI1),
+         SAI2N = as.numeric(SAI2),
+         SGAI1N = as.numeric(SGAI1),
+         SGAI2N = as.numeric(SGAI2),
+         SGAI3N = as.numeric(SGAI3))
+
+df$C
+
+###Recoding the variables so that 'don't know' and 'don't want to answer' are set as missing.
+df <- df %>% 
+    mutate(across(c("GetHelp_V2", "SInfo1N", "SInfo3_V2N", "SInfo4N", "SInfo5N", "SInfo6N", "SInfo7N", "SCom1_V2N", "SCom2N", "SCom3N", "SCom4_V2N", "SCom5N", "SCrea2N", "SCrea3N", "SCrea4N", "SCrea5N", "SSafDev1N", "SSafDev2N", "SPriv1N", "SPriv2N", "SPriv3N", "SPriv4N", "SHealth1N", "SHealth2_V2N", "SHealth3_V2N", "SEnv1N", "SEnv2N", "SEnv3N", "SProbl1N", "SProbl2N", "Strans1N", "Strans2N", "Strans3N", "Strans4N", "Strans5N", "SAI1N", "SAI2N", "SGAI1N", "SGAI2N", "SGAI3N"), ~ replace(., . == 66 | . == 99, NA)))
+
+```
+
+
+# Recoding Knowledge items
+
+The knowledge questions need to be recoded into correct and incorrect.
+We recode all knowledge items into new factors with R the end with
+levels correct, incorrect, don't know, and don't understand.
+
+```{r recode knowledge items, echo=FALSE, comment=NA, message=FALSE}
+#Recoding function for TRUE items
+recode_values_true <- function(x) {
+  recode_factor(as.factor(x),
+                '1' = "Correct",
+                '2' = "Incorrect",
+                '3' = "Don't know",
+                '66' = "Don't understand")
+}
+
+#applying the function
+df <- df %>%
+  mutate(across(c(KInfo3, KCom1, KCrea1, KCrea2, KSafDev2, KSafDev_new, KPriv2, KPriv3_V2, KHealth2, KHealth3, KEnv1, KEnv2, Ktrans1, KAI1, KAI3, KAI4, KGAI3, KGAI4, KGAI5), recode_values_true, .names = "{.col}R"))
+
+#Recoding function for FALSE items
+recode_values_false <- function(x) {
+  recode_factor(as.factor(x),
+                '1' = "Incorrect",
+                '2' = "Correct",
+                '3' = "Don't know",
+                '66' = "Don't understand")
+}
+
+#applying the function
+df <- df %>%
+  mutate(across(c(KInfo1, KInfo2, KCom3, KCrea3, KPriv1, KHealth1, KEnv3, Ktrans2, Ktrans3, KAI2, KGAI1, KGAI2), recode_values_false, .names = "{.col}R"))
+
+##We also create numeric versions, with RC at the end, in which correct = 1, and incorrect, don't know, and don't understand =0. !!! NA doesn't work this way!! So added this as an extra line!
+
+#Creating numeric versions of the knowledge items
+## The code below automatically adds 'RC' to the names of the new variables
+df <- df %>%
+  mutate(across(
+    c(KInfo1R, KInfo2R, KInfo3R, KCom1R, KCom3R, KCrea1R, KCrea2R, KCrea3R,
+      KSafDev2R, KPriv1R, KPriv2R, KPriv3_V2R, KHealth1R, KHealth2R, 
+      KHealth3R, KEnv1R, KEnv2R, KEnv3R, Ktrans1R, Ktrans2R, Ktrans3R,  KAI1R, KAI2R, KAI3R, KAI4R, KGAI1R, KGAI2R, KGAI3R, KGAI4R, KGAI5R),
+    ~ as.numeric(ifelse(. == "Correct", 1, 0)),
+    .names = "{.col}C"
+  ))
+
+
+```
+
+# Combining subscales
+
+Creating the subscales for the different dimensions (as variables in 'df'):
+- MeanStratInfo
+- MeanCritInfo
+- MeanNet
+- MeanCrea
+- MeanSaf
+- MeanHealth
+- MeanGreen
+- MeanTrans
+- MeanProbl
+- MeanAI
+- MeangenAI
+
+Calculating the total knowledge score (no splitting for dimensions):
+- MeanKnowledge
+
+
+```{r creating subscales, echo=FALSE}
+
+##First make means for all skill scores
+
+StratInfo=data.frame(df$SInfo1N, df$SInfo3_V2N, df$SInfo4N)
+df$MeanStratInfo <-rowMeans(StratInfo)
+
+CritInfo=data.frame(df$SInfo5N, df$SInfo6N, df$SInfo7N)
+df$MeanCritInfo <-rowMeans(CritInfo)
+
+Net=data.frame(df$SCom1_V2N, df$SCom2N, df$SCom4_V2N, df$SCom5N)
+df$MeanNet <-rowMeans(Net)
+
+Crea=data.frame(df$SCrea2N, df$SCrea3N, df$SCrea4N, df$SCrea5N)
+df$MeanCrea <-rowMeans(Crea)
+
+Saf=data.frame(df$SSafDev1N, df$SSafDev2N ,df$SPriv1N, df$SPriv2N, df$SPriv3N, df$SPriv4N, df$SCom3N)
+df$MeanSaf <-rowMeans(Saf)
+
+Health=data.frame(df$SHealth1N, df$SHealth2_V2N, df$SHealth3_V2N)
+df$MeanHealth <-rowMeans(Health)
+
+Green=data.frame(df$SEnv1N, df$SEnv2N, df$SEnv3N)
+df$MeanGreen <-rowMeans(Green)
+
+Trans=data.frame(df$Strans1N, df$Strans2N, df$Strans3N, df$Strans4N, df$Strans5N)
+df$MeanTrans <- rowMeans(Trans)
+
+Probl=data.frame(df$SProbl1N, df$SProbl2N)
+df$MeanProbl <-rowMeans(Probl)
+
+AI=data.frame(df$SAI1N, df$SAI2N)
+df$MeanAI <-rowMeans(AI)
+
+genAI=data.frame(df$SGAI1N, df$SGAI2N, df$SGAI3N)
+df$MeangenAI <-rowMeans(genAI)
+
+#Make knowledge score
+df$MeanKnowledge <- (df$KInfo1RC + df$KInfo2RC+ df$KInfo3RC 
+                     + df$KCom1RC  +  df$KCom3RC 
+                     + df$KCrea1RC  + df$KCrea2RC  +  df$KCrea3RC  
+                     + df$KSafDev2RC 
+                     + df$KPriv1RC  + df$KPriv2RC  + df$KPriv3_V2RC 
+                     + df$KHealth1RC  + df$KHealth2RC  + df$KHealth3RC 
+                     + df$KEnv1RC  + df$KEnv2RC + df$KEnv3RC 
+                     + df$Ktrans1RC + df$Ktrans2RC + df$Ktrans3RC
+                     + df$KAI1RC  + df$KAI2RC  + df$KAI3RC  
+                     + df$KGAI1RC + df$KGAI2RC + df$KGAI3RC + df$KGAI4RC + df$KGAI5RC)
+
+
+
+
+# df %>% 
+#   select(MeanStratInfo)
+
+write_csv(df, "data/df.csv")
+
+df %>% 
+  glimpse()
+
+df %>% count(geslacht)
+```
+
+## Calculating (weighted) mean scores
+
+```{r weighted means}
+library(srvyr)
+
+#Look at weighted and unweighted means for each subskill
+###Weighted mean Strat Info
+df %>%
+  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
+  drop_na(weging_GAMO) %>% 
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanStratInfoW = survey_mean(MeanStratInfo, na.rm = TRUE))
+###Unweighted mean Strat Info
+mean(df$MeanStratInfo, na.rm = TRUE, weights = as.numeric(str_replace(df$weging_GAMO, ",", ".")))
+
+###Weighted mean CritInfo
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanCritInfoW= survey_mean(MeanCritInfo, na.rm = TRUE))
+###Unweighted mean CritINnfo
+mean(df$MeanCritInfo, na.rm = TRUE, weights = as.numeric(str_replace(df$weging_GAMO, ",", ".")))
+
+###Weighted mean Netiquette
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanNetW = survey_mean(MeanNet, na.rm = TRUE))
+###Unweighted mean Netiquette
+mean(df$MeanNet, na.rm = TRUE)
+
+###Weighted mean Crea
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanCreaW = survey_mean(MeanCrea, na.rm = TRUE))
+###Unweighted mean Crea
+mean(df$MeanCrea, na.rm = TRUE)
+
+###Weighted mean Safety
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanSafW = survey_mean(MeanSaf, na.rm = TRUE))
+###Unweighted mean Safety
+mean(df$MeanSaf, na.rm = TRUE)
+
+###Weighted mean Health
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanHealthW = survey_mean(MeanHealth, na.rm = TRUE))
+###Unweighted mean Health
+mean(df$MeanHealth, na.rm = TRUE)
+
+###Weighted mean Green
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanGreenW = survey_mean(MeanGreen, na.rm = TRUE))
+###Unweighted mean Green
+mean(df$MeanGreen, na.rm = TRUE)
+
+###Weighted mean Transactional
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanProblW = survey_mean(MeanTrans, na.rm = TRUE))
+###Unweighted mean Problem
+mean(df$MeanTrans, na.rm = TRUE)
+
+###Weighted mean problem
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanProblW = survey_mean(MeanProbl, na.rm = TRUE))
+###Unweighted mean Problem
+mean(df$MeanProbl, na.rm = TRUE)
+
+###Weighted mean AI
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanAIW = survey_mean(MeanAI, na.rm = TRUE))
+###Unweighted mean AI
+mean(df$MeanAI, na.rm = TRUE)
+
+###Weighted mean genAI
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(MeanAIW = survey_mean(MeangenAI, na.rm = TRUE))
+###Unweighted mean AI
+mean(df$MeangenAI, na.rm = TRUE)
+
+###Weighted mean knowledge
+df %>%
+  as_survey(weights = c(weging_GAMO)) %>%
+  summarize(meanKnowledgeW = survey_mean(MeanKnowledge, na.rm = TRUE))
+###Unweighted mean knowledge
+mean(df$MeanKnowledge, na.rm = TRUE)
+
+
+
+```
+
