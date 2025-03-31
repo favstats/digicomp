@@ -93,7 +93,6 @@ format:
 
 ---
 
-
 ```{r, echo = F, warning=F, message=F}
 ## this is important to keep for some reason ##
 library(tippy)
@@ -140,11 +139,12 @@ data <- read_csv("../../data/df.csv") %>% #table()
     Age %in% 55:64 ~ "55-64",
     Age %in% 65:150 ~ "65+",
   )) %>%
-  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric)
+  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
+  mutate(MeanKnowledge = round(runif(nrow(.), 1, 29)))
+
+# data %>%
+#   select(MeanKnowledge)
 ```
-
-
-
 
 
 
@@ -176,7 +176,10 @@ categories_dat <- c("Low (1-9)", "Middle (10-19)", "High (20-29)") %>% rev()
 # debugonce(viz_general)
 viz_general("MeanKnowledge", 
             var_labels, 
-            categories_dat, weight_var = "weging_GAMO", range1 = 1:9,range2 = 10:19,range3=20:29)
+            categories_dat, weight_var = "weging_GAMO", 
+            range1 = 1:9,
+            range2 = 10:19,
+            range3=20:29,stacked = F)
 
 ```
 
@@ -259,7 +262,6 @@ viz_general(vecc("CONF", 1:8),
 
 
 <br>
-
 
 <center>
 

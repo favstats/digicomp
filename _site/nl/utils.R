@@ -96,7 +96,7 @@ generate_quarto_elements <- function(list_of_plots, plots_per_page = 2) {
   
 }
 
-viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups = F, range1=1:2, range2=3, range3=4:5, weight_var = NULL) {
+viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups = F, range1=1:2, range2=3, range3=4:5, weight_var = NULL, stacked = T) {
   
   
   if(groups){
@@ -222,9 +222,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
     hc <- media_rec %>%
       mutate(key = fct_relevel(key, theorder)) %>%
       arrange(key) %>%
-      hchart("bar", hcaes(x = key, y = perc, group = value))  %>% 
-      hc_plotOptions(bar = list(stacking = "percent")) %>%
-      hc_yAxis(title = list(text = ""), max = 100) %>%
+      hchart("bar", hcaes(x = key, y = perc, group = value))  %>%
       hc_colors(colors) %>%
       hc_xAxis(title = list(text = "")) %>%
       hc_legend(enabled = TRUE) %>%
@@ -262,6 +260,15 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
         enabled = TRUE,
         buttons = list(contextButton = list(menuItems = myMenuItems))
       )
+    
+    if(stacked){
+      hc <- hc %>% 
+        hc_plotOptions(bar = list(stacking = "percent")) %>%
+        hc_yAxis(title = list(text = ""), max = 100)
+    } else {
+      hc <- hc %>%
+        hc_yAxis(title = list(text = ""), max = max(media_rec$perc)+5)
+    }
     
     hc$x$hc_opts$series <- lapply(hc$x$hc_opts$series, function(series) {
       if (series$name == categories_dat[3]) {
