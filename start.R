@@ -256,7 +256,7 @@ library(tidyverse)
 
 
 dir("_site", full.names = T, recursive = T) %>% 
-  keep(~str_detect(.x, "\\.qmd")) %>% 
+  keep(~str_detect(.x, "\\.qmd")) %>%
   # keep(~str_detect(.x, "/en/|/nl/")) %>%
   keep(~str_detect(.x, "/nl/")) %>%
   walk(quarto::quarto_render, .progress = T)
