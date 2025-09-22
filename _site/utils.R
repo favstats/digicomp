@@ -885,7 +885,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
       ) %>%
       count(key, thevar, value) %>%
       group_by(key, thevar) %>%
-      mutate(perc = n / sum(n) * 100) %>%
+      mutate(perc = n / sum(n) * 100, total = sum(n)) %>%
       ungroup()
   } else {
     fin <- data %>% 
@@ -905,7 +905,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
       ungroup()  %>%
       mutate(value = fct_relevel(value, categories_dat)) %>%
       group_by(key) %>%
-      mutate(perc = n/sum(n)*100) %>%
+      mutate(perc = n/sum(n)*100, total = sum(n)) %>%
       ungroup()
     
     theorder <<- media_rec %>% 
@@ -924,7 +924,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
         hc <- media_rec_ages %>%
           filter(key == .x) %>%
           mutate(value = fct_relevel(value, categories_dat)) %>%
-          hchart("bar", hcaes(x = thevar, y = perc, group = value)) %>%
+          hchart("bar", hcaes(x = thevar, y = perc, group = value, custom = n, totalCount = total)) %>%
           hc_title(text = .x) %>%
           hc_chart(style = list(width = "100%", height = "100%"))  %>% 
           hc_plotOptions(bar = list(stacking = "percent")) %>%
@@ -937,7 +937,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
               colorByPoint = TRUE
             ),
             series = list(
-              tooltip = list(pointFormat = '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}%</b><br/>'),
+              tooltip = list(pointFormat = '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.1f}%</b> ({point.custom} out of {point.total} respondents)<br/>'),
               dataLabels = list(
                 enabled = TRUE,
                 format = '{y:.0f}%',
@@ -985,7 +985,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
     hc <- media_rec %>%
       mutate(key = fct_relevel(key, theorder)) %>%
       arrange(key) %>%
-      hchart("bar", hcaes(x = key, y = perc, group = value))  %>% 
+      hchart("bar", hcaes(x = key, y = perc, group = value, custom = n, totalCount = total))  %>% 
       hc_plotOptions(bar = list(stacking = "percent")) %>%
       hc_yAxis(title = list(text = ""), max = 100) %>%
       hc_colors(colors) %>%
@@ -996,7 +996,14 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
           colorByPoint = TRUE
         ),
         series = list(
-          tooltip = list(pointFormat = '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}%</b><br/>'),
+          tooltip = list(
+            useHTML = TRUE,
+            pointFormat = '<div style="min-width:220px"><div style="font-weight:600;margin-bottom:4px">{point.category}</div><div><span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.1f}%</b><br/><small>({point.custom:.0f} of {point.totalCount:.0f} respondents)</small></div></div>'
+          ),
+          tooltip = list(
+            useHTML = TRUE,
+            pointFormat = '<div style="min-width:220px"><div style="font-weight:600;margin-bottom:4px">{point.category}</div><div><span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.1f}%</b><br/><small>({point.custom:.0f} of {point.totalCount:.0f} respondents)</small></div></div>'
+          ),
           dataLabels = list(
             enabled = TRUE,
             format = '{y:.0f}%',
