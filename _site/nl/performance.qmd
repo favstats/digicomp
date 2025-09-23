@@ -29,12 +29,10 @@ format:
               tocTitle.innerText = "Navigation";
               toc.appendChild(tocTitle);
           
+              // Collect regular headings
               var headers = document.querySelectorAll("h2, h3, h4");
               headers.forEach(function (header, index) {
-                  if (!header.id) {
-                      header.id = "section-" + index;
-                  }
-          
+                  if (!header.id) header.id = "section-" + index;
                   var link = document.createElement("a");
                   link.innerText = header.innerText;
                   link.href = "#" + header.id;
@@ -42,7 +40,21 @@ format:
                   link.style.padding = "5px 0";
                   link.style.color = "#007bff";
                   link.style.textDecoration = "none";
-          
+                  toc.appendChild(link);
+              });
+
+              // Also collect tabset titles (rendered as nav links)
+              var tabs = document.querySelectorAll('.panel-tabset .nav-link');
+              tabs.forEach(function (tab, index) {
+                  var target = tab.getAttribute('data-bs-target') || tab.getAttribute('href');
+                  if (!target || target === '#') return;
+                  var link = document.createElement('a');
+                  link.innerText = tab.textContent.trim();
+                  link.href = target;
+                  link.style.display = 'block';
+                  link.style.padding = '5px 0';
+                  link.style.color = '#007bff';
+                  link.style.textDecoration = 'none';
                   toc.appendChild(link);
               });
           
@@ -79,7 +91,7 @@ format:
               });
           });
           document.addEventListener("DOMContentLoaded", function () {
-              document.querySelectorAll("a[href='https://favstats.github.io/de25/']").forEach(function(link) {
+              document.querySelectorAll("a[href='https://favstats.github.io/digicomp/performance.html']").forEach(function(link) {
                   link.addEventListener("click", function(event) {
                       event.preventDefault(); // Prevent default behavior
                       window.open(link.href, "_blank"); // Open in a new tab/window
@@ -90,12 +102,9 @@ format:
     includes:
       in-header: |
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
 ---
 
-
 ```{r, echo = F, warning=F, message=F}
-## this is important to keep for some reason ##
 library(tippy)
 tippy_this(
   elementId = "firstNavItem",
@@ -104,21 +113,192 @@ tippy_this(
   duration = 1000,
   placement = "bottom"
 )
+```
+
+```{r, echo = F, warning=F, message=F, results='asis'}
+knitr::opts_chunk$set(
+    cache = F,
+    echo = F,
+    warning = F,
+    message = F,
+    cache.lazy = FALSE
+)
+
+pacman::p_load(htmltools, tidyverse, highcharter, gt, gtExtras, rvest, haven)
+options(scipen = 999)
+source("utils.R")
+
+categories_dat <- c("Incorrectly Answered", "Correctly Answered", "X") %>% rev()
 
 ```
 
+# {{< iconify fluent-emoji-high-contrast detective >}} Performance {.tabset .tabset-fade .tabset-pills .break}
+
+<blockquote class="question-text">
+Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.
+</blockquote>
+
+:::: {.panel-tabset}
+
+## Strategic Information
+
+```{r, eval=F}
+var_labels <- c(
+  "Restrict Google to Dutch sources (correct/incorrect)"
+)
+# categories_dat <- c("Incorrect", "Correct")
+
+viz_general("PSIS2", 
+            var_labels, 
+            categories_dat, 
+            weight_var = "weging_GAMO", 
+            range1 = 0, range2 = 1)
+
+# data %>% count(PSIS2)
+```
+
+## Critical Information
+
+```{r, eval =F}
+var_labels <- c(
+  "Classify a social media post (task 1)",
+  "Classify a social media post (task 2)",
+  "What to check for fake news"
+)
+viz_general(c("PCIS1","PCIS2","PCIS3"), 
+            var_labels, 
+            categories_dat, 
+            weight_var = "weging_GAMO", 
+            range1 = 0, range2 = 1)
+
+# data %>% count(PCIS1)
+
+```
+
+## Netiquette
+
+```{r, eval = F}
+var_labels <- c("Permission needed for photo(s)")
+# data %>% count(PNS1_1)
+viz_general("PNS1", var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+## Digital Content Creation
+
+```{r, eval = F}
+var_labels <- c("Identify crop icon")
+# data %>% count(PDCCS1)
+viz_general("PDCCS1", var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+## Safety & Control of Devices
+
+```{r, eval = F}
+
+var_labels <- c(
+  # "Identify phishing type",
+  "Keep passwords in a password safe",
+  "Save passwords on paper (rev)",
+  "Use passwords with ≥14 chars",
+  "Different passwords per account",
+  "Use passkey (finger/face)",
+  "Two-step verification",
+  "Install software updates",
+  "Use adblocker",
+  "Make backups"
+)
 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla in hendrerit ex. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum ac lorem maximus, euismod nulla et, pulvinar urna. Sed sit amet orci volutpat, placerat lorem eget, luctus metus. Suspendisse convallis id est quis congue. Praesent eu eros eu velit lobortis egestas. Quisque eu placerat enim.
+# $PSC
+# data %>% count(PSCS1)
+# data %>% count(PSCS1)
+vars <- c(
+  # "PSCS1",
+  "PSCS3_1","PSCS3_2","PSCS3_3","PSCS3_4","PSCS3_5","PSCS3_6","PSCS3_7","PSCS3_8","PSCS3_9"
+)
+viz_general(vars, var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
 
-Mauris hendrerit interdum massa eget bibendum. Nam id velit blandit, elementum leo sed, egestas purus. In mi libero, rutrum a mi vitae, blandit sagittis nibh. Duis efficitur nibh cursus ante feugiat, in egestas ex euismod. Sed elementum mauris enim, sit amet finibus eros cursus at. Proin nec ultrices sapien, eu porttitor tellus. Nulla sit amet quam sollicitudin, vehicula leo vestibulum, egestas quam.
+## Health & Wellbeing
 
-Donec et leo justo. Sed eu libero iaculis, malesuada nisi in, bibendum nisi. Fusce fringilla eget erat vel sagittis. Aliquam nec urna at metus mollis pharetra sed vitae sem. Integer vehicula finibus aliquet. Maecenas at vehicula lectus, in varius nunc. Nullam volutpat id quam sit amet imperdiet. Nam sagittis purus vitae egestas vulputate. Fusce viverra quam in risus ullamcorper dapibus. Maecenas rutrum neque in lorem faucibus, sit amet rutrum ligula ultrices. Proin cursus volutpat orci, ut porttitor libero ultrices quis. Integer eu leo eget sapien molestie tempus. In rutrum sem nec viverra aliquam. Nam mollis sapien a orci iaculis, vitae pretium quam pellentesque.
+```{r}
+var_labels <- c(
+  "Create digital detox moments",
+  "Have rules limiting digital media",
+  "Use screen-time limiter",
+  "Temporarily switch off Internet",
+  "Delete apps/programs",
+  "Turn off notifications",
+  "Reduce time without special approach"
+)
+vars <- c("PDHWS1_1","PDHWS1_2","PDHWS1_3","PDHWS1_4","PDHWS1_5","PDHWS1_6","PDHWS1_7")
+viz_general(vars, var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+## Green skills
+
+```{r}
+var_labels <- c(
+  "Clean mailbox",
+  "Use sustainable search engines",
+  "Avoid unnecessary Cloud storage",
+  "Turn down screen brightness",
+  "Use sleep mode",
+  "Close unused phone apps",
+  "Recycle devices",
+  "Repair before replacing"
+)
+vars <- c("PSGDS1_1","PSGDS1_2","PSGDS1_3","PSGDS1_4","PSGDS1_5","PSGDS1_6","PSGDS1_7","PSGDS1_8")
+viz_general(vars, var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+## Problem Solving
+
+```{r}
+var_labels <- c(
+  "I don't need help",
+  "I don't know anyone",
+  "Family",
+  "Friends",
+  "Colleagues/classmates",
+  "Neighbors/acquaintances",
+  "Help desk",
+  "Library",
+  "Telecom/online helpdesk"
+)
+vars <- c("SourceHelp_1","SourceHelp_2","SourceHelp_3","SourceHelp_4","SourceHelp_5","SourceHelp_6","SourceHelp_7","SourceHelp_8","SourceHelp_9")
+viz_general(vars, var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+## Transactional
+
+```{r}
+var_labels <- c("Identify trust/safety icon (webshop)")
+viz_general("PTS1", var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+## AI
+
+```{r}
+var_labels <- c(
+  "Google","Netflix","Whatsapp","Facebook","Bol.com","DigID","NOS News","Albert Heijn","TikTok"
+)
+vars <- c("PAIS2_1","PAIS2_2","PAIS2_3","PAIS2_4","PAIS2_5","PAIS2_6","PAIS2_7","PAIS2_8","PAIS2_9")
+viz_general(vars, var_labels, categories_dat, weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+## genAI
+
+```{r}
+var_labels <- c("Spot non-AI image")
+viz_general("PAIS1", var_labels, categories_dat %>% rev(), weight_var = "weging_GAMO", range1 = 0, range2 = 1)
+```
+
+::::
 
 <br>
 
 <center>
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg/1200px-Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg" width="33%">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg/1200px-Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg"
+       width="33%" data-external="1">
 </center>
-
-

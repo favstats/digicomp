@@ -79,7 +79,7 @@ format:
               });
           });
           document.addEventListener("DOMContentLoaded", function () {
-              document.querySelectorAll("a[href='https://favstats.github.io/de25/']").forEach(function(link) {
+              document.querySelectorAll("a[href='https://favstats.github.io/digicomp/skills.html']").forEach(function(link) {
                   link.addEventListener("click", function(event) {
                       event.preventDefault(); // Prevent default behavior
                       window.open(link.href, "_blank"); // Open in a new tab/window
@@ -90,7 +90,6 @@ format:
     includes:
       in-header: |
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
 ---
 
 ```{r, echo = F, warning=F, message=F}
@@ -190,17 +189,24 @@ options(scipen = 999)
 
 source("utils.R")
 
-data <- read_csv("../../data/df.csv") %>% #table()
-  mutate(age_groups = case_when(
-    Age %in% 16:17 ~ "16-17",
-    Age %in% 18:24 ~ "18-24",
-    Age %in% 25:34 ~ "25-34",
-    Age %in% 35:44 ~ "35-44",
-    Age %in% 45:54 ~ "45-54",
-    Age %in% 55:64 ~ "55-64",
-    Age %in% 65:150 ~ "65+",
-  )) %>%
-  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric)
+
+
+# data %>% count(AgeGrsoup)
+# 
+# ddd <- read_csv2("../../data/DigCom25CompleteWithWeights.csv") %>% #table()
+#   mutate(AgeGroup = case_when(
+#     Age %in% 16:17 ~ "16-17",
+#     Age %in% 18:24 ~ "18-24",
+#     Age %in% 25:34 ~ "25-34",
+#     Age %in% 35:44 ~ "35-44",
+#     Age %in% 45:54 ~ "45-54",
+#     Age %in% 55:64 ~ "55-64",
+#     Age %in% 65:150 ~ "65+",
+#   )) %>%
+#   mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
+#   glimpse()
+
+# ddd %>% count(Gender)
 ```
 
 
@@ -222,6 +228,13 @@ data <- read_csv("../../data/df.csv") %>% #table()
 ## Algemeen
 
 ```{r}
+# data$
+# data %>% 
+#   select(c("SInfo1", "SInfo3_V2", "SInfo4"),)
+```
+
+
+```{r}
 
 var_labels <- c(
   "I know how to choose good keywords for online searches (for example with Google).",
@@ -234,7 +247,7 @@ thevarlabs <- var_labels
 categories_dat <- c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)")
 
 # debugonce(viz_general)
-viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+viz_general(c("SInfo1", "SInfo3_V2", "SInfo4"), 
             var_labels, 
             categories_dat, weight_var = "weging_GAMO")
 
@@ -272,10 +285,10 @@ viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"),
 ```{r, results='asis', eval = T}
 
 
-viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+viz_general(c("SInfo1", "SInfo3_V2", "SInfo4"), 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 
@@ -294,12 +307,14 @@ viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"),
 
 
 
-viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+viz_general(c("SInfo1", "SInfo3_V2", "SInfo4"), 
             var_labels, 
             categories_dat,
             "geslacht",
             T,
             weight_var = "weging_GAMO")
+
+data %>% count(geslacht)
 ```
 
 ::: 
@@ -311,7 +326,7 @@ viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"),
 
 ```{r, results='asis', eval = T}
 
-viz_general(c("SInfo1N", "SInfo3_V2N", "SInfo4N"), 
+viz_general(c("SInfo1", "SInfo3_V2", "SInfo4"), 
             var_labels, 
             categories_dat,
             "Education",
@@ -332,6 +347,8 @@ viz_general(vecc("DIGIQ", 1:5),
             categories_dat, 
             "pol_cat",
             T)
+
+
 ```
 ::: 
 
@@ -362,7 +379,7 @@ var_labels <- c("I know how I can check if the information I find on the interne
 
 # categories_dat <- c("Vaak (5-7)", "Soms (4)", "Zeldzaam (1-3)")
 
-the_vars <- c("SInfo5N", "SInfo6N", "SInfo7N")
+the_vars <- c("SInfo5", "SInfo6", "SInfo7")
 viz_general(the_vars, 
             var_labels, 
             categories_dat, weight_var = "weging_GAMO")
@@ -380,7 +397,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -466,7 +483,7 @@ viz_general(vecc("ADM", 1:2),
 var_labels <- c("I know when I should ask for permission to share something online.", "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).", "I know which things I should not share online.", "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).")
 
 
-the_vars <- c("SCom1_V2N", "SCom2N", "SCom4_V2N", "SCom5N")
+the_vars <- c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5")
 
 viz_general(the_vars, 
             var_labels, 
@@ -484,7 +501,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -572,8 +589,7 @@ var_labels <- c("I can make a presentation on the computer (for example in Power
 
 
 
-the_vars <- c("SCrea2N", "SCrea3N", "SCrea4N", "SCrea5N")
-
+the_vars <- c("SCrea2", "SCrea3", "SCrea4", "SCrea5")
 viz_general(the_vars, 
             var_labels, 
             categories_dat, 
@@ -591,7 +607,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -677,7 +693,7 @@ viz_general(vecc("EXPO", 1:3),
 var_labels <- c("I know how to protect a device against access (e.g.  a PIN code or fingerprint).", "I know how to protect devices against viruses.", "I know how to adjust the privacy settings on a mobile phone or tablet.", "I know how to change the location settings on a mobile phone or tablet.", "I know how to identify suspicious e-mail messages that try to get my personal data.", "I know how to delete the history of websites that I have visited before.", "I know how to block messages from someone that I don’t want to hear from.")
 
 
-the_vars <- c("SSafDev1N", "SSafDev2N" , "SPriv1N", "SPriv2N", "SPriv3N", "SPriv4N", "SCom3N")
+the_vars <- c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3")
 
 viz_general(the_vars, 
             var_labels, 
@@ -695,7 +711,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -782,7 +798,7 @@ viz_general(vecc("EXPO", 1:3),
 var_labels <- c("I know how to control how much time I spend on the internet.", "I know how to make sure my phone does not distract me.", "I know how I can stop using my phone and computer for a while, if I want to.")
 
 
-the_vars <- c("SHealth1N", "SHealth2_V2N", "SHealth3_V2")
+the_vars <- c("SHealth1", "SHealth2_V2", "SHealth3_V2")
 
 viz_general(the_vars, 
             var_labels, 
@@ -800,7 +816,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -886,8 +902,7 @@ viz_general(vecc("EXPO", 1:3),
 var_labels <- c("I know how to reduce the battery use of a phone or computer.", "I know how I can buy a phone or computer in a “green” or sustainable way.", "I know how to have a phone or computer recycled.")
 
 
-the_vars <- c("SEnv1N", "SEnv2N", "SEnv3N")
-
+the_vars <- c("SEnv1", "SEnv2", "SEnv3")
 viz_general(the_vars, 
             var_labels, 
             categories_dat, weight_var = "weging_GAMO")
@@ -904,7 +919,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -991,8 +1006,7 @@ var_labels <- c("I know where or from whom I can get help to improve my digital 
 
 
 
-the_vars <- c("SProbl1N", "SProbl2N")
-
+the_vars <- c("SProbl1", "SProbl2")
 viz_general(the_vars, 
             var_labels, 
             categories_dat, weight_var = "weging_GAMO")
@@ -1009,7 +1023,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -1043,14 +1057,15 @@ viz_general(the_vars,
 
 ::: {.panel-tabset}
 
-```{r, results='asis', eval = F}
+```{r, results='asis', eval = T}
 
 
-viz_general(vecc("EXPO", 1:3), 
-            var_labels,
-            categories_dat, 
-            "oplcat",
-            T)
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
 ```
 
 :::
@@ -1096,7 +1111,7 @@ var_labels <- c("I know how to handle things online for the tax authority (“be
 
 
 
-the_vars <- c("Strans1N", "Strans2N", "Strans3N", "Strans4N", "Strans5N")
+the_vars <- c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5")
 
 viz_general(the_vars, 
             var_labels, 
@@ -1114,7 +1129,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -1148,14 +1163,15 @@ viz_general(the_vars,
 
 ::: {.panel-tabset}
 
-```{r, results='asis', eval = F}
+```{r, results='asis', eval = T}
 
 
-viz_general(vecc("EXPO", 1:3), 
-            var_labels,
-            categories_dat, 
-            "oplcat",
-            T)
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
 ```
 
 :::
@@ -1202,7 +1218,7 @@ var_labels <- c("I recognize when a website or app uses AI to adjust the content
 
 
 
-the_vars <- c("SAI1N", "SAI2N")
+the_vars <- c("SAI1", "SAI2")
 
 viz_general(the_vars, 
             var_labels, 
@@ -1220,7 +1236,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -1254,14 +1270,15 @@ viz_general(the_vars,
 
 ::: {.panel-tabset}
 
-```{r, results='asis', eval = F}
+```{r, results='asis', eval = T}
 
 
-viz_general(vecc("EXPO", 1:3), 
-            var_labels,
-            categories_dat, 
-            "oplcat",
-            T)
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
 ```
 
 :::
@@ -1309,7 +1326,7 @@ var_labels <- c("I usually know when the content created for me by GenAI, such a
 
 
 
-the_vars <- c("SGAI1N", "SGAI2N", "SGAI3N")
+the_vars <- c("SGAI1", "SGAI2", "SGAI3")
 
 viz_general(the_vars, 
             var_labels, 
@@ -1327,7 +1344,7 @@ viz_general(the_vars,
 viz_general(the_vars, 
             var_labels, 
             categories_dat,
-            "age_groups",
+            "AgeGroup",
             T,
             weight_var = "weging_GAMO")
 ```
@@ -1361,14 +1378,15 @@ viz_general(the_vars,
 
 ::: {.panel-tabset}
 
-```{r, results='asis', eval = F}
+```{r, results='asis', eval = T}
 
 
-viz_general(vecc("EXPO", 1:3), 
-            var_labels,
-            categories_dat, 
-            "oplcat",
-            T)
+viz_general(the_vars,
+            var_labels, 
+            categories_dat,
+            "Education",
+            T,
+            weight_var = "weging_GAMO")
 ```
 
 :::
@@ -1396,8 +1414,9 @@ viz_general(vecc("EXPO", 1:3),
 
 <br>
 
-<center>
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg/1200px-Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg" width="33%">
-</center>
 
+<center>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg/1200px-Ministerie_van_Binnenlandse_Zaken_en_Koninkrijksrelaties_Logo.jpg"
+       width="33%" data-external="1">
+</center>
 

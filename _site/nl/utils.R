@@ -13,7 +13,157 @@ thecolors <<- c(
   "#B0E0C6"     # Powder blue
 )
 
+require(dplyr)
+require(forcats)   # for recode_factor
 # thecolors
+
+recode_survey <- function(df) {
+  
+  # -----------------------------
+  # 1) SKILL ITEMS: coerce to numeric IN PLACE and set 66/99 -> NA
+  # -----------------------------
+  skill_vars <- c(
+    "SInfo1","SInfo3_V2","SInfo4","SInfo5","SInfo6","SInfo7",
+    "SCom1_V2","SCom2","SCom3","SCom4_V2","SCom5",
+    "SCrea2","SCrea3","SCrea4","SCrea5",
+    "SSafDev1","SSafDev2",
+    "SPriv1","SPriv2","SPriv3","SPriv4",
+    "SHealth1","SHealth2_V2","SHealth3_V2",
+    "SEnv1","SEnv2","SEnv3",
+    "SProbl1","SProbl2",
+    "Strans1","Strans2","Strans3","Strans4","Strans5",
+    "SAI1","SAI2",
+    "SGAI1","SGAI2","SGAI3",
+    # optionally already-numeric helper mentioned in your code
+    "GetHelp_V2N"
+  )
+  skill_present <- intersect(names(df), skill_vars)
+  
+  # coerce to numeric in place
+  df <- df |> mutate(across(all_of(skill_present), ~ suppressWarnings(as.numeric(.x))))
+  # set 66/99 to NA
+  df <- df |> mutate(across(all_of(skill_present), ~ replace(.x, .x %in% c(66, 99), NA_real_)))
+  
+  # -----------------------------
+  true_set  <- c("KInfo3","KCom1","KCrea1","KCrea2","KSafDev2","KSafDev_new",
+                 "KPriv2","KPriv3_V2","KHealth2","KHealth3","KEnv1","KEnv2",
+                 "Ktrans1","KAI1","KAI3","KAI4","KGAI3","KGAI4","KGAI5")
+  false_set <- c("KInfo1","KInfo2","KCom3","KCrea3","KPriv1","KHealth1","KEnv3",
+                 "Ktrans2","Ktrans3","KAI2","KGAI1","KGAI2")
+  knowledge_items <- c(true_set, false_set)
+  
+  map_true  <- c(`1`="Correct", `2`="Incorrect", `3`="Don't know", `66`="Don't understand")
+  map_false <- c(`1`="Incorrect", `2`="Correct", `3`="Don't know", `66`="Don't understand")
+  
+  recode_by_col <- function(x, col) {
+    m <- if (col %in% true_set) map_true else map_false
+    dplyr::recode_factor(as.character(x), !!!m, .default = NA_character_)
+  }
+  
+  df <- df |>
+    mutate(
+      across(contains(knowledge_items),
+             ~ recode_by_col(.x, cur_column()),
+             .names = "{.col}R"
+      )
+    ) |>
+    mutate(
+      across(ends_with("R"),
+             ~ as.integer(.x == "Correct"),
+             .names = "{.col}C"
+      )
+    )
+  # -----------------------------
+  # 3) SUBSCALES (using IN-PLACE skill vars; no ...N names)
+  # -----------------------------
+  # helper to rowMeans over present columns (keeps NA handling identical to base: na.rm = FALSE)
+  rm_mean <- function(d, vars) {
+    v <- intersect(names(d), vars)
+    if (length(v) == 0) return(rep(NA_real_, nrow(d)))
+    rowMeans(d[v])
+  }
+  
+  df$MeanStratInfo <- rm_mean(df, c("SInfo1","SInfo3_V2","SInfo4"))
+  df$MeanCritInfo  <- rm_mean(df, c("SInfo5","SInfo6","SInfo7"))
+  df$MeanNet       <- rm_mean(df, c("SCom1_V2","SCom2","SCom4_V2","SCom5"))
+  df$MeanCrea      <- rm_mean(df, c("SCrea2","SCrea3","SCrea4","SCrea5"))
+  df$MeanSaf       <- rm_mean(df, c("SSafDev1","SSafDev2","SPriv1","SPriv2","SPriv3","SPriv4","SCom3"))
+  df$MeanHealth    <- rm_mean(df, c("SHealth1","SHealth2_V2","SHealth3_V2"))
+  df$MeanGreen     <- rm_mean(df, c("SEnv1","SEnv2","SEnv3"))
+  df$MeanTrans     <- rm_mean(df, c("Strans1","Strans2","Strans3","Strans4","Strans5"))
+  df$MeanProbl     <- rm_mean(df, c("SProbl1","SProbl2"))
+  df$MeanAI        <- rm_mean(df, c("SAI1","SAI2"))
+  df$MeangenAI     <- rm_mean(df, c("SGAI1","SGAI2","SGAI3"))
+
+  
+  # -----------------------------
+  # 4) TOTAL KNOWLEDGE SCORE (sum of *RC columns you listed)
+  # -----------------------------
+  knowledge_rc_order <- c(
+    "KInfo1RC","KInfo2RC","KInfo3RC",
+    "KCom1RC","KCom3RC",
+    "KCrea1RC","KCrea2RC","KCrea3RC",
+    "KSafDev2RC",
+    "KPriv1RC","KPriv2RC","KPriv3_V2RC",
+    "KHealth1RC","KHealth2RC","KHealth3RC",
+    "KEnv1RC","KEnv2RC","KEnv3RC",
+    "Ktrans1RC","Ktrans2RC","Ktrans3RC",
+    "KAI1RC","KAI2RC","KAI3RC",
+    "KGAI1RC","KGAI2RC","KGAI3RC","KGAI4RC","KGAI5RC"
+  )
+  # df <- data
+  present_rc <- intersect(knowledge_rc_order, names(df))
+  if (length(present_rc)) {
+    # match your explicit + ... + behavior (NA if any NA)
+    df$MeanKnowledge <- rowSums(df[present_rc], na.rm = T)
+  } else {
+    df$MeanKnowledge <- NA_real_
+  }
+  
+  df
+}
+
+## TODO: Knowledge question seem perhaps incorrect and are missing sometimes across waves
+
+data_w1 <- read_csv2("../../data/DigCom24CompleteWithWeights.csv") %>% #table()
+  # mutate(AgeGroup = case_when(
+  #   Age %in% 16:17 ~ "16-17",
+  #   Age %in% 18:24 ~ "18-24",
+  #   Age %in% 25:34 ~ "25-34",
+  #   Age %in% 35:44 ~ "35-44",
+  #   Age %in% 45:54 ~ "45-54",
+  #   Age %in% 55:64 ~ "55-64",
+  #   Age %in% 65:150 ~ "65+",
+  # )) %>%
+  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
+  mutate(geslacht = case_when(
+    geslacht == 1 ~"1",
+    geslacht == 2 ~"2",
+    T ~ NA_character_
+  )) %>% 
+  mutate(Education = EducationR) %>% 
+  mutate(Education = fct_relevel(Education, c("Low", "Middle", "High"))) %>% 
+  recode_survey()
+
+data <- read_csv2("../../data/DigCom25CompleteWithWeights.csv") %>% #table()
+  # mutate(AgeGroup = case_when(
+  #   Age %in% 16:17 ~ "16-17",
+  #   Age %in% 18:24 ~ "18-24",
+  #   Age %in% 25:34 ~ "25-34",
+  #   Age %in% 35:44 ~ "35-44",
+  #   Age %in% 45:54 ~ "45-54",
+  #   Age %in% 55:64 ~ "55-64",
+  #   Age %in% 65:150 ~ "65+",
+  # )) %>%
+  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
+  mutate(geslacht = case_when(
+    Gender == 1 ~"1",
+    Gender == 2 ~"2",
+    T ~ NA_character_
+  )) %>% 
+  mutate(Education = EducationR) %>% 
+  mutate(Education = fct_relevel(Education, c("Low", "Middle", "High"))) %>% 
+  recode_survey()
 
 
 
@@ -112,6 +262,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
     
     media_rec_ages <- fin %>%
       gather(key, value,-thevar, -weight_var) %>%
+      mutate(value = as.numeric(value)) %>% 
       mutate(
         value = case_when(
           value %in% range1 ~ categories_dat[3],
@@ -121,16 +272,19 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
       ) %>%
       count(key, thevar, value, wt = weight_var) %>%
       group_by(key, thevar) %>%
-      mutate(perc = n / sum(n) * 100) %>%
-      ungroup()
+      mutate(perc = n / sum(n) * 100, total = sum(n)) %>%
+      ungroup() %>% 
+      drop_na()
   } else {
     fin <<- data %>% 
       select(vars, weight_var) %>% 
+      
       drop_na() %>% 
       set_names(var_labels, "weight_var")
     
     media_rec <<- fin %>% 
       gather(key, value, -weight_var) %>% 
+      mutate(value = as.numeric(value)) %>% 
       mutate(value = case_when(
         value %in% range1 ~ categories_dat[3],
         value %in% range2 ~ categories_dat[2],
@@ -141,8 +295,9 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
       ungroup()  %>%
       mutate(value = fct_relevel(value, categories_dat)) %>%
       group_by(key) %>%
-      mutate(perc = n/sum(n)*100) %>%
-      ungroup()
+      mutate(perc = n/sum(n)*100, total = sum(n)) %>%
+      ungroup() %>% 
+      drop_na()
     
     theorder <<- media_rec %>% 
       filter(value == categories_dat[3]) %>% 
@@ -161,7 +316,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
         hc <- media_rec_ages %>%
           filter(key == .x) %>%
           mutate(value = fct_relevel(value, categories_dat)) %>%
-          hchart("bar", hcaes(x = thevar, y = perc, group = value)) %>%
+          hchart("bar", hcaes(x = thevar, y = perc, group = value, custom = n, totalCount = total)) %>%
           hc_title(text = .x) %>%
           hc_chart(style = list(width = "100%", height = "100%"))  %>% 
           hc_plotOptions(bar = list(stacking = "percent")) %>%
@@ -174,7 +329,10 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
               colorByPoint = TRUE
             ),
             series = list(
-              tooltip = list(pointFormat = '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}%</b><br/>'),
+              tooltip = list(
+                useHTML = TRUE,
+                pointFormat = '<div style="min-width:220px"><div style="font-weight:600;margin-bottom:4px">{point.category}</div><div>{series.name}: <b>{point.y:.1f}%</b><br/><small>({point.custom:.0f} of {point.totalCount:.0f} respondents)</small></div></div>'
+              ),
               dataLabels = list(
                 enabled = TRUE,
                 format = '{y:.0f}%',
@@ -222,7 +380,7 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
     hc <- media_rec %>%
       mutate(key = fct_relevel(key, theorder)) %>%
       arrange(key) %>%
-      hchart("bar", hcaes(x = key, y = perc, group = value))  %>%
+      hchart("bar", hcaes(x = key, y = perc, group = value, custom = n, totalCount = total))  %>%
       hc_colors(colors) %>%
       hc_xAxis(title = list(text = "")) %>%
       hc_legend(enabled = TRUE) %>%
@@ -231,7 +389,10 @@ viz_general <- function(vars, var_labels, categories_dat, grpvar = NULL, groups 
           colorByPoint = TRUE
         ),
         series = list(
-          tooltip = list(pointFormat = '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y:.2f}%</b><br/>'),
+          tooltip = list(
+            useHTML = TRUE,
+            pointFormat = '<div style="min-width:220px"><div style="font-weight:600;margin-bottom:4px">{point.category}</div><div>{series.name}: <b>{point.y:.1f}%</b><br/><small>({point.custom:.0f} of {point.totalCount:.0f} respondents)</small></div></div>'
+          ),
           dataLabels = list(
             enabled = TRUE,
             format = '{y:.0f}%',
