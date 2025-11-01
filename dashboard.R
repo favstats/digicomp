@@ -1,0 +1,150 @@
+# This is the showcase dashboard
+
+library(tidyverse)
+library(dashboardr)
+
+# Load GSS data for realistic examples
+data(gss_panel20, package = "gssr")
+gss_clean <- gss_panel20 %>%
+  select(
+    age_1a, sex_1a, degree_1a, region_1a,
+    happy_1a, trust_1a, fair_1a, helpful_1a,
+    polviews_1a, partyid_1a, class_1a
+  ) %>%
+  filter(if_any(everything(), ~ !is.na(.)))
+
+# Create visualizations using examples from stackedbar_vignette.Rmd
+analysis_vizzes <- create_viz() %>%
+  # First tabset: Demographics (2 visualizations)
+  add_viz(type = "stackedbar",
+          x_var = "degree_1a",
+          stack_var = "happy_1a",
+          title = "Happiness Distribution Across Education Levels",
+          subtitle = "Percentage breakdown within each education category",
+          x_label = "Education Level",
+          y_label = "Percentage of Respondents",
+          stack_label = "Happiness Level",
+          stacked_type = "percent",
+          x_order = c("Lt High School", "High School", "Junior College", "Bachelor", "Graduate"),
+          stack_order = c("Very Happy", "Pretty Happy", "Not Too Happy"),
+          tooltip_suffix = "%",
+          color_palette = c("#2E86AB", "#A23B72", "#F18F01"),
+          text = "How happy are you with your life right now?",
+          text_position = "above",
+          icon = "ph:chart-bar",
+          height = 500,
+          tabgroup = "demographics") %>%
+  add_viz(type = "stackedbar",
+          x_var = "sex_1a",
+          stack_var = "happy_1a",
+          title = "Happiness Distribution by Gender",
+          subtitle = "Gender differences in reported happiness levels",
+          x_label = "Gender",
+          y_label = "Percentage of Respondents",
+          stack_label = "Happiness Level",
+          stacked_type = "percent",
+          stack_order = c("Very Happy", "Pretty Happy", "Not Too Happy"),
+          tooltip_suffix = "%",
+          color_palette = c("#2E86AB", "#A23B72", "#F18F01"),
+          text = "How happy are you with your life right now?",
+          text_position = "below",
+          icon = "ph:gender-intersex",
+          height = 450,
+          tabgroup = "demographics") %>%
+  # Second tabset: Politics (3 visualizations)
+  add_viz(type = "stackedbar",
+          x_var = "polviews_1a",
+          stack_var = "partyid_1a",
+          title = "Party ID by Political Views",
+          subtitle = "Distribution of party identification across political ideology",
+          x_label = "Political Views",
+          y_label = "Percentage of Respondents",
+          stack_label = "Party ID",
+          stacked_type = "percent",
+          tooltip_suffix = "%",
+          color_palette = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"),
+          text = "This shows how party identification aligns with political ideology.",
+          text_position = "above",
+          icon = "ph:users-three",
+          height = 550,
+          tabgroup = "politics") %>%
+  add_viz(type = "stackedbar",
+          x_var = "region_1a",
+          stack_var = "trust_1a",
+          title = "Trust Levels by US Region",
+          subtitle = "Regional variation in interpersonal trust",
+          x_label = "US Region",
+          y_label = "Percentage of Respondents",
+          stack_label = "Trust Level",
+          stack_order = c("Can Trust", "Can't Be Too Careful", "Depends"),
+          stacked_type = "percent",
+          tooltip_suffix = "%",
+          color_palette = c("#2E8B57", "#DAA520", "#CD5C5C"),
+          text = "Do you think you can usually trust strangers?",
+          text_position = "below",
+          icon = "ph:map-pin",
+          height = 500,
+          tabgroup = "politics") %>%
+  add_viz(type = "stackedbar",
+          x_var = "class_1a",
+          stack_var = "sex_1a",
+          title = "Gender Distribution Across Social Classes",
+          subtitle = "With custom labels and ordering",
+          x_label = "Self-Reported Social Class",
+          y_label = "Number of Respondents",
+          stack_label = "Gender",
+          x_order = c("Lower Class", "Working Class", "Middle Class", "Upper Class"),
+          stack_order = c("Female", "Male"),
+          stacked_type = "normal",
+          tooltip_prefix = "Count: ",
+          color_palette = c("#E07A5F", "#3D5A80"),
+          text = "Gender distribution across different social class categories.",
+          text_position = "above",
+          icon = "ph:chart-pie",
+          height = 450,
+          tabgroup = "politics") %>%
+  # Third tabset: Social Issues (2 visualizations)
+  add_viz(type = "heatmap",
+          x_var = "degree_1a",
+          y_var = "age_1a",
+          value_var = "trust_1a",
+          title = "Trust by Education and Age",
+          subtitle = "Average trust levels across education and age groups",
+          x_label = "Education Level",
+          y_label = "Age Group",
+          value_label = "Trust Level",
+          x_order = c("Lt High School", "High School", "Junior College", "Bachelor", "Graduate"),
+          color_palette = c("#d7191c", "#fdae61", "#ffffbf", "#abdda4", "#2b83ba"),
+          tooltip_prefix = "Trust: ",
+          tooltip_suffix = "/3",
+          data_labels_format = "{point.value:.2f}",
+          text = "This heatmap reveals trust patterns across education and age groups.",
+          text_position = "below",
+          icon = "ph:heatmap",
+          height = 600,
+          tabgroup = "social") %>%
+  add_viz(type = "heatmap",
+          x_var = "region_1a",
+          y_var = "degree_1a",
+          value_var = "trust_1a",
+          title = "Trust by Region and Education",
+          subtitle = "Educational and regional patterns in trust levels",
+          x_label = "Region",
+          y_label = "Education Level",
+          value_label = "Trust Level",
+          y_order = c("Lt High School", "High School", "Junior College", "Bachelor", "Graduate"),
+          color_palette = c("#d7191c", "#fdae61", "#ffffbf", "#abdda4", "#2b83ba"),
+          tooltip_prefix = "Trust: ",
+          tooltip_suffix = "/3",
+          data_labels_format = "{point.value:.2f}",
+          text = "Educational and regional patterns in trust distribution.",
+          text_position = "above",
+          icon = "ph:chart-pie",
+          height = 550,
+          tabgroup = "social") %>%
+  # Set custom tab group labels
+  set_tabgroup_labels(list(
+    demographics = "Demographics & Education",
+    politics = "Political Attitudes",
+    social = "Social Issues"
+  ))
