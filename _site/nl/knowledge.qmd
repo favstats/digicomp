@@ -177,6 +177,26 @@ viz_general("MeanKnowledge",
 
 ```
 
+```{r}
+library(dashboardr)
+
+# create_bar automatically bins the scores!
+create_bar(
+  data = data,
+  x_var = "MeanKnowledge",                      # Raw numeric variable
+  x_breaks = c(1, 10, 20, 30),          # Bin edges
+  x_bin_labels = c("Low (1-9)", "Middle (10-19)", "High (20-29)"),
+  horizontal = TRUE,
+  # bar_type = "percent",
+  color_palette = c("#D2691E", "#4682B4", "#228B22"),
+  x_order = c("Low (1-9)", "Middle (10-19)", "High (20-29)")
+)
+
+
+```
+
+
+
 ## Op Leeftijd 
 
 ::: {.panel-tabset}
@@ -191,6 +211,9 @@ viz_general("MeanKnowledge",
             T,
             weight_var = "weging_GAMO", range1 = 1:9,range2 = 10:19,range3=20:29)
 
+
+data %>% 
+  count(MeanKnowledge)
 ```
 
 
@@ -255,8 +278,8 @@ viz_general(vecc("CONF", 1:8),
 
 
 # {{< iconify fluent-emoji-high-contrast detective >}} Strategic Information Skills {.tabset .tabset-fade .tabset-pills .break}
-<blockquote class="question-text">
 
+<blockquote class="question-text">
 The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.
 </blockquote>
 
