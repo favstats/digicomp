@@ -3,9 +3,15 @@ title: "{{< iconify ph target >}} Highlights"
 format: html
 ---
 
-**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
+If you’ve spent time around anyone under 25 lately, you’ve probably heard phrases like “I’ll just ask Chat” or “ChatGPT can do that faster.” Generative AI tools have quickly become part of everyday life for young people in the Netherlands. Whether for homework, social media posts, or just curiosity, Gen Z and even Gen Alpha are driving the adoption of these technologies at an astonishing pace.
 
-Here we can show some amazing highlights from the data.
+The flood of AI-generated images, videos, and memes means it’s almost impossible to grow up today without encountering artificial intelligence. For many, AI isn’t a futuristic concept: it’s a daily companion. Young people now turn to tools like ChatGPT for information, writing help, and even casual conversation. This has been documented in the [Dutch AI Opinion Monitor](https://monitor.algosoc.nl/engagement.html), which shows that young people are the fastest adopters of this technology.
+
+
+## The Confidence Boom
+Our latest survey reflects this cultural shift. When asked how confident they felt using prompts to get useful responses from ChatGPT, a striking **71.2% of 16–25-year-olds** said they were confident. Even among those aged **10–15**, more than **half (54.4%)** expressed confidence in their ability to prompt AI effectively.
+
+In other words, pre-teens today feel just as capable of “talking to AI” as many highly educated professionals in their thirties and forties. This growing sense of mastery highlights how intuitively young people adapt to new technologies. But confidence isn’t the same as competence.
 
 ```{r setup}
 #| echo: false
@@ -36,5 +42,842 @@ data <- readRDS('dataset_4268obs.rds')
 # Data summary
 cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+
 ```
+
+## genai
+
+
+::: {.panel-tabset}
+
+### wave1
+
+
+::: {.panel-tabset}
+
+##### overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
+```
+
+```{r genai-wave1-overall-2}
+# GenAI Skills
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(SGAI1, SGAI2, SGAI3),
+  title = "GenAI Skills",
+  questions = c("SGAI1", "SGAI2", "SGAI3"),
+  question_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.", "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"),
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### age
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-wave1-age-item1-2}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SGAI1),
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-wave1-age-item2-2}
+# I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SGAI2),
+  title = "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-wave1-age-item3-2}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SGAI3),
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### gender
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-wave1-gender-item1-2}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SGAI1),
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-wave1-gender-item2-2}
+# I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SGAI2),
+  title = "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-wave1-gender-item3-2}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SGAI3),
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### edu
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-wave1-edu-item1-2}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SGAI1),
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-wave1-edu-item2-2}
+# I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SGAI2),
+  title = "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-wave1-edu-item3-2}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SGAI3),
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### wave2
+
+
+::: {.panel-tabset}
+
+##### overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
+```
+
+```{r genai-wave2-overall-2}
+# GenAI Skills
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SGAI1, SGAI2, SGAI3),
+  title = "GenAI Skills",
+  questions = c("SGAI1", "SGAI2", "SGAI3"),
+  question_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.", "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"),
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### age
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-wave2-age-item1-2}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI1),
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-wave2-age-item2-2}
+# I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI2),
+  title = "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-wave2-age-item3-2}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI3),
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### gender
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-wave2-gender-item1-2}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI1),
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-wave2-gender-item2-2}
+# I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI2),
+  title = "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-wave2-gender-item3-2}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI3),
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### edu
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-wave2-edu-item1-2}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI1),
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-wave2-edu-item2-2}
+# I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI2),
+  title = "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-wave2-edu-item3-2}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI3),
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### overtime
+
+
+::: {.panel-tabset}
+
+##### overall
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-overtime-overall-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SGAI1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-overtime-overall-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SGAI2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-overtime-overall-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### age
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-overtime-age-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-overtime-age-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-overtime-age-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### gender
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-overtime-gender-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-overtime-gender-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-overtime-gender-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### edu
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r genai-overtime-edu-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r genai-overtime-edu-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r genai-overtime-edu-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SGAI3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
 

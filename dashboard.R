@@ -6,6 +6,10 @@ library(dashboardr)
 ## TODO in dimension Skills, Performance, and Knowledge aggegration?
 ## TODO in Dimsension also over time?
 ## TODO add by survey type?? 
+## TODO create timeline and stackedbar dont create the same value!
+## TODO pimp the graphs??
+## TODO mix between text and graphs needs to be possible!
+## TODO: Knowledge question seem perhaps incorrect and are missing sometimes across waves
 
 recode_survey <- function(df) {
   
@@ -113,7 +117,6 @@ recode_survey <- function(df) {
   df
 }
 
-## TODO: Knowledge question seem perhaps incorrect and are missing sometimes across waves
 
 data_w1 <- read_csv2("data/DigCom24CompleteWithWeights.csv") %>% #table()
   # mutate(AgeGroup = case_when(
@@ -127,8 +130,8 @@ data_w1 <- read_csv2("data/DigCom24CompleteWithWeights.csv") %>% #table()
   # )) %>%
   mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
   mutate(geslacht = case_when(
-    geslacht == 1 ~"1",
-    geslacht == 2 ~"2",
+    geslacht == 1 ~"Male",
+    geslacht == 2 ~"Female",
     T ~ NA_character_
   )) %>% 
   mutate(Education = EducationR) %>% 
@@ -147,8 +150,8 @@ data <- read_csv2("data/DigCom25CompleteWithWeights.csv") %>% #table()
   # )) %>%
   mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
   mutate(geslacht = case_when(
-    Gender == 1 ~"1",
-    Gender == 2 ~"2",
+    Gender == 1 ~"Male",
+    Gender == 2 ~"Female",
     T ~ NA_character_
   )) %>% 
   mutate(Education = EducationR) %>% 
@@ -193,7 +196,9 @@ digicom_data <- data %>%
   # mutate_at(vars(Sample, Time, QR, PSCS3_1), as.character) %>% 
   smart_bind_rows(data_w1 %>% 
               mutate(wave = 1)) %>% 
-  mutate_at(vars(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PDHWS1_1, PDHWS1_3), as.numeric)
+  mutate_at(vars(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PDHWS1_1, PDHWS1_3), as.numeric) %>% 
+  mutate(wave_time_label = ifelse(wave == 1, "Wave 1", "Wave 2")) %>% 
+  mutate(wave_time_label = factor(wave_time_label, levels = c("Wave 1", "Wave 2")))
 
 std.error <- function(x) sd(x, na.rm =T)/sqrt(length(x))
 
@@ -343,7 +348,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   # Over Time Overall (timeline without group_var)
   sis_subvizzes_time <- create_viz(
     type = "timeline",
-    time_var = "wave",
+    time_var = "wave_time_label",
     chart_type = "line",
     response_filter = 4:5, 
     response_filter_label = NULL
@@ -387,7 +392,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   # Over Time by Age/Gender/Education
   sis_subvizzes3 <- create_viz(
     type = "timeline",
-    time_var = "wave",
+    time_var = "wave_time_label",
     chart_type = "line",
     response_filter = high_values, 
     response_filter_label = NULL,
@@ -446,7 +451,7 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   # Over Time Overall (timeline without group_var)
   sis_subvizzes_time <- create_viz(
     type = "timeline",
-    time_var = "wave",
+    time_var = "wave_time_label",
     chart_type = "line",
     response_filter = 4:5, 
     response_filter_label = NULL,
@@ -493,7 +498,7 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   # Over Time by Age/Gender/Education
   sis_subvizzes3 <- create_viz(
     type = "timeline",
-    time_var = "wave",
+    time_var = "wave_time_label",
     chart_type = "line",
     response_filter = high_values, 
     response_filter_label = NULL,
@@ -631,7 +636,7 @@ knowledge_subvizzes_wave2 <- create_viz(
 # Over Time - Overall (timeline without group_var)
 knowledge_overtime_overall <- create_viz(
   type = "timeline",
-  time_var = "wave",
+  time_var = "wave_time_label",
   chart_type = "line",
   response_var = "MeanKnowledge",
   response_breaks = knowledge_breaks,  # Bin the knowledge scores
@@ -647,7 +652,7 @@ knowledge_overtime_overall <- create_viz(
 # Over Time - by demographics (timeline with group_var)
 knowledge_overtime_demographics <- create_viz(
   type = "timeline",
-  time_var = "wave",
+  time_var = "wave_time_label",
   chart_type = "line",
   response_var = "MeanKnowledge",
   response_breaks = knowledge_breaks,
@@ -1634,7 +1639,7 @@ dashboard <- create_dashboard(
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
-      "Je kunt algemene trends onderzoeken in de verschillende secties, met de mogelijkheid om te differentiëren naar leeftijd, geslacht, opleidingsniveau en politieke voorkeur."
+      "The **Skills** section measures participants’ *self-assessed ability* to perform a wide range of digital tasks. These items capture how confident people feel doing things like searching for information, creating content, protecting their privacy, or recognizing when AI is being used. The questions cover different domains of digital competence, from information and communication skills to AI and generative AI skills, and together provide insight into participants’ everyday digital capabilities and confidence levels."
     )
   ) %>%
   add_page(
@@ -1646,7 +1651,7 @@ dashboard <- create_dashboard(
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
-      "Je kunt algemene trends onderzoeken in de verschillende secties, met de mogelijkheid om te differentiëren naar leeftijd, geslacht, opleidingsniveau en politieke voorkeur."
+      "The **Performance** section measures participants’ practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today’s digital environment."
     )
   ) %>%
   # Analysis page with data and visualizations
@@ -1659,20 +1664,28 @@ dashboard <- create_dashboard(
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
-      "Je kunt algemene trends onderzoeken in de verschillende secties, met de mogelijkheid om te differentiëren naar leeftijd, geslacht, opleidingsniveau en politieke voorkeur."
+      "The **Knowledge** section measures what participants *know* about the digital world: how it works, what risks it involves, and how different technologies affect everyday life. These items test factual understanding across topics such as information reliability, communication and privacy, online safety, AI, and generative AI. Respondents indicate whether each statement is true or false (or if they don’t know), allowing us to assess their level of digital literacy and awareness beyond self-perceived skills."
     )
   ) %>%
   # Analysis page with data and visualizations
   add_page(
     name = "Highlights",
     data = digicom_data,
-    icon = "ph:target",
+    icon = "ph:target", 
+    visualizations = genai_viz,
     text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "Here we can show some amazing highlights from the data."
+      "If you’ve spent time around anyone under 25 lately, you’ve probably heard phrases like “I’ll just ask Chat” or “ChatGPT can do that faster.” Generative AI tools have quickly become part of everyday life for young people in the Netherlands. Whether for homework, social media posts, or just curiosity, Gen Z and even Gen Alpha are driving the adoption of these technologies at an astonishing pace.",
+"",
+"The flood of AI-generated images, videos, and memes means it’s almost impossible to grow up today without encountering artificial intelligence. For many, AI isn’t a futuristic concept: it’s a daily companion. Young people now turn to tools like ChatGPT for information, writing help, and even casual conversation. This has been documented in the [Dutch AI Opinion Monitor](https://monitor.algosoc.nl/engagement.html), which shows that young people are the fastest adopters of this technology.
+",
+"",
+"## The Confidence Boom",
+
+"Our latest survey reflects this cultural shift. When asked how confident they felt using prompts to get useful responses from ChatGPT, a striking **71.2% of 16–25-year-olds** said they were confident. Even among those aged **10–15**, more than **half (54.4%)** expressed confidence in their ability to prompt AI effectively.",
+"",
+"In other words, pre-teens today feel just as capable of “talking to AI” as many highly educated professionals in their thirties and forties. This growing sense of mastery highlights how intuitively young people adapt to new technologies. But confidence isn’t the same as competence."
     )
-  )  %>%
+)%>%
   # Analysis page with data and visualizations
   add_page(
     name = "Strategic Information",
