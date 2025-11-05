@@ -1,5 +1,5 @@
 ---
-title: "{{< iconify ph chart-line >}} Knowledge"
+title: "{{< iconify ph book-open-fill >}} Knowledge"
 format: html
 ---
 
@@ -55,23 +55,300 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Creative Skills Knowledge
+
+```{=html}
+
+<style>
+/* Chart Lazy Loading Styles */
+.chart-lazy {
+  position: relative;
+  min-height: 400px;
+  margin: 1rem 0;
+}
+
+.chart-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.chart-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.chart-loading-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Theme: Light */
+.chart-skeleton.theme-light {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart-skeleton.theme-light .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.2);
+  border-top-color: rgba(15, 23, 42, 0.8);
+}
+
+.chart-skeleton.theme-light .chart-loading-text {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+/* Theme: Glass */
+.chart-skeleton.theme-glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.chart-skeleton.theme-glass .chart-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(15, 23, 42, 0.7);
+}
+
+.chart-skeleton.theme-glass .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+
+/* Theme: Dark */
+.chart-skeleton.theme-dark {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chart-skeleton.theme-dark .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+
+.chart-skeleton.theme-dark .chart-loading-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Theme: Accent */
+.chart-skeleton.theme-accent {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+.chart-skeleton.theme-accent .chart-spinner {
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: rgba(59, 130, 246, 0.9);
+}
+
+.chart-skeleton.theme-accent .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+</style>
+
+<script>
+// Chart Lazy Loading System
+(function() {
+  const THEME = 'light';
+  const DEBUG = false;
+  
+  // Track which charts have been initialized
+  const initializedCharts = new Set();
+  
+  // Queue of charts waiting to be initialized
+  const chartQueue = [];
+  let isProcessingQueue = false;
+  
+  // Performance tracking
+  let totalChartsLoaded = 0;
+  let totalLoadTime = 0;
+  const chartTimings = [];
+  
+  // Create skeleton loader dynamically
+  function createSkeleton(container) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'chart-skeleton theme-' + THEME;
+    skeleton.innerHTML = `
+      <div class="chart-spinner"></div>
+      <div class="chart-loading-text">Loading visualization...</div>
+    `;
+    container.appendChild(skeleton);
+    return skeleton;
+  }
+  
+  // Initialize a single chart
+  function initChart(container) {
+    const chartId = container.id;
+    if (initializedCharts.has(chartId)) return;
+    
+    const startTime = DEBUG ? performance.now() : 0;
+    
+    initializedCharts.add(chartId);
+    container.dataset.loaded = 'true';
+    
+    // Remove skeleton loader
+    const skeleton = container.querySelector('.chart-skeleton');
+    if (skeleton) {
+      skeleton.style.opacity = '0';
+      setTimeout(() => skeleton.remove(), 300);
+    }
+    
+    // Trigger Highcharts reflow if present
+    setTimeout(() => {
+      if (window.Highcharts) {
+        Highcharts.charts.forEach(chart => {
+          if (chart && chart.reflow) chart.reflow();
+        });
+      }
+      
+      // Debug logging
+      if (DEBUG) {
+        const loadTime = performance.now() - startTime;
+        totalChartsLoaded++;
+        totalLoadTime += loadTime;
+        chartTimings.push({ id: chartId, time: loadTime });
+        
+        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
+        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+      }
+    }, 50);
+  }
+  
+  // Process chart queue in batches
+  function processQueue() {
+    if (isProcessingQueue || chartQueue.length === 0) return;
+    
+    isProcessingQueue = true;
+    const batchSize = 3;
+    const batch = chartQueue.splice(0, batchSize);
+    
+    if (DEBUG) {
+      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
+    }
+    
+    batch.forEach(container => initChart(container));
+    
+    if (chartQueue.length > 0) {
+      requestIdleCallback(() => {
+        isProcessingQueue = false;
+        processQueue();
+      }, { timeout: 2000 });
+    } else {
+      isProcessingQueue = false;
+      
+      if (DEBUG && totalChartsLoaded > 0) {
+        console.log(`✅ All charts loaded! Summary:`);
+        console.log(`   Total charts: ${totalChartsLoaded}`);
+        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
+        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+      }
+    }
+  }
+  
+  // Intersection Observer for scroll-based lazy loading
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
+        chartQueue.push(entry.target);
+        observer.unobserve(entry.target);
+        processQueue();
+      }
+    });
+  }, { rootMargin: '300px' });
+  
+  // Initialize observers when DOM is ready
+  function initLazyLoading() {
+    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
+      // Create skeleton for each lazy chart
+      createSkeleton(container);
+      // Start observing
+      observer.observe(container);
+    });
+  }
+  
+  // Tab-aware rendering: load charts when tab becomes visible
+  function initTabAwareLoading() {
+    document.querySelectorAll('.panel-tabset').forEach(tabset => {
+      const tabs = tabset.querySelectorAll('[role="tab"]');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          setTimeout(() => {
+            const targetId = this.getAttribute('aria-controls');
+            if (!targetId) return;
+            
+            const targetPanel = document.getElementById(targetId);
+            if (!targetPanel) return;
+            
+            // Initialize any lazy charts in this tab
+            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
+            lazyCharts.forEach(chart => {
+              chartQueue.push(chart);
+              observer.unobserve(chart);
+            });
+            processQueue();
+          }, 50);
+        });
+      });
+    });
+  }
+  
+  // Start lazy loading when document is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      initLazyLoading();
+      initTabAwareLoading();
+    });
+  } else {
+    initLazyLoading();
+    initTabAwareLoading();
+  }
+})();
+</script>
+
+```
+
+## {{< iconify ph palette-fill >}} Digital Content Creation
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)
 
 ```{r kcrea-wave1-overall}
 # 
@@ -81,7 +358,7 @@ result <- create_stackedbars(
   questions = c("KCrea2RC", "KCrea3RC"),
   question_labels = c("Some people are paid to use products in the videos they make.", "You can change and share existing videos, as long as you do not make money by doing it."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -96,12 +373,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-wave1-age-item1}
@@ -115,7 +392,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KCrea2RC"
@@ -125,7 +402,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-wave1-age-item2}
@@ -139,7 +416,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KCrea3RC"
@@ -152,12 +429,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-wave1-gender-item1}
@@ -171,7 +448,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KCrea2RC"
@@ -181,7 +458,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-wave1-gender-item2}
@@ -195,7 +472,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KCrea3RC"
@@ -208,12 +485,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-wave1-edu-item1}
@@ -227,7 +504,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KCrea2RC"
@@ -237,7 +514,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-wave1-edu-item2}
@@ -251,7 +528,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KCrea3RC"
@@ -267,18 +544,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)
 
 ```{r kcrea-wave2-overall}
 # 
@@ -288,7 +569,7 @@ result <- create_stackedbars(
   questions = c("KCrea2RC", "KCrea3RC"),
   question_labels = c("Some people are paid to use products in the videos they make.", "You can change and share existing videos, as long as you do not make money by doing it."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -303,12 +584,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-wave2-age-item1}
@@ -322,7 +603,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KCrea2RC"
@@ -332,7 +613,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-wave2-age-item2}
@@ -346,7 +627,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KCrea3RC"
@@ -359,12 +640,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-wave2-gender-item1}
@@ -378,7 +659,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KCrea2RC"
@@ -388,7 +669,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-wave2-gender-item2}
@@ -402,7 +683,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KCrea3RC"
@@ -415,12 +696,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-wave2-edu-item1}
@@ -434,7 +715,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KCrea2RC"
@@ -444,7 +725,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-wave2-edu-item2}
@@ -458,7 +739,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KCrea3RC"
@@ -474,17 +755,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-overtime-overall-item1}
@@ -504,7 +791,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-overtime-overall-item2}
@@ -527,12 +814,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-overtime-age-item1}
@@ -553,7 +840,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-overtime-age-item2}
@@ -577,12 +864,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-overtime-gender-item1}
@@ -603,7 +890,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-overtime-gender-item2}
@@ -627,12 +914,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kcrea-overtime-edu-item1}
@@ -653,7 +940,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kcrea-overtime-edu-item2}
@@ -682,23 +969,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Safety & Control of Devices Knowledge
+
+:::
+
+## {{< iconify ph shield-check-fill >}} Safety
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r ksafety-wave1-overall}
 # 
@@ -708,7 +999,7 @@ result <- create_stackedbars(
   questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
   question_labels = c("To keep your devices safer, you should always install updates immediately.", "It's best to have the same password for each account.", "What you do online is used by companies to advertise their products and services."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -723,12 +1014,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-wave1-age-item1}
@@ -742,7 +1033,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KSafDev2RC"
@@ -752,7 +1043,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-wave1-age-item2}
@@ -766,7 +1057,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KPriv1RC"
@@ -776,7 +1067,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-wave1-age-item3}
@@ -790,7 +1081,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KPriv2RC"
@@ -803,12 +1094,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-wave1-gender-item1}
@@ -822,7 +1113,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KSafDev2RC"
@@ -832,7 +1123,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-wave1-gender-item2}
@@ -846,7 +1137,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KPriv1RC"
@@ -856,7 +1147,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-wave1-gender-item3}
@@ -870,7 +1161,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KPriv2RC"
@@ -883,12 +1174,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-wave1-edu-item1}
@@ -902,7 +1193,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KSafDev2RC"
@@ -912,7 +1203,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-wave1-edu-item2}
@@ -926,7 +1217,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KPriv1RC"
@@ -936,7 +1227,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-wave1-edu-item3}
@@ -950,7 +1241,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KPriv2RC"
@@ -966,18 +1257,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r ksafety-wave2-overall}
 # 
@@ -987,7 +1282,7 @@ result <- create_stackedbars(
   questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
   question_labels = c("To keep your devices safer, you should always install updates immediately.", "It's best to have the same password for each account.", "What you do online is used by companies to advertise their products and services."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1002,12 +1297,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-wave2-age-item1}
@@ -1021,7 +1316,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KSafDev2RC"
@@ -1031,7 +1326,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-wave2-age-item2}
@@ -1045,7 +1340,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KPriv1RC"
@@ -1055,7 +1350,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-wave2-age-item3}
@@ -1069,7 +1364,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KPriv2RC"
@@ -1082,12 +1377,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-wave2-gender-item1}
@@ -1101,7 +1396,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KSafDev2RC"
@@ -1111,7 +1406,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-wave2-gender-item2}
@@ -1125,7 +1420,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KPriv1RC"
@@ -1135,7 +1430,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-wave2-gender-item3}
@@ -1149,7 +1444,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KPriv2RC"
@@ -1162,12 +1457,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-wave2-edu-item1}
@@ -1181,7 +1476,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KSafDev2RC"
@@ -1191,7 +1486,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-wave2-edu-item2}
@@ -1205,7 +1500,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KPriv1RC"
@@ -1215,7 +1510,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-wave2-edu-item3}
@@ -1229,7 +1524,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KPriv2RC"
@@ -1245,17 +1540,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-overtime-overall-item1}
@@ -1275,7 +1576,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-overtime-overall-item2}
@@ -1295,7 +1596,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-overtime-overall-item3}
@@ -1318,12 +1619,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-overtime-age-item1}
@@ -1344,7 +1645,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-overtime-age-item2}
@@ -1365,7 +1666,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-overtime-age-item3}
@@ -1389,12 +1690,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-overtime-gender-item1}
@@ -1415,7 +1716,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-overtime-gender-item2}
@@ -1436,7 +1737,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-overtime-gender-item3}
@@ -1460,12 +1761,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ksafety-overtime-edu-item1}
@@ -1486,7 +1787,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ksafety-overtime-edu-item2}
@@ -1507,7 +1808,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r ksafety-overtime-edu-item3}
@@ -1536,23 +1837,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Health & Wellbeing Knowledge
+
+:::
+
+## {{< iconify ph heart-fill >}} Digital Health
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
 
 ```{r khealth-wave1-overall}
 # 
@@ -1562,7 +1867,7 @@ result <- create_stackedbars(
   questions = c("KHealth2RC", "KHealth3RC"),
   question_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible.", "You sleep worse if you use a smartphone or computer just before you go to bed."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1577,12 +1882,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-wave1-age-item1}
@@ -1596,7 +1901,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KHealth2RC"
@@ -1606,7 +1911,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-wave1-age-item2}
@@ -1620,7 +1925,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KHealth3RC"
@@ -1633,12 +1938,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-wave1-gender-item1}
@@ -1652,7 +1957,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KHealth2RC"
@@ -1662,7 +1967,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-wave1-gender-item2}
@@ -1676,7 +1981,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KHealth3RC"
@@ -1689,12 +1994,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-wave1-edu-item1}
@@ -1708,7 +2013,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KHealth2RC"
@@ -1718,7 +2023,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-wave1-edu-item2}
@@ -1732,7 +2037,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KHealth3RC"
@@ -1748,18 +2053,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
 
 ```{r khealth-wave2-overall}
 # 
@@ -1769,7 +2078,7 @@ result <- create_stackedbars(
   questions = c("KHealth2RC", "KHealth3RC"),
   question_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible.", "You sleep worse if you use a smartphone or computer just before you go to bed."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1784,12 +2093,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-wave2-age-item1}
@@ -1803,7 +2112,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KHealth2RC"
@@ -1813,7 +2122,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-wave2-age-item2}
@@ -1827,7 +2136,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KHealth3RC"
@@ -1840,12 +2149,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-wave2-gender-item1}
@@ -1859,7 +2168,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KHealth2RC"
@@ -1869,7 +2178,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-wave2-gender-item2}
@@ -1883,7 +2192,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KHealth3RC"
@@ -1896,12 +2205,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-wave2-edu-item1}
@@ -1915,7 +2224,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KHealth2RC"
@@ -1925,7 +2234,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-wave2-edu-item2}
@@ -1939,7 +2248,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KHealth3RC"
@@ -1955,17 +2264,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-overtime-overall-item1}
@@ -1985,7 +2300,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-overtime-overall-item2}
@@ -2008,12 +2323,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-overtime-age-item1}
@@ -2034,7 +2349,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-overtime-age-item2}
@@ -2058,12 +2373,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-overtime-gender-item1}
@@ -2084,7 +2399,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-overtime-gender-item2}
@@ -2108,12 +2423,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r khealth-overtime-edu-item1}
@@ -2134,7 +2449,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r khealth-overtime-edu-item2}
@@ -2163,23 +2478,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Green / Sustainable Digital Knowledge
+
+:::
+
+## {{< iconify ph recycle-fill >}} Green Digital
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r kgreen-wave1-overall}
 # 
@@ -2189,7 +2508,7 @@ result <- create_stackedbars(
   questions = c("KEnv2RC", "KEnv3RC"),
   question_labels = c("Phones contain materials that mineworkers extract from mines.", "The amount of data and WiFi you use does not affect CO2-emissions or the climate."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -2204,12 +2523,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-wave1-age-item1}
@@ -2223,7 +2542,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KEnv2RC"
@@ -2233,7 +2552,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-wave1-age-item2}
@@ -2247,7 +2566,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KEnv3RC"
@@ -2260,12 +2579,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-wave1-gender-item1}
@@ -2279,7 +2598,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KEnv2RC"
@@ -2289,7 +2608,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-wave1-gender-item2}
@@ -2303,7 +2622,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KEnv3RC"
@@ -2316,12 +2635,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-wave1-edu-item1}
@@ -2335,7 +2654,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KEnv2RC"
@@ -2345,7 +2664,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-wave1-edu-item2}
@@ -2359,7 +2678,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KEnv3RC"
@@ -2375,18 +2694,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r kgreen-wave2-overall}
 # 
@@ -2396,7 +2719,7 @@ result <- create_stackedbars(
   questions = c("KEnv2RC", "KEnv3RC"),
   question_labels = c("Phones contain materials that mineworkers extract from mines.", "The amount of data and WiFi you use does not affect CO2-emissions or the climate."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -2411,12 +2734,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-wave2-age-item1}
@@ -2430,7 +2753,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KEnv2RC"
@@ -2440,7 +2763,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-wave2-age-item2}
@@ -2454,7 +2777,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KEnv3RC"
@@ -2467,12 +2790,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-wave2-gender-item1}
@@ -2486,7 +2809,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KEnv2RC"
@@ -2496,7 +2819,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-wave2-gender-item2}
@@ -2510,7 +2833,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KEnv3RC"
@@ -2523,12 +2846,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-wave2-edu-item1}
@@ -2542,7 +2865,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KEnv2RC"
@@ -2552,7 +2875,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-wave2-edu-item2}
@@ -2566,7 +2889,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KEnv3RC"
@@ -2582,17 +2905,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-overtime-overall-item1}
@@ -2612,7 +2941,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-overtime-overall-item2}
@@ -2635,12 +2964,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-overtime-age-item1}
@@ -2661,7 +2990,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-overtime-age-item2}
@@ -2685,12 +3014,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-overtime-gender-item1}
@@ -2711,7 +3040,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-overtime-gender-item2}
@@ -2735,12 +3064,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgreen-overtime-edu-item1}
@@ -2761,7 +3090,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgreen-overtime-edu-item2}
@@ -2780,6 +3109,9 @@ result <- create_timeline(
 
 result
 ```
+
+
+:::
 
 
 :::

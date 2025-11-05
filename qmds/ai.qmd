@@ -1,5 +1,5 @@
 ---
-title: "{{< iconify ph brain >}} AI"
+title: "{{< iconify ph robot-fill >}} AI"
 format: html
 ---
 
@@ -10,5 +10,4268 @@ library(dashboardr)
 
 **THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
 
-Here we can show some amazing highlights from the data.
+**AI Skills** assess understanding and recognition of artificial intelligence in everyday applications: recognizing when websites/apps use AI, identifying AI-recommended content, and understanding how AI personalizes digital experiences.
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load required libraries
+library(dashboardr)
+library(dplyr)
+library(highcharter)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data from dataset_4268obs.rds
+data <- readRDS('dataset_4268obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{=html}
+
+<style>
+/* Chart Lazy Loading Styles */
+.chart-lazy {
+  position: relative;
+  min-height: 400px;
+  margin: 1rem 0;
+}
+
+.chart-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.chart-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.chart-loading-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Theme: Light */
+.chart-skeleton.theme-light {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart-skeleton.theme-light .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.2);
+  border-top-color: rgba(15, 23, 42, 0.8);
+}
+
+.chart-skeleton.theme-light .chart-loading-text {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+/* Theme: Glass */
+.chart-skeleton.theme-glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.chart-skeleton.theme-glass .chart-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(15, 23, 42, 0.7);
+}
+
+.chart-skeleton.theme-glass .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+
+/* Theme: Dark */
+.chart-skeleton.theme-dark {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chart-skeleton.theme-dark .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+
+.chart-skeleton.theme-dark .chart-loading-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Theme: Accent */
+.chart-skeleton.theme-accent {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+.chart-skeleton.theme-accent .chart-spinner {
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: rgba(59, 130, 246, 0.9);
+}
+
+.chart-skeleton.theme-accent .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+</style>
+
+<script>
+// Chart Lazy Loading System
+(function() {
+  const THEME = 'light';
+  const DEBUG = false;
+  
+  // Track which charts have been initialized
+  const initializedCharts = new Set();
+  
+  // Queue of charts waiting to be initialized
+  const chartQueue = [];
+  let isProcessingQueue = false;
+  
+  // Performance tracking
+  let totalChartsLoaded = 0;
+  let totalLoadTime = 0;
+  const chartTimings = [];
+  
+  // Create skeleton loader dynamically
+  function createSkeleton(container) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'chart-skeleton theme-' + THEME;
+    skeleton.innerHTML = `
+      <div class="chart-spinner"></div>
+      <div class="chart-loading-text">Loading visualization...</div>
+    `;
+    container.appendChild(skeleton);
+    return skeleton;
+  }
+  
+  // Initialize a single chart
+  function initChart(container) {
+    const chartId = container.id;
+    if (initializedCharts.has(chartId)) return;
+    
+    const startTime = DEBUG ? performance.now() : 0;
+    
+    initializedCharts.add(chartId);
+    container.dataset.loaded = 'true';
+    
+    // Remove skeleton loader
+    const skeleton = container.querySelector('.chart-skeleton');
+    if (skeleton) {
+      skeleton.style.opacity = '0';
+      setTimeout(() => skeleton.remove(), 300);
+    }
+    
+    // Trigger Highcharts reflow if present
+    setTimeout(() => {
+      if (window.Highcharts) {
+        Highcharts.charts.forEach(chart => {
+          if (chart && chart.reflow) chart.reflow();
+        });
+      }
+      
+      // Debug logging
+      if (DEBUG) {
+        const loadTime = performance.now() - startTime;
+        totalChartsLoaded++;
+        totalLoadTime += loadTime;
+        chartTimings.push({ id: chartId, time: loadTime });
+        
+        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
+        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+      }
+    }, 50);
+  }
+  
+  // Process chart queue in batches
+  function processQueue() {
+    if (isProcessingQueue || chartQueue.length === 0) return;
+    
+    isProcessingQueue = true;
+    const batchSize = 3;
+    const batch = chartQueue.splice(0, batchSize);
+    
+    if (DEBUG) {
+      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
+    }
+    
+    batch.forEach(container => initChart(container));
+    
+    if (chartQueue.length > 0) {
+      requestIdleCallback(() => {
+        isProcessingQueue = false;
+        processQueue();
+      }, { timeout: 2000 });
+    } else {
+      isProcessingQueue = false;
+      
+      if (DEBUG && totalChartsLoaded > 0) {
+        console.log(`✅ All charts loaded! Summary:`);
+        console.log(`   Total charts: ${totalChartsLoaded}`);
+        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
+        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+      }
+    }
+  }
+  
+  // Intersection Observer for scroll-based lazy loading
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
+        chartQueue.push(entry.target);
+        observer.unobserve(entry.target);
+        processQueue();
+      }
+    });
+  }, { rootMargin: '200px' });
+  
+  // Initialize observers when DOM is ready
+  function initLazyLoading() {
+    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
+      // Create skeleton for each lazy chart
+      createSkeleton(container);
+      // Start observing
+      observer.observe(container);
+    });
+  }
+  
+  // Tab-aware rendering: load charts when tab becomes visible
+  function initTabAwareLoading() {
+    document.querySelectorAll('.panel-tabset').forEach(tabset => {
+      const tabs = tabset.querySelectorAll('[role="tab"]');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          setTimeout(() => {
+            const targetId = this.getAttribute('aria-controls');
+            if (!targetId) return;
+            
+            const targetPanel = document.getElementById(targetId);
+            if (!targetPanel) return;
+            
+            // Initialize any lazy charts in this tab
+            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
+            lazyCharts.forEach(chart => {
+              chartQueue.push(chart);
+              observer.unobserve(chart);
+            });
+            processQueue();
+          }, 50);
+        });
+      });
+    });
+  }
+  
+  // Start lazy loading when document is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      initLazyLoading();
+      initTabAwareLoading();
+    });
+  } else {
+    initLazyLoading();
+    initTabAwareLoading();
+  }
+})();
+</script>
+
+```
+
+## {{< iconify ph lightning-fill >}} AI Skills
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
+
+```{r ai-wave1-overall-2}
+# AI Skills
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(SAI1, SAI2),
+  title = "AI Skills",
+  questions = c("SAI1", "SAI2"),
+  question_labels = c("I recognize when a website or app uses AI to adjust the content to me.", "I recognize when specific content is recommended to me by AI."),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-wave1-age-item1-2}
+# I recognize when a website or app uses AI to adjust the content to me.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SAI1),
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-wave1-age-item2-2}
+# I recognize when specific content is recommended to me by AI.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SAI2),
+  title = "I recognize when specific content is recommended to me by AI.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SAI2"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-wave1-gender-item1-2}
+# I recognize when a website or app uses AI to adjust the content to me.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SAI1),
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-wave1-gender-item2-2}
+# I recognize when specific content is recommended to me by AI.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SAI2),
+  title = "I recognize when specific content is recommended to me by AI.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SAI2"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-wave1-edu-item1-2}
+# I recognize when a website or app uses AI to adjust the content to me.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SAI1),
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-wave1-edu-item2-2}
+# I recognize when specific content is recommended to me by AI.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SAI2),
+  title = "I recognize when specific content is recommended to me by AI.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SAI2"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
+
+```{r ai-wave2-overall-2}
+# AI Skills
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SAI1, SAI2),
+  title = "AI Skills",
+  questions = c("SAI1", "SAI2"),
+  question_labels = c("I recognize when a website or app uses AI to adjust the content to me.", "I recognize when specific content is recommended to me by AI."),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-wave2-age-item1-2}
+# I recognize when a website or app uses AI to adjust the content to me.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SAI1),
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-wave2-age-item2-2}
+# I recognize when specific content is recommended to me by AI.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SAI2),
+  title = "I recognize when specific content is recommended to me by AI.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SAI2"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-wave2-gender-item1-2}
+# I recognize when a website or app uses AI to adjust the content to me.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SAI1),
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-wave2-gender-item2-2}
+# I recognize when specific content is recommended to me by AI.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SAI2),
+  title = "I recognize when specific content is recommended to me by AI.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SAI2"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-wave2-edu-item1-2}
+# I recognize when a website or app uses AI to adjust the content to me.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SAI1),
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-wave2-edu-item2-2}
+# I recognize when specific content is recommended to me by AI.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SAI2),
+  title = "I recognize when specific content is recommended to me by AI.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SAI2"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-overtime-overall-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-overtime-overall-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SAI2"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-overtime-age-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SAI1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-overtime-age-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SAI2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-overtime-gender-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SAI1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-overtime-gender-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SAI2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ai-overtime-edu-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SAI1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ai-overtime-edu-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SAI2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph book-open-fill >}} AI Knowledge
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
+
+```{r kai-wave1-overall-2}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KAI1RC, KAI2RC, KAI3RC, KAI4RC),
+  title = "",
+  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  question_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI).", "Websites and apps for news and entertainment show the same content to everyone.", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.", "Your online behavior determines what is shown to you on websites and apps for news and entertainment."),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-age-item1-2}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-age-item2-2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-age-item3-2}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-age-item4-2}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-gender-item1-2}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-gender-item2-2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-gender-item3-2}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-gender-item4-2}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-edu-item1-2}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-edu-item2-2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-edu-item3-2}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-edu-item4-2}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
+
+```{r kai-wave2-overall-2}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KAI1RC, KAI2RC, KAI3RC, KAI4RC),
+  title = "",
+  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  question_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI).", "Websites and apps for news and entertainment show the same content to everyone.", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.", "Your online behavior determines what is shown to you on websites and apps for news and entertainment."),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-age-item1-2}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-age-item2-2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-age-item3-2}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-age-item4-2}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-gender-item1-2}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-gender-item2-2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-gender-item3-2}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-gender-item4-2}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-edu-item1-2}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-edu-item2-2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-edu-item3-2}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-edu-item4-2}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-overall-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-overall-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-overall-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-overall-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-age-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-age-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-age-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-age-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-gender-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-gender-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-gender-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-gender-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-edu-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-edu-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-edu-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-edu-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph trophy-fill >}} AI Performance
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
+
+```{r perf-ai-wave1-overall-2}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PAIS2_1, PAIS2_2, PAIS2_3, PAIS2_4, PAIS2_5, PAIS2_6, PAIS2_7, PAIS2_8, PAIS2_9),
+  title = "",
+  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave1-age-item1-2}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave1-age-item2-2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave1-age-item3-2}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave1-age-item4-2}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave1-age-item5-2}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave1-age-item6-2}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave1-age-item7-2}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave1-age-item8-2}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave1-age-item9-2}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave1-gender-item1-2}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave1-gender-item2-2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave1-gender-item3-2}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave1-gender-item4-2}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave1-gender-item5-2}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave1-gender-item6-2}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave1-gender-item7-2}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave1-gender-item8-2}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave1-gender-item9-2}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave1-edu-item1-2}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave1-edu-item2-2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave1-edu-item3-2}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave1-edu-item4-2}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave1-edu-item5-2}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave1-edu-item6-2}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave1-edu-item7-2}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave1-edu-item8-2}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave1-edu-item9-2}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
+
+```{r perf-ai-wave2-overall-2}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PAIS2_1, PAIS2_2, PAIS2_3, PAIS2_4, PAIS2_5, PAIS2_6, PAIS2_7, PAIS2_8, PAIS2_9),
+  title = "",
+  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave2-age-item1-2}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave2-age-item2-2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave2-age-item3-2}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave2-age-item4-2}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave2-age-item5-2}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave2-age-item6-2}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave2-age-item7-2}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave2-age-item8-2}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave2-age-item9-2}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave2-gender-item1-2}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave2-gender-item2-2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave2-gender-item3-2}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave2-gender-item4-2}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave2-gender-item5-2}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave2-gender-item6-2}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave2-gender-item7-2}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave2-gender-item8-2}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave2-gender-item9-2}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave2-edu-item1-2}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave2-edu-item2-2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave2-edu-item3-2}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave2-edu-item4-2}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave2-edu-item5-2}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave2-edu-item6-2}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave2-edu-item7-2}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave2-edu-item8-2}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave2-edu-item9-2}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-overall-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-overall-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-overall-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-overall-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-overall-item5-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-overall-item6-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-overall-item7-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-overall-item8-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-overall-item9-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-age-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-age-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-age-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-age-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-age-item5-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-age-item6-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-age-item7-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-age-item8-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-age-item9-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-gender-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-gender-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-gender-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-gender-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-gender-item5-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-gender-item6-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-gender-item7-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-gender-item8-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-gender-item9-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-edu-item1-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-edu-item2-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-edu-item3-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-edu-item4-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-edu-item5-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-edu-item6-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-edu-item7-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-edu-item8-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-edu-item9-2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+:::
 

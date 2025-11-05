@@ -1,5 +1,5 @@
 ---
-title: "{{< iconify ph chart-line >}} Performance"
+title: "{{< iconify ph clipboard-text >}} Performance"
 format: html
 ---
 
@@ -10,7 +10,7 @@ library(dashboardr)
 
 **THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
 
-The **Performance** section measures participants’ practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today’s digital environment.
+The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment.
 
 ```{r setup}
 #| echo: false
@@ -55,23 +55,300 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Strategic Information Performance
+
+```{=html}
+
+<style>
+/* Chart Lazy Loading Styles */
+.chart-lazy {
+  position: relative;
+  min-height: 400px;
+  margin: 1rem 0;
+}
+
+.chart-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.chart-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.chart-loading-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Theme: Light */
+.chart-skeleton.theme-light {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart-skeleton.theme-light .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.2);
+  border-top-color: rgba(15, 23, 42, 0.8);
+}
+
+.chart-skeleton.theme-light .chart-loading-text {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+/* Theme: Glass */
+.chart-skeleton.theme-glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.chart-skeleton.theme-glass .chart-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(15, 23, 42, 0.7);
+}
+
+.chart-skeleton.theme-glass .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+
+/* Theme: Dark */
+.chart-skeleton.theme-dark {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chart-skeleton.theme-dark .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+
+.chart-skeleton.theme-dark .chart-loading-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Theme: Accent */
+.chart-skeleton.theme-accent {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+.chart-skeleton.theme-accent .chart-spinner {
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: rgba(59, 130, 246, 0.9);
+}
+
+.chart-skeleton.theme-accent .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+</style>
+
+<script>
+// Chart Lazy Loading System
+(function() {
+  const THEME = 'light';
+  const DEBUG = false;
+  
+  // Track which charts have been initialized
+  const initializedCharts = new Set();
+  
+  // Queue of charts waiting to be initialized
+  const chartQueue = [];
+  let isProcessingQueue = false;
+  
+  // Performance tracking
+  let totalChartsLoaded = 0;
+  let totalLoadTime = 0;
+  const chartTimings = [];
+  
+  // Create skeleton loader dynamically
+  function createSkeleton(container) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'chart-skeleton theme-' + THEME;
+    skeleton.innerHTML = `
+      <div class="chart-spinner"></div>
+      <div class="chart-loading-text">Loading visualization...</div>
+    `;
+    container.appendChild(skeleton);
+    return skeleton;
+  }
+  
+  // Initialize a single chart
+  function initChart(container) {
+    const chartId = container.id;
+    if (initializedCharts.has(chartId)) return;
+    
+    const startTime = DEBUG ? performance.now() : 0;
+    
+    initializedCharts.add(chartId);
+    container.dataset.loaded = 'true';
+    
+    // Remove skeleton loader
+    const skeleton = container.querySelector('.chart-skeleton');
+    if (skeleton) {
+      skeleton.style.opacity = '0';
+      setTimeout(() => skeleton.remove(), 300);
+    }
+    
+    // Trigger Highcharts reflow if present
+    setTimeout(() => {
+      if (window.Highcharts) {
+        Highcharts.charts.forEach(chart => {
+          if (chart && chart.reflow) chart.reflow();
+        });
+      }
+      
+      // Debug logging
+      if (DEBUG) {
+        const loadTime = performance.now() - startTime;
+        totalChartsLoaded++;
+        totalLoadTime += loadTime;
+        chartTimings.push({ id: chartId, time: loadTime });
+        
+        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
+        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+      }
+    }, 50);
+  }
+  
+  // Process chart queue in batches
+  function processQueue() {
+    if (isProcessingQueue || chartQueue.length === 0) return;
+    
+    isProcessingQueue = true;
+    const batchSize = 3;
+    const batch = chartQueue.splice(0, batchSize);
+    
+    if (DEBUG) {
+      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
+    }
+    
+    batch.forEach(container => initChart(container));
+    
+    if (chartQueue.length > 0) {
+      requestIdleCallback(() => {
+        isProcessingQueue = false;
+        processQueue();
+      }, { timeout: 2000 });
+    } else {
+      isProcessingQueue = false;
+      
+      if (DEBUG && totalChartsLoaded > 0) {
+        console.log(`✅ All charts loaded! Summary:`);
+        console.log(`   Total charts: ${totalChartsLoaded}`);
+        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
+        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+      }
+    }
+  }
+  
+  // Intersection Observer for scroll-based lazy loading
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
+        chartQueue.push(entry.target);
+        observer.unobserve(entry.target);
+        processQueue();
+      }
+    });
+  }, { rootMargin: '300px' });
+  
+  // Initialize observers when DOM is ready
+  function initLazyLoading() {
+    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
+      // Create skeleton for each lazy chart
+      createSkeleton(container);
+      // Start observing
+      observer.observe(container);
+    });
+  }
+  
+  // Tab-aware rendering: load charts when tab becomes visible
+  function initTabAwareLoading() {
+    document.querySelectorAll('.panel-tabset').forEach(tabset => {
+      const tabs = tabset.querySelectorAll('[role="tab"]');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          setTimeout(() => {
+            const targetId = this.getAttribute('aria-controls');
+            if (!targetId) return;
+            
+            const targetPanel = document.getElementById(targetId);
+            if (!targetPanel) return;
+            
+            // Initialize any lazy charts in this tab
+            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
+            lazyCharts.forEach(chart => {
+              chartQueue.push(chart);
+              observer.unobserve(chart);
+            });
+            processQueue();
+          }, 50);
+        });
+      });
+    });
+  }
+  
+  // Start lazy loading when document is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      initLazyLoading();
+      initTabAwareLoading();
+    });
+  } else {
+    initLazyLoading();
+    initTabAwareLoading();
+  }
+})();
+</script>
+
+```
+
+## {{< iconify ph magnifying-glass >}} Strategic Information
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)
 
 ```{r perf-sis-wave1-overall}
 # 
@@ -81,7 +358,7 @@ result <- create_stackedbars(
   questions = "PSIS2",
   question_labels = "Restrict Google to Dutch sources (correct/incorrect)",
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -96,12 +373,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-wave1-age-item1}
@@ -115,7 +392,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSIS2"
@@ -128,12 +405,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-wave1-gender-item1}
@@ -147,7 +424,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSIS2"
@@ -160,12 +437,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-wave1-edu-item1}
@@ -179,7 +456,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSIS2"
@@ -195,18 +472,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)
 
 ```{r perf-sis-wave2-overall}
 # 
@@ -216,7 +497,7 @@ result <- create_stackedbars(
   questions = "PSIS2",
   question_labels = "Restrict Google to Dutch sources (correct/incorrect)",
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -231,12 +512,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-wave2-age-item1}
@@ -250,7 +531,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSIS2"
@@ -263,12 +544,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-wave2-gender-item1}
@@ -282,7 +563,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSIS2"
@@ -295,12 +576,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-wave2-edu-item1}
@@ -314,7 +595,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSIS2"
@@ -330,17 +611,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-overtime-overall-item1}
@@ -363,12 +650,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-overtime-age-item1}
@@ -392,12 +679,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-overtime-gender-item1}
@@ -421,12 +708,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-sis-overtime-edu-item1}
@@ -455,23 +742,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Critical Information Performance
+
+:::
+
+## {{< iconify ph detective-fill >}} Critical Information
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Critical Information results](critical_information.html)
 
 ```{r perf-cis-wave1-overall}
 # 
@@ -481,7 +772,7 @@ result <- create_stackedbars(
   questions = c("PCIS1", "PCIS2"),
   question_labels = c("Classify a social media post (task 1)", "Classify a social media post (task 2)"),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -496,12 +787,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-wave1-age-item1}
@@ -515,7 +806,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PCIS1"
@@ -525,7 +816,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-wave1-age-item2}
@@ -539,7 +830,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PCIS2"
@@ -552,12 +843,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-wave1-gender-item1}
@@ -571,7 +862,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PCIS1"
@@ -581,7 +872,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-wave1-gender-item2}
@@ -595,7 +886,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PCIS2"
@@ -608,12 +899,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-wave1-edu-item1}
@@ -627,7 +918,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PCIS1"
@@ -637,7 +928,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-wave1-edu-item2}
@@ -651,7 +942,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PCIS2"
@@ -667,18 +958,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Critical Information results](critical_information.html)
 
 ```{r perf-cis-wave2-overall}
 # 
@@ -688,7 +983,7 @@ result <- create_stackedbars(
   questions = c("PCIS1", "PCIS2"),
   question_labels = c("Classify a social media post (task 1)", "Classify a social media post (task 2)"),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -703,12 +998,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-wave2-age-item1}
@@ -722,7 +1017,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PCIS1"
@@ -732,7 +1027,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-wave2-age-item2}
@@ -746,7 +1041,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PCIS2"
@@ -759,12 +1054,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-wave2-gender-item1}
@@ -778,7 +1073,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PCIS1"
@@ -788,7 +1083,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-wave2-gender-item2}
@@ -802,7 +1097,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PCIS2"
@@ -815,12 +1110,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-wave2-edu-item1}
@@ -834,7 +1129,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PCIS1"
@@ -844,7 +1139,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-wave2-edu-item2}
@@ -858,7 +1153,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PCIS2"
@@ -874,17 +1169,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-overtime-overall-item1}
@@ -904,7 +1205,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-overtime-overall-item2}
@@ -927,12 +1228,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-overtime-age-item1}
@@ -953,7 +1254,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-overtime-age-item2}
@@ -977,12 +1278,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-overtime-gender-item1}
@@ -1003,7 +1304,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-overtime-gender-item2}
@@ -1027,12 +1328,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-cis-overtime-edu-item1}
@@ -1053,7 +1354,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-cis-overtime-edu-item2}
@@ -1082,23 +1383,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Digital Content Creation Performance
+
+:::
+
+## {{< iconify ph palette-fill >}} Digital Content Creation
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)
 
 ```{r perf-dccs-wave1-overall}
 # 
@@ -1108,7 +1413,7 @@ result <- create_stackedbars(
   questions = "PDCCS1",
   question_labels = "Identify crop icon",
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1123,12 +1428,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-wave1-age-item1}
@@ -1142,7 +1447,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PDCCS1"
@@ -1155,12 +1460,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-wave1-gender-item1}
@@ -1174,7 +1479,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PDCCS1"
@@ -1187,12 +1492,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-wave1-edu-item1}
@@ -1206,7 +1511,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PDCCS1"
@@ -1222,18 +1527,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)
 
 ```{r perf-dccs-wave2-overall}
 # 
@@ -1243,7 +1552,7 @@ result <- create_stackedbars(
   questions = "PDCCS1",
   question_labels = "Identify crop icon",
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1258,12 +1567,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-wave2-age-item1}
@@ -1277,7 +1586,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PDCCS1"
@@ -1290,12 +1599,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-wave2-gender-item1}
@@ -1309,7 +1618,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PDCCS1"
@@ -1322,12 +1631,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-wave2-edu-item1}
@@ -1341,7 +1650,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Incorrect", "Correct"),
   stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
   stack_order = c("Incorrect", "Correct"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PDCCS1"
@@ -1357,17 +1666,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-overtime-overall-item1}
@@ -1390,12 +1705,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-overtime-age-item1}
@@ -1419,12 +1734,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-overtime-gender-item1}
@@ -1448,12 +1763,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-dccs-overtime-edu-item1}
@@ -1482,23 +1797,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Safety & Control Performance
+
+:::
+
+## {{< iconify ph shield-check-fill >}} Safety
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r perf-safety-wave1-overall}
 # 
@@ -1508,7 +1827,7 @@ result <- create_stackedbars(
   questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9"),
   question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups"),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1523,12 +1842,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-wave1-age-item1}
@@ -1542,7 +1861,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_1"
@@ -1552,7 +1871,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-wave1-age-item2}
@@ -1566,7 +1885,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_2"
@@ -1576,7 +1895,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-wave1-age-item3}
@@ -1590,7 +1909,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_3"
@@ -1600,7 +1919,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-wave1-age-item4}
@@ -1614,7 +1933,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_4"
@@ -1624,7 +1943,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-wave1-age-item5}
@@ -1638,7 +1957,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_5"
@@ -1648,7 +1967,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-wave1-age-item6}
@@ -1662,7 +1981,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_6"
@@ -1672,7 +1991,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-wave1-age-item7}
@@ -1686,7 +2005,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_7"
@@ -1696,7 +2015,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-wave1-age-item8}
@@ -1710,7 +2029,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_8"
@@ -1734,7 +2053,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_9"
@@ -1747,12 +2066,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-wave1-gender-item1}
@@ -1766,7 +2085,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_1"
@@ -1776,7 +2095,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-wave1-gender-item2}
@@ -1790,7 +2109,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_2"
@@ -1800,7 +2119,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-wave1-gender-item3}
@@ -1814,7 +2133,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_3"
@@ -1824,7 +2143,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-wave1-gender-item4}
@@ -1838,7 +2157,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_4"
@@ -1848,7 +2167,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-wave1-gender-item5}
@@ -1862,7 +2181,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_5"
@@ -1872,7 +2191,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-wave1-gender-item6}
@@ -1886,7 +2205,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_6"
@@ -1896,7 +2215,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-wave1-gender-item7}
@@ -1910,7 +2229,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_7"
@@ -1920,7 +2239,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-wave1-gender-item8}
@@ -1934,7 +2253,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_8"
@@ -1958,7 +2277,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_9"
@@ -1971,12 +2290,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-wave1-edu-item1}
@@ -1990,7 +2309,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_1"
@@ -2000,7 +2319,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-wave1-edu-item2}
@@ -2014,7 +2333,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_2"
@@ -2024,7 +2343,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-wave1-edu-item3}
@@ -2038,7 +2357,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_3"
@@ -2048,7 +2367,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-wave1-edu-item4}
@@ -2062,7 +2381,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_4"
@@ -2072,7 +2391,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-wave1-edu-item5}
@@ -2086,7 +2405,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_5"
@@ -2096,7 +2415,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-wave1-edu-item6}
@@ -2110,7 +2429,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_6"
@@ -2120,7 +2439,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-wave1-edu-item7}
@@ -2134,7 +2453,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_7"
@@ -2144,7 +2463,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-wave1-edu-item8}
@@ -2158,7 +2477,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_8"
@@ -2182,7 +2501,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_9"
@@ -2198,18 +2517,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r perf-safety-wave2-overall}
 # 
@@ -2219,7 +2542,7 @@ result <- create_stackedbars(
   questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9"),
   question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups"),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -2234,12 +2557,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-wave2-age-item1}
@@ -2253,7 +2576,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_1"
@@ -2263,7 +2586,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-wave2-age-item2}
@@ -2277,7 +2600,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_2"
@@ -2287,7 +2610,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-wave2-age-item3}
@@ -2301,7 +2624,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_3"
@@ -2311,7 +2634,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-wave2-age-item4}
@@ -2325,7 +2648,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_4"
@@ -2335,7 +2658,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-wave2-age-item5}
@@ -2349,7 +2672,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_5"
@@ -2359,7 +2682,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-wave2-age-item6}
@@ -2373,7 +2696,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_6"
@@ -2383,7 +2706,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-wave2-age-item7}
@@ -2397,7 +2720,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_7"
@@ -2407,7 +2730,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-wave2-age-item8}
@@ -2421,7 +2744,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_8"
@@ -2445,7 +2768,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "PSCS3_9"
@@ -2458,12 +2781,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-wave2-gender-item1}
@@ -2477,7 +2800,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_1"
@@ -2487,7 +2810,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-wave2-gender-item2}
@@ -2501,7 +2824,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_2"
@@ -2511,7 +2834,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-wave2-gender-item3}
@@ -2525,7 +2848,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_3"
@@ -2535,7 +2858,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-wave2-gender-item4}
@@ -2549,7 +2872,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_4"
@@ -2559,7 +2882,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-wave2-gender-item5}
@@ -2573,7 +2896,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_5"
@@ -2583,7 +2906,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-wave2-gender-item6}
@@ -2597,7 +2920,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_6"
@@ -2607,7 +2930,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-wave2-gender-item7}
@@ -2621,7 +2944,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_7"
@@ -2631,7 +2954,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-wave2-gender-item8}
@@ -2645,7 +2968,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_8"
@@ -2669,7 +2992,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_9"
@@ -2682,12 +3005,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-wave2-edu-item1}
@@ -2701,7 +3024,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_1"
@@ -2711,7 +3034,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-wave2-edu-item2}
@@ -2725,7 +3048,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_2"
@@ -2735,7 +3058,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-wave2-edu-item3}
@@ -2749,7 +3072,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_3"
@@ -2759,7 +3082,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-wave2-edu-item4}
@@ -2773,7 +3096,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_4"
@@ -2783,7 +3106,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-wave2-edu-item5}
@@ -2797,7 +3120,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_5"
@@ -2807,7 +3130,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-wave2-edu-item6}
@@ -2821,7 +3144,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_6"
@@ -2831,7 +3154,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-wave2-edu-item7}
@@ -2845,7 +3168,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_7"
@@ -2855,7 +3178,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-wave2-edu-item8}
@@ -2869,7 +3192,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_8"
@@ -2893,7 +3216,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Not selected", "Selected"),
   stack_map_values = list("1" = "Selected", "0" = "Not selected"),
   stack_order = c("Not selected", "Selected"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "PSCS3_9"
@@ -2909,17 +3232,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-overtime-overall-item1}
@@ -2939,7 +3268,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-overtime-overall-item2}
@@ -2959,7 +3288,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-overtime-overall-item3}
@@ -2979,7 +3308,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-overtime-overall-item4}
@@ -2999,7 +3328,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-overtime-overall-item5}
@@ -3019,7 +3348,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-overtime-overall-item6}
@@ -3039,7 +3368,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-overtime-overall-item7}
@@ -3059,7 +3388,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-overtime-overall-item8}
@@ -3102,12 +3431,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-overtime-age-item1}
@@ -3128,7 +3457,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-overtime-age-item2}
@@ -3149,7 +3478,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-overtime-age-item3}
@@ -3170,7 +3499,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-overtime-age-item4}
@@ -3191,7 +3520,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-overtime-age-item5}
@@ -3212,7 +3541,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-overtime-age-item6}
@@ -3233,7 +3562,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-overtime-age-item7}
@@ -3254,7 +3583,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-overtime-age-item8}
@@ -3299,12 +3628,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-overtime-gender-item1}
@@ -3325,7 +3654,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-overtime-gender-item2}
@@ -3346,7 +3675,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-overtime-gender-item3}
@@ -3367,7 +3696,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-overtime-gender-item4}
@@ -3388,7 +3717,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-overtime-gender-item5}
@@ -3409,7 +3738,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-overtime-gender-item6}
@@ -3430,7 +3759,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-overtime-gender-item7}
@@ -3451,7 +3780,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-overtime-gender-item8}
@@ -3496,12 +3825,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-safety-overtime-edu-item1}
@@ -3522,7 +3851,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-safety-overtime-edu-item2}
@@ -3543,7 +3872,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-safety-overtime-edu-item3}
@@ -3564,7 +3893,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-safety-overtime-edu-item4}
@@ -3585,7 +3914,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-safety-overtime-edu-item5}
@@ -3606,7 +3935,7 @@ result
 ```
 
 
-###### Question 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-safety-overtime-edu-item6}
@@ -3627,7 +3956,7 @@ result
 ```
 
 
-###### Question 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-safety-overtime-edu-item7}
@@ -3648,7 +3977,7 @@ result
 ```
 
 
-###### Question 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-safety-overtime-edu-item8}
@@ -3688,6 +4017,9 @@ result <- create_timeline(
 
 result
 ```
+
+
+:::
 
 
 :::

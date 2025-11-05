@@ -1,5 +1,5 @@
 ---
-title: "{{< iconify ph chart-line >}} Knowledge"
+title: "{{< iconify ph book-open-fill >}} Knowledge"
 format: html
 ---
 
@@ -55,23 +55,300 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Transactional Knowledge
+
+```{=html}
+
+<style>
+/* Chart Lazy Loading Styles */
+.chart-lazy {
+  position: relative;
+  min-height: 400px;
+  margin: 1rem 0;
+}
+
+.chart-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.chart-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.chart-loading-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Theme: Light */
+.chart-skeleton.theme-light {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart-skeleton.theme-light .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.2);
+  border-top-color: rgba(15, 23, 42, 0.8);
+}
+
+.chart-skeleton.theme-light .chart-loading-text {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+/* Theme: Glass */
+.chart-skeleton.theme-glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.chart-skeleton.theme-glass .chart-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(15, 23, 42, 0.7);
+}
+
+.chart-skeleton.theme-glass .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+
+/* Theme: Dark */
+.chart-skeleton.theme-dark {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chart-skeleton.theme-dark .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+
+.chart-skeleton.theme-dark .chart-loading-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Theme: Accent */
+.chart-skeleton.theme-accent {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+.chart-skeleton.theme-accent .chart-spinner {
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: rgba(59, 130, 246, 0.9);
+}
+
+.chart-skeleton.theme-accent .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+</style>
+
+<script>
+// Chart Lazy Loading System
+(function() {
+  const THEME = 'light';
+  const DEBUG = false;
+  
+  // Track which charts have been initialized
+  const initializedCharts = new Set();
+  
+  // Queue of charts waiting to be initialized
+  const chartQueue = [];
+  let isProcessingQueue = false;
+  
+  // Performance tracking
+  let totalChartsLoaded = 0;
+  let totalLoadTime = 0;
+  const chartTimings = [];
+  
+  // Create skeleton loader dynamically
+  function createSkeleton(container) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'chart-skeleton theme-' + THEME;
+    skeleton.innerHTML = `
+      <div class="chart-spinner"></div>
+      <div class="chart-loading-text">Loading visualization...</div>
+    `;
+    container.appendChild(skeleton);
+    return skeleton;
+  }
+  
+  // Initialize a single chart
+  function initChart(container) {
+    const chartId = container.id;
+    if (initializedCharts.has(chartId)) return;
+    
+    const startTime = DEBUG ? performance.now() : 0;
+    
+    initializedCharts.add(chartId);
+    container.dataset.loaded = 'true';
+    
+    // Remove skeleton loader
+    const skeleton = container.querySelector('.chart-skeleton');
+    if (skeleton) {
+      skeleton.style.opacity = '0';
+      setTimeout(() => skeleton.remove(), 300);
+    }
+    
+    // Trigger Highcharts reflow if present
+    setTimeout(() => {
+      if (window.Highcharts) {
+        Highcharts.charts.forEach(chart => {
+          if (chart && chart.reflow) chart.reflow();
+        });
+      }
+      
+      // Debug logging
+      if (DEBUG) {
+        const loadTime = performance.now() - startTime;
+        totalChartsLoaded++;
+        totalLoadTime += loadTime;
+        chartTimings.push({ id: chartId, time: loadTime });
+        
+        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
+        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+      }
+    }, 50);
+  }
+  
+  // Process chart queue in batches
+  function processQueue() {
+    if (isProcessingQueue || chartQueue.length === 0) return;
+    
+    isProcessingQueue = true;
+    const batchSize = 3;
+    const batch = chartQueue.splice(0, batchSize);
+    
+    if (DEBUG) {
+      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
+    }
+    
+    batch.forEach(container => initChart(container));
+    
+    if (chartQueue.length > 0) {
+      requestIdleCallback(() => {
+        isProcessingQueue = false;
+        processQueue();
+      }, { timeout: 2000 });
+    } else {
+      isProcessingQueue = false;
+      
+      if (DEBUG && totalChartsLoaded > 0) {
+        console.log(`✅ All charts loaded! Summary:`);
+        console.log(`   Total charts: ${totalChartsLoaded}`);
+        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
+        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+      }
+    }
+  }
+  
+  // Intersection Observer for scroll-based lazy loading
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
+        chartQueue.push(entry.target);
+        observer.unobserve(entry.target);
+        processQueue();
+      }
+    });
+  }, { rootMargin: '300px' });
+  
+  // Initialize observers when DOM is ready
+  function initLazyLoading() {
+    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
+      // Create skeleton for each lazy chart
+      createSkeleton(container);
+      // Start observing
+      observer.observe(container);
+    });
+  }
+  
+  // Tab-aware rendering: load charts when tab becomes visible
+  function initTabAwareLoading() {
+    document.querySelectorAll('.panel-tabset').forEach(tabset => {
+      const tabs = tabset.querySelectorAll('[role="tab"]');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          setTimeout(() => {
+            const targetId = this.getAttribute('aria-controls');
+            if (!targetId) return;
+            
+            const targetPanel = document.getElementById(targetId);
+            if (!targetPanel) return;
+            
+            // Initialize any lazy charts in this tab
+            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
+            lazyCharts.forEach(chart => {
+              chartQueue.push(chart);
+              observer.unobserve(chart);
+            });
+            processQueue();
+          }, 50);
+        });
+      });
+    });
+  }
+  
+  // Start lazy loading when document is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      initLazyLoading();
+      initTabAwareLoading();
+    });
+  } else {
+    initLazyLoading();
+    initTabAwareLoading();
+  }
+})();
+</script>
+
+```
+
+## {{< iconify ph wallet-fill >}} Transactional
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Transactional results](transactional.html)
 
 ```{r ktrans-wave1-overall}
 # 
@@ -81,7 +358,7 @@ result <- create_stackedbars(
   questions = c("Ktrans2RC", "Ktrans3RC"),
   question_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider.", "A webshop is trustworthy when you can pay with iDeal"),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -96,12 +373,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-wave1-age-item1}
@@ -115,7 +392,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "Ktrans2RC"
@@ -125,7 +402,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-wave1-age-item2}
@@ -139,7 +416,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "Ktrans3RC"
@@ -152,12 +429,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-wave1-gender-item1}
@@ -171,7 +448,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "Ktrans2RC"
@@ -181,7 +458,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-wave1-gender-item2}
@@ -195,7 +472,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "Ktrans3RC"
@@ -208,12 +485,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-wave1-edu-item1}
@@ -227,7 +504,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "Ktrans2RC"
@@ -237,7 +514,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-wave1-edu-item2}
@@ -251,7 +528,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "Ktrans3RC"
@@ -267,18 +544,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Transactional results](transactional.html)
 
 ```{r ktrans-wave2-overall}
 # 
@@ -288,7 +569,7 @@ result <- create_stackedbars(
   questions = c("Ktrans2RC", "Ktrans3RC"),
   question_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider.", "A webshop is trustworthy when you can pay with iDeal"),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -303,12 +584,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-wave2-age-item1}
@@ -322,7 +603,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "Ktrans2RC"
@@ -332,7 +613,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-wave2-age-item2}
@@ -346,7 +627,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "Ktrans3RC"
@@ -359,12 +640,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-wave2-gender-item1}
@@ -378,7 +659,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "Ktrans2RC"
@@ -388,7 +669,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-wave2-gender-item2}
@@ -402,7 +683,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "Ktrans3RC"
@@ -415,12 +696,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-wave2-edu-item1}
@@ -434,7 +715,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "Ktrans2RC"
@@ -444,7 +725,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-wave2-edu-item2}
@@ -458,7 +739,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "Ktrans3RC"
@@ -474,17 +755,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-overtime-overall-item1}
@@ -504,7 +791,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-overtime-overall-item2}
@@ -527,12 +814,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-overtime-age-item1}
@@ -553,7 +840,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-overtime-age-item2}
@@ -577,12 +864,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-overtime-gender-item1}
@@ -603,7 +890,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-overtime-gender-item2}
@@ -627,12 +914,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r ktrans-overtime-edu-item1}
@@ -653,7 +940,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r ktrans-overtime-edu-item2}
@@ -682,23 +969,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} AI Knowledge
+
+:::
+
+## {{< iconify ph robot-fill >}} AI
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all AI results](ai.html)
 
 ```{r kai-wave1-overall}
 # 
@@ -708,7 +999,7 @@ result <- create_stackedbars(
   questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
   question_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI).", "Websites and apps for news and entertainment show the same content to everyone.", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.", "Your online behavior determines what is shown to you on websites and apps for news and entertainment."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -723,12 +1014,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-wave1-age-item1}
@@ -742,7 +1033,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI1RC"
@@ -752,7 +1043,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-wave1-age-item2}
@@ -766,7 +1057,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI2RC"
@@ -776,7 +1067,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-wave1-age-item3}
@@ -790,7 +1081,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI3RC"
@@ -800,7 +1091,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-wave1-age-item4}
@@ -814,7 +1105,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI4RC"
@@ -827,12 +1118,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-wave1-gender-item1}
@@ -846,7 +1137,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI1RC"
@@ -856,7 +1147,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-wave1-gender-item2}
@@ -870,7 +1161,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI2RC"
@@ -880,7 +1171,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-wave1-gender-item3}
@@ -894,7 +1185,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI3RC"
@@ -904,7 +1195,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-wave1-gender-item4}
@@ -918,7 +1209,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI4RC"
@@ -931,12 +1222,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-wave1-edu-item1}
@@ -950,7 +1241,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI1RC"
@@ -960,7 +1251,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-wave1-edu-item2}
@@ -974,7 +1265,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI2RC"
@@ -984,7 +1275,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-wave1-edu-item3}
@@ -998,7 +1289,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI3RC"
@@ -1008,7 +1299,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-wave1-edu-item4}
@@ -1022,7 +1313,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI4RC"
@@ -1038,18 +1329,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all AI results](ai.html)
 
 ```{r kai-wave2-overall}
 # 
@@ -1059,7 +1354,7 @@ result <- create_stackedbars(
   questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
   question_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI).", "Websites and apps for news and entertainment show the same content to everyone.", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.", "Your online behavior determines what is shown to you on websites and apps for news and entertainment."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1074,12 +1369,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-wave2-age-item1}
@@ -1093,7 +1388,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI1RC"
@@ -1103,7 +1398,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-wave2-age-item2}
@@ -1117,7 +1412,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI2RC"
@@ -1127,7 +1422,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-wave2-age-item3}
@@ -1141,7 +1436,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI3RC"
@@ -1151,7 +1446,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-wave2-age-item4}
@@ -1165,7 +1460,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KAI4RC"
@@ -1178,12 +1473,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-wave2-gender-item1}
@@ -1197,7 +1492,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI1RC"
@@ -1207,7 +1502,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-wave2-gender-item2}
@@ -1221,7 +1516,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI2RC"
@@ -1231,7 +1526,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-wave2-gender-item3}
@@ -1245,7 +1540,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI3RC"
@@ -1255,7 +1550,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-wave2-gender-item4}
@@ -1269,7 +1564,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KAI4RC"
@@ -1282,12 +1577,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-wave2-edu-item1}
@@ -1301,7 +1596,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI1RC"
@@ -1311,7 +1606,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-wave2-edu-item2}
@@ -1325,7 +1620,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI2RC"
@@ -1335,7 +1630,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-wave2-edu-item3}
@@ -1349,7 +1644,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI3RC"
@@ -1359,7 +1654,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-wave2-edu-item4}
@@ -1373,7 +1668,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KAI4RC"
@@ -1389,17 +1684,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-overtime-overall-item1}
@@ -1419,7 +1720,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-overtime-overall-item2}
@@ -1439,7 +1740,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-overtime-overall-item3}
@@ -1459,7 +1760,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-overtime-overall-item4}
@@ -1482,12 +1783,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-overtime-age-item1}
@@ -1508,7 +1809,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-overtime-age-item2}
@@ -1529,7 +1830,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-overtime-age-item3}
@@ -1550,7 +1851,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-overtime-age-item4}
@@ -1574,12 +1875,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-overtime-gender-item1}
@@ -1600,7 +1901,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-overtime-gender-item2}
@@ -1621,7 +1922,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-overtime-gender-item3}
@@ -1642,7 +1943,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-overtime-gender-item4}
@@ -1666,12 +1967,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kai-overtime-edu-item1}
@@ -1692,7 +1993,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kai-overtime-edu-item2}
@@ -1713,7 +2014,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kai-overtime-edu-item3}
@@ -1734,7 +2035,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kai-overtime-edu-item4}
@@ -1763,23 +2064,27 @@ result
 
 :::
 
-## {{< iconify fluent-emoji-high-contrast detective >}} Generative AI Knowledge
+
+:::
+
+## {{< iconify ph magic-wand-fill >}} Gen AI
 
 
 ::: {.panel-tabset}
 
-### Wave 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r kgai-wave1-overall}
 # 
@@ -1787,9 +2092,9 @@ result <- create_stackedbars(
   data = data_filtered_984a0efe %>% tidyr::drop_na(KGAI1RC, KGAI2RC, KGAI3RC, KGAI4RC, KGAI5RC),
   title = "",
   questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.", "Someone else can also get access to the information you give to GenAI, such as ChatGPT.", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times."),
+  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.", "Someone else can also get access to the information you give to GenAI, such as ChatGPT.", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -1804,12 +2109,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-wave1-age-item1}
@@ -1823,7 +2128,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI1RC"
@@ -1833,7 +2138,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-wave1-age-item2}
@@ -1847,7 +2152,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI2RC"
@@ -1857,7 +2162,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-wave1-age-item3}
@@ -1871,7 +2176,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI3RC"
@@ -1881,21 +2186,21 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-wave1-age-item4}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).",
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI4RC"
@@ -1905,7 +2210,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-wave1-age-item5}
@@ -1919,7 +2224,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI5RC"
@@ -1932,12 +2237,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-wave1-gender-item1}
@@ -1951,7 +2256,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI1RC"
@@ -1961,7 +2266,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-wave1-gender-item2}
@@ -1975,7 +2280,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI2RC"
@@ -1985,7 +2290,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-wave1-gender-item3}
@@ -1999,7 +2304,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI3RC"
@@ -2009,21 +2314,21 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-wave1-gender-item4}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).",
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI4RC"
@@ -2033,7 +2338,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-wave1-gender-item5}
@@ -2047,7 +2352,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI5RC"
@@ -2060,12 +2365,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-wave1-edu-item1}
@@ -2079,7 +2384,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI1RC"
@@ -2089,7 +2394,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-wave1-edu-item2}
@@ -2103,7 +2408,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI2RC"
@@ -2113,7 +2418,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-wave1-edu-item3}
@@ -2127,7 +2432,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI3RC"
@@ -2137,21 +2442,21 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-wave1-edu-item4}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).",
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI4RC"
@@ -2161,7 +2466,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-wave1-edu-item5}
@@ -2175,7 +2480,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI5RC"
@@ -2191,18 +2496,22 @@ result
 :::
 
 
-### Wave 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
 ```
+[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r kgai-wave2-overall}
 # 
@@ -2210,9 +2519,9 @@ result <- create_stackedbars(
   data = data_filtered_4af682fd %>% tidyr::drop_na(KGAI1RC, KGAI2RC, KGAI3RC, KGAI4RC, KGAI5RC),
   title = "",
   questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.", "Someone else can also get access to the information you give to GenAI, such as ChatGPT.", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times."),
+  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.", "Someone else can also get access to the information you give to GenAI, such as ChatGPT.", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times."),
   stacked_type = "percent",
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
@@ -2227,12 +2536,12 @@ result
 ```
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-wave2-age-item1}
@@ -2246,7 +2555,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI1RC"
@@ -2256,7 +2565,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-wave2-age-item2}
@@ -2270,7 +2579,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI2RC"
@@ -2280,7 +2589,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-wave2-age-item3}
@@ -2294,7 +2603,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI3RC"
@@ -2304,21 +2613,21 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-wave2-age-item4}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).",
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI4RC"
@@ -2328,7 +2637,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-wave2-age-item5}
@@ -2342,7 +2651,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   stack_var = "KGAI5RC"
@@ -2355,12 +2664,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-wave2-gender-item1}
@@ -2374,7 +2683,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI1RC"
@@ -2384,7 +2693,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-wave2-gender-item2}
@@ -2398,7 +2707,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI2RC"
@@ -2408,7 +2717,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-wave2-gender-item3}
@@ -2422,7 +2731,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI3RC"
@@ -2432,21 +2741,21 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-wave2-gender-item4}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).",
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI4RC"
@@ -2456,7 +2765,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-wave2-gender-item5}
@@ -2470,7 +2779,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "KGAI5RC"
@@ -2483,12 +2792,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-wave2-edu-item1}
@@ -2502,7 +2811,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI1RC"
@@ -2512,7 +2821,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-wave2-edu-item2}
@@ -2526,7 +2835,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI2RC"
@@ -2536,7 +2845,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-wave2-edu-item3}
@@ -2550,7 +2859,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI3RC"
@@ -2560,21 +2869,21 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-wave2-edu-item4}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).",
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI4RC"
@@ -2584,7 +2893,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-wave2-edu-item5}
@@ -2598,7 +2907,7 @@ result <- create_stackedbar(
   stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
   stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   stack_var = "KGAI5RC"
@@ -2614,17 +2923,23 @@ result
 :::
 
 
-### Over Time
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
 
-##### Overall
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-overtime-overall-item1}
@@ -2644,7 +2959,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-overtime-overall-item2}
@@ -2664,7 +2979,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-overtime-overall-item3}
@@ -2684,7 +2999,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-overtime-overall-item4}
@@ -2704,7 +3019,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-overtime-overall-item5}
@@ -2727,12 +3042,12 @@ result
 :::
 
 
-##### Age
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-overtime-age-item1}
@@ -2753,7 +3068,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-overtime-age-item2}
@@ -2774,7 +3089,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-overtime-age-item3}
@@ -2795,7 +3110,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-overtime-age-item4}
@@ -2816,7 +3131,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-overtime-age-item5}
@@ -2840,12 +3155,12 @@ result
 :::
 
 
-##### Gender
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-overtime-gender-item1}
@@ -2866,7 +3181,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-overtime-gender-item2}
@@ -2887,7 +3202,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-overtime-gender-item3}
@@ -2908,7 +3223,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-overtime-gender-item4}
@@ -2929,7 +3244,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-overtime-gender-item5}
@@ -2953,12 +3268,12 @@ result
 :::
 
 
-##### Education
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### Question 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r kgai-overtime-edu-item1}
@@ -2979,7 +3294,7 @@ result
 ```
 
 
-###### Question 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r kgai-overtime-edu-item2}
@@ -3000,7 +3315,7 @@ result
 ```
 
 
-###### Question 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r kgai-overtime-edu-item3}
@@ -3021,7 +3336,7 @@ result
 ```
 
 
-###### Question 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r kgai-overtime-edu-item4}
@@ -3042,7 +3357,7 @@ result
 ```
 
 
-###### Question 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r kgai-overtime-edu-item5}
@@ -3061,6 +3376,9 @@ result <- create_timeline(
 
 result
 ```
+
+
+:::
 
 
 :::

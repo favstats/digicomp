@@ -11,8 +11,6 @@ library(dashboardr)
 ## TODO mix between text and graphs needs to be possible!
 ## TODO: Knowledge question seem perhaps incorrect and are missing sometimes across waves
 
-the_colors <- the_colors
-
 recode_survey <- function(df) {
   
   # -----------------------------
@@ -191,15 +189,13 @@ smart_bind_rows <- function(...) {
   bind_rows(dfs)
 }
 
-
-
 # digicom_data$
 digicom_data <- data %>% 
   mutate(wave = 2) %>% 
   # mutate_all(as.character) %>% 
   # mutate_at(vars(Sample, Time, QR, PSCS3_1), as.character) %>% 
   smart_bind_rows(data_w1 %>% 
-                    mutate(wave = 1)) %>% 
+              mutate(wave = 1)) %>% 
   mutate_at(vars(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PDHWS1_1, PDHWS1_3), as.numeric) %>% 
   mutate(wave_time_label = ifelse(wave == 1, "Wave 1", "Wave 2")) %>% 
   mutate(wave_time_label = factor(wave_time_label, levels = c("Wave 1", "Wave 2")))
@@ -221,7 +217,52 @@ education_levels <- c("Primary (basisonderwijs)",
                              "wo"))
 
 
-# Helper functions for creating multiple visualizations
+add_all_viz_timeline <- function(viz, vars, group_var, prefix, wave_label) {
+  for (i in seq_along(vars)) {
+    viz <- viz |>
+      add_viz(
+        response_var = vars[[i]],
+        group_var    = group_var,
+        title_tabset = wave_label,  # ← ADD THIS!
+        tabgroup     = sprintf("%s/item%s", prefix, i)
+      )
+  }
+  viz
+}
+
+
+add_all_viz_timeline_single <- function(viz, vars, prefix, wave_label) {
+  for (i in seq_along(vars)) {
+    viz <- viz |>
+      add_viz(
+        response_var = vars[[i]],
+        title_tabset = wave_label,  # ← ADD THIS!
+        tabgroup     = sprintf("%s/item%s", prefix, i)
+      )
+  }
+  viz
+}
+
+
+add_all_viz_stackedbar <- function(viz, vars, questions, stack_var, prefix, response_lab, wave_label) {
+  for (i in seq_along(vars)) {
+    viz <- viz |>
+      add_viz(
+        title = questions[[i]],
+        title_tabset = wave_label,  # ← ADD THIS!
+        x_var = stack_var,
+        stack_var    = vars[[i]],
+        tabgroup     = sprintf("%s/item%s", prefix, i)
+      )
+  }
+  viz
+}
+
+
+
+
+
+# Helper functions - NOW WITH TBGRP!
 add_all_viz_timeline <- function(viz, vars, group_var, tbgrp, demographic, wave_label) {
   wave_path <- tolower(gsub(" ", "", wave_label))
   
@@ -268,7 +309,7 @@ add_all_viz_stackedbar <- function(viz, vars, questions, stack_var, tbgrp, demog
 
 # Main function
 create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                          colors = the_colors, 
+                          colors = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"), 
                           tbgrp, graph_title, high_values = 4:5) {
   
   # Wave 1 & 2 Overall (stackedbars)
@@ -370,8 +411,8 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
 }
 
 create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                           colors = the_colors, 
-                           tbgrp, graph_title, high_values = 1, map_values) {
+                          colors = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"), 
+                          tbgrp, graph_title, high_values = 1, map_values) {
   
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
@@ -485,7 +526,7 @@ tbgrp <- "knowledge"
 
 knowledge_tex <- md_text(
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
+  'create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don’t know, please choose ‘I don’t know’. You don’t have to guess. If you don’t understand the question, please choose ‘I don’t understand the question.’ Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")',
   "```"
 )
 
@@ -501,7 +542,7 @@ knowledge_viz <- create_viz(
   text = knowledge_tex,
   drop_na_vars = T,
   text_position = "above",
-  color_palette = the_colors,
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   drop_na_vars = TRUE,
   weight_var = "weging_GAMO"
 ) %>%
@@ -534,10 +575,11 @@ knowledge_subvizzes_wave1 <- create_viz(
   stack_breaks = knowledge_breaks,
   stack_bin_labels = knowledge_labs,
   stack_order = knowledge_labs,
+  drop_na_vars = T,
   filter = ~ wave == 1,
   drop_na_vars = T,
   weight_var = "weging_GAMO",
-  color_palette = the_colors
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4")
 ) |>
   add_viz(
     title = qs,
@@ -566,10 +608,11 @@ knowledge_subvizzes_wave2 <- create_viz(
   stack_breaks = knowledge_breaks,
   stack_bin_labels = knowledge_labs,
   stack_order = knowledge_labs,
+  drop_na_vars = T,
   filter = ~ wave == 2,
   drop_na_vars = T,
   weight_var = "weging_GAMO",
-  color_palette = the_colors
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4")
 ) |>
   add_viz(
     title = qs,
@@ -649,19 +692,12 @@ kinfo_vars <- c("KInfo1RC", "KInfo2RC")
 # keep the order from your original code: rev(c("Incorrectly", "Correctly", "X"))
 kinfo_labs <- c("X", "Correctly Answered", "Incorrectly Answered")
 
-kinfo_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)"
-)
-
 kinfo_viz <- create_vizzes2(
   breaks = knowledge_breaks,
   kinfo_questions,
   kinfo_vars,
   kinfo_labs,
-  kinfo_tex_link,
+  knowledge_tex,
   tbgrp   = "kinfo",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -680,19 +716,12 @@ critinfo_labs <- c(
   "Incorrectly Answered"
 )
 
-critinfo_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Critical Information results](critical_information.html)"
-)
-
 critinfo_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   critinfo_questions,
   critinfo_vars,
   critinfo_labs,
-  critinfo_tex_link,
+  knowledge_tex,
   tbgrp        = "critinfo",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -712,19 +741,12 @@ knet_labs <- c(
   "Incorrectly Answered"
 )
 
-knet_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Netiquette results](netiquette.html)"
-)
-
 knet_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   knet_questions,
   knet_vars,
   knet_labs,
-  knet_tex_link,
+  knowledge_tex,
   tbgrp        = "knet",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -745,19 +767,12 @@ kcrea_labs <- c(
   "Incorrectly Answered"
 )
 
-kcrea_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)"
-)
-
 kcrea_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   kcrea_questions,
   kcrea_vars,
   kcrea_labs,
-  kcrea_tex_link,
+  knowledge_tex,
   tbgrp        = "kcrea",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -783,19 +798,12 @@ ksafety_labs <- c(
   "Incorrectly Answered"
 )
 
-ksafety_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Safety results](safety.html)"
-)
-
 ksafety_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   ksafety_questions,
   ksafety_vars,
   ksafety_labs,
-  ksafety_tex_link,
+  knowledge_tex,
   tbgrp        = "ksafety",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -816,19 +824,12 @@ khealth_labs <- c(
   "Incorrectly Answered"
 )
 
-khealth_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)"
-)
-
 khealth_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   khealth_questions,
   khealth_vars,
   khealth_labs,
-  khealth_tex_link,
+  knowledge_tex,
   tbgrp        = "khealth",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -849,19 +850,12 @@ kgreen_labs <- c(
   "Incorrectly Answered"
 )
 
-kgreen_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)"
-)
-
 kgreen_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   kgreen_questions,
   kgreen_vars,
   kgreen_labs,
-  kgreen_tex_link,
+  knowledge_tex,
   tbgrp        = "kgreen",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -882,19 +876,12 @@ ktrans_labs <- c(
   "Incorrectly Answered"
 )
 
-ktrans_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Transactional results](transactional.html)"
-)
-
 ktrans_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   ktrans_questions,
   ktrans_vars,
   ktrans_labs,
-  ktrans_tex_link,
+  knowledge_tex,
   tbgrp        = "ktrans",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -917,19 +904,12 @@ kai_labs <- c(
   "Incorrectly Answered"
 )
 
-kai_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all AI results](ai.html)"
-)
-
 kai_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   kai_questions,
   kai_vars,
   kai_labs,
-  kai_tex_link,
+  knowledge_tex,
   tbgrp        = "kai",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -941,7 +921,7 @@ kgai_questions <- c(
   "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
   "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
   "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
-  "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example “deepfakes”).",
   "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times."
 )
 
@@ -953,19 +933,12 @@ kgai_labs <- c(
   "Incorrectly Answered"
 )
 
-kgai_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)"
-)
-
 kgai_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   kgai_questions,
   kgai_vars,
   kgai_labs,
-  kgai_tex_link,
+  knowledge_tex,
   tbgrp        = "kgai",
   graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered")
 )
@@ -983,34 +956,35 @@ knowledge_collection <- knowledge_viz %>%
   combine_viz(ktrans_viz) %>%
   combine_viz(kai_viz) %>%
   combine_viz(kgai_viz) %>%
-  set_tabgroup_labels(
-    knowledge = "{{< iconify ph chart-bar-fill >}} Knowledge Score",
-    kinfo     = "{{< iconify ph magnifying-glass >}} Strategic Information",
-    critinfo  = "{{< iconify ph detective-fill >}} Critical Information",
-    knet      = "{{< iconify ph chats-fill >}} Netiquette",
-    kcrea     = "{{< iconify ph palette-fill >}} Digital Content Creation",
-    ksafety   = "{{< iconify ph shield-check-fill >}} Safety",
-    khealth   = "{{< iconify ph heart-fill >}} Digital Health",
-    kgreen    = "{{< iconify ph recycle-fill >}} Green Digital",
-    ktrans    = "{{< iconify ph wallet-fill >}} Transactional",
-    kai       = "{{< iconify ph robot-fill >}} AI",
-    kgai      = "{{< iconify ph magic-wand-fill >}} Gen AI",
-    age    = "{{< iconify mdi:human-male-male-child >}} Age",
-    gender = "{{< iconify mdi gender-transgender >}} Gender",
-    edu    = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1",
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
-    item2  = "{{< iconify ph chat-circle-fill >}} Question 2",
-    item3  = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4  = "{{< iconify ph chat-circle-fill >}} Question 4",
-    item5  = "{{< iconify ph chat-circle-fill >}} Question 5",
-    item6  = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7  = "{{< iconify ph chat-circle-fill >}} Question 7",
-    item8  = "{{< iconify ph chat-circle-fill >}} Question 8"
-  )
+  set_tabgroup_labels(list(
+    knowledge = "{{< iconify ph chart-line >}} Knowledge Score",
+    kinfo     = "{{< iconify fluent-emoji-high-contrast detective >}} Strategic Information Knowledge",
+    critinfo  = "{{< iconify fluent-emoji-high-contrast detective >}} Critical Informational Knowledge",
+    knet      = "{{< iconify fluent-emoji-high-contrast detective >}} Netiquette Knowledge",
+    kcrea     = "{{< iconify fluent-emoji-high-contrast detective >}} Creative Skills Knowledge",
+    ksafety   = "{{< iconify fluent-emoji-high-contrast detective >}} Safety & Control of Devices Knowledge",
+    khealth   = "{{< iconify fluent-emoji-high-contrast detective >}} Health & Wellbeing Knowledge",
+    kgreen    = "{{< iconify fluent-emoji-high-contrast detective >}} Green / Sustainable Digital Knowledge",
+    ktrans    = "{{< iconify fluent-emoji-high-contrast detective >}} Transactional Knowledge",
+    kai       = "{{< iconify fluent-emoji-high-contrast detective >}} AI Knowledge",
+    kgai      = "{{< iconify fluent-emoji-high-contrast detective >}} Generative AI Knowledge",
+    # generic
+    age    = "Age",
+    gender = "Gender",
+    edu    = "Education",
+    overtime   = "Over Time",
+    wave1 = "Wave 1",
+    wave2 = "Wave 2",
+    overall = "Overall",
+    item1  = "Question 1",
+    item2  = "Question 2",
+    item3  = "Question 3",
+    item4  = "Question 4",
+    item5  = "Question 5",
+    item6  = "Question 6",
+    item7  = "Question 7",
+    item8  = "Question 8"
+  ))
 
 
 
@@ -1038,7 +1012,7 @@ sis_labs <- c(
 )
 sis_tex <- md_text(
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
+  'create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")',
   "```"
 )
 
@@ -1046,7 +1020,7 @@ sis_tex2 <- md_text(
   # nice link/button
   # your question block
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
+  'create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")',
   "```",
   "[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)"
 )
@@ -1064,19 +1038,14 @@ cis_vars <- c("SInfo5", "SInfo6", "SInfo7")
 
 
 cis_questions <- c("I know how I can check if the information I find on the internet is true.", 
-                   "I know how I can check if a website is reliable.",
-                   "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).") 
+                "I know how I can check if a website is reliable.",
+                "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).")
 
-cis_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Critical Information results](critical_information.html)"
-)
+# Do you recognize yourself in the following statements?
 
 cis_viz <- create_vizzes(cis_questions, 
                          cis_vars, sis_labs, 
-                         cis_tex_link, breaks = c(0.5, 2.5, 3.5, 5.5), 
+                         sis_tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
                          tbgrp = "cis",
                          graph_title = "Critical Information Skills")
 
@@ -1088,18 +1057,12 @@ nskills_questions <- c("I know when I should ask for permission to share somethi
 
 nskills_vars <- c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5")
 
-nskills_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Netiquette results](netiquette.html)"
-)
 
 nskills_viz  <- create_vizzes(nskills_questions, 
-                              nskills_vars, sis_labs, 
-                              nskills_tex_link, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                              tbgrp = "nskills",
-                              graph_title = "Netiquette Skills")
+                          nskills_vars, sis_labs, 
+                          sis_tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
+                          tbgrp = "nskills",
+                          graph_title = "Netiquette Skills")
 
 
 ##### dccs viz ####
@@ -1109,17 +1072,11 @@ dccs_questions <- c("I can make a presentation on the computer (for example in P
 
 dccs_vars <- c("SCrea2", "SCrea3", "SCrea4", "SCrea5")
 
-dccs_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)"
-)
 
 dccs_viz  <- create_vizzes(dccs_questions, 
-                           dccs_vars, sis_labs, 
-                           dccs_tex_link, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                           tbgrp = "dccs",
+                              dccs_vars, sis_labs, 
+                              sis_tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
+                              tbgrp = "dccs",
                            graph_title = "Digital Content Creation Skills")
 
 
@@ -1131,20 +1088,15 @@ safety_questions <- c(
   "I know how to change the location settings on a mobile phone or tablet.",
   "I know how to identify suspicious e-mail messages that try to get my personal data.",
   "I know how to delete the history of websites that I have visited before.",
-  "I know how to block messages from someone that I don't want to hear from."
+  "I know how to block messages from someone that I don’t want to hear from."
 )
 safety_vars <- c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3")
 
-safety_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Safety results](safety.html)"
-)
+
 
 safety_viz <- create_vizzes(
   safety_questions, safety_vars, sis_labs,
-  safety_tex_link,
+  sis_tex,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "safety",
   graph_title = "Safety and Control of Information and Devices Skills")
@@ -1157,16 +1109,9 @@ dhealth_questions <- c(
 )
 dhealth_vars <- c("SHealth1", "SHealth2_V2", "SHealth3_V2")
 
-dhealth_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)"
-)
-
 dhealth_viz <- create_vizzes(
   dhealth_questions, dhealth_vars, sis_labs,
-  dhealth_tex_link,
+  sis_tex,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "dhealth",
   graph_title = "Digital Health and Wellbeing Skills")
@@ -1174,21 +1119,16 @@ dhealth_viz <- create_vizzes(
 ##### NEW: Sustainable / Green Digital Skills -------------------------------
 green_questions <- c(
   "I know how to reduce the battery use of a phone or computer.",
-  "I know how I can buy a phone or computer in a 'green' or sustainable way.",
+  "I know how I can buy a phone or computer in a “green” or sustainable way.",
   "I know how to have a phone or computer recycled."
 )
 green_vars <- c("SEnv1", "SEnv2", "SEnv3")
 
-green_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)"
-)
+
 
 green_viz <- create_vizzes(
   green_questions, green_vars, sis_labs,
-  green_tex_link,
+  sis_tex,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "green",
   graph_title = "Sustainable/Green Digital Skills")
@@ -1196,20 +1136,14 @@ green_viz <- create_vizzes(
 ##### NEW: Digital Problem Solving Skills -----------------------------------
 dprob_questions <- c(
   "I know where or from whom I can get help to improve my digital skills.",
-  "I know where or from whom I can get help if I'm unable to do something on the internet."
+  "I know where or from whom I can get help if I’m unable to do something on the internet."
 )
 dprob_vars <- c("SProbl1", "SProbl2")
 
-dprob_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)"
-)
 
 dprob_viz <- create_vizzes(
   dprob_questions, dprob_vars, sis_labs,
-  dprob_tex_link,
+  sis_tex,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "dprob",
   graph_title = "Digital Problem Solving Skills"
@@ -1217,7 +1151,7 @@ dprob_viz <- create_vizzes(
 
 ##### NEW: Transactional Skills ---------------------------------------------
 trans_questions <- c(
-  "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.",
+  "I know how to handle things online for the tax authority (“belastingdienst”) (for example file my tax returns or apply for a wage tax for my (part-time) job.",
   "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).",
   "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).",
   "I know how to apply for a DigID and how to use it.",
@@ -1225,16 +1159,11 @@ trans_questions <- c(
 )
 trans_vars <- c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5")
 
-trans_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Transactional results](transactional.html)"
-)
+
 
 trans_viz <- create_vizzes(
   trans_questions, trans_vars, sis_labs,
-  trans_tex_link,
+  sis_tex,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "trans",
   graph_title = "Transactional Skills"
@@ -1247,16 +1176,9 @@ ai_questions <- c(
 )
 ai_vars <- c("SAI1", "SAI2")
 
-ai_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all AI results](ai.html)"
-)
-
 ai_viz <- create_vizzes(
   ai_questions, ai_vars, sis_labs,
-  ai_tex_link,
+  sis_tex,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "ai",
   graph_title = "AI Skills"
@@ -1265,21 +1187,14 @@ ai_viz <- create_vizzes(
 ##### NEW: genAI Skills ------------------------------------------------------
 genai_questions <- c(
   "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
-  "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  "I know which questions (or “prompts”) I should ask GenAI, such as ChatGPT, to receive a useful result.",
   "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"
 )
 genai_vars <- c("SGAI1", "SGAI2", "SGAI3")
 
-genai_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?\", preset = \"question\")",
-  "```",
-  "[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)"
-)
-
 genai_viz <- create_vizzes(
   genai_questions, genai_vars, sis_labs,
-  genai_tex_link,
+  sis_tex,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "genai",
   graph_title = "GenAI Skills"
@@ -1299,35 +1214,36 @@ skills_viz <- sis_viz %>%
   combine_viz(trans_viz) %>%
   combine_viz(ai_viz) %>%
   combine_viz(genai_viz) %>%
-  # labels for ALL tabgroups - using dimension-specific icons
-  set_tabgroup_labels(
-    sis     = "{{< iconify ph magnifying-glass >}} Strategic Information",
-    cis     = "{{< iconify ph detective-fill >}} Critical Information",
-    nskills = "{{< iconify ph chats-fill >}} Netiquette",
-    dccs    = "{{< iconify ph palette-fill >}} Digital Content Creation",
-    safety  = "{{< iconify ph shield-check-fill >}} Safety",
-    dhealth = "{{< iconify ph heart-fill >}} Digital Health",
-    green   = "{{< iconify ph recycle-fill >}} Green Digital",
-    dprob   = "{{< iconify ph lightbulb-fill >}} Digital Problem Solving",
-    trans   = "{{< iconify ph wallet-fill >}} Transactional",
-    ai      = "{{< iconify ph robot-fill >}} AI",
-    genai   = "{{< iconify ph magic-wand-fill >}} Gen AI",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1",
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age    = "{{< iconify mdi:human-male-male-child >}} Age",
-    gender = "{{< iconify mdi gender-transgender >}} Gender",
-    edu    = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
-    item2  = "{{< iconify ph chat-circle-fill >}} Question 2",
-    item3  = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4  = "{{< iconify ph chat-circle-fill >}} Question 4",
-    item5  = "{{< iconify ph chat-circle-fill >}} Question 5",
-    item6  = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7  = "{{< iconify ph chat-circle-fill >}} Question 7",
-    item8  = "{{< iconify ph chat-circle-fill >}} Question 8"
-  )
+  # labels for ALL tabgroups
+  set_tabgroup_labels(list(
+    sis    = "{{< iconify ph chart-line >}} Strategic Information Skills",
+    cis    = "{{< iconify ph chart-line >}} Critical Information Skills",
+    nskills= "{{< iconify ph chart-line >}} Netiquette Skills",
+    dccs   = "{{< iconify ph chart-line >}} Digital Content Creation Skills",
+    safety = "{{< iconify lets-icons view-light >}} Safety and Control of Information and Devices Skills",
+    dhealth= "{{< iconify lets-icons view-light >}} Digital Health and Wellbeing Skills",
+    green  = "{{< iconify lets-icons view-light >}} Sustainable/Green Digital Skills",
+    dprob  = "{{< iconify lets-icons view-light >}} Digital Problem Solving Skills",
+    trans  = "{{< iconify lets-icons view-light >}} Transactional Skills",
+    ai     = "{{< iconify lets-icons view-light >}} AI Skills",
+    genai  = "{{< iconify lets-icons view-light >}} GenAI Skills",
+    wave1 = "Wave 1",
+    wave2 = "Wave 2",
+    # keep your generic ones
+    age    = "Age",
+    gender = "Gender",
+    edu    = "Education",
+    overtime   = "Over Time",
+    overall = "Overall",
+    item1  = "Question 1",
+    item2  = "Question 2",
+    item3  = "Question 3",
+    item4  = "Question 4",
+    item5  = "Question 5",
+    item6  = "Question 6",
+    item7  = "Question 7",
+    item8  = "Question 8"
+  ))
 
 
 
@@ -1350,19 +1266,12 @@ perf_sis_questions <- c(
 
 perf_sis_vars <- c("PSIS2")
 
-perf_sis_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)"
-)
-
 perf_sis_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_sis_questions,
   perf_sis_vars,
   perf_correct_labs,
-  perf_sis_tex_link,
+  performance_tex,
   tbgrp        = "perf_sis",
   graph_title  = "",
   map_values   = list("1" = "Correct", "0" = "Incorrect")
@@ -1373,25 +1282,18 @@ perf_sis_viz <- create_vizzes2(
 perf_cis_questions <- c(
   "Classify a social media post (task 1)",
   "Classify a social media post (task 2)"
-  # if you later add "What to check for fake news" → add its var & label here
+  # if you later add “What to check for fake news” → add its var & label here
 )
-## TODO: what about "What to check for fake news"
+## TODO: what about “What to check for fake news”
 
 perf_cis_vars <- c("PCIS1", "PCIS2")
-
-perf_cis_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Critical Information results](critical_information.html)"
-)
 
 perf_cis_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_cis_questions,
   perf_cis_vars,
   perf_correct_labs,
-  perf_cis_tex_link,
+  performance_tex,
   tbgrp        = "perf_cis",
   graph_title  = "",
   map_values   = list("1" = "Correct", "0" = "Incorrect")
@@ -1405,19 +1307,12 @@ perf_dccs_questions <- c(
 
 perf_dccs_vars <- c("PDCCS1")
 
-perf_dccs_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)"
-)
-
 perf_dccs_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_dccs_questions,
   perf_dccs_vars,
   perf_correct_labs,
-  perf_dccs_tex_link,
+  performance_tex,
   tbgrp        = "perf_dccs",
   graph_title  = "",
   map_values   = list("1" = "Correct", "0" = "Incorrect")
@@ -1442,19 +1337,12 @@ perf_safety_vars <- c(
   "PSCS3_6","PSCS3_7","PSCS3_8","PSCS3_9"
 )
 
-perf_safety_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Safety results](safety.html)"
-)
-
 perf_safety_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_safety_questions,
   perf_safety_vars,
   perf_selected_labs,
-  perf_safety_tex_link,
+  performance_tex,
   tbgrp        = "perf_safety",
   graph_title  = "",
   map_values   = list("1" = "Selected", "0" = "Not selected")
@@ -1477,19 +1365,12 @@ perf_health_vars <- c(
   "PDHWS1_5","PDHWS1_6","PDHWS1_7"
 )
 
-perf_health_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)"
-)
-
 perf_health_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_health_questions,
   perf_health_vars,
   perf_selected_labs,
-  perf_health_tex_link,
+  performance_tex,
   tbgrp        = "perf_health",
   graph_title  = "",
   map_values   = list("1" = "Selected", "0" = "Not selected")
@@ -1513,19 +1394,12 @@ perf_green_vars <- c(
   "PSGDS1_5","PSGDS1_6","PSGDS1_7","PSGDS1_8"
 )
 
-perf_green_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)"
-)
-
 perf_green_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_green_questions,
   perf_green_vars,
   perf_selected_labs,
-  perf_green_tex_link,
+  performance_tex,
   tbgrp        = "perf_green",
   graph_title  = "",
   map_values   = list("1" = "Selected", "0" = "Not selected")
@@ -1550,19 +1424,12 @@ perf_ps_vars <- c(
   "SourceHelp_5","SourceHelp_6","SourceHelp_7","SourceHelp_8","SourceHelp_9"
 )
 
-perf_ps_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)"
-)
-
 perf_ps_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_ps_questions,
   perf_ps_vars,
   perf_selected_labs,
-  perf_ps_tex_link,
+  performance_tex,
   tbgrp        = "perf_ps",
   graph_title  = "",
   map_values   = list("1" = "Selected", "0" = "Not selected")
@@ -1576,19 +1443,12 @@ perf_trans_questions <- c(
 
 perf_trans_vars <- c("PTS1")
 
-perf_trans_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Transactional results](transactional.html)"
-)
-
 perf_trans_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_trans_questions,
   perf_trans_vars,
   perf_correct_labs,
-  perf_trans_tex_link,
+  performance_tex,
   tbgrp        = "perf_trans",
   graph_title  = "",
   map_values   = list("1" = "Correct", "0" = "Incorrect")
@@ -1613,19 +1473,12 @@ perf_ai_vars <- c(
   "PAIS2_6","PAIS2_7","PAIS2_8","PAIS2_9"
 )
 
-perf_ai_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all AI results](ai.html)"
-)
-
 perf_ai_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_ai_questions,
   perf_ai_vars,
   perf_selected_labs,
-  perf_ai_tex_link,
+  performance_tex,
   tbgrp        = "perf_ai",
   graph_title  = "",
   map_values   = list("1" = "Selected", "0" = "Not selected")
@@ -1639,19 +1492,12 @@ perf_genai_questions <- c(
 
 perf_genai_vars <- c("PAIS1")
 
-perf_genai_tex_link <- md_text(
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  'create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")',
-  "```",
-  "[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)"
-)
-
 perf_genai_viz <- create_vizzes2(
   breaks       = knowledge_breaks,
   perf_genai_questions,
   perf_genai_vars,
   perf_correct_labs,
-  perf_genai_tex_link,
+  performance_tex,
   tbgrp        = "perf_genai",
   graph_title  = "",
   # in original you reversed categories_dat; here we can still map 1=Correct
@@ -1672,242 +1518,36 @@ performance_collection <- perf_sis_viz %>%
   combine_viz(perf_trans_viz) %>%
   combine_viz(perf_ai_viz) %>%
   combine_viz(perf_genai_viz) %>%
-  set_tabgroup_labels(
-    perf_sis    = "{{< iconify ph magnifying-glass >}} Strategic Information",
-    perf_cis    = "{{< iconify ph detective-fill >}} Critical Information",
-    perf_dccs   = "{{< iconify ph palette-fill >}} Digital Content Creation",
-    perf_safety = "{{< iconify ph shield-check-fill >}} Safety",
-    perf_health = "{{< iconify ph heart-fill >}} Digital Health",
-    perf_green  = "{{< iconify ph recycle-fill >}} Green Digital",
-    perf_ps     = "{{< iconify ph lightbulb-fill >}} Digital Problem Solving",
-    perf_trans  = "{{< iconify ph wallet-fill >}} Transactional",
-    perf_ai     = "{{< iconify ph robot-fill >}} AI",
-    perf_genai  = "{{< iconify ph magic-wand-fill >}} Gen AI",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1",
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age    = "{{< iconify mdi:human-male-male-child >}} Age",
-    gender = "{{< iconify mdi gender-transgender >}} Gender",
-    edu    = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
-    item2  = "{{< iconify ph chat-circle-fill >}} Question 2",
-    item3  = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4  = "{{< iconify ph chat-circle-fill >}} Question 4",
-    item5  = "{{< iconify ph chat-circle-fill >}} Question 5",
-    item6  = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7  = "{{< iconify ph chat-circle-fill >}} Question 7",
-    item8  = "{{< iconify ph chat-circle-fill >}} Question 8"
-  )
+  set_tabgroup_labels(list(
+    perf_sis    = "{{< iconify fluent-emoji-high-contrast detective >}} Strategic Information Performance",
+    perf_cis    = "{{< iconify fluent-emoji-high-contrast detective >}} Critical Information Performance",
+    perf_dccs   = "{{< iconify fluent-emoji-high-contrast detective >}} Digital Content Creation Performance",
+    perf_safety = "{{< iconify fluent-emoji-high-contrast detective >}} Safety & Control Performance",
+    perf_health = "{{< iconify fluent-emoji-high-contrast detective >}} Health & Wellbeing Performance",
+    perf_green  = "{{< iconify fluent-emoji-high-contrast detective >}} Green Performance",
+    perf_ps     = "{{< iconify fluent-emoji-high-contrast detective >}} Problem Solving Performance",
+    perf_trans  = "{{< iconify fluent-emoji-high-contrast detective >}} Transactional Performance",
+    perf_ai     = "{{< iconify fluent-emoji-high-contrast detective >}} AI Performance",
+    perf_genai  = "{{< iconify fluent-emoji-high-contrast detective >}} GenAI Performance",
+    wave1 = "Wave 1",
+    wave2 = "Wave 2",
+    # keep your generic ones
+    age    = "Age",
+    gender = "Gender",
+    edu    = "Education",
+    overtime   = "Over Time",
+    overall = "Overall",
+    item1  = "Question 1",
+    item2  = "Question 2",
+    item3  = "Question 3",
+    item4  = "Question 4",
+    item5  = "Question 5",
+    item6  = "Question 6",
+    item7  = "Question 7",
+    item8  = "Question 8"
+  ))
 
 library(htmltools)
-
-# Create combined visualizations for dimension pages with proper labels
-# Consistent icon system:
-# 💪 Skills = ph:lightning-fill (abilities/capabilities)
-# 📚 Knowledge = ph:book-open-fill (understanding/learning)
-# 🏆 Performance = ph:trophy-fill (achievement/testing)
-
-critical_info_visualizations <- (cis_viz + critinfo_viz + perf_cis_viz) %>%
-  set_tabgroup_labels(
-    cis = "{{< iconify ph lightning-fill >}} Critical Information Skills",
-    critinfo = "{{< iconify ph book-open-fill >}} Critical Information Knowledge",
-    perf_cis = "{{< iconify ph trophy-fill >}} Critical Information Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3"
-  )
-
-netiquette_visualizations <- (nskills_viz + knet_viz) %>%
-  set_tabgroup_labels(
-    nskills = "{{< iconify ph lightning-fill >}} Netiquette Skills",
-    knet = "{{< iconify ph book-open-fill >}} Netiquette Knowledge",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3", 
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4"
-  )
-
-content_creation_visualizations <- (dccs_viz + kcrea_viz + perf_dccs_viz) %>%
-  set_tabgroup_labels(
-    dccs = "{{< iconify ph lightning-fill >}} Digital Content Creation Skills",
-    kcrea = "{{< iconify ph book-open-fill >}} Creative Knowledge",
-    perf_dccs = "{{< iconify ph trophy-fill >}} Content Creation Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3", 
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4"
-  )
-
-safety_visualizations <- (safety_viz + ksafety_viz + perf_safety_viz) %>%
-  set_tabgroup_labels(
-    safety = "{{< iconify ph lightning-fill >}} Safety Skills",
-    ksafety = "{{< iconify ph book-open-fill >}} Safety Knowledge",
-    perf_safety = "{{< iconify ph trophy-fill >}} Safety Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4", 
-    item5 = "{{< iconify ph chat-circle-fill >}} Question 5", 
-    item6 = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7 = "{{< iconify ph chat-circle-fill >}} Question 7", 
-    item8 = "{{< iconify ph chat-circle-fill >}} Question 8", 
-    item9 = "{{< iconify ph chat-circle-fill >}} Question 9"
-  )
-
-health_visualizations <- (dhealth_viz + khealth_viz + perf_health_viz) %>%
-  set_tabgroup_labels(
-    dhealth = "{{< iconify ph lightning-fill >}} Digital Health Skills",
-    khealth = "{{< iconify ph book-open-fill >}} Health Knowledge",
-    perf_health = "{{< iconify ph trophy-fill >}} Health Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4", 
-    item5 = "{{< iconify ph chat-circle-fill >}} Question 5", 
-    item6 = "{{< iconify ph chat-circle-fill >}} Question 6", 
-    item7 = "{{< iconify ph chat-circle-fill >}} Question 7"
-  )
-
-green_visualizations <- (green_viz + kgreen_viz + perf_green_viz) %>%
-  set_tabgroup_labels(
-    green = "{{< iconify ph lightning-fill >}} Green Digital Skills",
-    kgreen = "{{< iconify ph book-open-fill >}} Green Knowledge",
-    perf_green = "{{< iconify ph trophy-fill >}} Green Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4", 
-    item5 = "{{< iconify ph chat-circle-fill >}} Question 5", 
-    item6 = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7 = "{{< iconify ph chat-circle-fill >}} Question 7", 
-    item8 = "{{< iconify ph chat-circle-fill >}} Question 8"
-  )
-
-problem_solving_visualizations <- (dprob_viz + perf_ps_viz) %>%
-  set_tabgroup_labels(
-    dprob = "{{< iconify ph lightning-fill >}} Problem Solving Skills",
-    perf_ps = "{{< iconify ph trophy-fill >}} Problem Solving Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4", 
-    item5 = "{{< iconify ph chat-circle-fill >}} Question 5", 
-    item6 = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7 = "{{< iconify ph chat-circle-fill >}} Question 7", 
-    item8 = "{{< iconify ph chat-circle-fill >}} Question 8", 
-    item9 = "{{< iconify ph chat-circle-fill >}} Question 9"
-  )
-
-transactional_visualizations <- (trans_viz + ktrans_viz + perf_trans_viz) %>%
-  set_tabgroup_labels(
-    trans = "{{< iconify ph lightning-fill >}} Transactional Skills",
-    ktrans = "{{< iconify ph book-open-fill >}} Transactional Knowledge",
-    perf_trans = "{{< iconify ph trophy-fill >}} Transactional Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4", 
-    item5 = "{{< iconify ph chat-circle-fill >}} Question 5"
-  )
-
-ai_visualizations <- (ai_viz + kai_viz + perf_ai_viz) %>%
-  set_tabgroup_labels(
-    ai = "{{< iconify ph lightning-fill >}} AI Skills",
-    kai = "{{< iconify ph book-open-fill >}} AI Knowledge",
-    perf_ai = "{{< iconify ph trophy-fill >}} AI Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4", 
-    item5 = "{{< iconify ph chat-circle-fill >}} Question 5", 
-    item6 = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7 = "{{< iconify ph chat-circle-fill >}} Question 7", 
-    item8 = "{{< iconify ph chat-circle-fill >}} Question 8", 
-    item9 = "{{< iconify ph chat-circle-fill >}} Question 9"
-  )
-
-genai_combined_visualizations <- (genai_viz + kgai_viz + perf_genai_viz) %>%
-  set_tabgroup_labels(
-    genai = "{{< iconify ph lightning-fill >}} GenAI Skills",
-    kgai = "{{< iconify ph book-open-fill >}} GenAI Knowledge",
-    perf_genai = "{{< iconify ph trophy-fill >}} GenAI Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age = "{{< iconify mdi:human-male-male-child >}} Age", 
-    gender = "{{< iconify mdi gender-transgender >}} Gender", 
-    edu = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
-    item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
-    item3 = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4 = "{{< iconify ph chat-circle-fill >}} Question 4", 
-    item5 = "{{< iconify ph chat-circle-fill >}} Question 5"
-  )
 
 dimensions_menu <- navbar_menu(
   text = "Dimensions",
@@ -1916,53 +1556,53 @@ dimensions_menu <- navbar_menu(
             "Safety", "Digital Health", "Green Digital",
             "Digital Problem Solving", "Transactional",
             "AI", "Gen AI"),
-  icon = "ph:books-fill"
+  icon = "ph:book"
 )
 
 sis_viz_wo_link <- create_vizzes(sis_questions, 
-                                 sis_vars, sis_labs, 
-                                 sis_tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                                 tbgrp = "sis",
-                                 graph_title = "Strategic Information Skills")
+              sis_vars, sis_labs, 
+              sis_tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
+              tbgrp = "sis",
+              graph_title = "Strategic Information Skills")
 
 strategic_visualizations <- (sis_viz_wo_link + perf_sis_viz + kinfo_viz)  %>%
-  set_tabgroup_labels(
-    sis = "{{< iconify ph lightning-fill >}} Skills",
-    kinfo = "{{< iconify ph book-open-fill >}} Knowledge",
-    perf_sis = "{{< iconify ph trophy-fill >}} Performance",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1",
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age    = "{{< iconify mdi:human-male-male-child >}} Age",
-    gender = "{{< iconify mdi gender-transgender >}} Gender",
-    edu    = "{{< iconify ph graduation-cap-fill >}} Education",
-    overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
-    item2  = "{{< iconify ph chat-circle-fill >}} Question 2",
-    item3  = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4  = "{{< iconify ph chat-circle-fill >}} Question 4",
-    item5  = "{{< iconify ph chat-circle-fill >}} Question 5",
-    item6  = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7  = "{{< iconify ph chat-circle-fill >}} Question 7",
-    item8  = "{{< iconify ph chat-circle-fill >}} Question 8"
-  )
+  set_tabgroup_labels(list(
+    perf_sis    = "{{< iconify fluent-emoji-high-contrast detective >}} Strategic Information Performance",
+    kinfo     = "{{< iconify fluent-emoji-high-contrast detective >}} Strategic Information Knowledge",
+    sis    = "{{< iconify ph chart-line >}} Strategic Information Skills",
+    wave1 = "Wave 1",
+    wave2 = "Wave 2",
+    # keep your generic ones
+    age    = "Age",
+    gender = "Gender",
+    edu    = "Education",
+    overtime   = "Over Time",
+    overall = "Overall",
+    item1  = "Question 1",
+    item2  = "Question 2",
+    item3  = "Question 3",
+    item4  = "Question 4",
+    item5  = "Question 5",
+    item6  = "Question 6",
+    item7  = "Question 7",
+    item8  = "Question 8"
+  ))
 
 # Create comprehensive dashboard with ALL features
 dashboard <- create_dashboard(
   output_dir = "qmds", 
-  title = "Digital Competence Insights", 
+  title = "Digital Competence Dashboard", 
   github = "https://github.com/favstats/dashboardr",
   twitter = "https://twitter.com/username",
   linkedin = "https://linkedin.com/in/username",
   email = "user@example.com",
   website = "https://example.com",
-  logo = "logo.png",
   search = TRUE,
   navbar_sections = list(dimensions_menu),  # Just pass the menus!
-  theme = "flatly",  # Options: cosmo, flatly, darkly, minty, pulse, etc.
+  # theme = "cosmo",
   author = "Dr. Jane Smith",
   description = "Comprehensive data analysis dashboard with all features",
-  page_footer = "© 2025 Digital Competence Insights Dashboard - All Rights Reserved",
+  page_footer = "© 2025 Digital Competences Dashboard - All Rights Reserved",
   date = "2024-01-15",
   tabset_theme = "minimal",  # This is YOUR style! 
   breadcrumbs = TRUE,
@@ -1975,20 +1615,22 @@ dashboard <- create_dashboard(
   math = "katex",
   code_folding = "show",
   code_tools = TRUE,
-  navbar_bg_color = "#f0f0f0",
-  navbar_text_color = "#3A1B004D",
   # toc = "floating",
   # toc_depth = 3,
   plausible = "example.com",
   metrics_style = "bootstrap",
   page_layout = "full",
   publish_dir = "../docs",
-  pagination_separator = "/", 
-  navbar_text_hover_color = "lightgrey",
+  
+  lazy_debug = T,
+  pagination_separator = "/"#,
+  # lazy_load_charts = TRUE,
+  # lazy_load_margin = "300px",
+  # lazy_load_tabs = TRUE
 ) %>%
   # Landing page with icon
   add_page(
-    name = "Welkom bij de Digital Competence Insights Dashboard",
+    name = "Welkom bij de Digital Competences Dashboard",
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -1996,7 +1638,7 @@ dashboard <- create_dashboard(
       "",
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
-    icon = "ph:house-fill",
+    icon = "ph:house",
     is_landing_page = TRUE
   ) %>%
   # Analysis page with data and visualizations
@@ -2006,7 +1648,8 @@ dashboard <- create_dashboard(
     name = "Skills",
     data = digicom_data,
     visualizations = skills_viz,
-    icon = "ph:lightning-fill",
+    icon = "ph:chart-line",
+    lazy_debug = T,
     lazy_load_charts = TRUE,
     lazy_load_margin = "300px",
     lazy_load_tabs = TRUE,
@@ -2022,14 +1665,11 @@ dashboard <- create_dashboard(
     name = "Performance",
     data = digicom_data,
     visualizations = performance_collection,
-    icon = "ph:clipboard-text",
-    lazy_load_charts = TRUE,
-    lazy_load_margin = "300px",
-    lazy_load_tabs = TRUE,
+    icon = "ph:chart-line",
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
-      "The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment."
+      "The **Performance** section measures participants’ practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today’s digital environment."
     )
   ) %>%
   # Analysis page with data and visualizations
@@ -2039,10 +1679,7 @@ dashboard <- create_dashboard(
     name = "Knowledge",
     data = digicom_data,
     visualizations = knowledge_collection,
-    icon = "ph:book-open-fill",
-    lazy_load_charts = TRUE,
-    lazy_load_margin = "300px",
-    lazy_load_tabs = TRUE,
+    icon = "ph:chart-line",
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2053,179 +1690,137 @@ dashboard <- create_dashboard(
   add_page(
     name = "Highlights",
     data = digicom_data,
-    icon = "ph:star-fill", 
+    icon = "ph:target", 
     visualizations = genai_viz,
     text = md_text(
       "If you’ve spent time around anyone under 25 lately, you’ve probably heard phrases like “I’ll just ask Chat” or “ChatGPT can do that faster.” Generative AI tools have quickly become part of everyday life for young people in the Netherlands. Whether for homework, social media posts, or just curiosity, Gen Z and even Gen Alpha are driving the adoption of these technologies at an astonishing pace.",
-      "",
-      "The flood of AI-generated images, videos, and memes means it’s almost impossible to grow up today without encountering artificial intelligence. For many, AI isn’t a futuristic concept: it’s a daily companion. Young people now turn to tools like ChatGPT for information, writing help, and even casual conversation. This has been documented in the [Dutch AI Opinion Monitor](https://monitor.algosoc.nl/engagement.html), which shows that young people are the fastest adopters of this technology.
+"",
+"The flood of AI-generated images, videos, and memes means it’s almost impossible to grow up today without encountering artificial intelligence. For many, AI isn’t a futuristic concept: it’s a daily companion. Young people now turn to tools like ChatGPT for information, writing help, and even casual conversation. This has been documented in the [Dutch AI Opinion Monitor](https://monitor.algosoc.nl/engagement.html), which shows that young people are the fastest adopters of this technology.
 ",
-      "",
-      "## The Confidence Boom",
-      
-      "Our latest survey reflects this cultural shift. When asked how confident they felt using prompts to get useful responses from ChatGPT, a striking **71.2% of 16–25-year-olds** said they were confident. Even among those aged **10–15**, more than **half (54.4%)** expressed confidence in their ability to prompt AI effectively.",
-      "",
-      "In other words, pre-teens today feel just as capable of “talking to AI” as many highly educated professionals in their thirties and forties. This growing sense of mastery highlights how intuitively young people adapt to new technologies. But confidence isn’t the same as competence."
+"",
+"## The Confidence Boom",
+
+"Our latest survey reflects this cultural shift. When asked how confident they felt using prompts to get useful responses from ChatGPT, a striking **71.2% of 16–25-year-olds** said they were confident. Even among those aged **10–15**, more than **half (54.4%)** expressed confidence in their ability to prompt AI effectively.",
+"",
+"In other words, pre-teens today feel just as capable of “talking to AI” as many highly educated professionals in their thirties and forties. This growing sense of mastery highlights how intuitively young people adapt to new technologies. But confidence isn’t the same as competence."
     )
-  )%>%
+)%>%
   # Analysis page with data and visualizations
   add_page(
     name = "Strategic Information",
-    icon = "ph:magnifying-glass",
-    data = digicom_data,
+    icon = "ph:target",
+      data = digicom_data,
     visualizations = strategic_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
-      "**Strategic Information Skills** assess the ability to effectively search for and locate information online. This includes choosing good keywords, using search functions, and finding answers to questions on the internet."
+      "Here we can show some amazing highlights from the data."
     )
   ) %>% 
-  
-  add_page(
-    name = "Critical Information",
-    icon = "ph:detective-fill",
-    data = digicom_data,
-    visualizations = critical_info_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Critical Information Skills** measure the ability to evaluate online information: checking whether information is true, assessing website reliability, and understanding the purpose of online content (to inform, influence, entertain, or sell)."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Netiquette",
-    icon = "ph:chats-fill",
-    data = digicom_data,
-    visualizations = netiquette_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Netiquette** refers to proper online communication etiquette: knowing when to ask permission before sharing, choosing the right communication tool, understanding what not to share online, and using emoticons appropriately."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Digital Content Creation",
-    icon = "ph:palette-fill",
-    data = digicom_data,
-    visualizations = content_creation_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Digital Content Creation** skills cover the ability to create and modify digital content: making presentations, combining different media, editing images/music/video, and understanding copyright rules around digital content."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Safety",
-    icon = "ph:shield-check-fill",
-    data = digicom_data,
-    visualizations = safety_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Safety & Control of Information and Devices** encompasses protecting devices and personal information: using security measures, managing privacy settings, identifying phishing, and controlling what information is shared online."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Digital Health",
-    icon = "ph:heart-fill",
-    data = digicom_data,
-    visualizations = health_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Digital Health & Wellbeing** skills relate to managing healthy digital habits: controlling screen time, minimizing distractions, taking digital breaks, and understanding how technology affects sleep and wellbeing."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Green Digital",
-    icon = "ph:recycle-fill",
-    data = digicom_data,
-    visualizations = green_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Sustainable/Green Digital Skills** focus on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Digital Problem Solving",
-    icon = "ph:lightbulb-fill",
-    data = digicom_data,
-    visualizations = problem_solving_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Digital Problem Solving** measures the ability to find help and solutions for digital challenges: knowing where to get help to improve digital skills and who to turn to when facing technical difficulties."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Transactional",
-    icon = "ph:wallet-fill",
-    data = digicom_data,
-    visualizations = transactional_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Transactional Skills** cover the ability to complete official tasks online: handling tax matters, making digital payments, arranging healthcare, using digital identification (DigID), and uploading documents for online services."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "AI",
-    icon = "ph:robot-fill",
-    data = digicom_data,
-    visualizations = ai_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**AI Skills** assess understanding and recognition of artificial intelligence in everyday applications: recognizing when websites/apps use AI, identifying AI-recommended content, and understanding how AI personalizes digital experiences."
-    )
-  ) %>% 
-  
-  add_page(
-    name = "Gen AI",
-    icon = "ph:magic-wand-fill",
-    data = digicom_data,
-    visualizations = genai_combined_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
-    text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
-      "",
-      "**Generative AI Skills** measure competencies with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations."
-    )
-  ) %>% 
+
+add_page(
+  name = "Critical Information",
+  icon = "ph:warning-circle",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Netiquette",
+  icon = "ph:chat-circle-dots",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Digital Content Creation",
+  icon = "ph:pen-nib",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Safety",
+  icon = "ph:shield-check",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Digital Health",
+  icon = "ph:heart-pulse",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Green Digital",
+  icon = "ph:leaf",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Digital Problem Solving",
+  icon = "ph:toolbox",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Transactional",
+  icon = "ph:credit-card",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "AI",
+  icon = "ph:brain",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
+
+add_page(
+  name = "Gen AI",
+  icon = "ph:sparkle",
+  text = md_text(
+    "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+    "",
+    "Here we can show some amazing highlights from the data."
+  )
+) %>% 
   # Text-only page with icon showcasing card function
   add_page(
     name = "About", 
-    icon = "ph:info-fill",
+    icon = "ph:info",
     navbar_align = "right",
     text = md_text(
       "This dashboard aggregates and visualizes data",
@@ -2279,6 +1874,5 @@ cat("\n=== Visualization Collection Summary ===\n")
 # Generate the dashboard
 cat("\n=== Generating Dashboard ===\n")
 generate_dashboard(dashboard, render = T, open = "browser")
-
 
 
