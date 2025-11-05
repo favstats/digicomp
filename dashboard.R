@@ -1584,8 +1584,11 @@ strategic_visualizations <- (sis_viz_wo_link + perf_sis_viz + kinfo_viz)  %>%
 
 # Create comprehensive dashboard with ALL features
 dashboard <- create_dashboard(
+  lazy_load_charts = TRUE,
+  lazy_load_margin = "300px",
+  lazy_load_tabs = TRUE,
   output_dir = "qmds", 
-  title = "Digital Competences Dashboard", 
+  title = "Digital Competence Dashboard", 
   github = "https://github.com/favstats/dashboardr",
   twitter = "https://twitter.com/username",
   linkedin = "https://linkedin.com/in/username",
@@ -1631,7 +1634,7 @@ dashboard <- create_dashboard(
   ) %>%
   # Analysis page with data and visualizations
   add_page(
-    overlay = T,
+    overlay = F,
     name = "Skills",
     data = digicom_data,
     visualizations = skills_viz,
@@ -1643,7 +1646,7 @@ dashboard <- create_dashboard(
     )
   ) %>%
   add_page(
-    overlay = T,
+    overlay = F,
     name = "Performance",
     data = digicom_data,
     visualizations = performance_collection,
@@ -1656,7 +1659,7 @@ dashboard <- create_dashboard(
   ) %>%
   # Analysis page with data and visualizations
   add_page(
-    overlay = T,
+    overlay = F,
     name = "Knowledge",
     data = digicom_data,
     visualizations = knowledge_collection,
