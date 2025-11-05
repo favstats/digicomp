@@ -946,11 +946,13 @@ kgai_viz <- create_vizzes2(
 knowledge_collection <- knowledge_viz %>% 
   combine_viz(kinfo_viz) %>%
   combine_viz(critinfo_viz) %>%
-  combine_viz(knet_viz) %>%
+  combine_viz(knet_viz)  %>%
+  add_pagination() %>%
   combine_viz(kcrea_viz) %>%
   combine_viz(ksafety_viz) %>%
   combine_viz(khealth_viz) %>%
-  combine_viz(kgreen_viz) %>%
+  combine_viz(kgreen_viz)  %>%
+  add_pagination() %>%
   combine_viz(ktrans_viz) %>%
   combine_viz(kai_viz) %>%
   combine_viz(kgai_viz) %>%
@@ -1621,10 +1623,10 @@ dashboard <- create_dashboard(
   publish_dir = "../docs",
   
   lazy_debug = T,
-  pagination_separator = "/",
-  lazy_load_charts = TRUE,
-  lazy_load_margin = "300px",
-  lazy_load_tabs = TRUE
+  pagination_separator = "/"#,
+  # lazy_load_charts = TRUE,
+  # lazy_load_margin = "300px",
+  # lazy_load_tabs = TRUE
 ) %>%
   # Landing page with icon
   add_page(
@@ -1641,7 +1643,8 @@ dashboard <- create_dashboard(
   ) %>%
   # Analysis page with data and visualizations
   add_page(
-    overlay = F,
+    overlay = T,
+    overlay_duration = 1,
     name = "Skills",
     data = digicom_data,
     visualizations = skills_viz,
@@ -1657,7 +1660,8 @@ dashboard <- create_dashboard(
     )
   ) %>%
   add_page(
-    overlay = F,
+    overlay = T,
+    overlay_duration = 1,
     name = "Performance",
     data = digicom_data,
     visualizations = performance_collection,
@@ -1670,7 +1674,8 @@ dashboard <- create_dashboard(
   ) %>%
   # Analysis page with data and visualizations
   add_page(
-    overlay = F,
+    overlay = T,
+    overlay_duration = 1,
     name = "Knowledge",
     data = digicom_data,
     visualizations = knowledge_collection,

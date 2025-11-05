@@ -331,7 +331,7 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 
 ```
 
-## {{< iconify ph chart-line >}} Strategic Information Skills
+## {{< iconify lets-icons view-light >}} Safety and Control of Information and Devices Skills
 
 
 ::: {.panel-tabset}
@@ -348,15 +348,14 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
-[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)
 
-```{r sis-wave1-overall}
-# Strategic Information Skills
+```{r safety-wave1-overall}
+# Safety and Control of Information and Devices Skills
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(SInfo1, SInfo3_V2, SInfo4),
-  title = "Strategic Information Skills",
-  questions = c("SInfo1", "SInfo3_V2", "SInfo4"),
-  question_labels = c("I know how to choose good keywords for online searches (for example with Google).", "I know how I can find answers to my questions on the internet.", "I know how I can use search functions in search engines (for example with Google)."),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(SSafDev1, SSafDev2, SPriv1, SPriv2, SPriv3, SPriv4, SCom3),
+  title = "Safety and Control of Information and Devices Skills",
+  questions = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
+  question_labels = c("I know how to protect a device against access (e.g. a PIN code or fingerprint).", "I know how to protect devices against viruses.", "I know how to adjust the privacy settings on a mobile phone or tablet.", "I know how to change the location settings on a mobile phone or tablet.", "I know how to identify suspicious e-mail messages that try to get my personal data.", "I know how to delete the history of websites that I have visited before.", "I know how to block messages from someone that I don’t want to hear from."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -380,11 +379,11 @@ result
 ###### Question 1
 
 
-```{r sis-wave1-age-item1}
-# I know how to choose good keywords for online searches (for example with Google).
+```{r safety-wave1-age-item1}
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SInfo1),
-  title = "I know how to choose good keywords for online searches (for example with Google).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SSafDev1),
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -393,7 +392,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -403,11 +402,11 @@ result
 ###### Question 2
 
 
-```{r sis-wave1-age-item2}
-# I know how I can find answers to my questions on the internet.
+```{r safety-wave1-age-item2}
+# I know how to protect devices against viruses.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SInfo3_V2),
-  title = "I know how I can find answers to my questions on the internet.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SSafDev2),
+  title = "I know how to protect devices against viruses.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -416,7 +415,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo3_V2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -426,11 +425,11 @@ result
 ###### Question 3
 
 
-```{r sis-wave1-age-item3}
-# I know how I can use search functions in search engines (for example with Google).
+```{r safety-wave1-age-item3}
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SInfo4),
-  title = "I know how I can use search functions in search engines (for example with Google).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SPriv1),
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -439,7 +438,99 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo4"
+  stack_var = "SPriv1"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-wave1-age-item4}
+# I know how to change the location settings on a mobile phone or tablet.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SPriv2),
+  title = "I know how to change the location settings on a mobile phone or tablet.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SPriv2"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-wave1-age-item5}
+# I know how to identify suspicious e-mail messages that try to get my personal data.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SPriv3),
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-wave1-age-item6}
+# I know how to delete the history of websites that I have visited before.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SPriv4),
+  title = "I know how to delete the history of websites that I have visited before.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-wave1-age-item7}
+# I know how to block messages from someone that I don’t want to hear from.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom3),
+  title = "I know how to block messages from someone that I don’t want to hear from.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom3"
 )
 
 result
@@ -457,11 +548,11 @@ result
 ###### Question 1
 
 
-```{r sis-wave1-gender-item1}
-# I know how to choose good keywords for online searches (for example with Google).
+```{r safety-wave1-gender-item1}
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SInfo1),
-  title = "I know how to choose good keywords for online searches (for example with Google).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SSafDev1),
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -470,7 +561,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -480,11 +571,11 @@ result
 ###### Question 2
 
 
-```{r sis-wave1-gender-item2}
-# I know how I can find answers to my questions on the internet.
+```{r safety-wave1-gender-item2}
+# I know how to protect devices against viruses.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SInfo3_V2),
-  title = "I know how I can find answers to my questions on the internet.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SSafDev2),
+  title = "I know how to protect devices against viruses.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -493,7 +584,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo3_V2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -503,11 +594,11 @@ result
 ###### Question 3
 
 
-```{r sis-wave1-gender-item3}
-# I know how I can use search functions in search engines (for example with Google).
+```{r safety-wave1-gender-item3}
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SInfo4),
-  title = "I know how I can use search functions in search engines (for example with Google).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SPriv1),
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -516,7 +607,99 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo4"
+  stack_var = "SPriv1"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-wave1-gender-item4}
+# I know how to change the location settings on a mobile phone or tablet.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SPriv2),
+  title = "I know how to change the location settings on a mobile phone or tablet.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SPriv2"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-wave1-gender-item5}
+# I know how to identify suspicious e-mail messages that try to get my personal data.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SPriv3),
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-wave1-gender-item6}
+# I know how to delete the history of websites that I have visited before.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SPriv4),
+  title = "I know how to delete the history of websites that I have visited before.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-wave1-gender-item7}
+# I know how to block messages from someone that I don’t want to hear from.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom3),
+  title = "I know how to block messages from someone that I don’t want to hear from.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom3"
 )
 
 result
@@ -534,11 +717,11 @@ result
 ###### Question 1
 
 
-```{r sis-wave1-edu-item1}
-# I know how to choose good keywords for online searches (for example with Google).
+```{r safety-wave1-edu-item1}
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SInfo1),
-  title = "I know how to choose good keywords for online searches (for example with Google).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SSafDev1),
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -547,7 +730,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -557,11 +740,11 @@ result
 ###### Question 2
 
 
-```{r sis-wave1-edu-item2}
-# I know how I can find answers to my questions on the internet.
+```{r safety-wave1-edu-item2}
+# I know how to protect devices against viruses.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SInfo3_V2),
-  title = "I know how I can find answers to my questions on the internet.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SSafDev2),
+  title = "I know how to protect devices against viruses.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -570,7 +753,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo3_V2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -580,11 +763,11 @@ result
 ###### Question 3
 
 
-```{r sis-wave1-edu-item3}
-# I know how I can use search functions in search engines (for example with Google).
+```{r safety-wave1-edu-item3}
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SInfo4),
-  title = "I know how I can use search functions in search engines (for example with Google).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SPriv1),
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -593,7 +776,99 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo4"
+  stack_var = "SPriv1"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-wave1-edu-item4}
+# I know how to change the location settings on a mobile phone or tablet.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SPriv2),
+  title = "I know how to change the location settings on a mobile phone or tablet.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SPriv2"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-wave1-edu-item5}
+# I know how to identify suspicious e-mail messages that try to get my personal data.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SPriv3),
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-wave1-edu-item6}
+# I know how to delete the history of websites that I have visited before.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SPriv4),
+  title = "I know how to delete the history of websites that I have visited before.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-wave1-edu-item7}
+# I know how to block messages from someone that I don’t want to hear from.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom3),
+  title = "I know how to block messages from someone that I don’t want to hear from.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom3"
 )
 
 result
@@ -621,15 +896,14 @@ result
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
-[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)
 
-```{r sis-wave2-overall}
-# Strategic Information Skills
+```{r safety-wave2-overall}
+# Safety and Control of Information and Devices Skills
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(SInfo1, SInfo3_V2, SInfo4),
-  title = "Strategic Information Skills",
-  questions = c("SInfo1", "SInfo3_V2", "SInfo4"),
-  question_labels = c("I know how to choose good keywords for online searches (for example with Google).", "I know how I can find answers to my questions on the internet.", "I know how I can use search functions in search engines (for example with Google)."),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SSafDev1, SSafDev2, SPriv1, SPriv2, SPriv3, SPriv4, SCom3),
+  title = "Safety and Control of Information and Devices Skills",
+  questions = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
+  question_labels = c("I know how to protect a device against access (e.g. a PIN code or fingerprint).", "I know how to protect devices against viruses.", "I know how to adjust the privacy settings on a mobile phone or tablet.", "I know how to change the location settings on a mobile phone or tablet.", "I know how to identify suspicious e-mail messages that try to get my personal data.", "I know how to delete the history of websites that I have visited before.", "I know how to block messages from someone that I don’t want to hear from."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -653,11 +927,11 @@ result
 ###### Question 1
 
 
-```{r sis-wave2-age-item1}
-# I know how to choose good keywords for online searches (for example with Google).
+```{r safety-wave2-age-item1}
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SInfo1),
-  title = "I know how to choose good keywords for online searches (for example with Google).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SSafDev1),
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -666,7 +940,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -676,11 +950,11 @@ result
 ###### Question 2
 
 
-```{r sis-wave2-age-item2}
-# I know how I can find answers to my questions on the internet.
+```{r safety-wave2-age-item2}
+# I know how to protect devices against viruses.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SInfo3_V2),
-  title = "I know how I can find answers to my questions on the internet.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SSafDev2),
+  title = "I know how to protect devices against viruses.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -689,7 +963,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo3_V2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -699,11 +973,11 @@ result
 ###### Question 3
 
 
-```{r sis-wave2-age-item3}
-# I know how I can use search functions in search engines (for example with Google).
+```{r safety-wave2-age-item3}
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SInfo4),
-  title = "I know how I can use search functions in search engines (for example with Google).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SPriv1),
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -712,7 +986,99 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo4"
+  stack_var = "SPriv1"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-wave2-age-item4}
+# I know how to change the location settings on a mobile phone or tablet.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SPriv2),
+  title = "I know how to change the location settings on a mobile phone or tablet.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SPriv2"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-wave2-age-item5}
+# I know how to identify suspicious e-mail messages that try to get my personal data.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SPriv3),
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-wave2-age-item6}
+# I know how to delete the history of websites that I have visited before.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SPriv4),
+  title = "I know how to delete the history of websites that I have visited before.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-wave2-age-item7}
+# I know how to block messages from someone that I don’t want to hear from.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom3),
+  title = "I know how to block messages from someone that I don’t want to hear from.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom3"
 )
 
 result
@@ -730,11 +1096,11 @@ result
 ###### Question 1
 
 
-```{r sis-wave2-gender-item1}
-# I know how to choose good keywords for online searches (for example with Google).
+```{r safety-wave2-gender-item1}
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SInfo1),
-  title = "I know how to choose good keywords for online searches (for example with Google).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SSafDev1),
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -743,7 +1109,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -753,11 +1119,11 @@ result
 ###### Question 2
 
 
-```{r sis-wave2-gender-item2}
-# I know how I can find answers to my questions on the internet.
+```{r safety-wave2-gender-item2}
+# I know how to protect devices against viruses.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SInfo3_V2),
-  title = "I know how I can find answers to my questions on the internet.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SSafDev2),
+  title = "I know how to protect devices against viruses.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -766,7 +1132,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo3_V2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -776,11 +1142,11 @@ result
 ###### Question 3
 
 
-```{r sis-wave2-gender-item3}
-# I know how I can use search functions in search engines (for example with Google).
+```{r safety-wave2-gender-item3}
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SInfo4),
-  title = "I know how I can use search functions in search engines (for example with Google).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SPriv1),
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -789,7 +1155,99 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo4"
+  stack_var = "SPriv1"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-wave2-gender-item4}
+# I know how to change the location settings on a mobile phone or tablet.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SPriv2),
+  title = "I know how to change the location settings on a mobile phone or tablet.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SPriv2"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-wave2-gender-item5}
+# I know how to identify suspicious e-mail messages that try to get my personal data.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SPriv3),
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-wave2-gender-item6}
+# I know how to delete the history of websites that I have visited before.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SPriv4),
+  title = "I know how to delete the history of websites that I have visited before.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-wave2-gender-item7}
+# I know how to block messages from someone that I don’t want to hear from.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom3),
+  title = "I know how to block messages from someone that I don’t want to hear from.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom3"
 )
 
 result
@@ -807,11 +1265,11 @@ result
 ###### Question 1
 
 
-```{r sis-wave2-edu-item1}
-# I know how to choose good keywords for online searches (for example with Google).
+```{r safety-wave2-edu-item1}
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SInfo1),
-  title = "I know how to choose good keywords for online searches (for example with Google).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SSafDev1),
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -820,7 +1278,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -830,11 +1288,11 @@ result
 ###### Question 2
 
 
-```{r sis-wave2-edu-item2}
-# I know how I can find answers to my questions on the internet.
+```{r safety-wave2-edu-item2}
+# I know how to protect devices against viruses.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SInfo3_V2),
-  title = "I know how I can find answers to my questions on the internet.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SSafDev2),
+  title = "I know how to protect devices against viruses.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -843,7 +1301,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo3_V2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -853,11 +1311,11 @@ result
 ###### Question 3
 
 
-```{r sis-wave2-edu-item3}
-# I know how I can use search functions in search engines (for example with Google).
+```{r safety-wave2-edu-item3}
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SInfo4),
-  title = "I know how I can use search functions in search engines (for example with Google).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SPriv1),
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -866,7 +1324,99 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo4"
+  stack_var = "SPriv1"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-wave2-edu-item4}
+# I know how to change the location settings on a mobile phone or tablet.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SPriv2),
+  title = "I know how to change the location settings on a mobile phone or tablet.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SPriv2"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-wave2-edu-item5}
+# I know how to identify suspicious e-mail messages that try to get my personal data.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SPriv3),
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-wave2-edu-item6}
+# I know how to delete the history of websites that I have visited before.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SPriv4),
+  title = "I know how to delete the history of websites that I have visited before.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-wave2-edu-item7}
+# I know how to block messages from someone that I don’t want to hear from.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom3),
+  title = "I know how to block messages from someone that I don’t want to hear from.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom3"
 )
 
 result
@@ -898,7 +1448,7 @@ result
 ###### Question 1
 
 
-```{r sis-overtime-overall-item1}
+```{r safety-overtime-overall-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -907,7 +1457,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SInfo1"
+  response_var = "SSafDev1"
 )
 
 result
@@ -917,7 +1467,7 @@ result
 ###### Question 2
 
 
-```{r sis-overtime-overall-item2}
+```{r safety-overtime-overall-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -926,7 +1476,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SInfo3_V2"
+  response_var = "SSafDev2"
 )
 
 result
@@ -936,7 +1486,7 @@ result
 ###### Question 3
 
 
-```{r sis-overtime-overall-item3}
+```{r safety-overtime-overall-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -945,7 +1495,83 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SInfo4"
+  response_var = "SPriv1"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-overtime-overall-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SPriv2"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-overtime-overall-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SPriv3"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-overtime-overall-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SPriv4"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-overtime-overall-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  response_var = "SCom3"
 )
 
 result
@@ -963,7 +1589,7 @@ result
 ###### Question 1
 
 
-```{r sis-overtime-age-item1}
+```{r safety-overtime-age-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -973,7 +1599,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1",
+  response_var = "SSafDev1",
   group_var = "AgeGroup"
 )
 
@@ -984,7 +1610,7 @@ result
 ###### Question 2
 
 
-```{r sis-overtime-age-item2}
+```{r safety-overtime-age-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -994,7 +1620,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2",
+  response_var = "SSafDev2",
   group_var = "AgeGroup"
 )
 
@@ -1005,7 +1631,7 @@ result
 ###### Question 3
 
 
-```{r sis-overtime-age-item3}
+```{r safety-overtime-age-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1015,7 +1641,91 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4",
+  response_var = "SPriv1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-overtime-age-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-overtime-age-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-overtime-age-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-overtime-age-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SCom3",
   group_var = "AgeGroup"
 )
 
@@ -1034,7 +1744,7 @@ result
 ###### Question 1
 
 
-```{r sis-overtime-gender-item1}
+```{r safety-overtime-gender-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1044,7 +1754,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1",
+  response_var = "SSafDev1",
   group_var = "geslacht"
 )
 
@@ -1055,7 +1765,7 @@ result
 ###### Question 2
 
 
-```{r sis-overtime-gender-item2}
+```{r safety-overtime-gender-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1065,7 +1775,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2",
+  response_var = "SSafDev2",
   group_var = "geslacht"
 )
 
@@ -1076,7 +1786,7 @@ result
 ###### Question 3
 
 
-```{r sis-overtime-gender-item3}
+```{r safety-overtime-gender-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1086,7 +1796,91 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4",
+  response_var = "SPriv1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-overtime-gender-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-overtime-gender-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-overtime-gender-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-overtime-gender-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SCom3",
   group_var = "geslacht"
 )
 
@@ -1105,7 +1899,7 @@ result
 ###### Question 1
 
 
-```{r sis-overtime-edu-item1}
+```{r safety-overtime-edu-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1115,7 +1909,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1",
+  response_var = "SSafDev1",
   group_var = "Education"
 )
 
@@ -1126,7 +1920,7 @@ result
 ###### Question 2
 
 
-```{r sis-overtime-edu-item2}
+```{r safety-overtime-edu-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1136,7 +1930,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2",
+  response_var = "SSafDev2",
   group_var = "Education"
 )
 
@@ -1147,7 +1941,7 @@ result
 ###### Question 3
 
 
-```{r sis-overtime-edu-item3}
+```{r safety-overtime-edu-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1157,7 +1951,91 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4",
+  response_var = "SPriv1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r safety-overtime-edu-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r safety-overtime-edu-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r safety-overtime-edu-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SPriv4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r safety-overtime-edu-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "SCom3",
   group_var = "Education"
 )
 
@@ -1176,7 +2054,7 @@ result
 
 :::
 
-## {{< iconify ph chart-line >}} Critical Information Skills
+## {{< iconify lets-icons view-light >}} Digital Health and Wellbeing Skills
 
 
 ::: {.panel-tabset}
@@ -1194,13 +2072,13 @@ result
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
 
-```{r cis-wave1-overall}
-# Critical Information Skills
+```{r dhealth-wave1-overall}
+# Digital Health and Wellbeing Skills
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(SInfo5, SInfo6, SInfo7),
-  title = "Critical Information Skills",
-  questions = c("SInfo5", "SInfo6", "SInfo7"),
-  question_labels = c("I know how I can check if the information I find on the internet is true.", "I know how I can check if a website is reliable.", "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell)."),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(SHealth1, SHealth2_V2, SHealth3_V2),
+  title = "Digital Health and Wellbeing Skills",
+  questions = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
+  question_labels = c("I know how to control how much time I spend on the internet.", "I know how to make sure my phone does not distract me.", "I know how I can stop using my phone and computer for a while, if I want to."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -1224,11 +2102,11 @@ result
 ###### Question 1
 
 
-```{r cis-wave1-age-item1}
-# I know how I can check if the information I find on the internet is true.
+```{r dhealth-wave1-age-item1}
+# I know how to control how much time I spend on the internet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SInfo5),
-  title = "I know how I can check if the information I find on the internet is true.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SHealth1),
+  title = "I know how to control how much time I spend on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1237,7 +2115,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo5"
+  stack_var = "SHealth1"
 )
 
 result
@@ -1247,11 +2125,11 @@ result
 ###### Question 2
 
 
-```{r cis-wave1-age-item2}
-# I know how I can check if a website is reliable.
+```{r dhealth-wave1-age-item2}
+# I know how to make sure my phone does not distract me.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SInfo6),
-  title = "I know how I can check if a website is reliable.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SHealth2_V2),
+  title = "I know how to make sure my phone does not distract me.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1260,7 +2138,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo6"
+  stack_var = "SHealth2_V2"
 )
 
 result
@@ -1270,11 +2148,11 @@ result
 ###### Question 3
 
 
-```{r cis-wave1-age-item3}
-# I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).
+```{r dhealth-wave1-age-item3}
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SInfo7),
-  title = "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SHealth3_V2),
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1283,7 +2161,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo7"
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -1301,11 +2179,11 @@ result
 ###### Question 1
 
 
-```{r cis-wave1-gender-item1}
-# I know how I can check if the information I find on the internet is true.
+```{r dhealth-wave1-gender-item1}
+# I know how to control how much time I spend on the internet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SInfo5),
-  title = "I know how I can check if the information I find on the internet is true.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SHealth1),
+  title = "I know how to control how much time I spend on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1314,7 +2192,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo5"
+  stack_var = "SHealth1"
 )
 
 result
@@ -1324,11 +2202,11 @@ result
 ###### Question 2
 
 
-```{r cis-wave1-gender-item2}
-# I know how I can check if a website is reliable.
+```{r dhealth-wave1-gender-item2}
+# I know how to make sure my phone does not distract me.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SInfo6),
-  title = "I know how I can check if a website is reliable.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SHealth2_V2),
+  title = "I know how to make sure my phone does not distract me.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1337,7 +2215,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo6"
+  stack_var = "SHealth2_V2"
 )
 
 result
@@ -1347,11 +2225,11 @@ result
 ###### Question 3
 
 
-```{r cis-wave1-gender-item3}
-# I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).
+```{r dhealth-wave1-gender-item3}
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SInfo7),
-  title = "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SHealth3_V2),
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1360,7 +2238,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo7"
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -1378,11 +2256,11 @@ result
 ###### Question 1
 
 
-```{r cis-wave1-edu-item1}
-# I know how I can check if the information I find on the internet is true.
+```{r dhealth-wave1-edu-item1}
+# I know how to control how much time I spend on the internet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SInfo5),
-  title = "I know how I can check if the information I find on the internet is true.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SHealth1),
+  title = "I know how to control how much time I spend on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1391,7 +2269,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo5"
+  stack_var = "SHealth1"
 )
 
 result
@@ -1401,11 +2279,11 @@ result
 ###### Question 2
 
 
-```{r cis-wave1-edu-item2}
-# I know how I can check if a website is reliable.
+```{r dhealth-wave1-edu-item2}
+# I know how to make sure my phone does not distract me.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SInfo6),
-  title = "I know how I can check if a website is reliable.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SHealth2_V2),
+  title = "I know how to make sure my phone does not distract me.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1414,7 +2292,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo6"
+  stack_var = "SHealth2_V2"
 )
 
 result
@@ -1424,11 +2302,11 @@ result
 ###### Question 3
 
 
-```{r cis-wave1-edu-item3}
-# I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).
+```{r dhealth-wave1-edu-item3}
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SInfo7),
-  title = "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SHealth3_V2),
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1437,7 +2315,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo7"
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -1466,13 +2344,13 @@ result
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
 
-```{r cis-wave2-overall}
-# Critical Information Skills
+```{r dhealth-wave2-overall}
+# Digital Health and Wellbeing Skills
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(SInfo5, SInfo6, SInfo7),
-  title = "Critical Information Skills",
-  questions = c("SInfo5", "SInfo6", "SInfo7"),
-  question_labels = c("I know how I can check if the information I find on the internet is true.", "I know how I can check if a website is reliable.", "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell)."),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SHealth1, SHealth2_V2, SHealth3_V2),
+  title = "Digital Health and Wellbeing Skills",
+  questions = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
+  question_labels = c("I know how to control how much time I spend on the internet.", "I know how to make sure my phone does not distract me.", "I know how I can stop using my phone and computer for a while, if I want to."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -1496,11 +2374,11 @@ result
 ###### Question 1
 
 
-```{r cis-wave2-age-item1}
-# I know how I can check if the information I find on the internet is true.
+```{r dhealth-wave2-age-item1}
+# I know how to control how much time I spend on the internet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SInfo5),
-  title = "I know how I can check if the information I find on the internet is true.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SHealth1),
+  title = "I know how to control how much time I spend on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1509,7 +2387,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo5"
+  stack_var = "SHealth1"
 )
 
 result
@@ -1519,11 +2397,11 @@ result
 ###### Question 2
 
 
-```{r cis-wave2-age-item2}
-# I know how I can check if a website is reliable.
+```{r dhealth-wave2-age-item2}
+# I know how to make sure my phone does not distract me.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SInfo6),
-  title = "I know how I can check if a website is reliable.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SHealth2_V2),
+  title = "I know how to make sure my phone does not distract me.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1532,7 +2410,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo6"
+  stack_var = "SHealth2_V2"
 )
 
 result
@@ -1542,11 +2420,11 @@ result
 ###### Question 3
 
 
-```{r cis-wave2-age-item3}
-# I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).
+```{r dhealth-wave2-age-item3}
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SInfo7),
-  title = "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SHealth3_V2),
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1555,7 +2433,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SInfo7"
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -1573,11 +2451,11 @@ result
 ###### Question 1
 
 
-```{r cis-wave2-gender-item1}
-# I know how I can check if the information I find on the internet is true.
+```{r dhealth-wave2-gender-item1}
+# I know how to control how much time I spend on the internet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SInfo5),
-  title = "I know how I can check if the information I find on the internet is true.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SHealth1),
+  title = "I know how to control how much time I spend on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1586,7 +2464,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo5"
+  stack_var = "SHealth1"
 )
 
 result
@@ -1596,11 +2474,11 @@ result
 ###### Question 2
 
 
-```{r cis-wave2-gender-item2}
-# I know how I can check if a website is reliable.
+```{r dhealth-wave2-gender-item2}
+# I know how to make sure my phone does not distract me.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SInfo6),
-  title = "I know how I can check if a website is reliable.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SHealth2_V2),
+  title = "I know how to make sure my phone does not distract me.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1609,7 +2487,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo6"
+  stack_var = "SHealth2_V2"
 )
 
 result
@@ -1619,11 +2497,11 @@ result
 ###### Question 3
 
 
-```{r cis-wave2-gender-item3}
-# I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).
+```{r dhealth-wave2-gender-item3}
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SInfo7),
-  title = "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SHealth3_V2),
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1632,7 +2510,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SInfo7"
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -1650,11 +2528,11 @@ result
 ###### Question 1
 
 
-```{r cis-wave2-edu-item1}
-# I know how I can check if the information I find on the internet is true.
+```{r dhealth-wave2-edu-item1}
+# I know how to control how much time I spend on the internet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SInfo5),
-  title = "I know how I can check if the information I find on the internet is true.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SHealth1),
+  title = "I know how to control how much time I spend on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1663,7 +2541,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo5"
+  stack_var = "SHealth1"
 )
 
 result
@@ -1673,11 +2551,11 @@ result
 ###### Question 2
 
 
-```{r cis-wave2-edu-item2}
-# I know how I can check if a website is reliable.
+```{r dhealth-wave2-edu-item2}
+# I know how to make sure my phone does not distract me.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SInfo6),
-  title = "I know how I can check if a website is reliable.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SHealth2_V2),
+  title = "I know how to make sure my phone does not distract me.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1686,7 +2564,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo6"
+  stack_var = "SHealth2_V2"
 )
 
 result
@@ -1696,11 +2574,11 @@ result
 ###### Question 3
 
 
-```{r cis-wave2-edu-item3}
-# I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).
+```{r dhealth-wave2-edu-item3}
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SInfo7),
-  title = "I can assess what the goal of online information is (e.g., to inform, influence, entertain or sell).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SHealth3_V2),
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1709,7 +2587,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SInfo7"
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -1741,7 +2619,7 @@ result
 ###### Question 1
 
 
-```{r cis-overtime-overall-item1}
+```{r dhealth-overtime-overall-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1750,7 +2628,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SInfo5"
+  response_var = "SHealth1"
 )
 
 result
@@ -1760,7 +2638,7 @@ result
 ###### Question 2
 
 
-```{r cis-overtime-overall-item2}
+```{r dhealth-overtime-overall-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1769,7 +2647,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SInfo6"
+  response_var = "SHealth2_V2"
 )
 
 result
@@ -1779,7 +2657,7 @@ result
 ###### Question 3
 
 
-```{r cis-overtime-overall-item3}
+```{r dhealth-overtime-overall-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1788,7 +2666,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SInfo7"
+  response_var = "SHealth3_V2"
 )
 
 result
@@ -1806,7 +2684,7 @@ result
 ###### Question 1
 
 
-```{r cis-overtime-age-item1}
+```{r dhealth-overtime-age-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1816,7 +2694,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5",
+  response_var = "SHealth1",
   group_var = "AgeGroup"
 )
 
@@ -1827,7 +2705,7 @@ result
 ###### Question 2
 
 
-```{r cis-overtime-age-item2}
+```{r dhealth-overtime-age-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1837,7 +2715,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6",
+  response_var = "SHealth2_V2",
   group_var = "AgeGroup"
 )
 
@@ -1848,7 +2726,7 @@ result
 ###### Question 3
 
 
-```{r cis-overtime-age-item3}
+```{r dhealth-overtime-age-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1858,7 +2736,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7",
+  response_var = "SHealth3_V2",
   group_var = "AgeGroup"
 )
 
@@ -1877,7 +2755,7 @@ result
 ###### Question 1
 
 
-```{r cis-overtime-gender-item1}
+```{r dhealth-overtime-gender-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1887,7 +2765,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5",
+  response_var = "SHealth1",
   group_var = "geslacht"
 )
 
@@ -1898,7 +2776,7 @@ result
 ###### Question 2
 
 
-```{r cis-overtime-gender-item2}
+```{r dhealth-overtime-gender-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1908,7 +2786,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6",
+  response_var = "SHealth2_V2",
   group_var = "geslacht"
 )
 
@@ -1919,7 +2797,7 @@ result
 ###### Question 3
 
 
-```{r cis-overtime-gender-item3}
+```{r dhealth-overtime-gender-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1929,7 +2807,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7",
+  response_var = "SHealth3_V2",
   group_var = "geslacht"
 )
 
@@ -1948,7 +2826,7 @@ result
 ###### Question 1
 
 
-```{r cis-overtime-edu-item1}
+```{r dhealth-overtime-edu-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1958,7 +2836,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5",
+  response_var = "SHealth1",
   group_var = "Education"
 )
 
@@ -1969,7 +2847,7 @@ result
 ###### Question 2
 
 
-```{r cis-overtime-edu-item2}
+```{r dhealth-overtime-edu-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -1979,7 +2857,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6",
+  response_var = "SHealth2_V2",
   group_var = "Education"
 )
 
@@ -1990,7 +2868,7 @@ result
 ###### Question 3
 
 
-```{r cis-overtime-edu-item3}
+```{r dhealth-overtime-edu-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2000,7 +2878,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7",
+  response_var = "SHealth3_V2",
   group_var = "Education"
 )
 
@@ -2019,7 +2897,7 @@ result
 
 :::
 
-## {{< iconify ph chart-line >}} Netiquette Skills
+## {{< iconify lets-icons view-light >}} Sustainable/Green Digital Skills
 
 
 ::: {.panel-tabset}
@@ -2037,13 +2915,13 @@ result
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
 
-```{r nskills-wave1-overall}
-# Netiquette Skills
+```{r green-wave1-overall}
+# Sustainable/Green Digital Skills
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(SCom1_V2, SCom2, SCom4_V2, SCom5),
-  title = "Netiquette Skills",
-  questions = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
-  question_labels = c("I know when I should ask for permission to share something online.", "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).", "I know which things I should not share online.", "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)."),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(SEnv1, SEnv2, SEnv3),
+  title = "Sustainable/Green Digital Skills",
+  questions = c("SEnv1", "SEnv2", "SEnv3"),
+  question_labels = c("I know how to reduce the battery use of a phone or computer.", "I know how I can buy a phone or computer in a “green” or sustainable way.", "I know how to have a phone or computer recycled."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -2067,11 +2945,11 @@ result
 ###### Question 1
 
 
-```{r nskills-wave1-age-item1}
-# I know when I should ask for permission to share something online.
+```{r green-wave1-age-item1}
+# I know how to reduce the battery use of a phone or computer.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom1_V2),
-  title = "I know when I should ask for permission to share something online.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SEnv1),
+  title = "I know how to reduce the battery use of a phone or computer.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2080,7 +2958,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCom1_V2"
+  stack_var = "SEnv1"
 )
 
 result
@@ -2090,11 +2968,11 @@ result
 ###### Question 2
 
 
-```{r nskills-wave1-age-item2}
-# I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).
+```{r green-wave1-age-item2}
+# I know how I can buy a phone or computer in a “green” or sustainable way.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom2),
-  title = "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SEnv2),
+  title = "I know how I can buy a phone or computer in a “green” or sustainable way.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2103,7 +2981,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCom2"
+  stack_var = "SEnv2"
 )
 
 result
@@ -2113,11 +2991,11 @@ result
 ###### Question 3
 
 
-```{r nskills-wave1-age-item3}
-# I know which things I should not share online.
+```{r green-wave1-age-item3}
+# I know how to have a phone or computer recycled.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom4_V2),
-  title = "I know which things I should not share online.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SEnv3),
+  title = "I know how to have a phone or computer recycled.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2126,30 +3004,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCom4_V2"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-wave1-age-item4}
-# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom5),
-  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  stack_var = "SCom5"
+  stack_var = "SEnv3"
 )
 
 result
@@ -2167,11 +3022,11 @@ result
 ###### Question 1
 
 
-```{r nskills-wave1-gender-item1}
-# I know when I should ask for permission to share something online.
+```{r green-wave1-gender-item1}
+# I know how to reduce the battery use of a phone or computer.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom1_V2),
-  title = "I know when I should ask for permission to share something online.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SEnv1),
+  title = "I know how to reduce the battery use of a phone or computer.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2180,7 +3035,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCom1_V2"
+  stack_var = "SEnv1"
 )
 
 result
@@ -2190,11 +3045,11 @@ result
 ###### Question 2
 
 
-```{r nskills-wave1-gender-item2}
-# I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).
+```{r green-wave1-gender-item2}
+# I know how I can buy a phone or computer in a “green” or sustainable way.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom2),
-  title = "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SEnv2),
+  title = "I know how I can buy a phone or computer in a “green” or sustainable way.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2203,7 +3058,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCom2"
+  stack_var = "SEnv2"
 )
 
 result
@@ -2213,11 +3068,11 @@ result
 ###### Question 3
 
 
-```{r nskills-wave1-gender-item3}
-# I know which things I should not share online.
+```{r green-wave1-gender-item3}
+# I know how to have a phone or computer recycled.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom4_V2),
-  title = "I know which things I should not share online.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SEnv3),
+  title = "I know how to have a phone or computer recycled.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2226,30 +3081,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCom4_V2"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-wave1-gender-item4}
-# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom5),
-  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  stack_var = "SCom5"
+  stack_var = "SEnv3"
 )
 
 result
@@ -2267,11 +3099,11 @@ result
 ###### Question 1
 
 
-```{r nskills-wave1-edu-item1}
-# I know when I should ask for permission to share something online.
+```{r green-wave1-edu-item1}
+# I know how to reduce the battery use of a phone or computer.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom1_V2),
-  title = "I know when I should ask for permission to share something online.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SEnv1),
+  title = "I know how to reduce the battery use of a phone or computer.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2280,7 +3112,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCom1_V2"
+  stack_var = "SEnv1"
 )
 
 result
@@ -2290,11 +3122,11 @@ result
 ###### Question 2
 
 
-```{r nskills-wave1-edu-item2}
-# I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).
+```{r green-wave1-edu-item2}
+# I know how I can buy a phone or computer in a “green” or sustainable way.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom2),
-  title = "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SEnv2),
+  title = "I know how I can buy a phone or computer in a “green” or sustainable way.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2303,7 +3135,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCom2"
+  stack_var = "SEnv2"
 )
 
 result
@@ -2313,11 +3145,11 @@ result
 ###### Question 3
 
 
-```{r nskills-wave1-edu-item3}
-# I know which things I should not share online.
+```{r green-wave1-edu-item3}
+# I know how to have a phone or computer recycled.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom4_V2),
-  title = "I know which things I should not share online.",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SEnv3),
+  title = "I know how to have a phone or computer recycled.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2326,30 +3158,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCom4_V2"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-wave1-edu-item4}
-# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom5),
-  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  stack_var = "SCom5"
+  stack_var = "SEnv3"
 )
 
 result
@@ -2378,13 +3187,13 @@ result
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
 
-```{r nskills-wave2-overall}
-# Netiquette Skills
+```{r green-wave2-overall}
+# Sustainable/Green Digital Skills
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(SCom1_V2, SCom2, SCom4_V2, SCom5),
-  title = "Netiquette Skills",
-  questions = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
-  question_labels = c("I know when I should ask for permission to share something online.", "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).", "I know which things I should not share online.", "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)."),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SEnv1, SEnv2, SEnv3),
+  title = "Sustainable/Green Digital Skills",
+  questions = c("SEnv1", "SEnv2", "SEnv3"),
+  question_labels = c("I know how to reduce the battery use of a phone or computer.", "I know how I can buy a phone or computer in a “green” or sustainable way.", "I know how to have a phone or computer recycled."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -2408,11 +3217,11 @@ result
 ###### Question 1
 
 
-```{r nskills-wave2-age-item1}
-# I know when I should ask for permission to share something online.
+```{r green-wave2-age-item1}
+# I know how to reduce the battery use of a phone or computer.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom1_V2),
-  title = "I know when I should ask for permission to share something online.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SEnv1),
+  title = "I know how to reduce the battery use of a phone or computer.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2421,7 +3230,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCom1_V2"
+  stack_var = "SEnv1"
 )
 
 result
@@ -2431,11 +3240,11 @@ result
 ###### Question 2
 
 
-```{r nskills-wave2-age-item2}
-# I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).
+```{r green-wave2-age-item2}
+# I know how I can buy a phone or computer in a “green” or sustainable way.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom2),
-  title = "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SEnv2),
+  title = "I know how I can buy a phone or computer in a “green” or sustainable way.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2444,7 +3253,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCom2"
+  stack_var = "SEnv2"
 )
 
 result
@@ -2454,11 +3263,11 @@ result
 ###### Question 3
 
 
-```{r nskills-wave2-age-item3}
-# I know which things I should not share online.
+```{r green-wave2-age-item3}
+# I know how to have a phone or computer recycled.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom4_V2),
-  title = "I know which things I should not share online.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SEnv3),
+  title = "I know how to have a phone or computer recycled.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2467,30 +3276,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCom4_V2"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-wave2-age-item4}
-# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom5),
-  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  stack_var = "SCom5"
+  stack_var = "SEnv3"
 )
 
 result
@@ -2508,11 +3294,11 @@ result
 ###### Question 1
 
 
-```{r nskills-wave2-gender-item1}
-# I know when I should ask for permission to share something online.
+```{r green-wave2-gender-item1}
+# I know how to reduce the battery use of a phone or computer.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom1_V2),
-  title = "I know when I should ask for permission to share something online.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SEnv1),
+  title = "I know how to reduce the battery use of a phone or computer.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2521,7 +3307,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCom1_V2"
+  stack_var = "SEnv1"
 )
 
 result
@@ -2531,11 +3317,11 @@ result
 ###### Question 2
 
 
-```{r nskills-wave2-gender-item2}
-# I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).
+```{r green-wave2-gender-item2}
+# I know how I can buy a phone or computer in a “green” or sustainable way.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom2),
-  title = "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SEnv2),
+  title = "I know how I can buy a phone or computer in a “green” or sustainable way.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2544,7 +3330,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCom2"
+  stack_var = "SEnv2"
 )
 
 result
@@ -2554,11 +3340,11 @@ result
 ###### Question 3
 
 
-```{r nskills-wave2-gender-item3}
-# I know which things I should not share online.
+```{r green-wave2-gender-item3}
+# I know how to have a phone or computer recycled.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom4_V2),
-  title = "I know which things I should not share online.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SEnv3),
+  title = "I know how to have a phone or computer recycled.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2567,30 +3353,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCom4_V2"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-wave2-gender-item4}
-# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom5),
-  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  stack_var = "SCom5"
+  stack_var = "SEnv3"
 )
 
 result
@@ -2608,11 +3371,11 @@ result
 ###### Question 1
 
 
-```{r nskills-wave2-edu-item1}
-# I know when I should ask for permission to share something online.
+```{r green-wave2-edu-item1}
+# I know how to reduce the battery use of a phone or computer.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom1_V2),
-  title = "I know when I should ask for permission to share something online.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SEnv1),
+  title = "I know how to reduce the battery use of a phone or computer.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2621,7 +3384,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCom1_V2"
+  stack_var = "SEnv1"
 )
 
 result
@@ -2631,11 +3394,11 @@ result
 ###### Question 2
 
 
-```{r nskills-wave2-edu-item2}
-# I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).
+```{r green-wave2-edu-item2}
+# I know how I can buy a phone or computer in a “green” or sustainable way.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom2),
-  title = "I know which communication tool best fits which situation  (for example: call, send a WhatsApp-message, send an e-mail).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SEnv2),
+  title = "I know how I can buy a phone or computer in a “green” or sustainable way.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2644,7 +3407,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCom2"
+  stack_var = "SEnv2"
 )
 
 result
@@ -2654,11 +3417,11 @@ result
 ###### Question 3
 
 
-```{r nskills-wave2-edu-item3}
-# I know which things I should not share online.
+```{r green-wave2-edu-item3}
+# I know how to have a phone or computer recycled.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom4_V2),
-  title = "I know which things I should not share online.",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SEnv3),
+  title = "I know how to have a phone or computer recycled.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2667,30 +3430,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCom4_V2"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-wave2-edu-item4}
-# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom5),
-  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  stack_var = "SCom5"
+  stack_var = "SEnv3"
 )
 
 result
@@ -2722,7 +3462,7 @@ result
 ###### Question 1
 
 
-```{r nskills-overtime-overall-item1}
+```{r green-overtime-overall-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2731,7 +3471,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SCom1_V2"
+  response_var = "SEnv1"
 )
 
 result
@@ -2741,7 +3481,7 @@ result
 ###### Question 2
 
 
-```{r nskills-overtime-overall-item2}
+```{r green-overtime-overall-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2750,7 +3490,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SCom2"
+  response_var = "SEnv2"
 )
 
 result
@@ -2760,7 +3500,7 @@ result
 ###### Question 3
 
 
-```{r nskills-overtime-overall-item3}
+```{r green-overtime-overall-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2769,26 +3509,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SCom4_V2"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-overtime-overall-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  response_var = "SCom5"
+  response_var = "SEnv3"
 )
 
 result
@@ -2806,7 +3527,7 @@ result
 ###### Question 1
 
 
-```{r nskills-overtime-age-item1}
+```{r green-overtime-age-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2816,7 +3537,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2",
+  response_var = "SEnv1",
   group_var = "AgeGroup"
 )
 
@@ -2827,7 +3548,7 @@ result
 ###### Question 2
 
 
-```{r nskills-overtime-age-item2}
+```{r green-overtime-age-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2837,7 +3558,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom2",
+  response_var = "SEnv2",
   group_var = "AgeGroup"
 )
 
@@ -2848,7 +3569,7 @@ result
 ###### Question 3
 
 
-```{r nskills-overtime-age-item3}
+```{r green-overtime-age-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2858,28 +3579,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-overtime-age-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCom5",
+  response_var = "SEnv3",
   group_var = "AgeGroup"
 )
 
@@ -2898,7 +3598,7 @@ result
 ###### Question 1
 
 
-```{r nskills-overtime-gender-item1}
+```{r green-overtime-gender-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2908,7 +3608,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2",
+  response_var = "SEnv1",
   group_var = "geslacht"
 )
 
@@ -2919,7 +3619,7 @@ result
 ###### Question 2
 
 
-```{r nskills-overtime-gender-item2}
+```{r green-overtime-gender-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2929,7 +3629,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom2",
+  response_var = "SEnv2",
   group_var = "geslacht"
 )
 
@@ -2940,7 +3640,7 @@ result
 ###### Question 3
 
 
-```{r nskills-overtime-gender-item3}
+```{r green-overtime-gender-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -2950,28 +3650,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-overtime-gender-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCom5",
+  response_var = "SEnv3",
   group_var = "geslacht"
 )
 
@@ -2990,7 +3669,7 @@ result
 ###### Question 1
 
 
-```{r nskills-overtime-edu-item1}
+```{r green-overtime-edu-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3000,7 +3679,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2",
+  response_var = "SEnv1",
   group_var = "Education"
 )
 
@@ -3011,7 +3690,7 @@ result
 ###### Question 2
 
 
-```{r nskills-overtime-edu-item2}
+```{r green-overtime-edu-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3021,7 +3700,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom2",
+  response_var = "SEnv2",
   group_var = "Education"
 )
 
@@ -3032,7 +3711,7 @@ result
 ###### Question 3
 
 
-```{r nskills-overtime-edu-item3}
+```{r green-overtime-edu-item3}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3042,28 +3721,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r nskills-overtime-edu-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCom5",
+  response_var = "SEnv3",
   group_var = "Education"
 )
 
@@ -3082,7 +3740,7 @@ result
 
 :::
 
-## {{< iconify ph chart-line >}} Digital Content Creation Skills
+## {{< iconify lets-icons view-light >}} Digital Problem Solving Skills
 
 
 ::: {.panel-tabset}
@@ -3100,13 +3758,13 @@ result
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
 
-```{r dccs-wave1-overall}
-# Digital Content Creation Skills
+```{r dprob-wave1-overall}
+# Digital Problem Solving Skills
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(SCrea2, SCrea3, SCrea4, SCrea5),
-  title = "Digital Content Creation Skills",
-  questions = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
-  question_labels = c("I can make a presentation on the computer (for example in Powerpoint)", "I can make something that combines different digital media (for example a movie with music).", "I can change existing digital images, music, and video.", "I can make a photo or video more attractive (for example with a filter or Photoshop)."),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(SProbl1, SProbl2),
+  title = "Digital Problem Solving Skills",
+  questions = c("SProbl1", "SProbl2"),
+  question_labels = c("I know where or from whom I can get help to improve my digital skills.", "I know where or from whom I can get help if I’m unable to do something on the internet."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -3130,11 +3788,11 @@ result
 ###### Question 1
 
 
-```{r dccs-wave1-age-item1}
-# I can make a presentation on the computer (for example in Powerpoint)
+```{r dprob-wave1-age-item1}
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCrea2),
-  title = "I can make a presentation on the computer (for example in Powerpoint)",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SProbl1),
+  title = "I know where or from whom I can get help to improve my digital skills.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3143,7 +3801,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCrea2"
+  stack_var = "SProbl1"
 )
 
 result
@@ -3153,11 +3811,11 @@ result
 ###### Question 2
 
 
-```{r dccs-wave1-age-item2}
-# I can make something that combines different digital media (for example a movie with music).
+```{r dprob-wave1-age-item2}
+# I know where or from whom I can get help if I’m unable to do something on the internet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCrea3),
-  title = "I can make something that combines different digital media (for example a movie with music).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SProbl2),
+  title = "I know where or from whom I can get help if I’m unable to do something on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3166,53 +3824,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCrea3"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-wave1-age-item3}
-# I can change existing digital images, music, and video.
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCrea4),
-  title = "I can change existing digital images, music, and video.",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  stack_var = "SCrea4"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-wave1-age-item4}
-# I can make a photo or video more attractive (for example with a filter or Photoshop).
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCrea5),
-  title = "I can make a photo or video more attractive (for example with a filter or Photoshop).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  stack_var = "SCrea5"
+  stack_var = "SProbl2"
 )
 
 result
@@ -3230,11 +3842,11 @@ result
 ###### Question 1
 
 
-```{r dccs-wave1-gender-item1}
-# I can make a presentation on the computer (for example in Powerpoint)
+```{r dprob-wave1-gender-item1}
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCrea2),
-  title = "I can make a presentation on the computer (for example in Powerpoint)",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SProbl1),
+  title = "I know where or from whom I can get help to improve my digital skills.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3243,7 +3855,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCrea2"
+  stack_var = "SProbl1"
 )
 
 result
@@ -3253,11 +3865,11 @@ result
 ###### Question 2
 
 
-```{r dccs-wave1-gender-item2}
-# I can make something that combines different digital media (for example a movie with music).
+```{r dprob-wave1-gender-item2}
+# I know where or from whom I can get help if I’m unable to do something on the internet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCrea3),
-  title = "I can make something that combines different digital media (for example a movie with music).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SProbl2),
+  title = "I know where or from whom I can get help if I’m unable to do something on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3266,53 +3878,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCrea3"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-wave1-gender-item3}
-# I can change existing digital images, music, and video.
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCrea4),
-  title = "I can change existing digital images, music, and video.",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  stack_var = "SCrea4"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-wave1-gender-item4}
-# I can make a photo or video more attractive (for example with a filter or Photoshop).
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCrea5),
-  title = "I can make a photo or video more attractive (for example with a filter or Photoshop).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  stack_var = "SCrea5"
+  stack_var = "SProbl2"
 )
 
 result
@@ -3330,11 +3896,11 @@ result
 ###### Question 1
 
 
-```{r dccs-wave1-edu-item1}
-# I can make a presentation on the computer (for example in Powerpoint)
+```{r dprob-wave1-edu-item1}
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCrea2),
-  title = "I can make a presentation on the computer (for example in Powerpoint)",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SProbl1),
+  title = "I know where or from whom I can get help to improve my digital skills.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3343,7 +3909,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCrea2"
+  stack_var = "SProbl1"
 )
 
 result
@@ -3353,11 +3919,11 @@ result
 ###### Question 2
 
 
-```{r dccs-wave1-edu-item2}
-# I can make something that combines different digital media (for example a movie with music).
+```{r dprob-wave1-edu-item2}
+# I know where or from whom I can get help if I’m unable to do something on the internet.
 result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCrea3),
-  title = "I can make something that combines different digital media (for example a movie with music).",
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SProbl2),
+  title = "I know where or from whom I can get help if I’m unable to do something on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3366,53 +3932,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCrea3"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-wave1-edu-item3}
-# I can change existing digital images, music, and video.
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCrea4),
-  title = "I can change existing digital images, music, and video.",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  stack_var = "SCrea4"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-wave1-edu-item4}
-# I can make a photo or video more attractive (for example with a filter or Photoshop).
-result <- create_stackedbar(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCrea5),
-  title = "I can make a photo or video more attractive (for example with a filter or Photoshop).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  stack_var = "SCrea5"
+  stack_var = "SProbl2"
 )
 
 result
@@ -3441,13 +3961,13 @@ result
 create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We’d like to know this. If you don’t understand what the question means, please choose ‘I don’t understand the question.’ Do you recognize yourself in the following statements?", preset = "question")
 ```
 
-```{r dccs-wave2-overall}
-# Digital Content Creation Skills
+```{r dprob-wave2-overall}
+# Digital Problem Solving Skills
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(SCrea2, SCrea3, SCrea4, SCrea5),
-  title = "Digital Content Creation Skills",
-  questions = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
-  question_labels = c("I can make a presentation on the computer (for example in Powerpoint)", "I can make something that combines different digital media (for example a movie with music).", "I can change existing digital images, music, and video.", "I can make a photo or video more attractive (for example with a filter or Photoshop)."),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SProbl1, SProbl2),
+  title = "Digital Problem Solving Skills",
+  questions = c("SProbl1", "SProbl2"),
+  question_labels = c("I know where or from whom I can get help to improve my digital skills.", "I know where or from whom I can get help if I’m unable to do something on the internet."),
   stacked_type = "percent",
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   horizontal = TRUE,
@@ -3471,11 +3991,11 @@ result
 ###### Question 1
 
 
-```{r dccs-wave2-age-item1}
-# I can make a presentation on the computer (for example in Powerpoint)
+```{r dprob-wave2-age-item1}
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCrea2),
-  title = "I can make a presentation on the computer (for example in Powerpoint)",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SProbl1),
+  title = "I know where or from whom I can get help to improve my digital skills.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3484,7 +4004,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCrea2"
+  stack_var = "SProbl1"
 )
 
 result
@@ -3494,11 +4014,11 @@ result
 ###### Question 2
 
 
-```{r dccs-wave2-age-item2}
-# I can make something that combines different digital media (for example a movie with music).
+```{r dprob-wave2-age-item2}
+# I know where or from whom I can get help if I’m unable to do something on the internet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCrea3),
-  title = "I can make something that combines different digital media (for example a movie with music).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SProbl2),
+  title = "I know where or from whom I can get help if I’m unable to do something on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3507,53 +4027,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  stack_var = "SCrea3"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-wave2-age-item3}
-# I can change existing digital images, music, and video.
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCrea4),
-  title = "I can change existing digital images, music, and video.",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  stack_var = "SCrea4"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-wave2-age-item4}
-# I can make a photo or video more attractive (for example with a filter or Photoshop).
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCrea5),
-  title = "I can make a photo or video more attractive (for example with a filter or Photoshop).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  stack_var = "SCrea5"
+  stack_var = "SProbl2"
 )
 
 result
@@ -3571,11 +4045,11 @@ result
 ###### Question 1
 
 
-```{r dccs-wave2-gender-item1}
-# I can make a presentation on the computer (for example in Powerpoint)
+```{r dprob-wave2-gender-item1}
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCrea2),
-  title = "I can make a presentation on the computer (for example in Powerpoint)",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SProbl1),
+  title = "I know where or from whom I can get help to improve my digital skills.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3584,7 +4058,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCrea2"
+  stack_var = "SProbl1"
 )
 
 result
@@ -3594,11 +4068,11 @@ result
 ###### Question 2
 
 
-```{r dccs-wave2-gender-item2}
-# I can make something that combines different digital media (for example a movie with music).
+```{r dprob-wave2-gender-item2}
+# I know where or from whom I can get help if I’m unable to do something on the internet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCrea3),
-  title = "I can make something that combines different digital media (for example a movie with music).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SProbl2),
+  title = "I know where or from whom I can get help if I’m unable to do something on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3607,53 +4081,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  stack_var = "SCrea3"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-wave2-gender-item3}
-# I can change existing digital images, music, and video.
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCrea4),
-  title = "I can change existing digital images, music, and video.",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  stack_var = "SCrea4"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-wave2-gender-item4}
-# I can make a photo or video more attractive (for example with a filter or Photoshop).
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCrea5),
-  title = "I can make a photo or video more attractive (for example with a filter or Photoshop).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  stack_var = "SCrea5"
+  stack_var = "SProbl2"
 )
 
 result
@@ -3671,11 +4099,11 @@ result
 ###### Question 1
 
 
-```{r dccs-wave2-edu-item1}
-# I can make a presentation on the computer (for example in Powerpoint)
+```{r dprob-wave2-edu-item1}
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCrea2),
-  title = "I can make a presentation on the computer (for example in Powerpoint)",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SProbl1),
+  title = "I know where or from whom I can get help to improve my digital skills.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3684,7 +4112,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCrea2"
+  stack_var = "SProbl1"
 )
 
 result
@@ -3694,11 +4122,11 @@ result
 ###### Question 2
 
 
-```{r dccs-wave2-edu-item2}
-# I can make something that combines different digital media (for example a movie with music).
+```{r dprob-wave2-edu-item2}
+# I know where or from whom I can get help if I’m unable to do something on the internet.
 result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCrea3),
-  title = "I can make something that combines different digital media (for example a movie with music).",
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SProbl2),
+  title = "I know where or from whom I can get help if I’m unable to do something on the internet.",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3707,53 +4135,7 @@ result <- create_stackedbar(
   color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  stack_var = "SCrea3"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-wave2-edu-item3}
-# I can change existing digital images, music, and video.
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCrea4),
-  title = "I can change existing digital images, music, and video.",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  stack_var = "SCrea4"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-wave2-edu-item4}
-# I can make a photo or video more attractive (for example with a filter or Photoshop).
-result <- create_stackedbar(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCrea5),
-  title = "I can make a photo or video more attractive (for example with a filter or Photoshop).",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  stack_var = "SCrea5"
+  stack_var = "SProbl2"
 )
 
 result
@@ -3785,7 +4167,7 @@ result
 ###### Question 1
 
 
-```{r dccs-overtime-overall-item1}
+```{r dprob-overtime-overall-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3794,7 +4176,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SCrea2"
+  response_var = "SProbl1"
 )
 
 result
@@ -3804,7 +4186,7 @@ result
 ###### Question 2
 
 
-```{r dccs-overtime-overall-item2}
+```{r dprob-overtime-overall-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3813,45 +4195,7 @@ result <- create_timeline(
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
-  response_var = "SCrea3"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-overtime-overall-item3}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  response_var = "SCrea4"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-overtime-overall-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  response_var = "SCrea5"
+  response_var = "SProbl2"
 )
 
 result
@@ -3869,7 +4213,7 @@ result
 ###### Question 1
 
 
-```{r dccs-overtime-age-item1}
+```{r dprob-overtime-age-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3879,7 +4223,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2",
+  response_var = "SProbl1",
   group_var = "AgeGroup"
 )
 
@@ -3890,7 +4234,7 @@ result
 ###### Question 2
 
 
-```{r dccs-overtime-age-item2}
+```{r dprob-overtime-age-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3900,49 +4244,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-overtime-age-item3}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCrea4",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-overtime-age-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCrea5",
+  response_var = "SProbl2",
   group_var = "AgeGroup"
 )
 
@@ -3961,7 +4263,7 @@ result
 ###### Question 1
 
 
-```{r dccs-overtime-gender-item1}
+```{r dprob-overtime-gender-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3971,7 +4273,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2",
+  response_var = "SProbl1",
   group_var = "geslacht"
 )
 
@@ -3982,7 +4284,7 @@ result
 ###### Question 2
 
 
-```{r dccs-overtime-gender-item2}
+```{r dprob-overtime-gender-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -3992,49 +4294,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-overtime-gender-item3}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCrea4",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-overtime-gender-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCrea5",
+  response_var = "SProbl2",
   group_var = "geslacht"
 )
 
@@ -4053,7 +4313,7 @@ result
 ###### Question 1
 
 
-```{r dccs-overtime-edu-item1}
+```{r dprob-overtime-edu-item1}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -4063,7 +4323,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2",
+  response_var = "SProbl1",
   group_var = "Education"
 )
 
@@ -4074,7 +4334,7 @@ result
 ###### Question 2
 
 
-```{r dccs-overtime-edu-item2}
+```{r dprob-overtime-edu-item2}
 # timeline visualization
 result <- create_timeline(
   data = data,
@@ -4084,49 +4344,7 @@ result <- create_timeline(
   response_filter = c(4, 5),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### Question 3
-
-
-```{r dccs-overtime-edu-item3}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCrea4",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### Question 4
-
-
-```{r dccs-overtime-edu-item4}
-# timeline visualization
-result <- create_timeline(
-  data = data,
-  title = NULL,
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "SCrea5",
+  response_var = "SProbl2",
   group_var = "Education"
 )
 
@@ -4150,16 +4368,16 @@ result
 ```{=html}
 <nav class='pagination-nav' role='navigation' aria-label='Page navigation'>
   <div class='pagination-container'>
-    <button class='pagination-btn pagination-prev pagination-disabled' disabled aria-label='Previous page'>
+    <a href='skills.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
       <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
         <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
       </svg>
-    </button>
+    </a>
     <div class='pagination-info'>
-      <input type='number' class='pagination-input' id='page-input' min='1' max='3' value='1' aria-label='Current page'>
+      <input type='number' class='pagination-input' id='page-input' min='1' max='3' value='2' aria-label='Current page'>
       <span class='pagination-separator'>/ 3</span>
     </div>
-    <a href='skills_p2.html' class='pagination-btn pagination-next' aria-label='Next page'>
+    <a href='skills_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
       <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
         <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
       </svg>
