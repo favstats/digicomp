@@ -1202,11 +1202,13 @@ skills_viz <- sis_viz %>%
   combine_viz(cis_viz) %>% 
   combine_viz(nskills_viz) %>%
   combine_viz(dccs_viz)  %>%
+  add_pagination() %>%
   # new ones
   combine_viz(safety_viz) %>%
   combine_viz(dhealth_viz) %>%
   combine_viz(green_viz) %>%
-  combine_viz(dprob_viz) %>%
+  combine_viz(dprob_viz)  %>%
+  add_pagination() %>%
   combine_viz(trans_viz) %>%
   combine_viz(ai_viz) %>%
   combine_viz(genai_viz) %>%
@@ -1506,9 +1508,11 @@ performance_collection <- perf_sis_viz %>%
   combine_viz(perf_cis_viz) %>%
   combine_viz(perf_dccs_viz) %>%
   combine_viz(perf_safety_viz) %>%
+  add_pagination() %>%
   combine_viz(perf_health_viz) %>%
   combine_viz(perf_green_viz) %>%
-  combine_viz(perf_ps_viz) %>%
+  combine_viz(perf_ps_viz)  %>%
+  add_pagination() %>%
   combine_viz(perf_trans_viz) %>%
   combine_viz(perf_ai_viz) %>%
   combine_viz(perf_genai_viz) %>%
@@ -1584,9 +1588,6 @@ strategic_visualizations <- (sis_viz_wo_link + perf_sis_viz + kinfo_viz)  %>%
 
 # Create comprehensive dashboard with ALL features
 dashboard <- create_dashboard(
-  lazy_load_charts = TRUE,
-  lazy_load_margin = "300px",
-  lazy_load_tabs = TRUE,
   output_dir = "qmds", 
   title = "Digital Competence Dashboard", 
   github = "https://github.com/favstats/dashboardr",
@@ -1617,7 +1618,13 @@ dashboard <- create_dashboard(
   plausible = "example.com",
   metrics_style = "bootstrap",
   page_layout = "full",
-  publish_dir = "../docs"
+  publish_dir = "../docs",
+  
+  lazy_debug = T,
+  pagination_separator = "/",
+  lazy_load_charts = TRUE,
+  lazy_load_margin = "300px",
+  lazy_load_tabs = TRUE
 ) %>%
   # Landing page with icon
   add_page(
@@ -1639,6 +1646,10 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = skills_viz,
     icon = "ph:chart-line",
+    lazy_debug = T,
+    lazy_load_charts = TRUE,
+    lazy_load_margin = "300px",
+    lazy_load_tabs = TRUE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",

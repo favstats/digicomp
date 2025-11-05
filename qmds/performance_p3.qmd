@@ -1,0 +1,3567 @@
+---
+title: "{{< iconify ph chart-line >}} Performance"
+format: html
+---
+
+```{r}
+#| include: false
+library(dashboardr)
+```
+
+**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
+
+The **Performance** section measures participants’ practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today’s digital environment.
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load required libraries
+library(dashboardr)
+library(dplyr)
+library(highcharter)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data from dataset_4268obs.rds
+data <- readRDS('dataset_4268obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{=html}
+
+<style>
+/* Chart Lazy Loading Styles */
+.chart-lazy {
+  position: relative;
+  min-height: 400px;
+  margin: 1rem 0;
+}
+
+.chart-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.chart-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.chart-loading-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Theme: Light */
+.chart-skeleton.theme-light {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart-skeleton.theme-light .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.2);
+  border-top-color: rgba(15, 23, 42, 0.8);
+}
+
+.chart-skeleton.theme-light .chart-loading-text {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+/* Theme: Glass */
+.chart-skeleton.theme-glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.chart-skeleton.theme-glass .chart-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(15, 23, 42, 0.7);
+}
+
+.chart-skeleton.theme-glass .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+
+/* Theme: Dark */
+.chart-skeleton.theme-dark {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chart-skeleton.theme-dark .chart-spinner {
+  border: 3px solid rgba(148, 163, 184, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+
+.chart-skeleton.theme-dark .chart-loading-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Theme: Accent */
+.chart-skeleton.theme-accent {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+}
+
+.chart-skeleton.theme-accent .chart-spinner {
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: rgba(59, 130, 246, 0.9);
+}
+
+.chart-skeleton.theme-accent .chart-loading-text {
+  color: rgba(15, 23, 42, 0.8);
+}
+</style>
+
+<script>
+// Chart Lazy Loading System
+(function() {
+  const THEME = 'light';
+  const DEBUG = true;
+  
+  // Track which charts have been initialized
+  const initializedCharts = new Set();
+  
+  // Queue of charts waiting to be initialized
+  const chartQueue = [];
+  let isProcessingQueue = false;
+  
+  // Performance tracking
+  let totalChartsLoaded = 0;
+  let totalLoadTime = 0;
+  const chartTimings = [];
+  
+  // Create skeleton loader dynamically
+  function createSkeleton(container) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'chart-skeleton theme-' + THEME;
+    skeleton.innerHTML = `
+      <div class="chart-spinner"></div>
+      <div class="chart-loading-text">Loading visualization...</div>
+    `;
+    container.appendChild(skeleton);
+    return skeleton;
+  }
+  
+  // Initialize a single chart
+  function initChart(container) {
+    const chartId = container.id;
+    if (initializedCharts.has(chartId)) return;
+    
+    const startTime = DEBUG ? performance.now() : 0;
+    
+    initializedCharts.add(chartId);
+    container.dataset.loaded = 'true';
+    
+    // Remove skeleton loader
+    const skeleton = container.querySelector('.chart-skeleton');
+    if (skeleton) {
+      skeleton.style.opacity = '0';
+      setTimeout(() => skeleton.remove(), 300);
+    }
+    
+    // Trigger Highcharts reflow if present
+    setTimeout(() => {
+      if (window.Highcharts) {
+        Highcharts.charts.forEach(chart => {
+          if (chart && chart.reflow) chart.reflow();
+        });
+      }
+      
+      // Debug logging
+      if (DEBUG) {
+        const loadTime = performance.now() - startTime;
+        totalChartsLoaded++;
+        totalLoadTime += loadTime;
+        chartTimings.push({ id: chartId, time: loadTime });
+        
+        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
+        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+      }
+    }, 50);
+  }
+  
+  // Process chart queue in batches
+  function processQueue() {
+    if (isProcessingQueue || chartQueue.length === 0) return;
+    
+    isProcessingQueue = true;
+    const batchSize = 3;
+    const batch = chartQueue.splice(0, batchSize);
+    
+    if (DEBUG) {
+      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
+    }
+    
+    batch.forEach(container => initChart(container));
+    
+    if (chartQueue.length > 0) {
+      requestIdleCallback(() => {
+        isProcessingQueue = false;
+        processQueue();
+      }, { timeout: 2000 });
+    } else {
+      isProcessingQueue = false;
+      
+      if (DEBUG && totalChartsLoaded > 0) {
+        console.log(`✅ All charts loaded! Summary:`);
+        console.log(`   Total charts: ${totalChartsLoaded}`);
+        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
+        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
+        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
+      }
+    }
+  }
+  
+  // Intersection Observer for scroll-based lazy loading
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
+        chartQueue.push(entry.target);
+        observer.unobserve(entry.target);
+        processQueue();
+      }
+    });
+  }, { rootMargin: '300px' });
+  
+  // Initialize observers when DOM is ready
+  function initLazyLoading() {
+    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
+      // Create skeleton for each lazy chart
+      createSkeleton(container);
+      // Start observing
+      observer.observe(container);
+    });
+  }
+  
+  // Tab-aware rendering: load charts when tab becomes visible
+  function initTabAwareLoading() {
+    document.querySelectorAll('.panel-tabset').forEach(tabset => {
+      const tabs = tabset.querySelectorAll('[role="tab"]');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          setTimeout(() => {
+            const targetId = this.getAttribute('aria-controls');
+            if (!targetId) return;
+            
+            const targetPanel = document.getElementById(targetId);
+            if (!targetPanel) return;
+            
+            // Initialize any lazy charts in this tab
+            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
+            lazyCharts.forEach(chart => {
+              chartQueue.push(chart);
+              observer.unobserve(chart);
+            });
+            processQueue();
+          }, 50);
+        });
+      });
+    });
+  }
+  
+  // Start lazy loading when document is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      initLazyLoading();
+      initTabAwareLoading();
+    });
+  } else {
+    initLazyLoading();
+    initTabAwareLoading();
+  }
+})();
+</script>
+
+```
+
+## {{< iconify fluent-emoji-high-contrast detective >}} Transactional Performance
+
+
+::: {.panel-tabset}
+
+### Wave 1
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+
+```{r perf-trans-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PTS1),
+  title = "",
+  questions = "PTS1",
+  question_labels = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-wave1-age-item1}
+# Identify trust/safety icon (webshop)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PTS1),
+  title = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PTS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-wave1-gender-item1}
+# Identify trust/safety icon (webshop)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PTS1),
+  title = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PTS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-wave1-edu-item1}
+# Identify trust/safety icon (webshop)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PTS1),
+  title = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PTS1"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### Wave 2
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+
+```{r perf-trans-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PTS1),
+  title = "",
+  questions = "PTS1",
+  question_labels = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-wave2-age-item1}
+# Identify trust/safety icon (webshop)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PTS1),
+  title = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PTS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-wave2-gender-item1}
+# Identify trust/safety icon (webshop)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PTS1),
+  title = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PTS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-wave2-edu-item1}
+# Identify trust/safety icon (webshop)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PTS1),
+  title = "Identify trust/safety icon (webshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PTS1"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### Over Time
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-overtime-overall-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PTS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-overtime-age-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PTS1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-overtime-gender-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PTS1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-trans-overtime-edu-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PTS1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify fluent-emoji-high-contrast detective >}} AI Performance
+
+
+::: {.panel-tabset}
+
+### Wave 1
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+
+```{r perf-ai-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PAIS2_1, PAIS2_2, PAIS2_3, PAIS2_4, PAIS2_5, PAIS2_6, PAIS2_7, PAIS2_8, PAIS2_9),
+  title = "",
+  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-wave1-age-item1}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-wave1-age-item2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-wave1-age-item3}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-wave1-age-item4}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-wave1-age-item5}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-wave1-age-item6}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-wave1-age-item7}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-wave1-age-item8}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-wave1-age-item9}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-wave1-gender-item1}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-wave1-gender-item2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-wave1-gender-item3}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-wave1-gender-item4}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-wave1-gender-item5}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-wave1-gender-item6}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-wave1-gender-item7}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-wave1-gender-item8}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-wave1-gender-item9}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-wave1-edu-item1}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-wave1-edu-item2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-wave1-edu-item3}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-wave1-edu-item4}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-wave1-edu-item5}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-wave1-edu-item6}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-wave1-edu-item7}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-wave1-edu-item8}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-wave1-edu-item9}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### Wave 2
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+
+```{r perf-ai-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PAIS2_1, PAIS2_2, PAIS2_3, PAIS2_4, PAIS2_5, PAIS2_6, PAIS2_7, PAIS2_8, PAIS2_9),
+  title = "",
+  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-wave2-age-item1}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-wave2-age-item2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-wave2-age-item3}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-wave2-age-item4}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-wave2-age-item5}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-wave2-age-item6}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-wave2-age-item7}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-wave2-age-item8}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-wave2-age-item9}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-wave2-gender-item1}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-wave2-gender-item2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-wave2-gender-item3}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-wave2-gender-item4}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-wave2-gender-item5}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-wave2-gender-item6}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-wave2-gender-item7}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-wave2-gender-item8}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-wave2-gender-item9}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-wave2-edu-item1}
+# Google
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_1),
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-wave2-edu-item2}
+# Netflix
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_2),
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-wave2-edu-item3}
+# Whatsapp
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_3),
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-wave2-edu-item4}
+# Facebook
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_4),
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-wave2-edu-item5}
+# Bol.com
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_5),
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-wave2-edu-item6}
+# DigID
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_6),
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-wave2-edu-item7}
+# NOS News
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_7),
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-wave2-edu-item8}
+# Albert Heijn
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_8),
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-wave2-edu-item9}
+# TikTok
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS2_9),
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### Over Time
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-overtime-overall-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-overtime-overall-item2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-overtime-overall-item3}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-overtime-overall-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-overtime-overall-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-overtime-overall-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-overtime-overall-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-overtime-overall-item8}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-overtime-overall-item9}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-overtime-age-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-overtime-age-item2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-overtime-age-item3}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-overtime-age-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-overtime-age-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-overtime-age-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-overtime-age-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-overtime-age-item8}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-overtime-age-item9}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-overtime-gender-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-overtime-gender-item2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-overtime-gender-item3}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-overtime-gender-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-overtime-gender-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-overtime-gender-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-overtime-gender-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-overtime-gender-item8}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-overtime-gender-item9}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-ai-overtime-edu-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 2
+
+
+```{r perf-ai-overtime-edu-item2}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 3
+
+
+```{r perf-ai-overtime-edu-item3}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 4
+
+
+```{r perf-ai-overtime-edu-item4}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 5
+
+
+```{r perf-ai-overtime-edu-item5}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 6
+
+
+```{r perf-ai-overtime-edu-item6}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_6",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 7
+
+
+```{r perf-ai-overtime-edu-item7}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### Question 8
+
+
+```{r perf-ai-overtime-edu-item8}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-ai-overtime-edu-item9}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS2_9",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify fluent-emoji-high-contrast detective >}} GenAI Performance
+
+
+::: {.panel-tabset}
+
+### Wave 1
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+
+```{r perf-genai-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PAIS1),
+  title = "",
+  questions = "PAIS1",
+  question_labels = "Spot non-AI image",
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-wave1-age-item1}
+# Spot non-AI image
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS1),
+  title = "Spot non-AI image",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-wave1-gender-item1}
+# Spot non-AI image
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS1),
+  title = "Spot non-AI image",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-wave1-edu-item1}
+# Spot non-AI image
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS1),
+  title = "Spot non-AI image",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS1"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### Wave 2
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+
+```{r perf-genai-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PAIS1),
+  title = "",
+  questions = "PAIS1",
+  question_labels = "Spot non-AI image",
+  stacked_type = "percent",
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-wave2-age-item1}
+# Spot non-AI image
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS1),
+  title = "Spot non-AI image",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PAIS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-wave2-gender-item1}
+# Spot non-AI image
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS1),
+  title = "Spot non-AI image",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PAIS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-wave2-edu-item1}
+# Spot non-AI image
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS1),
+  title = "Spot non-AI image",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#d7191c", "#fdae61", "#2b83ba", "#ffffbf", "#abdda4"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PAIS1"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### Over Time
+
+
+::: {.panel-tabset}
+
+##### Overall
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-overtime-overall-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS1"
+)
+
+result
+```
+
+
+:::
+
+
+##### Age
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-overtime-age-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### Gender
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-overtime-gender-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### Education
+
+
+::: {.panel-tabset}
+
+###### Question 1
+
+
+```{r perf-genai-overtime-edu-item1}
+# timeline visualization
+result <- create_timeline(
+  data = data,
+  title = NULL,
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PAIS1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+
+```{=html}
+<nav class='pagination-nav' role='navigation' aria-label='Page navigation'>
+  <div class='pagination-container'>
+    <a href='performance_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+    <div class='pagination-info'>
+      <input type='number' class='pagination-input' id='page-input' min='1' max='3' value='3' aria-label='Current page'>
+      <span class='pagination-separator'>of 3</span>
+    </div>
+    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Pagination Navigation Script -->
+<script>
+(function() {
+  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html"];
+  const pageInput = document.getElementById('page-input');
+  
+  if (pageInput) {
+    pageInput.addEventListener('change', function() {
+      const pageNum = parseInt(this.value);
+      if (pageNum >= 1 && pageNum <= pageUrls.length) {
+        window.location.href = pageUrls[pageNum - 1];
+      } else {
+        this.value = this.getAttribute('value');
+      }
+    });
+    
+    pageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  }
+})();
+</script>
+```
+
+
+```{=html}
+<style>
+/* Ultra-Minimal Pagination Navigation */
+.pagination-nav {
+  position: sticky;
+  bottom: 2rem;
+  margin: 3rem auto 2rem auto;
+  max-width: 240px;
+  z-index: 100;
+}
+
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  color: var(--bs-secondary, #6c757d);
+  text-decoration: none;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.pagination-btn:hover:not(.pagination-disabled) {
+  background: var(--bs-light, #f8f9fa);
+  color: var(--bs-body-color, #212529);
+}
+
+.pagination-btn:active:not(.pagination-disabled) {
+  background: var(--bs-gray-200, #e9ecef);
+}
+
+.pagination-btn.pagination-disabled {
+  color: var(--bs-gray-300, #dee2e6);
+  cursor: default;
+}
+
+.pagination-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.pagination-btn:hover:not(.pagination-disabled) .pagination-icon {
+  opacity: 1;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--bs-secondary, #6c757d);
+}
+
+.pagination-input {
+  width: 2.5rem;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--bs-body-color, #212529);
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+.pagination-input:hover {
+  background: var(--bs-light, #f8f9fa);
+  border-color: var(--bs-border-color, #dee2e6);
+}
+
+.pagination-input:focus {
+  outline: none;
+  background: var(--bs-body-bg, #fff);
+  border-color: var(--bs-primary, #0d6efd);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+}
+
+.pagination-input::-webkit-inner-spin-button,
+.pagination-input::-webkit-outer-spin-button {
+  opacity: 0;
+}
+
+.pagination-separator {
+  color: var(--bs-secondary, #6c757d);
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pagination-nav {
+    max-width: 220px;
+    bottom: 1.5rem;
+  }
+  
+  .pagination-container {
+    gap: 0.75rem;
+    padding: 0.4rem 0.75rem;
+  }
+  
+  .pagination-btn {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .pagination-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .pagination-info {
+    font-size: 0.8rem;
+  }
+  
+  .pagination-input {
+    width: 2.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-nav {
+    max-width: 200px;
+  }
+  
+  .pagination-btn {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .pagination-btn:hover:not(.pagination-disabled) {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .pagination-btn:active:not(.pagination-disabled) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .pagination-input:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Override Quarto's back-to-top button position */
+.back-to-top {
+  right: 2rem !important;
+  left: auto !important;
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    right: 1rem !important;
+  }
+}
+</style>
+```
+
