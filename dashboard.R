@@ -11,7 +11,7 @@ library(dashboardr)
 ## TODO mix between text and graphs needs to be possible!
 ## TODO: Knowledge question seem perhaps incorrect and are missing sometimes across waves
 
-the_colors <- the_colors
+the_colors <- c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD")
 
 recode_survey <- function(df) {
   
@@ -118,9 +118,10 @@ recode_survey <- function(df) {
   
   df
 }
-
-
-data_w1 <- read_csv2("data/DigCom24CompleteWithWeights.csv") %>% #table()
+# read_csv2("data/wave1.csv") -> wads
+# wads <- read_csv("data/wave1.csv")
+# wads %>% count(geslacht)
+# data_w1 <- read_csv2("data/DigCom24CompleteWithWeights.csv") %>% #table()
   # mutate(AgeGroup = case_when(
   #   Age %in% 16:17 ~ "16-17",
   #   Age %in% 18:24 ~ "18-24",
@@ -130,6 +131,7 @@ data_w1 <- read_csv2("data/DigCom24CompleteWithWeights.csv") %>% #table()
   #   Age %in% 55:64 ~ "55-64",
   #   Age %in% 65:150 ~ "65+",
   # )) %>%
+data_w1 <- read_csv("data/wave1.csv") %>% #table()
   mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
   mutate(geslacht = case_when(
     geslacht == 1 ~"Male",
@@ -140,7 +142,8 @@ data_w1 <- read_csv2("data/DigCom24CompleteWithWeights.csv") %>% #table()
   mutate(Education = fct_relevel(Education, c("Low", "Middle", "High"))) %>% 
   recode_survey()
 # getwd()
-data <- read_csv2("data/DigCom25CompleteWithWeights.csv") %>% #table()
+# data <- read_csv2("data/DigCom25CompleteWithWeights.csv") %>% #table()
+data <- read_csv("data/wave2.csv") %>% 
   # mutate(AgeGroup = case_when(
   #   Age %in% 16:17 ~ "16-17",
   #   Age %in% 18:24 ~ "18-24",
@@ -1245,6 +1248,9 @@ ai_questions <- c(
   "I recognize when a website or app uses AI to adjust the content to me.",
   "I recognize when specific content is recommended to me by AI."
 )
+
+# digicom_data$sai3 %>% count(SAI)
+
 ai_vars <- c("SAI1", "SAI2")
 
 ai_tex_link <- md_text(
@@ -1712,7 +1718,7 @@ critical_info_visualizations <- (cis_viz + critinfo_viz + perf_cis_viz) %>%
   set_tabgroup_labels(
     cis = "{{< iconify ph lightning-fill >}} Critical Information Skills",
     critinfo = "{{< iconify ph book-open-fill >}} Critical Information Knowledge",
-    perf_cis = "{{< iconify ph trophy-fill >}} Critical Information Performance",
+    perf_cis = "{{< iconify ph clipboard-text >}} Critical Information Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1746,7 +1752,7 @@ content_creation_visualizations <- (dccs_viz + kcrea_viz + perf_dccs_viz) %>%
   set_tabgroup_labels(
     dccs = "{{< iconify ph lightning-fill >}} Digital Content Creation Skills",
     kcrea = "{{< iconify ph book-open-fill >}} Creative Knowledge",
-    perf_dccs = "{{< iconify ph trophy-fill >}} Content Creation Performance",
+    perf_dccs = "{{< iconify ph clipboard-text >}} Content Creation Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1764,7 +1770,7 @@ safety_visualizations <- (safety_viz + ksafety_viz + perf_safety_viz) %>%
   set_tabgroup_labels(
     safety = "{{< iconify ph lightning-fill >}} Safety Skills",
     ksafety = "{{< iconify ph book-open-fill >}} Safety Knowledge",
-    perf_safety = "{{< iconify ph trophy-fill >}} Safety Performance",
+    perf_safety = "{{< iconify ph clipboard-text >}} Safety Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1787,7 +1793,7 @@ health_visualizations <- (dhealth_viz + khealth_viz + perf_health_viz) %>%
   set_tabgroup_labels(
     dhealth = "{{< iconify ph lightning-fill >}} Digital Health Skills",
     khealth = "{{< iconify ph book-open-fill >}} Health Knowledge",
-    perf_health = "{{< iconify ph trophy-fill >}} Health Performance",
+    perf_health = "{{< iconify ph clipboard-text >}} Health Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1808,7 +1814,7 @@ green_visualizations <- (green_viz + kgreen_viz + perf_green_viz) %>%
   set_tabgroup_labels(
     green = "{{< iconify ph lightning-fill >}} Green Digital Skills",
     kgreen = "{{< iconify ph book-open-fill >}} Green Knowledge",
-    perf_green = "{{< iconify ph trophy-fill >}} Green Performance",
+    perf_green = "{{< iconify ph clipboard-text >}} Green Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1829,7 +1835,7 @@ green_visualizations <- (green_viz + kgreen_viz + perf_green_viz) %>%
 problem_solving_visualizations <- (dprob_viz + perf_ps_viz) %>%
   set_tabgroup_labels(
     dprob = "{{< iconify ph lightning-fill >}} Problem Solving Skills",
-    perf_ps = "{{< iconify ph trophy-fill >}} Problem Solving Performance",
+    perf_ps = "{{< iconify ph clipboard-text >}} Problem Solving Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1852,7 +1858,7 @@ transactional_visualizations <- (trans_viz + ktrans_viz + perf_trans_viz) %>%
   set_tabgroup_labels(
     trans = "{{< iconify ph lightning-fill >}} Transactional Skills",
     ktrans = "{{< iconify ph book-open-fill >}} Transactional Knowledge",
-    perf_trans = "{{< iconify ph trophy-fill >}} Transactional Performance",
+    perf_trans = "{{< iconify ph clipboard-text >}} Transactional Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1871,7 +1877,7 @@ ai_visualizations <- (ai_viz + kai_viz + perf_ai_viz) %>%
   set_tabgroup_labels(
     ai = "{{< iconify ph lightning-fill >}} AI Skills",
     kai = "{{< iconify ph book-open-fill >}} AI Knowledge",
-    perf_ai = "{{< iconify ph trophy-fill >}} AI Performance",
+    perf_ai = "{{< iconify ph clipboard-text >}} AI Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1894,7 +1900,7 @@ genai_combined_visualizations <- (genai_viz + kgai_viz + perf_genai_viz) %>%
   set_tabgroup_labels(
     genai = "{{< iconify ph lightning-fill >}} GenAI Skills",
     kgai = "{{< iconify ph book-open-fill >}} GenAI Knowledge",
-    perf_genai = "{{< iconify ph trophy-fill >}} GenAI Performance",
+    perf_genai = "{{< iconify ph clipboard-text >}} GenAI Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1", 
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
@@ -1929,7 +1935,7 @@ strategic_visualizations <- (sis_viz_wo_link + perf_sis_viz + kinfo_viz)  %>%
   set_tabgroup_labels(
     sis = "{{< iconify ph lightning-fill >}} Skills",
     kinfo = "{{< iconify ph book-open-fill >}} Knowledge",
-    perf_sis = "{{< iconify ph trophy-fill >}} Performance",
+    perf_sis = "{{< iconify ph clipboard-text >}} Performance",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1",
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     age    = "{{< iconify mdi:human-male-male-child >}} Age",
@@ -1976,7 +1982,7 @@ dashboard <- create_dashboard(
   code_folding = "show",
   code_tools = TRUE,
   navbar_bg_color = "#f0f0f0",
-  navbar_text_color = "#3A1B004D",
+  navbar_text_color = "#3A1B00E6",
   # toc = "floating",
   # toc_depth = 3,
   plausible = "example.com",
@@ -2007,9 +2013,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = skills_viz,
     icon = "ph:lightning-fill",
-    lazy_load_charts = TRUE,
-    lazy_load_margin = "300px",
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = F,
+    lazy_load_tabs = F,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2023,9 +2028,9 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = performance_collection,
     icon = "ph:clipboard-text",
-    lazy_load_charts = TRUE,
+    lazy_load_charts = FALSE,
     lazy_load_margin = "300px",
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2040,9 +2045,9 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = knowledge_collection,
     icon = "ph:book-open-fill",
-    lazy_load_charts = TRUE,
+    lazy_load_charts = FALSE,
     lazy_load_margin = "300px",
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2074,8 +2079,8 @@ dashboard <- create_dashboard(
     icon = "ph:magnifying-glass",
     data = digicom_data,
     visualizations = strategic_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2088,8 +2093,8 @@ dashboard <- create_dashboard(
     icon = "ph:detective-fill",
     data = digicom_data,
     visualizations = critical_info_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2102,8 +2107,8 @@ dashboard <- create_dashboard(
     icon = "ph:chats-fill",
     data = digicom_data,
     visualizations = netiquette_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2116,8 +2121,8 @@ dashboard <- create_dashboard(
     icon = "ph:palette-fill",
     data = digicom_data,
     visualizations = content_creation_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2130,8 +2135,8 @@ dashboard <- create_dashboard(
     icon = "ph:shield-check-fill",
     data = digicom_data,
     visualizations = safety_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2144,8 +2149,8 @@ dashboard <- create_dashboard(
     icon = "ph:heart-fill",
     data = digicom_data,
     visualizations = health_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2158,8 +2163,8 @@ dashboard <- create_dashboard(
     icon = "ph:recycle-fill",
     data = digicom_data,
     visualizations = green_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2172,8 +2177,8 @@ dashboard <- create_dashboard(
     icon = "ph:lightbulb-fill",
     data = digicom_data,
     visualizations = problem_solving_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2186,8 +2191,8 @@ dashboard <- create_dashboard(
     icon = "ph:wallet-fill",
     data = digicom_data,
     visualizations = transactional_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2200,8 +2205,8 @@ dashboard <- create_dashboard(
     icon = "ph:robot-fill",
     data = digicom_data,
     visualizations = ai_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
@@ -2214,8 +2219,8 @@ dashboard <- create_dashboard(
     icon = "ph:magic-wand-fill",
     data = digicom_data,
     visualizations = genai_combined_visualizations,
-    lazy_load_charts = TRUE,
-    lazy_load_tabs = TRUE,
+    lazy_load_charts = FALSE,
+    lazy_load_charts = FALSE,
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
