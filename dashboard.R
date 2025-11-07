@@ -284,7 +284,7 @@ add_all_viz_stackedbar <- function(viz, vars, questions, stack_var, tbgrp, demog
 create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
                           colors = the_colors, 
                           tbgrp, graph_title, high_values = 4:5, 
-                          text_b_tabset = "ADD TEXT BEFORE TABSET") {
+                          text_b_tabset = "ADD TEXT BEFORE TABSET", aggr_lab = "Percentage who answered (Completely) True (4-5)") {
   
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
@@ -324,7 +324,12 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     time_var = "wave_time_label",
     chart_type = "line",
     text_before_tabset = text_b_tabset,
-    response_filter = 4:5, 
+    response_filter = high_values, 
+    response_filter_label = aggr_lab,
+    response_filter_combine = T,
+    x_label = "", 
+    y_label = aggr_lab,
+    color_palette = the_colors,
     y_min = 0,
     y_max = 100,
     response_filter_label = NULL
@@ -374,7 +379,9 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     chart_type = "line",
     response_filter = high_values, 
     text_before_tabset = text_b_tabset,
-    response_filter_label = NULL,
+    x_label = "", 
+    y_label = aggr_lab,
+    color_palette = the_colors,
     y_min = 0,
     y_max = 100,
     weight_var = "weging_GAMO"
@@ -394,7 +401,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
 create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
                            colors = the_colors, 
                            tbgrp, graph_title, high_values = 1, map_values, 
-                           text_b_tabset = "ADD TEXT BEFORE TABSET") {
+                           text_b_tabset = "ADD TEXT BEFORE TABSET", aggr_lab = "Percentage who selected/answered correctly") {
   
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
@@ -435,10 +442,14 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     type = "timeline",
     time_var = "wave_time_label",
     chart_type = "line",
-    response_filter = 4:5, 
+    response_filter = high_values, 
     y_min = 0,
     y_max = 100,
-    response_filter_label = NULL,
+    response_filter_label = aggr_lab,
+    response_filter_combine = T,
+    x_label = "", 
+    y_label = aggr_lab,
+    color_palette = the_colors,
     weight_var = "weging_GAMO"
   ) |>
     add_all_viz_timeline_single(vs, tbgrp, "overall", wave_label = "Over Time", questions = qs)  # Pass tbgrp!
@@ -487,6 +498,9 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     response_filter = high_values, 
     y_min = 0,
     y_max = 100,
+    x_label = "", 
+    y_label = aggr_lab,
+    color_palette = the_colors,
     response_filter_label = NULL,
     weight_var = "weging_GAMO"
   ) |>
@@ -757,7 +771,8 @@ critinfo_viz <- create_vizzes2(
   critinfo_labs,
   "",
   tbgrp        = "critinfo",
-  graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  graph_title  = critinfo_questions, 
+  map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   text_b_tabset = critinfo_tex_link
 )
 
@@ -776,7 +791,8 @@ critinfo_viz_wo_link <- create_vizzes2(
   critinfo_labs,
   "",
   tbgrp        = "critinfo",
-  graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  graph_title  = critinfo_questions,
+  map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   text_b_tabset = critinfo_tex_wo_link
 )
 
@@ -813,7 +829,8 @@ knet_viz <- create_vizzes2(
   knet_labs,
   "",
   tbgrp        = "knet",
-  graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  graph_title  = knet_questions,
+  map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   text_b_tabset = knet_tex_link
 )
 
@@ -832,7 +849,8 @@ knet_viz_wo_link <- create_vizzes2(
   knet_labs,
   "",
   tbgrp        = "knet",
-  graph_title  = "", map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  graph_title  = knet_questions, 
+  map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
   text_b_tabset = knet_tex_wo_link
 )
 
@@ -1246,8 +1264,9 @@ kgai_viz_wo_link <- create_vizzes2(
 )
 
 ## 3.12 Knowledge Collection ----
-knowledge_collection <- knowledge_viz %>% 
-  combine_viz(kinfo_viz) %>%
+knowledge_collection <- #knowledge_viz %>% 
+  # combine_viz(kinfo_viz) %>%
+  kinfo_viz %>% 
   combine_viz(critinfo_viz) %>%
   combine_viz(knet_viz)  %>%
   add_pagination() %>%
@@ -1934,7 +1953,7 @@ perf_netiquette_viz <- create_vizzes2(
   perf_correct_labs,
   "",
   tbgrp        = "perf_netiquette",
-  graph_title  = "",
+  graph_title  = perf_n_questions,
   map_values   = list("1" = "Correct", "0" = "Incorrect"),
   text_b_tabset = perf_n_tex_link
 )
@@ -1954,7 +1973,7 @@ perf_netiquette_viz_wo_link <- create_vizzes2(
   perf_correct_labs,
   perf_n_tex_wo_link,
   tbgrp        = "perf_netiquette",
-  graph_title  = "",
+  graph_title  = perf_n_questions,
   map_values   = list("1" = "Correct", "0" = "Incorrect")
 )
 
@@ -1985,7 +2004,7 @@ perf_dccs_viz <- create_vizzes2(
   perf_correct_labs,
   "",
   tbgrp        = "perf_dccs",
-  graph_title  = "",
+  graph_title  = perf_dccs_questions,
   map_values   = list("1" = "Correct", "0" = "Incorrect"),
   text_b_tabset = perf_dccs_tex_link
 )  %>%
@@ -2014,7 +2033,7 @@ perf_dccs_viz_wo_link <- create_vizzes2(
   perf_correct_labs,
   perf_dccs_tex_wo_link,
   tbgrp        = "perf_dccs",
-  graph_title  = "",
+  graph_title  = perf_dccs_questions,
   map_values   = list("1" = "Correct", "0" = "Incorrect")
 )  %>%
   # Modal 2: With image
@@ -2042,7 +2061,7 @@ perf_safety_questions <- c(
   "None of the above"
 )
 
-# *Privacy, Safety & Control:* PSCS1R (dichotomous correct/incorrect)
+# TODO: *Privacy, Safety & Control:* PSCS1R (dichotomous correct/incorrect)
 # PSCS3R (dichotomous doing behavior yes/no) (BEHAVIORAL item) PSCS3C
 # (dichotomous incorrect answer yes/no)
 # digicom_data %>% count(PSCS3_10)
@@ -2301,7 +2320,7 @@ perf_trans_viz <- create_vizzes2(
   perf_correct_labs,
   "",
   tbgrp        = "perf_trans",
-  graph_title  = "",
+  graph_title  = perf_trans_questions,
   map_values   = list("1" = "Correct", "0" = "Incorrect"),
   text_b_tabset = perf_trans_tex_link
 )
@@ -2321,7 +2340,7 @@ perf_trans_viz_wo_link <- create_vizzes2(
   perf_correct_labs,
   perf_trans_tex_wo_link,
   tbgrp        = "perf_trans",
-  graph_title  = "",
+  graph_title  = perf_trans_questions,
   map_values   = list("1" = "Correct", "0" = "Incorrect")
 )
 
@@ -2392,7 +2411,7 @@ perf_genai_questions <- c(
   "Spot non-AI image"
 )
 
-perf_genai_vars <- c("PAIS1")
+perf_genai_vars <- c("PAIS1R")
 
 perf_genai_info_text <- "**Generative AI Skills** measure competencies with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations."
 
@@ -2412,7 +2431,7 @@ perf_genai_viz <- create_vizzes2(
   perf_correct_labs,
   "",
   tbgrp        = "perf_genai",
-  graph_title  = "",
+  graph_title  = perf_genai_questions,
   # in original you reversed categories_dat; here we can still map 1=Correct
   map_values   = list("1" = "Correct", "0" = "Incorrect"),
   text_b_tabset = perf_genai_tex_link
@@ -2433,7 +2452,7 @@ perf_genai_viz_wo_link <- create_vizzes2(
   perf_correct_labs,
   perf_genai_tex_wo_link,
   tbgrp        = "perf_genai",
-  graph_title  = "",
+  graph_title  = perf_genai_questions,
   # in original you reversed categories_dat; here we can still map 1=Correct
   map_values   = list("1" = "Correct", "0" = "Incorrect")
 )
@@ -2481,7 +2500,9 @@ performance_collection <- perf_sis_viz %>%
     item5  = "{{< iconify ph chat-circle-fill >}} Question 5",
     item6  = "{{< iconify ph chat-circle-fill >}} Question 6",
     item7  = "{{< iconify ph chat-circle-fill >}} Question 7",
-    item8  = "{{< iconify ph chat-circle-fill >}} Question 8"
+    item8  = "{{< iconify ph chat-circle-fill >}} Question 8",
+    item8  = "{{< iconify ph chat-circle-fill >}} Question 9",
+    item8  = "{{< iconify ph chat-circle-fill >}} Question 10"
   )
 
 # 7. DIMENSION-SPECIFIC COMBINED VISUALIZATIONS ================================
