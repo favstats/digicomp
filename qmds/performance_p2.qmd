@@ -12,6 +12,10 @@ library(dashboardr)
 
 The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment.
 
+```{r, echo=FALSE}
+dashboardr::enable_modals()
+```
+
 ```{r setup}
 #| echo: false
 #| warning: false
@@ -56,282 +60,26 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```
 
 
-```{=html}
-
-<style>
-/* Chart Lazy Loading Styles */
-.chart-lazy {
-  position: relative;
-  min-height: 400px;
-  margin: 1rem 0;
-}
-
-.chart-skeleton {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  transition: opacity 0.3s ease;
-}
-
-.chart-spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.chart-loading-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Theme: Light */
-.chart-skeleton.theme-light {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.chart-skeleton.theme-light .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.2);
-  border-top-color: rgba(15, 23, 42, 0.8);
-}
-
-.chart-skeleton.theme-light .chart-loading-text {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-/* Theme: Glass */
-.chart-skeleton.theme-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-}
-
-.chart-skeleton.theme-glass .chart-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: rgba(15, 23, 42, 0.7);
-}
-
-.chart-skeleton.theme-glass .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-
-/* Theme: Dark */
-.chart-skeleton.theme-dark {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.chart-skeleton.theme-dark .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.3);
-  border-top-color: rgba(255, 255, 255, 0.9);
-}
-
-.chart-skeleton.theme-dark .chart-loading-text {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Theme: Accent */
-.chart-skeleton.theme-accent {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-}
-
-.chart-skeleton.theme-accent .chart-spinner {
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top-color: rgba(59, 130, 246, 0.9);
-}
-
-.chart-skeleton.theme-accent .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-</style>
-
-<script>
-// Chart Lazy Loading System
-(function() {
-  const THEME = 'light';
-  const DEBUG = false;
-  
-  // Track which charts have been initialized
-  const initializedCharts = new Set();
-  
-  // Queue of charts waiting to be initialized
-  const chartQueue = [];
-  let isProcessingQueue = false;
-  
-  // Performance tracking
-  let totalChartsLoaded = 0;
-  let totalLoadTime = 0;
-  const chartTimings = [];
-  
-  // Create skeleton loader dynamically
-  function createSkeleton(container) {
-    const skeleton = document.createElement('div');
-    skeleton.className = 'chart-skeleton theme-' + THEME;
-    skeleton.innerHTML = `
-      <div class="chart-spinner"></div>
-      <div class="chart-loading-text">Loading visualization...</div>
-    `;
-    container.appendChild(skeleton);
-    return skeleton;
-  }
-  
-  // Initialize a single chart
-  function initChart(container) {
-    const chartId = container.id;
-    if (initializedCharts.has(chartId)) return;
-    
-    const startTime = DEBUG ? performance.now() : 0;
-    
-    initializedCharts.add(chartId);
-    container.dataset.loaded = 'true';
-    
-    // Remove skeleton loader
-    const skeleton = container.querySelector('.chart-skeleton');
-    if (skeleton) {
-      skeleton.style.opacity = '0';
-      setTimeout(() => skeleton.remove(), 300);
-    }
-    
-    // Trigger Highcharts reflow if present
-    setTimeout(() => {
-      if (window.Highcharts) {
-        Highcharts.charts.forEach(chart => {
-          if (chart && chart.reflow) chart.reflow();
-        });
-      }
-      
-      // Debug logging
-      if (DEBUG) {
-        const loadTime = performance.now() - startTime;
-        totalChartsLoaded++;
-        totalLoadTime += loadTime;
-        chartTimings.push({ id: chartId, time: loadTime });
-        
-        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
-        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-      }
-    }, 50);
-  }
-  
-  // Process chart queue in batches
-  function processQueue() {
-    if (isProcessingQueue || chartQueue.length === 0) return;
-    
-    isProcessingQueue = true;
-    const batchSize = 3;
-    const batch = chartQueue.splice(0, batchSize);
-    
-    if (DEBUG) {
-      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
-    }
-    
-    batch.forEach(container => initChart(container));
-    
-    if (chartQueue.length > 0) {
-      requestIdleCallback(() => {
-        isProcessingQueue = false;
-        processQueue();
-      }, { timeout: 2000 });
-    } else {
-      isProcessingQueue = false;
-      
-      if (DEBUG && totalChartsLoaded > 0) {
-        console.log(`✅ All charts loaded! Summary:`);
-        console.log(`   Total charts: ${totalChartsLoaded}`);
-        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
-        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-      }
-    }
-  }
-  
-  // Intersection Observer for scroll-based lazy loading
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
-        chartQueue.push(entry.target);
-        observer.unobserve(entry.target);
-        processQueue();
-      }
-    });
-  }, { rootMargin: '300px' });
-  
-  // Initialize observers when DOM is ready
-  function initLazyLoading() {
-    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
-      // Create skeleton for each lazy chart
-      createSkeleton(container);
-      // Start observing
-      observer.observe(container);
-    });
-  }
-  
-  // Tab-aware rendering: load charts when tab becomes visible
-  function initTabAwareLoading() {
-    document.querySelectorAll('.panel-tabset').forEach(tabset => {
-      const tabs = tabset.querySelectorAll('[role="tab"]');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          setTimeout(() => {
-            const targetId = this.getAttribute('aria-controls');
-            if (!targetId) return;
-            
-            const targetPanel = document.getElementById(targetId);
-            if (!targetPanel) return;
-            
-            // Initialize any lazy charts in this tab
-            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
-            lazyCharts.forEach(chart => {
-              chartQueue.push(chart);
-              observer.unobserve(chart);
-            });
-            processQueue();
-          }, 50);
-        });
-      });
-    });
-  }
-  
-  // Start lazy loading when document is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      initLazyLoading();
-      initTabAwareLoading();
-    });
-  } else {
-    initLazyLoading();
-    initTabAwareLoading();
-  }
-})();
-</script>
-
+```{r, echo=FALSE, results='asis'}
+cat(as.character(dashboardr::modal_content(
+  modal_id = 'PDCCS1R',
+  text = '<h2>Digital Content Creation: Performance Questions</h2>
+<img src="https://placehold.co/600x400/EEE/31343C" style="max-width:100%; height:auto;">
+<p>Information literacy scores were highest at 85%.
+                     Participants excelled at search strategies and
+                     source evaluation.</p>'
+)))
 ```
 
-## {{< iconify ph heart-fill >}} Digital Health
+## {{< iconify ph shield-check-fill >}} Safety
+
+
+**Safety & Control of Information and Devices** encompasses protecting devices and personal information: using security measures, managing privacy settings, identifying phishing, and controlling what information is shared online.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Which of the following safety precautions do you sometimes take for your digital/online media use?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 
 ::: {.panel-tabset}
@@ -344,19 +92,2534 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ##### {{< iconify ph users-fill >}} Overall
 
 
+```{r perf-safety-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PSCS3_10),
+  title = "",
+  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
+  question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups", "None of the above"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-wave1-age-item1}
+# Keep passwords in a password safe
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_1),
+  title = "Keep passwords in a password safe",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-wave1-age-item2}
+# Save passwords on paper (rev)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_2),
+  title = "Save passwords on paper (rev)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-wave1-age-item3}
+# Use passwords with ≥14 chars
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_3),
+  title = "Use passwords with ≥14 chars",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-wave1-age-item4}
+# Different passwords per account
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_4),
+  title = "Different passwords per account",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-wave1-age-item5}
+# Use passkey (finger/face)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_5),
+  title = "Use passkey (finger/face)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-wave1-age-item6}
+# Two-step verification
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_6),
+  title = "Two-step verification",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-wave1-age-item7}
+# Install software updates
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_7),
+  title = "Install software updates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-wave1-age-item8}
+# Use adblocker
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_8),
+  title = "Use adblocker",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-wave1-age-item9}
+# Make backups
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_9),
+  title = "Make backups",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave1-age-item10}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-wave1-gender-item1}
+# Keep passwords in a password safe
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_1),
+  title = "Keep passwords in a password safe",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-wave1-gender-item2}
+# Save passwords on paper (rev)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_2),
+  title = "Save passwords on paper (rev)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-wave1-gender-item3}
+# Use passwords with ≥14 chars
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_3),
+  title = "Use passwords with ≥14 chars",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-wave1-gender-item4}
+# Different passwords per account
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_4),
+  title = "Different passwords per account",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-wave1-gender-item5}
+# Use passkey (finger/face)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_5),
+  title = "Use passkey (finger/face)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-wave1-gender-item6}
+# Two-step verification
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_6),
+  title = "Two-step verification",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-wave1-gender-item7}
+# Install software updates
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_7),
+  title = "Install software updates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-wave1-gender-item8}
+# Use adblocker
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_8),
+  title = "Use adblocker",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-wave1-gender-item9}
+# Make backups
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_9),
+  title = "Make backups",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave1-gender-item10}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-wave1-edu-item1}
+# Keep passwords in a password safe
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_1),
+  title = "Keep passwords in a password safe",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-wave1-edu-item2}
+# Save passwords on paper (rev)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_2),
+  title = "Save passwords on paper (rev)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-wave1-edu-item3}
+# Use passwords with ≥14 chars
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_3),
+  title = "Use passwords with ≥14 chars",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-wave1-edu-item4}
+# Different passwords per account
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_4),
+  title = "Different passwords per account",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-wave1-edu-item5}
+# Use passkey (finger/face)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_5),
+  title = "Use passkey (finger/face)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-wave1-edu-item6}
+# Two-step verification
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_6),
+  title = "Two-step verification",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-wave1-edu-item7}
+# Install software updates
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_7),
+  title = "Install software updates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-wave1-edu-item8}
+# Use adblocker
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_8),
+  title = "Use adblocker",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-wave1-edu-item9}
+# Make backups
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_9),
+  title = "Make backups",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave1-edu-item10}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-safety-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PSCS3_10),
+  title = "",
+  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
+  question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups", "None of the above"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-wave2-age-item1}
+# Keep passwords in a password safe
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_1),
+  title = "Keep passwords in a password safe",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-wave2-age-item2}
+# Save passwords on paper (rev)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_2),
+  title = "Save passwords on paper (rev)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-wave2-age-item3}
+# Use passwords with ≥14 chars
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_3),
+  title = "Use passwords with ≥14 chars",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-wave2-age-item4}
+# Different passwords per account
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_4),
+  title = "Different passwords per account",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-wave2-age-item5}
+# Use passkey (finger/face)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_5),
+  title = "Use passkey (finger/face)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-wave2-age-item6}
+# Two-step verification
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_6),
+  title = "Two-step verification",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-wave2-age-item7}
+# Install software updates
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_7),
+  title = "Install software updates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-wave2-age-item8}
+# Use adblocker
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_8),
+  title = "Use adblocker",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-wave2-age-item9}
+# Make backups
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_9),
+  title = "Make backups",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave2-age-item10}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-wave2-gender-item1}
+# Keep passwords in a password safe
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_1),
+  title = "Keep passwords in a password safe",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-wave2-gender-item2}
+# Save passwords on paper (rev)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_2),
+  title = "Save passwords on paper (rev)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-wave2-gender-item3}
+# Use passwords with ≥14 chars
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_3),
+  title = "Use passwords with ≥14 chars",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-wave2-gender-item4}
+# Different passwords per account
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_4),
+  title = "Different passwords per account",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-wave2-gender-item5}
+# Use passkey (finger/face)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_5),
+  title = "Use passkey (finger/face)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-wave2-gender-item6}
+# Two-step verification
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_6),
+  title = "Two-step verification",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-wave2-gender-item7}
+# Install software updates
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_7),
+  title = "Install software updates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-wave2-gender-item8}
+# Use adblocker
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_8),
+  title = "Use adblocker",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-wave2-gender-item9}
+# Make backups
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_9),
+  title = "Make backups",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave2-gender-item10}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-wave2-edu-item1}
+# Keep passwords in a password safe
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_1),
+  title = "Keep passwords in a password safe",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-wave2-edu-item2}
+# Save passwords on paper (rev)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_2),
+  title = "Save passwords on paper (rev)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-wave2-edu-item3}
+# Use passwords with ≥14 chars
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_3),
+  title = "Use passwords with ≥14 chars",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-wave2-edu-item4}
+# Different passwords per account
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_4),
+  title = "Different passwords per account",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-wave2-edu-item5}
+# Use passkey (finger/face)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_5),
+  title = "Use passkey (finger/face)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-wave2-edu-item6}
+# Two-step verification
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_6),
+  title = "Two-step verification",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-wave2-edu-item7}
+# Install software updates
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_7),
+  title = "Install software updates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-wave2-edu-item8}
+# Use adblocker
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_8),
+  title = "Use adblocker",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-wave2-edu-item9}
+# Make backups
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_9),
+  title = "Make backups",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave2-edu-item10}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-overtime-overall-item1}
+# Keep passwords in a password safe
+result <- create_timeline(
+  data = data,
+  title = "Keep passwords in a password safe",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-overtime-overall-item2}
+# Save passwords on paper (rev)
+result <- create_timeline(
+  data = data,
+  title = "Save passwords on paper (rev)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-overtime-overall-item3}
+# Use passwords with ≥14 chars
+result <- create_timeline(
+  data = data,
+  title = "Use passwords with ≥14 chars",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-overtime-overall-item4}
+# Different passwords per account
+result <- create_timeline(
+  data = data,
+  title = "Different passwords per account",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-overtime-overall-item5}
+# Use passkey (finger/face)
+result <- create_timeline(
+  data = data,
+  title = "Use passkey (finger/face)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-overtime-overall-item6}
+# Two-step verification
+result <- create_timeline(
+  data = data,
+  title = "Two-step verification",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-overtime-overall-item7}
+# Install software updates
+result <- create_timeline(
+  data = data,
+  title = "Install software updates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-overtime-overall-item8}
+# Use adblocker
+result <- create_timeline(
+  data = data,
+  title = "Use adblocker",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-overtime-overall-item9}
+# Make backups
+result <- create_timeline(
+  data = data,
+  title = "Make backups",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-overtime-overall-item10}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-overtime-age-item1}
+# Keep passwords in a password safe
+result <- create_timeline(
+  data = data,
+  title = "Keep passwords in a password safe",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-overtime-age-item2}
+# Save passwords on paper (rev)
+result <- create_timeline(
+  data = data,
+  title = "Save passwords on paper (rev)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-overtime-age-item3}
+# Use passwords with ≥14 chars
+result <- create_timeline(
+  data = data,
+  title = "Use passwords with ≥14 chars",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-overtime-age-item4}
+# Different passwords per account
+result <- create_timeline(
+  data = data,
+  title = "Different passwords per account",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-overtime-age-item5}
+# Use passkey (finger/face)
+result <- create_timeline(
+  data = data,
+  title = "Use passkey (finger/face)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-overtime-age-item6}
+# Two-step verification
+result <- create_timeline(
+  data = data,
+  title = "Two-step verification",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_6",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-overtime-age-item7}
+# Install software updates
+result <- create_timeline(
+  data = data,
+  title = "Install software updates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-overtime-age-item8}
+# Use adblocker
+result <- create_timeline(
+  data = data,
+  title = "Use adblocker",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-overtime-age-item9}
+# Make backups
+result <- create_timeline(
+  data = data,
+  title = "Make backups",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-overtime-age-item10}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-overtime-gender-item1}
+# Keep passwords in a password safe
+result <- create_timeline(
+  data = data,
+  title = "Keep passwords in a password safe",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-overtime-gender-item2}
+# Save passwords on paper (rev)
+result <- create_timeline(
+  data = data,
+  title = "Save passwords on paper (rev)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-overtime-gender-item3}
+# Use passwords with ≥14 chars
+result <- create_timeline(
+  data = data,
+  title = "Use passwords with ≥14 chars",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-overtime-gender-item4}
+# Different passwords per account
+result <- create_timeline(
+  data = data,
+  title = "Different passwords per account",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-overtime-gender-item5}
+# Use passkey (finger/face)
+result <- create_timeline(
+  data = data,
+  title = "Use passkey (finger/face)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-overtime-gender-item6}
+# Two-step verification
+result <- create_timeline(
+  data = data,
+  title = "Two-step verification",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_6",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-overtime-gender-item7}
+# Install software updates
+result <- create_timeline(
+  data = data,
+  title = "Install software updates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-overtime-gender-item8}
+# Use adblocker
+result <- create_timeline(
+  data = data,
+  title = "Use adblocker",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-overtime-gender-item9}
+# Make backups
+result <- create_timeline(
+  data = data,
+  title = "Make backups",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-overtime-gender-item10}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-safety-overtime-edu-item1}
+# Keep passwords in a password safe
+result <- create_timeline(
+  data = data,
+  title = "Keep passwords in a password safe",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-safety-overtime-edu-item2}
+# Save passwords on paper (rev)
+result <- create_timeline(
+  data = data,
+  title = "Save passwords on paper (rev)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-safety-overtime-edu-item3}
+# Use passwords with ≥14 chars
+result <- create_timeline(
+  data = data,
+  title = "Use passwords with ≥14 chars",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-safety-overtime-edu-item4}
+# Different passwords per account
+result <- create_timeline(
+  data = data,
+  title = "Different passwords per account",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-safety-overtime-edu-item5}
+# Use passkey (finger/face)
+result <- create_timeline(
+  data = data,
+  title = "Use passkey (finger/face)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-safety-overtime-edu-item6}
+# Two-step verification
+result <- create_timeline(
+  data = data,
+  title = "Two-step verification",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_6",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-safety-overtime-edu-item7}
+# Install software updates
+result <- create_timeline(
+  data = data,
+  title = "Install software updates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-safety-overtime-edu-item8}
+# Use adblocker
+result <- create_timeline(
+  data = data,
+  title = "Use adblocker",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-safety-overtime-edu-item9}
+# Make backups
+result <- create_timeline(
+  data = data,
+  title = "Make backups",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_9",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-overtime-edu-item10}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph heart-fill >}} Digital Health
+
+
+**Digital Health & Wellbeing** skills relate to managing healthy digital habits: controlling screen time, minimizing distractions, taking digital breaks, and understanding how technology affects sleep and wellbeing.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
 ```
 [{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
 
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
 ```{r perf-health-wave1-overall}
 # 
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(PDHWS1_1, PDHWS1_2, PDHWS1_3, PDHWS1_4, PDHWS1_5, PDHWS1_6, PDHWS1_7),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PDHWS1_1, PDHWS1_2, PDHWS1_3, PDHWS1_4, PDHWS1_5, PDHWS1_6, PDHWS1_7, PDHWS1_8),
   title = "",
-  questions = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7"),
-  question_labels = c("Create digital detox moments", "Have rules limiting digital media", "Use screen-time limiter", "Temporarily switch off Internet", "Delete apps/programs", "Turn off notifications", "Reduce time without special approach"),
+  questions = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  question_labels = c("Create digital detox moments", "Have rules limiting digital media", "Use screen-time limiter", "Temporarily switch off Internet", "Delete apps/programs", "Turn off notifications", "Reduce time without special approach", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -546,6 +2809,30 @@ result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-wave1-age-item8}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PDHWS1_8),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PDHWS1_8"
+)
+
+result
+```
+
+
 :::
 
 
@@ -716,6 +3003,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PDHWS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-wave1-gender-item8}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PDHWS1_8),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -898,6 +3209,30 @@ result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-wave1-edu-item8}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PDHWS1_8),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PDHWS1_8"
+)
+
+result
+```
+
+
 :::
 
 
@@ -907,27 +3242,18 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
-
 ```{r perf-health-wave2-overall}
 # 
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(PDHWS1_1, PDHWS1_2, PDHWS1_3, PDHWS1_4, PDHWS1_5, PDHWS1_6, PDHWS1_7),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PDHWS1_1, PDHWS1_2, PDHWS1_3, PDHWS1_4, PDHWS1_5, PDHWS1_6, PDHWS1_7, PDHWS1_8),
   title = "",
-  questions = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7"),
-  question_labels = c("Create digital detox moments", "Have rules limiting digital media", "Use screen-time limiter", "Temporarily switch off Internet", "Delete apps/programs", "Turn off notifications", "Reduce time without special approach"),
+  questions = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  question_labels = c("Create digital detox moments", "Have rules limiting digital media", "Use screen-time limiter", "Temporarily switch off Internet", "Delete apps/programs", "Turn off notifications", "Reduce time without special approach", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1117,6 +3443,30 @@ result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-wave2-age-item8}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PDHWS1_8),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PDHWS1_8"
+)
+
+result
+```
+
+
 :::
 
 
@@ -1287,6 +3637,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PDHWS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-wave2-gender-item8}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PDHWS1_8),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1469,7 +3843,28 @@ result
 ```
 
 
-:::
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-wave2-edu-item8}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PDHWS1_8),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PDHWS1_8"
+)
+
+result
+```
 
 
 :::
@@ -1479,9 +3874,6 @@ result
 
 
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -1495,13 +3887,15 @@ result
 
 
 ```{r perf-health-overtime-overall-item1}
-# timeline visualization
+# Create digital detox moments
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_1"
@@ -1515,13 +3909,15 @@ result
 
 
 ```{r perf-health-overtime-overall-item2}
-# timeline visualization
+# Have rules limiting digital media
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_2"
@@ -1535,13 +3931,15 @@ result
 
 
 ```{r perf-health-overtime-overall-item3}
-# timeline visualization
+# Use screen-time limiter
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_3"
@@ -1555,13 +3953,15 @@ result
 
 
 ```{r perf-health-overtime-overall-item4}
-# timeline visualization
+# Temporarily switch off Internet
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_4"
@@ -1575,13 +3975,15 @@ result
 
 
 ```{r perf-health-overtime-overall-item5}
-# timeline visualization
+# Delete apps/programs
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_5"
@@ -1595,13 +3997,15 @@ result
 
 
 ```{r perf-health-overtime-overall-item6}
-# timeline visualization
+# Turn off notifications
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_6"
@@ -1615,16 +4019,40 @@ result
 
 
 ```{r perf-health-overtime-overall-item7}
-# timeline visualization
+# Reduce time without special approach
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-overtime-overall-item8}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDHWS1_8"
 )
 
 result
@@ -1643,13 +4071,15 @@ result
 
 
 ```{r perf-health-overtime-age-item1}
-# timeline visualization
+# Create digital detox moments
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_1",
@@ -1664,13 +4094,15 @@ result
 
 
 ```{r perf-health-overtime-age-item2}
-# timeline visualization
+# Have rules limiting digital media
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_2",
@@ -1685,13 +4117,15 @@ result
 
 
 ```{r perf-health-overtime-age-item3}
-# timeline visualization
+# Use screen-time limiter
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_3",
@@ -1706,13 +4140,15 @@ result
 
 
 ```{r perf-health-overtime-age-item4}
-# timeline visualization
+# Temporarily switch off Internet
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_4",
@@ -1727,13 +4163,15 @@ result
 
 
 ```{r perf-health-overtime-age-item5}
-# timeline visualization
+# Delete apps/programs
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_5",
@@ -1748,13 +4186,15 @@ result
 
 
 ```{r perf-health-overtime-age-item6}
-# timeline visualization
+# Turn off notifications
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_6",
@@ -1769,16 +4209,41 @@ result
 
 
 ```{r perf-health-overtime-age-item7}
-# timeline visualization
+# Reduce time without special approach
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-overtime-age-item8}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDHWS1_8",
   group_var = "AgeGroup"
 )
 
@@ -1798,13 +4263,15 @@ result
 
 
 ```{r perf-health-overtime-gender-item1}
-# timeline visualization
+# Create digital detox moments
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_1",
@@ -1819,13 +4286,15 @@ result
 
 
 ```{r perf-health-overtime-gender-item2}
-# timeline visualization
+# Have rules limiting digital media
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_2",
@@ -1840,13 +4309,15 @@ result
 
 
 ```{r perf-health-overtime-gender-item3}
-# timeline visualization
+# Use screen-time limiter
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_3",
@@ -1861,13 +4332,15 @@ result
 
 
 ```{r perf-health-overtime-gender-item4}
-# timeline visualization
+# Temporarily switch off Internet
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_4",
@@ -1882,13 +4355,15 @@ result
 
 
 ```{r perf-health-overtime-gender-item5}
-# timeline visualization
+# Delete apps/programs
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_5",
@@ -1903,13 +4378,15 @@ result
 
 
 ```{r perf-health-overtime-gender-item6}
-# timeline visualization
+# Turn off notifications
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_6",
@@ -1924,16 +4401,41 @@ result
 
 
 ```{r perf-health-overtime-gender-item7}
-# timeline visualization
+# Reduce time without special approach
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-overtime-gender-item8}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDHWS1_8",
   group_var = "geslacht"
 )
 
@@ -1953,13 +4455,15 @@ result
 
 
 ```{r perf-health-overtime-edu-item1}
-# timeline visualization
+# Create digital detox moments
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_1",
@@ -1974,13 +4478,15 @@ result
 
 
 ```{r perf-health-overtime-edu-item2}
-# timeline visualization
+# Have rules limiting digital media
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_2",
@@ -1995,13 +4501,15 @@ result
 
 
 ```{r perf-health-overtime-edu-item3}
-# timeline visualization
+# Use screen-time limiter
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_3",
@@ -2016,13 +4524,15 @@ result
 
 
 ```{r perf-health-overtime-edu-item4}
-# timeline visualization
+# Temporarily switch off Internet
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_4",
@@ -2037,13 +4547,15 @@ result
 
 
 ```{r perf-health-overtime-edu-item5}
-# timeline visualization
+# Delete apps/programs
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_5",
@@ -2058,13 +4570,15 @@ result
 
 
 ```{r perf-health-overtime-edu-item6}
-# timeline visualization
+# Turn off notifications
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_6",
@@ -2079,16 +4593,41 @@ result
 
 
 ```{r perf-health-overtime-edu-item7}
-# timeline visualization
+# Reduce time without special approach
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PDHWS1_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-health-overtime-edu-item8}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDHWS1_8",
   group_var = "Education"
 )
 
@@ -2104,10 +4643,15 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph recycle-fill >}} Green Digital
+
+
+**Sustainable/Green Digital Skills** focus on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 
 ::: {.panel-tabset}
@@ -2120,19 +4664,13 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
-
 ```{r perf-green-wave1-overall}
 # 
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8, PSGDS1_9),
   title = "",
-  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8"),
-  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing"),
+  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2346,6 +4884,30 @@ result
 ```
 
 
+###### item9
+
+
+```{r perf-green-wave1-age-item9}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
 :::
 
 
@@ -2540,6 +5102,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-wave1-gender-item9}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -2746,6 +5332,30 @@ result
 ```
 
 
+###### item9
+
+
+```{r perf-green-wave1-edu-item9}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
 :::
 
 
@@ -2755,27 +5365,18 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
-
 ```{r perf-green-wave2-overall}
 # 
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8, PSGDS1_9),
   title = "",
-  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8"),
-  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing"),
+  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2989,6 +5590,30 @@ result
 ```
 
 
+###### item9
+
+
+```{r perf-green-wave2-age-item9}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
 :::
 
 
@@ -3183,6 +5808,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-wave2-gender-item9}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -3389,7 +6038,28 @@ result
 ```
 
 
-:::
+###### item9
+
+
+```{r perf-green-wave2-edu-item9}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
 
 
 :::
@@ -3399,9 +6069,6 @@ result
 
 
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -3415,13 +6082,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item1}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1"
@@ -3435,13 +6104,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2"
@@ -3455,13 +6126,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item3}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3"
@@ -3475,13 +6148,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item4}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4"
@@ -3495,13 +6170,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item5}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5"
@@ -3515,13 +6192,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item6}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6"
@@ -3535,13 +6214,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item7}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7"
@@ -3555,16 +6236,40 @@ result
 
 
 ```{r perf-green-overtime-overall-item8}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-overtime-overall-item9}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9"
 )
 
 result
@@ -3583,13 +6288,15 @@ result
 
 
 ```{r perf-green-overtime-age-item1}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1",
@@ -3604,13 +6311,15 @@ result
 
 
 ```{r perf-green-overtime-age-item2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2",
@@ -3625,13 +6334,15 @@ result
 
 
 ```{r perf-green-overtime-age-item3}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3",
@@ -3646,13 +6357,15 @@ result
 
 
 ```{r perf-green-overtime-age-item4}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4",
@@ -3667,13 +6380,15 @@ result
 
 
 ```{r perf-green-overtime-age-item5}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5",
@@ -3688,13 +6403,15 @@ result
 
 
 ```{r perf-green-overtime-age-item6}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6",
@@ -3709,13 +6426,15 @@ result
 
 
 ```{r perf-green-overtime-age-item7}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7",
@@ -3730,16 +6449,41 @@ result
 
 
 ```{r perf-green-overtime-age-item8}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-overtime-age-item9}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9",
   group_var = "AgeGroup"
 )
 
@@ -3759,13 +6503,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item1}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1",
@@ -3780,13 +6526,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2",
@@ -3801,13 +6549,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item3}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3",
@@ -3822,13 +6572,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item4}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4",
@@ -3843,13 +6595,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item5}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5",
@@ -3864,13 +6618,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item6}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6",
@@ -3885,13 +6641,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item7}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7",
@@ -3906,16 +6664,41 @@ result
 
 
 ```{r perf-green-overtime-gender-item8}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-overtime-gender-item9}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9",
   group_var = "geslacht"
 )
 
@@ -3935,13 +6718,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item1}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1",
@@ -3956,13 +6741,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2",
@@ -3977,13 +6764,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item3}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3",
@@ -3998,13 +6787,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item4}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4",
@@ -4019,13 +6810,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item5}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5",
@@ -4040,13 +6833,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item6}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6",
@@ -4061,13 +6856,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item7}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7",
@@ -4082,16 +6879,41 @@ result
 
 
 ```{r perf-green-overtime-edu-item8}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-overtime-edu-item9}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9",
   group_var = "Education"
 )
 
@@ -4107,10 +6929,15 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph lightbulb-fill >}} Digital Problem Solving
+
+
+**Digital Problem Solving** measures the ability to find help and solutions for digital challenges: knowing where to get help to improve digital skills and who to turn to when facing technical difficulties.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
 
 
 ::: {.panel-tabset}
@@ -4122,12 +6949,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
 
 ```{r perf-ps-wave1-overall}
 # 
@@ -4830,19 +7651,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
 
 ```{r perf-ps-wave2-overall}
 # 
@@ -5542,13 +8354,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -5562,13 +8368,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item1}
-# timeline visualization
+# I don't need help
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_1"
@@ -5582,13 +8390,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item2}
-# timeline visualization
+# I don't know anyone
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_2"
@@ -5602,13 +8412,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item3}
-# timeline visualization
+# Family
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_3"
@@ -5622,13 +8434,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item4}
-# timeline visualization
+# Friends
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_4"
@@ -5642,13 +8456,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item5}
-# timeline visualization
+# Colleagues/classmates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_5"
@@ -5662,13 +8478,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item6}
-# timeline visualization
+# Neighbors/acquaintances
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_6"
@@ -5682,13 +8500,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item7}
-# timeline visualization
+# Help desk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_7"
@@ -5702,13 +8522,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item8}
-# timeline visualization
+# Library
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_8"
@@ -5722,13 +8544,15 @@ result
 
 
 ```{r perf-ps-overtime-overall-item9}
-# timeline visualization
+# Telecom/online helpdesk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_9"
@@ -5750,13 +8574,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item1}
-# timeline visualization
+# I don't need help
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_1",
@@ -5771,13 +8597,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item2}
-# timeline visualization
+# I don't know anyone
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_2",
@@ -5792,13 +8620,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item3}
-# timeline visualization
+# Family
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_3",
@@ -5813,13 +8643,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item4}
-# timeline visualization
+# Friends
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_4",
@@ -5834,13 +8666,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item5}
-# timeline visualization
+# Colleagues/classmates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_5",
@@ -5855,13 +8689,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item6}
-# timeline visualization
+# Neighbors/acquaintances
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_6",
@@ -5876,13 +8712,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item7}
-# timeline visualization
+# Help desk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_7",
@@ -5897,13 +8735,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item8}
-# timeline visualization
+# Library
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_8",
@@ -5918,13 +8758,15 @@ result
 
 
 ```{r perf-ps-overtime-age-item9}
-# timeline visualization
+# Telecom/online helpdesk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_9",
@@ -5947,13 +8789,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item1}
-# timeline visualization
+# I don't need help
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_1",
@@ -5968,13 +8812,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item2}
-# timeline visualization
+# I don't know anyone
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_2",
@@ -5989,13 +8835,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item3}
-# timeline visualization
+# Family
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_3",
@@ -6010,13 +8858,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item4}
-# timeline visualization
+# Friends
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_4",
@@ -6031,13 +8881,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item5}
-# timeline visualization
+# Colleagues/classmates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_5",
@@ -6052,13 +8904,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item6}
-# timeline visualization
+# Neighbors/acquaintances
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_6",
@@ -6073,13 +8927,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item7}
-# timeline visualization
+# Help desk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_7",
@@ -6094,13 +8950,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item8}
-# timeline visualization
+# Library
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_8",
@@ -6115,13 +8973,15 @@ result
 
 
 ```{r perf-ps-overtime-gender-item9}
-# timeline visualization
+# Telecom/online helpdesk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_9",
@@ -6144,13 +9004,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item1}
-# timeline visualization
+# I don't need help
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_1",
@@ -6165,13 +9027,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item2}
-# timeline visualization
+# I don't know anyone
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_2",
@@ -6186,13 +9050,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item3}
-# timeline visualization
+# Family
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_3",
@@ -6207,13 +9073,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item4}
-# timeline visualization
+# Friends
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_4",
@@ -6228,13 +9096,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item5}
-# timeline visualization
+# Colleagues/classmates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_5",
@@ -6249,13 +9119,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item6}
-# timeline visualization
+# Neighbors/acquaintances
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_6",
@@ -6270,13 +9142,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item7}
-# timeline visualization
+# Help desk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_7",
@@ -6291,13 +9165,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item8}
-# timeline visualization
+# Library
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_8",
@@ -6312,13 +9188,15 @@ result
 
 
 ```{r perf-ps-overtime-edu-item9}
-# timeline visualization
+# Telecom/online helpdesk
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "SourceHelp_9",
@@ -6327,9 +9205,6 @@ result <- create_timeline(
 
 result
 ```
-
-
-:::
 
 
 :::

@@ -49,283 +49,10 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ```
 
-
-```{=html}
-
-<style>
-/* Chart Lazy Loading Styles */
-.chart-lazy {
-  position: relative;
-  min-height: 400px;
-  margin: 1rem 0;
-}
-
-.chart-skeleton {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  transition: opacity 0.3s ease;
-}
-
-.chart-spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.chart-loading-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Theme: Light */
-.chart-skeleton.theme-light {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.chart-skeleton.theme-light .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.2);
-  border-top-color: rgba(15, 23, 42, 0.8);
-}
-
-.chart-skeleton.theme-light .chart-loading-text {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-/* Theme: Glass */
-.chart-skeleton.theme-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-}
-
-.chart-skeleton.theme-glass .chart-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: rgba(15, 23, 42, 0.7);
-}
-
-.chart-skeleton.theme-glass .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-
-/* Theme: Dark */
-.chart-skeleton.theme-dark {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.chart-skeleton.theme-dark .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.3);
-  border-top-color: rgba(255, 255, 255, 0.9);
-}
-
-.chart-skeleton.theme-dark .chart-loading-text {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Theme: Accent */
-.chart-skeleton.theme-accent {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-}
-
-.chart-skeleton.theme-accent .chart-spinner {
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top-color: rgba(59, 130, 246, 0.9);
-}
-
-.chart-skeleton.theme-accent .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-</style>
-
-<script>
-// Chart Lazy Loading System
-(function() {
-  const THEME = 'light';
-  const DEBUG = false;
-  
-  // Track which charts have been initialized
-  const initializedCharts = new Set();
-  
-  // Queue of charts waiting to be initialized
-  const chartQueue = [];
-  let isProcessingQueue = false;
-  
-  // Performance tracking
-  let totalChartsLoaded = 0;
-  let totalLoadTime = 0;
-  const chartTimings = [];
-  
-  // Create skeleton loader dynamically
-  function createSkeleton(container) {
-    const skeleton = document.createElement('div');
-    skeleton.className = 'chart-skeleton theme-' + THEME;
-    skeleton.innerHTML = `
-      <div class="chart-spinner"></div>
-      <div class="chart-loading-text">Loading visualization...</div>
-    `;
-    container.appendChild(skeleton);
-    return skeleton;
-  }
-  
-  // Initialize a single chart
-  function initChart(container) {
-    const chartId = container.id;
-    if (initializedCharts.has(chartId)) return;
-    
-    const startTime = DEBUG ? performance.now() : 0;
-    
-    initializedCharts.add(chartId);
-    container.dataset.loaded = 'true';
-    
-    // Remove skeleton loader
-    const skeleton = container.querySelector('.chart-skeleton');
-    if (skeleton) {
-      skeleton.style.opacity = '0';
-      setTimeout(() => skeleton.remove(), 300);
-    }
-    
-    // Trigger Highcharts reflow if present
-    setTimeout(() => {
-      if (window.Highcharts) {
-        Highcharts.charts.forEach(chart => {
-          if (chart && chart.reflow) chart.reflow();
-        });
-      }
-      
-      // Debug logging
-      if (DEBUG) {
-        const loadTime = performance.now() - startTime;
-        totalChartsLoaded++;
-        totalLoadTime += loadTime;
-        chartTimings.push({ id: chartId, time: loadTime });
-        
-        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
-        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-      }
-    }, 50);
-  }
-  
-  // Process chart queue in batches
-  function processQueue() {
-    if (isProcessingQueue || chartQueue.length === 0) return;
-    
-    isProcessingQueue = true;
-    const batchSize = 3;
-    const batch = chartQueue.splice(0, batchSize);
-    
-    if (DEBUG) {
-      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
-    }
-    
-    batch.forEach(container => initChart(container));
-    
-    if (chartQueue.length > 0) {
-      requestIdleCallback(() => {
-        isProcessingQueue = false;
-        processQueue();
-      }, { timeout: 2000 });
-    } else {
-      isProcessingQueue = false;
-      
-      if (DEBUG && totalChartsLoaded > 0) {
-        console.log(`✅ All charts loaded! Summary:`);
-        console.log(`   Total charts: ${totalChartsLoaded}`);
-        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
-        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-      }
-    }
-  }
-  
-  // Intersection Observer for scroll-based lazy loading
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
-        chartQueue.push(entry.target);
-        observer.unobserve(entry.target);
-        processQueue();
-      }
-    });
-  }, { rootMargin: '200px' });
-  
-  // Initialize observers when DOM is ready
-  function initLazyLoading() {
-    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
-      // Create skeleton for each lazy chart
-      createSkeleton(container);
-      // Start observing
-      observer.observe(container);
-    });
-  }
-  
-  // Tab-aware rendering: load charts when tab becomes visible
-  function initTabAwareLoading() {
-    document.querySelectorAll('.panel-tabset').forEach(tabset => {
-      const tabs = tabset.querySelectorAll('[role="tab"]');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          setTimeout(() => {
-            const targetId = this.getAttribute('aria-controls');
-            if (!targetId) return;
-            
-            const targetPanel = document.getElementById(targetId);
-            if (!targetPanel) return;
-            
-            // Initialize any lazy charts in this tab
-            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
-            lazyCharts.forEach(chart => {
-              chartQueue.push(chart);
-              observer.unobserve(chart);
-            });
-            processQueue();
-          }, 50);
-        });
-      });
-    });
-  }
-  
-  // Start lazy loading when document is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      initLazyLoading();
-      initTabAwareLoading();
-    });
-  } else {
-    initLazyLoading();
-    initTabAwareLoading();
-  }
-})();
-</script>
-
-```
-
 ## {{< iconify ph lightning-fill >}} Safety Skills
+
+
+ADD TEXT BEFORE TABSET
 
 
 ::: {.panel-tabset}
@@ -337,12 +64,6 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r safety-wave1-overall-2}
 # Safety and Control of Information and Devices Skills
@@ -879,19 +600,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r safety-wave2-overall-2}
 # Safety and Control of Information and Devices Skills
@@ -1425,13 +1137,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -1445,13 +1151,15 @@ result
 
 
 ```{r safety-overtime-overall-item1-2}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SSafDev1"
 )
@@ -1464,13 +1172,15 @@ result
 
 
 ```{r safety-overtime-overall-item2-2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SSafDev2"
 )
@@ -1483,13 +1193,15 @@ result
 
 
 ```{r safety-overtime-overall-item3-2}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv1"
 )
@@ -1502,13 +1214,15 @@ result
 
 
 ```{r safety-overtime-overall-item4-2}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv2"
 )
@@ -1521,13 +1235,15 @@ result
 
 
 ```{r safety-overtime-overall-item5-2}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv3"
 )
@@ -1540,13 +1256,15 @@ result
 
 
 ```{r safety-overtime-overall-item6-2}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv4"
 )
@@ -1559,13 +1277,15 @@ result
 
 
 ```{r safety-overtime-overall-item7-2}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SCom3"
 )
@@ -1586,14 +1306,16 @@ result
 
 
 ```{r safety-overtime-age-item1-2}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev1",
   group_var = "AgeGroup"
@@ -1607,14 +1329,16 @@ result
 
 
 ```{r safety-overtime-age-item2-2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev2",
   group_var = "AgeGroup"
@@ -1628,14 +1352,16 @@ result
 
 
 ```{r safety-overtime-age-item3-2}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv1",
   group_var = "AgeGroup"
@@ -1649,14 +1375,16 @@ result
 
 
 ```{r safety-overtime-age-item4-2}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv2",
   group_var = "AgeGroup"
@@ -1670,14 +1398,16 @@ result
 
 
 ```{r safety-overtime-age-item5-2}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv3",
   group_var = "AgeGroup"
@@ -1691,14 +1421,16 @@ result
 
 
 ```{r safety-overtime-age-item6-2}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv4",
   group_var = "AgeGroup"
@@ -1712,14 +1444,16 @@ result
 
 
 ```{r safety-overtime-age-item7-2}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SCom3",
   group_var = "AgeGroup"
@@ -1741,14 +1475,16 @@ result
 
 
 ```{r safety-overtime-gender-item1-2}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev1",
   group_var = "geslacht"
@@ -1762,14 +1498,16 @@ result
 
 
 ```{r safety-overtime-gender-item2-2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev2",
   group_var = "geslacht"
@@ -1783,14 +1521,16 @@ result
 
 
 ```{r safety-overtime-gender-item3-2}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv1",
   group_var = "geslacht"
@@ -1804,14 +1544,16 @@ result
 
 
 ```{r safety-overtime-gender-item4-2}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv2",
   group_var = "geslacht"
@@ -1825,14 +1567,16 @@ result
 
 
 ```{r safety-overtime-gender-item5-2}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv3",
   group_var = "geslacht"
@@ -1846,14 +1590,16 @@ result
 
 
 ```{r safety-overtime-gender-item6-2}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv4",
   group_var = "geslacht"
@@ -1867,14 +1613,16 @@ result
 
 
 ```{r safety-overtime-gender-item7-2}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SCom3",
   group_var = "geslacht"
@@ -1896,14 +1644,16 @@ result
 
 
 ```{r safety-overtime-edu-item1-2}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev1",
   group_var = "Education"
@@ -1917,14 +1667,16 @@ result
 
 
 ```{r safety-overtime-edu-item2-2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev2",
   group_var = "Education"
@@ -1938,14 +1690,16 @@ result
 
 
 ```{r safety-overtime-edu-item3-2}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv1",
   group_var = "Education"
@@ -1959,14 +1713,16 @@ result
 
 
 ```{r safety-overtime-edu-item4-2}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv2",
   group_var = "Education"
@@ -1980,14 +1736,16 @@ result
 
 
 ```{r safety-overtime-edu-item5-2}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv3",
   group_var = "Education"
@@ -2001,14 +1759,16 @@ result
 
 
 ```{r safety-overtime-edu-item6-2}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv4",
   group_var = "Education"
@@ -2022,14 +1782,16 @@ result
 
 
 ```{r safety-overtime-edu-item7-2}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SCom3",
   group_var = "Education"
@@ -2047,10 +1809,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph book-open-fill >}} Safety Knowledge
+
+
+**Safety & Control of Information and Devices** encompasses protecting devices and personal information: using security measures, managing privacy settings, identifying phishing, and controlling what information is shared online.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
 
 
 ::: {.panel-tabset}
@@ -2062,12 +1828,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r ksafety-wave1-overall-2}
 # 
@@ -2338,19 +2098,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r ksafety-wave2-overall-2}
 # 
@@ -2618,13 +2369,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -2638,13 +2383,15 @@ result
 
 
 ```{r ksafety-overtime-overall-item1-2}
-# timeline visualization
+# To keep your devices safer, you should always install updates immediately.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "To keep your devices safer, you should always install updates immediately.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KSafDev2RC"
@@ -2658,13 +2405,15 @@ result
 
 
 ```{r ksafety-overtime-overall-item2-2}
-# timeline visualization
+# It's best to have the same password for each account.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "It's best to have the same password for each account.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv1RC"
@@ -2678,13 +2427,15 @@ result
 
 
 ```{r ksafety-overtime-overall-item3-2}
-# timeline visualization
+# What you do online is used by companies to advertise their products and services.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "What you do online is used by companies to advertise their products and services.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv2RC"
@@ -2706,13 +2457,15 @@ result
 
 
 ```{r ksafety-overtime-age-item1-2}
-# timeline visualization
+# To keep your devices safer, you should always install updates immediately.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "To keep your devices safer, you should always install updates immediately.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KSafDev2RC",
@@ -2727,13 +2480,15 @@ result
 
 
 ```{r ksafety-overtime-age-item2-2}
-# timeline visualization
+# It's best to have the same password for each account.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "It's best to have the same password for each account.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv1RC",
@@ -2748,13 +2503,15 @@ result
 
 
 ```{r ksafety-overtime-age-item3-2}
-# timeline visualization
+# What you do online is used by companies to advertise their products and services.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "What you do online is used by companies to advertise their products and services.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv2RC",
@@ -2777,13 +2534,15 @@ result
 
 
 ```{r ksafety-overtime-gender-item1-2}
-# timeline visualization
+# To keep your devices safer, you should always install updates immediately.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "To keep your devices safer, you should always install updates immediately.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KSafDev2RC",
@@ -2798,13 +2557,15 @@ result
 
 
 ```{r ksafety-overtime-gender-item2-2}
-# timeline visualization
+# It's best to have the same password for each account.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "It's best to have the same password for each account.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv1RC",
@@ -2819,13 +2580,15 @@ result
 
 
 ```{r ksafety-overtime-gender-item3-2}
-# timeline visualization
+# What you do online is used by companies to advertise their products and services.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "What you do online is used by companies to advertise their products and services.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv2RC",
@@ -2848,13 +2611,15 @@ result
 
 
 ```{r ksafety-overtime-edu-item1-2}
-# timeline visualization
+# To keep your devices safer, you should always install updates immediately.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "To keep your devices safer, you should always install updates immediately.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KSafDev2RC",
@@ -2869,13 +2634,15 @@ result
 
 
 ```{r ksafety-overtime-edu-item2-2}
-# timeline visualization
+# It's best to have the same password for each account.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "It's best to have the same password for each account.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv1RC",
@@ -2890,13 +2657,15 @@ result
 
 
 ```{r ksafety-overtime-edu-item3-2}
-# timeline visualization
+# What you do online is used by companies to advertise their products and services.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "What you do online is used by companies to advertise their products and services.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KPriv2RC",
@@ -2915,10 +2684,10 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph clipboard-text >}} Safety Performance
+
+
+ADD TEXT BEFORE TABSET
 
 
 ::: {.panel-tabset}
@@ -2931,19 +2700,13 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
-
 ```{r perf-safety-wave1-overall-2}
 # 
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PSCS3_10),
   title = "",
-  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9"),
-  question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups"),
+  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
+  question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups", "None of the above"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3181,6 +2944,30 @@ result
 ```
 
 
+###### item10
+
+
+```{r perf-safety-wave1-age-item10-2}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
 :::
 
 
@@ -3399,6 +3186,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave1-gender-item10-2}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_10"
 )
 
 result
@@ -3629,6 +3440,30 @@ result
 ```
 
 
+###### item10
+
+
+```{r perf-safety-wave1-edu-item10-2}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
 :::
 
 
@@ -3638,27 +3473,18 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
-
 ```{r perf-safety-wave2-overall-2}
 # 
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PSCS3_10),
   title = "",
-  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9"),
-  question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups"),
+  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
+  question_labels = c("Keep passwords in a password safe", "Save passwords on paper (rev)", "Use passwords with ≥14 chars", "Different passwords per account", "Use passkey (finger/face)", "Two-step verification", "Install software updates", "Use adblocker", "Make backups", "None of the above"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3896,6 +3722,30 @@ result
 ```
 
 
+###### item10
+
+
+```{r perf-safety-wave2-age-item10-2}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
+
+
 :::
 
 
@@ -4114,6 +3964,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-wave2-gender-item10-2}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSCS3_10"
 )
 
 result
@@ -4344,7 +4218,28 @@ result
 ```
 
 
-:::
+###### item10
+
+
+```{r perf-safety-wave2-edu-item10-2}
+# None of the above
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSCS3_10),
+  title = "None of the above",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSCS3_10"
+)
+
+result
+```
 
 
 :::
@@ -4354,9 +4249,6 @@ result
 
 
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -4370,13 +4262,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item1-2}
-# timeline visualization
+# Keep passwords in a password safe
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Keep passwords in a password safe",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_1"
@@ -4390,13 +4284,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item2-2}
-# timeline visualization
+# Save passwords on paper (rev)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Save passwords on paper (rev)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_2"
@@ -4410,13 +4306,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item3-2}
-# timeline visualization
+# Use passwords with ≥14 chars
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passwords with ≥14 chars",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_3"
@@ -4430,13 +4328,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item4-2}
-# timeline visualization
+# Different passwords per account
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Different passwords per account",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_4"
@@ -4450,13 +4350,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item5-2}
-# timeline visualization
+# Use passkey (finger/face)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passkey (finger/face)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_5"
@@ -4470,13 +4372,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item6-2}
-# timeline visualization
+# Two-step verification
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Two-step verification",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_6"
@@ -4490,13 +4394,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item7-2}
-# timeline visualization
+# Install software updates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Install software updates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_7"
@@ -4510,13 +4416,15 @@ result
 
 
 ```{r perf-safety-overtime-overall-item8-2}
-# timeline visualization
+# Use adblocker
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use adblocker",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_8"
@@ -4530,16 +4438,40 @@ result
 
 
 ```{r perf-safety-overtime-overall-item9-2}
-# timeline visualization
+# Make backups
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Make backups",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_9"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-overtime-overall-item10-2}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10"
 )
 
 result
@@ -4558,13 +4490,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item1-2}
-# timeline visualization
+# Keep passwords in a password safe
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Keep passwords in a password safe",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_1",
@@ -4579,13 +4513,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item2-2}
-# timeline visualization
+# Save passwords on paper (rev)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Save passwords on paper (rev)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_2",
@@ -4600,13 +4536,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item3-2}
-# timeline visualization
+# Use passwords with ≥14 chars
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passwords with ≥14 chars",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_3",
@@ -4621,13 +4559,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item4-2}
-# timeline visualization
+# Different passwords per account
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Different passwords per account",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_4",
@@ -4642,13 +4582,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item5-2}
-# timeline visualization
+# Use passkey (finger/face)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passkey (finger/face)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_5",
@@ -4663,13 +4605,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item6-2}
-# timeline visualization
+# Two-step verification
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Two-step verification",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_6",
@@ -4684,13 +4628,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item7-2}
-# timeline visualization
+# Install software updates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Install software updates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_7",
@@ -4705,13 +4651,15 @@ result
 
 
 ```{r perf-safety-overtime-age-item8-2}
-# timeline visualization
+# Use adblocker
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use adblocker",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_8",
@@ -4726,16 +4674,41 @@ result
 
 
 ```{r perf-safety-overtime-age-item9-2}
-# timeline visualization
+# Make backups
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Make backups",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-overtime-age-item10-2}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10",
   group_var = "AgeGroup"
 )
 
@@ -4755,13 +4728,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item1-2}
-# timeline visualization
+# Keep passwords in a password safe
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Keep passwords in a password safe",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_1",
@@ -4776,13 +4751,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item2-2}
-# timeline visualization
+# Save passwords on paper (rev)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Save passwords on paper (rev)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_2",
@@ -4797,13 +4774,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item3-2}
-# timeline visualization
+# Use passwords with ≥14 chars
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passwords with ≥14 chars",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_3",
@@ -4818,13 +4797,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item4-2}
-# timeline visualization
+# Different passwords per account
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Different passwords per account",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_4",
@@ -4839,13 +4820,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item5-2}
-# timeline visualization
+# Use passkey (finger/face)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passkey (finger/face)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_5",
@@ -4860,13 +4843,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item6-2}
-# timeline visualization
+# Two-step verification
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Two-step verification",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_6",
@@ -4881,13 +4866,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item7-2}
-# timeline visualization
+# Install software updates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Install software updates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_7",
@@ -4902,13 +4889,15 @@ result
 
 
 ```{r perf-safety-overtime-gender-item8-2}
-# timeline visualization
+# Use adblocker
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use adblocker",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_8",
@@ -4923,16 +4912,41 @@ result
 
 
 ```{r perf-safety-overtime-gender-item9-2}
-# timeline visualization
+# Make backups
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Make backups",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item10
+
+
+```{r perf-safety-overtime-gender-item10-2}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10",
   group_var = "geslacht"
 )
 
@@ -4952,13 +4966,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item1-2}
-# timeline visualization
+# Keep passwords in a password safe
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Keep passwords in a password safe",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_1",
@@ -4973,13 +4989,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item2-2}
-# timeline visualization
+# Save passwords on paper (rev)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Save passwords on paper (rev)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_2",
@@ -4994,13 +5012,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item3-2}
-# timeline visualization
+# Use passwords with ≥14 chars
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passwords with ≥14 chars",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_3",
@@ -5015,13 +5035,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item4-2}
-# timeline visualization
+# Different passwords per account
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Different passwords per account",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_4",
@@ -5036,13 +5058,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item5-2}
-# timeline visualization
+# Use passkey (finger/face)
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use passkey (finger/face)",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_5",
@@ -5057,13 +5081,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item6-2}
-# timeline visualization
+# Two-step verification
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Two-step verification",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_6",
@@ -5078,13 +5104,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item7-2}
-# timeline visualization
+# Install software updates
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Install software updates",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_7",
@@ -5099,13 +5127,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item8-2}
-# timeline visualization
+# Use adblocker
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use adblocker",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_8",
@@ -5120,13 +5150,15 @@ result
 
 
 ```{r perf-safety-overtime-edu-item9-2}
-# timeline visualization
+# Make backups
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Make backups",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSCS3_9",
@@ -5137,7 +5169,27 @@ result
 ```
 
 
-:::
+###### item10
+
+
+```{r perf-safety-overtime-edu-item10-2}
+# None of the above
+result <- create_timeline(
+  data = data,
+  title = "None of the above",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSCS3_10",
+  group_var = "Education"
+)
+
+result
+```
 
 
 :::

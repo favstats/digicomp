@@ -55,283 +55,14 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```
 
-
-```{=html}
-
-<style>
-/* Chart Lazy Loading Styles */
-.chart-lazy {
-  position: relative;
-  min-height: 400px;
-  margin: 1rem 0;
-}
-
-.chart-skeleton {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  transition: opacity 0.3s ease;
-}
-
-.chart-spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.chart-loading-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Theme: Light */
-.chart-skeleton.theme-light {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.chart-skeleton.theme-light .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.2);
-  border-top-color: rgba(15, 23, 42, 0.8);
-}
-
-.chart-skeleton.theme-light .chart-loading-text {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-/* Theme: Glass */
-.chart-skeleton.theme-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-}
-
-.chart-skeleton.theme-glass .chart-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: rgba(15, 23, 42, 0.7);
-}
-
-.chart-skeleton.theme-glass .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-
-/* Theme: Dark */
-.chart-skeleton.theme-dark {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.chart-skeleton.theme-dark .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.3);
-  border-top-color: rgba(255, 255, 255, 0.9);
-}
-
-.chart-skeleton.theme-dark .chart-loading-text {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Theme: Accent */
-.chart-skeleton.theme-accent {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-}
-
-.chart-skeleton.theme-accent .chart-spinner {
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top-color: rgba(59, 130, 246, 0.9);
-}
-
-.chart-skeleton.theme-accent .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-</style>
-
-<script>
-// Chart Lazy Loading System
-(function() {
-  const THEME = 'light';
-  const DEBUG = false;
-  
-  // Track which charts have been initialized
-  const initializedCharts = new Set();
-  
-  // Queue of charts waiting to be initialized
-  const chartQueue = [];
-  let isProcessingQueue = false;
-  
-  // Performance tracking
-  let totalChartsLoaded = 0;
-  let totalLoadTime = 0;
-  const chartTimings = [];
-  
-  // Create skeleton loader dynamically
-  function createSkeleton(container) {
-    const skeleton = document.createElement('div');
-    skeleton.className = 'chart-skeleton theme-' + THEME;
-    skeleton.innerHTML = `
-      <div class="chart-spinner"></div>
-      <div class="chart-loading-text">Loading visualization...</div>
-    `;
-    container.appendChild(skeleton);
-    return skeleton;
-  }
-  
-  // Initialize a single chart
-  function initChart(container) {
-    const chartId = container.id;
-    if (initializedCharts.has(chartId)) return;
-    
-    const startTime = DEBUG ? performance.now() : 0;
-    
-    initializedCharts.add(chartId);
-    container.dataset.loaded = 'true';
-    
-    // Remove skeleton loader
-    const skeleton = container.querySelector('.chart-skeleton');
-    if (skeleton) {
-      skeleton.style.opacity = '0';
-      setTimeout(() => skeleton.remove(), 300);
-    }
-    
-    // Trigger Highcharts reflow if present
-    setTimeout(() => {
-      if (window.Highcharts) {
-        Highcharts.charts.forEach(chart => {
-          if (chart && chart.reflow) chart.reflow();
-        });
-      }
-      
-      // Debug logging
-      if (DEBUG) {
-        const loadTime = performance.now() - startTime;
-        totalChartsLoaded++;
-        totalLoadTime += loadTime;
-        chartTimings.push({ id: chartId, time: loadTime });
-        
-        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
-        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-      }
-    }, 50);
-  }
-  
-  // Process chart queue in batches
-  function processQueue() {
-    if (isProcessingQueue || chartQueue.length === 0) return;
-    
-    isProcessingQueue = true;
-    const batchSize = 3;
-    const batch = chartQueue.splice(0, batchSize);
-    
-    if (DEBUG) {
-      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
-    }
-    
-    batch.forEach(container => initChart(container));
-    
-    if (chartQueue.length > 0) {
-      requestIdleCallback(() => {
-        isProcessingQueue = false;
-        processQueue();
-      }, { timeout: 2000 });
-    } else {
-      isProcessingQueue = false;
-      
-      if (DEBUG && totalChartsLoaded > 0) {
-        console.log(`✅ All charts loaded! Summary:`);
-        console.log(`   Total charts: ${totalChartsLoaded}`);
-        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
-        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-      }
-    }
-  }
-  
-  // Intersection Observer for scroll-based lazy loading
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
-        chartQueue.push(entry.target);
-        observer.unobserve(entry.target);
-        processQueue();
-      }
-    });
-  }, { rootMargin: '300px' });
-  
-  // Initialize observers when DOM is ready
-  function initLazyLoading() {
-    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
-      // Create skeleton for each lazy chart
-      createSkeleton(container);
-      // Start observing
-      observer.observe(container);
-    });
-  }
-  
-  // Tab-aware rendering: load charts when tab becomes visible
-  function initTabAwareLoading() {
-    document.querySelectorAll('.panel-tabset').forEach(tabset => {
-      const tabs = tabset.querySelectorAll('[role="tab"]');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          setTimeout(() => {
-            const targetId = this.getAttribute('aria-controls');
-            if (!targetId) return;
-            
-            const targetPanel = document.getElementById(targetId);
-            if (!targetPanel) return;
-            
-            // Initialize any lazy charts in this tab
-            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
-            lazyCharts.forEach(chart => {
-              chartQueue.push(chart);
-              observer.unobserve(chart);
-            });
-            processQueue();
-          }, 50);
-        });
-      });
-    });
-  }
-  
-  // Start lazy loading when document is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      initLazyLoading();
-      initTabAwareLoading();
-    });
-  } else {
-    initLazyLoading();
-    initTabAwareLoading();
-  }
-})();
-</script>
-
-```
-
 ## {{< iconify ph wallet-fill >}} Transactional
+
+
+**Transactional Skills** cover the ability to complete official tasks online: handling tax matters, making digital payments, arranging healthcare, using digital identification (DigID), and uploading documents for online services.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Transactional results](transactional.html)
 
 
 ::: {.panel-tabset}
@@ -343,12 +74,6 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Transactional results](transactional.html)
 
 ```{r trans-wave1-overall}
 # Transactional Skills
@@ -747,19 +472,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Transactional results](transactional.html)
 
 ```{r trans-wave2-overall}
 # Transactional Skills
@@ -1155,13 +871,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -1175,13 +885,15 @@ result
 
 
 ```{r trans-overtime-overall-item1}
-# timeline visualization
+# I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "Strans1"
 )
@@ -1194,13 +906,15 @@ result
 
 
 ```{r trans-overtime-overall-item2}
-# timeline visualization
+# I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "Strans2"
 )
@@ -1213,13 +927,15 @@ result
 
 
 ```{r trans-overtime-overall-item3}
-# timeline visualization
+# I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "Strans3"
 )
@@ -1232,13 +948,15 @@ result
 
 
 ```{r trans-overtime-overall-item4}
-# timeline visualization
+# I know how to apply for a DigID and how to use it.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to apply for a DigID and how to use it.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "Strans4"
 )
@@ -1251,13 +969,15 @@ result
 
 
 ```{r trans-overtime-overall-item5}
-# timeline visualization
+# I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "Strans5"
 )
@@ -1278,14 +998,16 @@ result
 
 
 ```{r trans-overtime-age-item1}
-# timeline visualization
+# I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans1",
   group_var = "AgeGroup"
@@ -1299,14 +1021,16 @@ result
 
 
 ```{r trans-overtime-age-item2}
-# timeline visualization
+# I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans2",
   group_var = "AgeGroup"
@@ -1320,14 +1044,16 @@ result
 
 
 ```{r trans-overtime-age-item3}
-# timeline visualization
+# I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans3",
   group_var = "AgeGroup"
@@ -1341,14 +1067,16 @@ result
 
 
 ```{r trans-overtime-age-item4}
-# timeline visualization
+# I know how to apply for a DigID and how to use it.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to apply for a DigID and how to use it.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans4",
   group_var = "AgeGroup"
@@ -1362,14 +1090,16 @@ result
 
 
 ```{r trans-overtime-age-item5}
-# timeline visualization
+# I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans5",
   group_var = "AgeGroup"
@@ -1391,14 +1121,16 @@ result
 
 
 ```{r trans-overtime-gender-item1}
-# timeline visualization
+# I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans1",
   group_var = "geslacht"
@@ -1412,14 +1144,16 @@ result
 
 
 ```{r trans-overtime-gender-item2}
-# timeline visualization
+# I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans2",
   group_var = "geslacht"
@@ -1433,14 +1167,16 @@ result
 
 
 ```{r trans-overtime-gender-item3}
-# timeline visualization
+# I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans3",
   group_var = "geslacht"
@@ -1454,14 +1190,16 @@ result
 
 
 ```{r trans-overtime-gender-item4}
-# timeline visualization
+# I know how to apply for a DigID and how to use it.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to apply for a DigID and how to use it.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans4",
   group_var = "geslacht"
@@ -1475,14 +1213,16 @@ result
 
 
 ```{r trans-overtime-gender-item5}
-# timeline visualization
+# I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans5",
   group_var = "geslacht"
@@ -1504,14 +1244,16 @@ result
 
 
 ```{r trans-overtime-edu-item1}
-# timeline visualization
+# I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans1",
   group_var = "Education"
@@ -1525,14 +1267,16 @@ result
 
 
 ```{r trans-overtime-edu-item2}
-# timeline visualization
+# I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans2",
   group_var = "Education"
@@ -1546,14 +1290,16 @@ result
 
 
 ```{r trans-overtime-edu-item3}
-# timeline visualization
+# I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans3",
   group_var = "Education"
@@ -1567,14 +1313,16 @@ result
 
 
 ```{r trans-overtime-edu-item4}
-# timeline visualization
+# I know how to apply for a DigID and how to use it.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to apply for a DigID and how to use it.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans4",
   group_var = "Education"
@@ -1588,14 +1336,16 @@ result
 
 
 ```{r trans-overtime-edu-item5}
-# timeline visualization
+# I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "Strans5",
   group_var = "Education"
@@ -1613,10 +1363,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph robot-fill >}} AI
+
+
+**AI Skills** assess understanding and recognition of artificial intelligence in everyday applications: recognizing when websites/apps use AI, identifying AI-recommended content, and understanding how AI personalizes digital experiences.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
 
 
 ::: {.panel-tabset}
@@ -1628,12 +1382,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all AI results](ai.html)
 
 ```{r ai-wave1-overall}
 # AI Skills
@@ -1825,19 +1573,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all AI results](ai.html)
 
 ```{r ai-wave2-overall}
 # AI Skills
@@ -2026,13 +1765,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -2046,13 +1779,15 @@ result
 
 
 ```{r ai-overtime-overall-item1}
-# timeline visualization
+# I recognize when a website or app uses AI to adjust the content to me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SAI1"
 )
@@ -2065,13 +1800,15 @@ result
 
 
 ```{r ai-overtime-overall-item2}
-# timeline visualization
+# I recognize when specific content is recommended to me by AI.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when specific content is recommended to me by AI.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SAI2"
 )
@@ -2092,14 +1829,16 @@ result
 
 
 ```{r ai-overtime-age-item1}
-# timeline visualization
+# I recognize when a website or app uses AI to adjust the content to me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SAI1",
   group_var = "AgeGroup"
@@ -2113,14 +1852,16 @@ result
 
 
 ```{r ai-overtime-age-item2}
-# timeline visualization
+# I recognize when specific content is recommended to me by AI.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when specific content is recommended to me by AI.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SAI2",
   group_var = "AgeGroup"
@@ -2142,14 +1883,16 @@ result
 
 
 ```{r ai-overtime-gender-item1}
-# timeline visualization
+# I recognize when a website or app uses AI to adjust the content to me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SAI1",
   group_var = "geslacht"
@@ -2163,14 +1906,16 @@ result
 
 
 ```{r ai-overtime-gender-item2}
-# timeline visualization
+# I recognize when specific content is recommended to me by AI.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when specific content is recommended to me by AI.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SAI2",
   group_var = "geslacht"
@@ -2192,14 +1937,16 @@ result
 
 
 ```{r ai-overtime-edu-item1}
-# timeline visualization
+# I recognize when a website or app uses AI to adjust the content to me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when a website or app uses AI to adjust the content to me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SAI1",
   group_var = "Education"
@@ -2213,14 +1960,16 @@ result
 
 
 ```{r ai-overtime-edu-item2}
-# timeline visualization
+# I recognize when specific content is recommended to me by AI.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I recognize when specific content is recommended to me by AI.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SAI2",
   group_var = "Education"
@@ -2238,10 +1987,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph magic-wand-fill >}} Gen AI
+
+
+**Generative AI Skills** measure competencies with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 
 ::: {.panel-tabset}
@@ -2253,12 +2006,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r genai-wave1-overall}
 # GenAI Skills
@@ -2519,19 +2266,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r genai-wave2-overall}
 # GenAI Skills
@@ -2789,13 +2527,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -2809,13 +2541,15 @@ result
 
 
 ```{r genai-overtime-overall-item1}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SGAI1"
 )
@@ -2828,13 +2562,15 @@ result
 
 
 ```{r genai-overtime-overall-item2}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SGAI2"
 )
@@ -2847,13 +2583,15 @@ result
 
 
 ```{r genai-overtime-overall-item3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SGAI3"
 )
@@ -2874,14 +2612,16 @@ result
 
 
 ```{r genai-overtime-age-item1}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI1",
   group_var = "AgeGroup"
@@ -2895,14 +2635,16 @@ result
 
 
 ```{r genai-overtime-age-item2}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI2",
   group_var = "AgeGroup"
@@ -2916,14 +2658,16 @@ result
 
 
 ```{r genai-overtime-age-item3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI3",
   group_var = "AgeGroup"
@@ -2945,14 +2689,16 @@ result
 
 
 ```{r genai-overtime-gender-item1}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI1",
   group_var = "geslacht"
@@ -2966,14 +2712,16 @@ result
 
 
 ```{r genai-overtime-gender-item2}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI2",
   group_var = "geslacht"
@@ -2987,14 +2735,16 @@ result
 
 
 ```{r genai-overtime-gender-item3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI3",
   group_var = "geslacht"
@@ -3016,14 +2766,16 @@ result
 
 
 ```{r genai-overtime-edu-item1}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI1",
   group_var = "Education"
@@ -3037,14 +2789,16 @@ result
 
 
 ```{r genai-overtime-edu-item2}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI2",
   group_var = "Education"
@@ -3058,14 +2812,16 @@ result
 
 
 ```{r genai-overtime-edu-item3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI3",
   group_var = "Education"
@@ -3073,9 +2829,6 @@ result <- create_timeline(
 
 result
 ```
-
-
-:::
 
 
 :::

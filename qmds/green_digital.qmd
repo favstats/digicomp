@@ -49,283 +49,10 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ```
 
-
-```{=html}
-
-<style>
-/* Chart Lazy Loading Styles */
-.chart-lazy {
-  position: relative;
-  min-height: 400px;
-  margin: 1rem 0;
-}
-
-.chart-skeleton {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  transition: opacity 0.3s ease;
-}
-
-.chart-spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.chart-loading-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Theme: Light */
-.chart-skeleton.theme-light {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.chart-skeleton.theme-light .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.2);
-  border-top-color: rgba(15, 23, 42, 0.8);
-}
-
-.chart-skeleton.theme-light .chart-loading-text {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-/* Theme: Glass */
-.chart-skeleton.theme-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-}
-
-.chart-skeleton.theme-glass .chart-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: rgba(15, 23, 42, 0.7);
-}
-
-.chart-skeleton.theme-glass .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-
-/* Theme: Dark */
-.chart-skeleton.theme-dark {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.chart-skeleton.theme-dark .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.3);
-  border-top-color: rgba(255, 255, 255, 0.9);
-}
-
-.chart-skeleton.theme-dark .chart-loading-text {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Theme: Accent */
-.chart-skeleton.theme-accent {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-}
-
-.chart-skeleton.theme-accent .chart-spinner {
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top-color: rgba(59, 130, 246, 0.9);
-}
-
-.chart-skeleton.theme-accent .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-</style>
-
-<script>
-// Chart Lazy Loading System
-(function() {
-  const THEME = 'light';
-  const DEBUG = false;
-  
-  // Track which charts have been initialized
-  const initializedCharts = new Set();
-  
-  // Queue of charts waiting to be initialized
-  const chartQueue = [];
-  let isProcessingQueue = false;
-  
-  // Performance tracking
-  let totalChartsLoaded = 0;
-  let totalLoadTime = 0;
-  const chartTimings = [];
-  
-  // Create skeleton loader dynamically
-  function createSkeleton(container) {
-    const skeleton = document.createElement('div');
-    skeleton.className = 'chart-skeleton theme-' + THEME;
-    skeleton.innerHTML = `
-      <div class="chart-spinner"></div>
-      <div class="chart-loading-text">Loading visualization...</div>
-    `;
-    container.appendChild(skeleton);
-    return skeleton;
-  }
-  
-  // Initialize a single chart
-  function initChart(container) {
-    const chartId = container.id;
-    if (initializedCharts.has(chartId)) return;
-    
-    const startTime = DEBUG ? performance.now() : 0;
-    
-    initializedCharts.add(chartId);
-    container.dataset.loaded = 'true';
-    
-    // Remove skeleton loader
-    const skeleton = container.querySelector('.chart-skeleton');
-    if (skeleton) {
-      skeleton.style.opacity = '0';
-      setTimeout(() => skeleton.remove(), 300);
-    }
-    
-    // Trigger Highcharts reflow if present
-    setTimeout(() => {
-      if (window.Highcharts) {
-        Highcharts.charts.forEach(chart => {
-          if (chart && chart.reflow) chart.reflow();
-        });
-      }
-      
-      // Debug logging
-      if (DEBUG) {
-        const loadTime = performance.now() - startTime;
-        totalChartsLoaded++;
-        totalLoadTime += loadTime;
-        chartTimings.push({ id: chartId, time: loadTime });
-        
-        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
-        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-      }
-    }, 50);
-  }
-  
-  // Process chart queue in batches
-  function processQueue() {
-    if (isProcessingQueue || chartQueue.length === 0) return;
-    
-    isProcessingQueue = true;
-    const batchSize = 3;
-    const batch = chartQueue.splice(0, batchSize);
-    
-    if (DEBUG) {
-      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
-    }
-    
-    batch.forEach(container => initChart(container));
-    
-    if (chartQueue.length > 0) {
-      requestIdleCallback(() => {
-        isProcessingQueue = false;
-        processQueue();
-      }, { timeout: 2000 });
-    } else {
-      isProcessingQueue = false;
-      
-      if (DEBUG && totalChartsLoaded > 0) {
-        console.log(`✅ All charts loaded! Summary:`);
-        console.log(`   Total charts: ${totalChartsLoaded}`);
-        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
-        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-      }
-    }
-  }
-  
-  // Intersection Observer for scroll-based lazy loading
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
-        chartQueue.push(entry.target);
-        observer.unobserve(entry.target);
-        processQueue();
-      }
-    });
-  }, { rootMargin: '200px' });
-  
-  // Initialize observers when DOM is ready
-  function initLazyLoading() {
-    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
-      // Create skeleton for each lazy chart
-      createSkeleton(container);
-      // Start observing
-      observer.observe(container);
-    });
-  }
-  
-  // Tab-aware rendering: load charts when tab becomes visible
-  function initTabAwareLoading() {
-    document.querySelectorAll('.panel-tabset').forEach(tabset => {
-      const tabs = tabset.querySelectorAll('[role="tab"]');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          setTimeout(() => {
-            const targetId = this.getAttribute('aria-controls');
-            if (!targetId) return;
-            
-            const targetPanel = document.getElementById(targetId);
-            if (!targetPanel) return;
-            
-            // Initialize any lazy charts in this tab
-            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
-            lazyCharts.forEach(chart => {
-              chartQueue.push(chart);
-              observer.unobserve(chart);
-            });
-            processQueue();
-          }, 50);
-        });
-      });
-    });
-  }
-  
-  // Start lazy loading when document is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      initLazyLoading();
-      initTabAwareLoading();
-    });
-  } else {
-    initLazyLoading();
-    initTabAwareLoading();
-  }
-})();
-</script>
-
-```
-
 ## {{< iconify ph lightning-fill >}} Green Digital Skills
+
+
+ADD TEXT BEFORE TABSET
 
 
 ::: {.panel-tabset}
@@ -337,12 +64,6 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r green-wave1-overall-2}
 # Sustainable/Green Digital Skills
@@ -603,19 +324,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r green-wave2-overall-2}
 # Sustainable/Green Digital Skills
@@ -873,13 +585,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -893,13 +599,15 @@ result
 
 
 ```{r green-overtime-overall-item1-2}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SEnv1"
 )
@@ -912,13 +620,15 @@ result
 
 
 ```{r green-overtime-overall-item2-2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SEnv2"
 )
@@ -931,13 +641,15 @@ result
 
 
 ```{r green-overtime-overall-item3-2}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SEnv3"
 )
@@ -958,14 +670,16 @@ result
 
 
 ```{r green-overtime-age-item1-2}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv1",
   group_var = "AgeGroup"
@@ -979,14 +693,16 @@ result
 
 
 ```{r green-overtime-age-item2-2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv2",
   group_var = "AgeGroup"
@@ -1000,14 +716,16 @@ result
 
 
 ```{r green-overtime-age-item3-2}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv3",
   group_var = "AgeGroup"
@@ -1029,14 +747,16 @@ result
 
 
 ```{r green-overtime-gender-item1-2}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv1",
   group_var = "geslacht"
@@ -1050,14 +770,16 @@ result
 
 
 ```{r green-overtime-gender-item2-2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv2",
   group_var = "geslacht"
@@ -1071,14 +793,16 @@ result
 
 
 ```{r green-overtime-gender-item3-2}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv3",
   group_var = "geslacht"
@@ -1100,14 +824,16 @@ result
 
 
 ```{r green-overtime-edu-item1-2}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv1",
   group_var = "Education"
@@ -1121,14 +847,16 @@ result
 
 
 ```{r green-overtime-edu-item2-2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv2",
   group_var = "Education"
@@ -1142,14 +870,16 @@ result
 
 
 ```{r green-overtime-edu-item3-2}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv3",
   group_var = "Education"
@@ -1167,10 +897,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph book-open-fill >}} Green Knowledge
+
+
+**Sustainable/Green Digital Skills** focus on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
 
 
 ::: {.panel-tabset}
@@ -1182,12 +916,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r kgreen-wave1-overall-2}
 # 
@@ -1386,19 +1114,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r kgreen-wave2-overall-2}
 # 
@@ -1594,13 +1313,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -1614,13 +1327,15 @@ result
 
 
 ```{r kgreen-overtime-overall-item1-2}
-# timeline visualization
+# Phones contain materials that mineworkers extract from mines.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Phones contain materials that mineworkers extract from mines.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv2RC"
@@ -1634,13 +1349,15 @@ result
 
 
 ```{r kgreen-overtime-overall-item2-2}
-# timeline visualization
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv3RC"
@@ -1662,13 +1379,15 @@ result
 
 
 ```{r kgreen-overtime-age-item1-2}
-# timeline visualization
+# Phones contain materials that mineworkers extract from mines.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Phones contain materials that mineworkers extract from mines.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv2RC",
@@ -1683,13 +1402,15 @@ result
 
 
 ```{r kgreen-overtime-age-item2-2}
-# timeline visualization
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv3RC",
@@ -1712,13 +1433,15 @@ result
 
 
 ```{r kgreen-overtime-gender-item1-2}
-# timeline visualization
+# Phones contain materials that mineworkers extract from mines.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Phones contain materials that mineworkers extract from mines.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv2RC",
@@ -1733,13 +1456,15 @@ result
 
 
 ```{r kgreen-overtime-gender-item2-2}
-# timeline visualization
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv3RC",
@@ -1762,13 +1487,15 @@ result
 
 
 ```{r kgreen-overtime-edu-item1-2}
-# timeline visualization
+# Phones contain materials that mineworkers extract from mines.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Phones contain materials that mineworkers extract from mines.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv2RC",
@@ -1783,13 +1510,15 @@ result
 
 
 ```{r kgreen-overtime-edu-item2-2}
-# timeline visualization
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KEnv3RC",
@@ -1808,10 +1537,10 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph clipboard-text >}} Green Performance
+
+
+ADD TEXT BEFORE TABSET
 
 
 ::: {.panel-tabset}
@@ -1824,19 +1553,13 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
-
 ```{r perf-green-wave1-overall-2}
 # 
 result <- create_stackedbars(
-  data = data_filtered_984a0efe %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8),
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8, PSGDS1_9),
   title = "",
-  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8"),
-  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing"),
+  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2050,6 +1773,30 @@ result
 ```
 
 
+###### item9
+
+
+```{r perf-green-wave1-age-item9-2}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
 :::
 
 
@@ -2244,6 +1991,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-wave1-gender-item9-2}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -2450,6 +2221,30 @@ result
 ```
 
 
+###### item9
+
+
+```{r perf-green-wave1-edu-item9-2}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
 :::
 
 
@@ -2459,27 +2254,18 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
-
 ```{r perf-green-wave2-overall-2}
 # 
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PSGDS1_1, PSGDS1_2, PSGDS1_3, PSGDS1_4, PSGDS1_5, PSGDS1_6, PSGDS1_7, PSGDS1_8, PSGDS1_9),
   title = "",
-  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8"),
-  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing"),
+  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2693,6 +2479,30 @@ result
 ```
 
 
+###### item9
+
+
+```{r perf-green-wave2-age-item9-2}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
 :::
 
 
@@ -2887,6 +2697,30 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-wave2-gender-item9-2}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -3093,7 +2927,28 @@ result
 ```
 
 
-:::
+###### item9
+
+
+```{r perf-green-wave2-edu-item9-2}
+# None of these actions
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSGDS1_9),
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Not selected", "Selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
 
 
 :::
@@ -3103,9 +2958,6 @@ result
 
 
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -3119,13 +2971,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item1-2}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1"
@@ -3139,13 +2993,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item2-2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2"
@@ -3159,13 +3015,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item3-2}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3"
@@ -3179,13 +3037,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item4-2}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4"
@@ -3199,13 +3059,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item5-2}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5"
@@ -3219,13 +3081,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item6-2}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6"
@@ -3239,13 +3103,15 @@ result
 
 
 ```{r perf-green-overtime-overall-item7-2}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7"
@@ -3259,16 +3125,40 @@ result
 
 
 ```{r perf-green-overtime-overall-item8-2}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-overtime-overall-item9-2}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9"
 )
 
 result
@@ -3287,13 +3177,15 @@ result
 
 
 ```{r perf-green-overtime-age-item1-2}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1",
@@ -3308,13 +3200,15 @@ result
 
 
 ```{r perf-green-overtime-age-item2-2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2",
@@ -3329,13 +3223,15 @@ result
 
 
 ```{r perf-green-overtime-age-item3-2}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3",
@@ -3350,13 +3246,15 @@ result
 
 
 ```{r perf-green-overtime-age-item4-2}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4",
@@ -3371,13 +3269,15 @@ result
 
 
 ```{r perf-green-overtime-age-item5-2}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5",
@@ -3392,13 +3292,15 @@ result
 
 
 ```{r perf-green-overtime-age-item6-2}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6",
@@ -3413,13 +3315,15 @@ result
 
 
 ```{r perf-green-overtime-age-item7-2}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7",
@@ -3434,16 +3338,41 @@ result
 
 
 ```{r perf-green-overtime-age-item8-2}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-overtime-age-item9-2}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9",
   group_var = "AgeGroup"
 )
 
@@ -3463,13 +3392,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item1-2}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1",
@@ -3484,13 +3415,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item2-2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2",
@@ -3505,13 +3438,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item3-2}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3",
@@ -3526,13 +3461,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item4-2}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4",
@@ -3547,13 +3484,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item5-2}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5",
@@ -3568,13 +3507,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item6-2}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6",
@@ -3589,13 +3530,15 @@ result
 
 
 ```{r perf-green-overtime-gender-item7-2}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7",
@@ -3610,16 +3553,41 @@ result
 
 
 ```{r perf-green-overtime-gender-item8-2}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item9
+
+
+```{r perf-green-overtime-gender-item9-2}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9",
   group_var = "geslacht"
 )
 
@@ -3639,13 +3607,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item1-2}
-# timeline visualization
+# Clean mailbox
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_1",
@@ -3660,13 +3630,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item2-2}
-# timeline visualization
+# Use sustainable search engines
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_2",
@@ -3681,13 +3653,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item3-2}
-# timeline visualization
+# Avoid unnecessary Cloud storage
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_3",
@@ -3702,13 +3676,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item4-2}
-# timeline visualization
+# Turn down screen brightness
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_4",
@@ -3723,13 +3699,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item5-2}
-# timeline visualization
+# Use sleep mode
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_5",
@@ -3744,13 +3722,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item6-2}
-# timeline visualization
+# Close unused phone apps
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_6",
@@ -3765,13 +3745,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item7-2}
-# timeline visualization
+# Recycle devices
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_7",
@@ -3786,13 +3768,15 @@ result
 
 
 ```{r perf-green-overtime-edu-item8-2}
-# timeline visualization
+# Repair before replacing
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PSGDS1_8",
@@ -3803,7 +3787,27 @@ result
 ```
 
 
-:::
+###### item9
+
+
+```{r perf-green-overtime-edu-item9-2}
+# None of these actions
+result <- create_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSGDS1_9",
+  group_var = "Education"
+)
+
+result
+```
 
 
 :::

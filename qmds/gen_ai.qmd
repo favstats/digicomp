@@ -49,283 +49,10 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ```
 
-
-```{=html}
-
-<style>
-/* Chart Lazy Loading Styles */
-.chart-lazy {
-  position: relative;
-  min-height: 400px;
-  margin: 1rem 0;
-}
-
-.chart-skeleton {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  transition: opacity 0.3s ease;
-}
-
-.chart-spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.chart-loading-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Theme: Light */
-.chart-skeleton.theme-light {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.chart-skeleton.theme-light .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.2);
-  border-top-color: rgba(15, 23, 42, 0.8);
-}
-
-.chart-skeleton.theme-light .chart-loading-text {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-/* Theme: Glass */
-.chart-skeleton.theme-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-}
-
-.chart-skeleton.theme-glass .chart-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: rgba(15, 23, 42, 0.7);
-}
-
-.chart-skeleton.theme-glass .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-
-/* Theme: Dark */
-.chart-skeleton.theme-dark {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.chart-skeleton.theme-dark .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.3);
-  border-top-color: rgba(255, 255, 255, 0.9);
-}
-
-.chart-skeleton.theme-dark .chart-loading-text {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Theme: Accent */
-.chart-skeleton.theme-accent {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-}
-
-.chart-skeleton.theme-accent .chart-spinner {
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top-color: rgba(59, 130, 246, 0.9);
-}
-
-.chart-skeleton.theme-accent .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-</style>
-
-<script>
-// Chart Lazy Loading System
-(function() {
-  const THEME = 'light';
-  const DEBUG = false;
-  
-  // Track which charts have been initialized
-  const initializedCharts = new Set();
-  
-  // Queue of charts waiting to be initialized
-  const chartQueue = [];
-  let isProcessingQueue = false;
-  
-  // Performance tracking
-  let totalChartsLoaded = 0;
-  let totalLoadTime = 0;
-  const chartTimings = [];
-  
-  // Create skeleton loader dynamically
-  function createSkeleton(container) {
-    const skeleton = document.createElement('div');
-    skeleton.className = 'chart-skeleton theme-' + THEME;
-    skeleton.innerHTML = `
-      <div class="chart-spinner"></div>
-      <div class="chart-loading-text">Loading visualization...</div>
-    `;
-    container.appendChild(skeleton);
-    return skeleton;
-  }
-  
-  // Initialize a single chart
-  function initChart(container) {
-    const chartId = container.id;
-    if (initializedCharts.has(chartId)) return;
-    
-    const startTime = DEBUG ? performance.now() : 0;
-    
-    initializedCharts.add(chartId);
-    container.dataset.loaded = 'true';
-    
-    // Remove skeleton loader
-    const skeleton = container.querySelector('.chart-skeleton');
-    if (skeleton) {
-      skeleton.style.opacity = '0';
-      setTimeout(() => skeleton.remove(), 300);
-    }
-    
-    // Trigger Highcharts reflow if present
-    setTimeout(() => {
-      if (window.Highcharts) {
-        Highcharts.charts.forEach(chart => {
-          if (chart && chart.reflow) chart.reflow();
-        });
-      }
-      
-      // Debug logging
-      if (DEBUG) {
-        const loadTime = performance.now() - startTime;
-        totalChartsLoaded++;
-        totalLoadTime += loadTime;
-        chartTimings.push({ id: chartId, time: loadTime });
-        
-        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
-        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-      }
-    }, 50);
-  }
-  
-  // Process chart queue in batches
-  function processQueue() {
-    if (isProcessingQueue || chartQueue.length === 0) return;
-    
-    isProcessingQueue = true;
-    const batchSize = 3;
-    const batch = chartQueue.splice(0, batchSize);
-    
-    if (DEBUG) {
-      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
-    }
-    
-    batch.forEach(container => initChart(container));
-    
-    if (chartQueue.length > 0) {
-      requestIdleCallback(() => {
-        isProcessingQueue = false;
-        processQueue();
-      }, { timeout: 2000 });
-    } else {
-      isProcessingQueue = false;
-      
-      if (DEBUG && totalChartsLoaded > 0) {
-        console.log(`✅ All charts loaded! Summary:`);
-        console.log(`   Total charts: ${totalChartsLoaded}`);
-        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
-        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-      }
-    }
-  }
-  
-  // Intersection Observer for scroll-based lazy loading
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
-        chartQueue.push(entry.target);
-        observer.unobserve(entry.target);
-        processQueue();
-      }
-    });
-  }, { rootMargin: '200px' });
-  
-  // Initialize observers when DOM is ready
-  function initLazyLoading() {
-    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
-      // Create skeleton for each lazy chart
-      createSkeleton(container);
-      // Start observing
-      observer.observe(container);
-    });
-  }
-  
-  // Tab-aware rendering: load charts when tab becomes visible
-  function initTabAwareLoading() {
-    document.querySelectorAll('.panel-tabset').forEach(tabset => {
-      const tabs = tabset.querySelectorAll('[role="tab"]');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          setTimeout(() => {
-            const targetId = this.getAttribute('aria-controls');
-            if (!targetId) return;
-            
-            const targetPanel = document.getElementById(targetId);
-            if (!targetPanel) return;
-            
-            // Initialize any lazy charts in this tab
-            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
-            lazyCharts.forEach(chart => {
-              chartQueue.push(chart);
-              observer.unobserve(chart);
-            });
-            processQueue();
-          }, 50);
-        });
-      });
-    });
-  }
-  
-  // Start lazy loading when document is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      initLazyLoading();
-      initTabAwareLoading();
-    });
-  } else {
-    initLazyLoading();
-    initTabAwareLoading();
-  }
-})();
-</script>
-
-```
-
 ## {{< iconify ph lightning-fill >}} GenAI Skills
+
+
+ADD TEXT BEFORE TABSET
 
 
 ::: {.panel-tabset}
@@ -337,12 +64,6 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r genai-wave1-overall-3}
 # GenAI Skills
@@ -603,19 +324,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r genai-wave2-overall-3}
 # GenAI Skills
@@ -873,13 +585,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -893,13 +599,15 @@ result
 
 
 ```{r genai-overtime-overall-item1-3}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SGAI1"
 )
@@ -912,13 +620,15 @@ result
 
 
 ```{r genai-overtime-overall-item2-3}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SGAI2"
 )
@@ -931,13 +641,15 @@ result
 
 
 ```{r genai-overtime-overall-item3-3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SGAI3"
 )
@@ -958,14 +670,16 @@ result
 
 
 ```{r genai-overtime-age-item1-3}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI1",
   group_var = "AgeGroup"
@@ -979,14 +693,16 @@ result
 
 
 ```{r genai-overtime-age-item2-3}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI2",
   group_var = "AgeGroup"
@@ -1000,14 +716,16 @@ result
 
 
 ```{r genai-overtime-age-item3-3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI3",
   group_var = "AgeGroup"
@@ -1029,14 +747,16 @@ result
 
 
 ```{r genai-overtime-gender-item1-3}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI1",
   group_var = "geslacht"
@@ -1050,14 +770,16 @@ result
 
 
 ```{r genai-overtime-gender-item2-3}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI2",
   group_var = "geslacht"
@@ -1071,14 +793,16 @@ result
 
 
 ```{r genai-overtime-gender-item3-3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI3",
   group_var = "geslacht"
@@ -1100,14 +824,16 @@ result
 
 
 ```{r genai-overtime-edu-item1-3}
-# timeline visualization
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI1",
   group_var = "Education"
@@ -1121,14 +847,16 @@ result
 
 
 ```{r genai-overtime-edu-item2-3}
-# timeline visualization
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI2",
   group_var = "Education"
@@ -1142,14 +870,16 @@ result
 
 
 ```{r genai-overtime-edu-item3-3}
-# timeline visualization
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SGAI3",
   group_var = "Education"
@@ -1167,10 +897,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph book-open-fill >}} GenAI Knowledge
+
+
+**Generative AI Skills** measure competencies with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
 
 
 ::: {.panel-tabset}
@@ -1182,12 +916,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r kgai-wave1-overall-2}
 # 
@@ -1602,19 +1330,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r kgai-wave2-overall-2}
 # 
@@ -2026,13 +1745,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -2046,13 +1759,15 @@ result
 
 
 ```{r kgai-overtime-overall-item1-2}
-# timeline visualization
+# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI1RC"
@@ -2066,13 +1781,15 @@ result
 
 
 ```{r kgai-overtime-overall-item2-2}
-# timeline visualization
+# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI2RC"
@@ -2086,13 +1803,15 @@ result
 
 
 ```{r kgai-overtime-overall-item3-2}
-# timeline visualization
+# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI3RC"
@@ -2106,13 +1825,15 @@ result
 
 
 ```{r kgai-overtime-overall-item4-2}
-# timeline visualization
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI4RC"
@@ -2126,13 +1847,15 @@ result
 
 
 ```{r kgai-overtime-overall-item5-2}
-# timeline visualization
+# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI5RC"
@@ -2154,13 +1877,15 @@ result
 
 
 ```{r kgai-overtime-age-item1-2}
-# timeline visualization
+# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI1RC",
@@ -2175,13 +1900,15 @@ result
 
 
 ```{r kgai-overtime-age-item2-2}
-# timeline visualization
+# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI2RC",
@@ -2196,13 +1923,15 @@ result
 
 
 ```{r kgai-overtime-age-item3-2}
-# timeline visualization
+# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI3RC",
@@ -2217,13 +1946,15 @@ result
 
 
 ```{r kgai-overtime-age-item4-2}
-# timeline visualization
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI4RC",
@@ -2238,13 +1969,15 @@ result
 
 
 ```{r kgai-overtime-age-item5-2}
-# timeline visualization
+# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI5RC",
@@ -2267,13 +2000,15 @@ result
 
 
 ```{r kgai-overtime-gender-item1-2}
-# timeline visualization
+# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI1RC",
@@ -2288,13 +2023,15 @@ result
 
 
 ```{r kgai-overtime-gender-item2-2}
-# timeline visualization
+# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI2RC",
@@ -2309,13 +2046,15 @@ result
 
 
 ```{r kgai-overtime-gender-item3-2}
-# timeline visualization
+# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI3RC",
@@ -2330,13 +2069,15 @@ result
 
 
 ```{r kgai-overtime-gender-item4-2}
-# timeline visualization
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI4RC",
@@ -2351,13 +2092,15 @@ result
 
 
 ```{r kgai-overtime-gender-item5-2}
-# timeline visualization
+# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI5RC",
@@ -2380,13 +2123,15 @@ result
 
 
 ```{r kgai-overtime-edu-item1-2}
-# timeline visualization
+# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI1RC",
@@ -2401,13 +2146,15 @@ result
 
 
 ```{r kgai-overtime-edu-item2-2}
-# timeline visualization
+# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI2RC",
@@ -2422,13 +2169,15 @@ result
 
 
 ```{r kgai-overtime-edu-item3-2}
-# timeline visualization
+# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI3RC",
@@ -2443,13 +2192,15 @@ result
 
 
 ```{r kgai-overtime-edu-item4-2}
-# timeline visualization
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI4RC",
@@ -2464,13 +2215,15 @@ result
 
 
 ```{r kgai-overtime-edu-item5-2}
-# timeline visualization
+# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "KGAI5RC",
@@ -2489,10 +2242,10 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph clipboard-text >}} GenAI Performance
+
+
+ADD TEXT BEFORE TABSET
 
 
 ::: {.panel-tabset}
@@ -2504,12 +2257,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r perf-genai-wave1-overall-2}
 # 
@@ -2636,19 +2383,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
-```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 ```{r perf-genai-wave2-overall-2}
 # 
@@ -2772,13 +2510,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -2792,13 +2524,15 @@ result
 
 
 ```{r perf-genai-overtime-overall-item1-2}
-# timeline visualization
+# Spot non-AI image
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Spot non-AI image",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PAIS1"
@@ -2820,13 +2554,15 @@ result
 
 
 ```{r perf-genai-overtime-age-item1-2}
-# timeline visualization
+# Spot non-AI image
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Spot non-AI image",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PAIS1",
@@ -2849,13 +2585,15 @@ result
 
 
 ```{r perf-genai-overtime-gender-item1-2}
-# timeline visualization
+# Spot non-AI image
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Spot non-AI image",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PAIS1",
@@ -2878,13 +2616,15 @@ result
 
 
 ```{r perf-genai-overtime-edu-item1-2}
-# timeline visualization
+# Spot non-AI image
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "Spot non-AI image",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
   response_var = "PAIS1",
@@ -2893,9 +2633,6 @@ result <- create_timeline(
 
 result
 ```
-
-
-:::
 
 
 :::

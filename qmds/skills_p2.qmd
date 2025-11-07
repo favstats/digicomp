@@ -55,283 +55,14 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```
 
-
-```{=html}
-
-<style>
-/* Chart Lazy Loading Styles */
-.chart-lazy {
-  position: relative;
-  min-height: 400px;
-  margin: 1rem 0;
-}
-
-.chart-skeleton {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-  transition: opacity 0.3s ease;
-}
-
-.chart-spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.chart-loading-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Theme: Light */
-.chart-skeleton.theme-light {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.chart-skeleton.theme-light .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.2);
-  border-top-color: rgba(15, 23, 42, 0.8);
-}
-
-.chart-skeleton.theme-light .chart-loading-text {
-  color: rgba(15, 23, 42, 0.7);
-}
-
-/* Theme: Glass */
-.chart-skeleton.theme-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-}
-
-.chart-skeleton.theme-glass .chart-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: rgba(15, 23, 42, 0.7);
-}
-
-.chart-skeleton.theme-glass .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-
-/* Theme: Dark */
-.chart-skeleton.theme-dark {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.chart-skeleton.theme-dark .chart-spinner {
-  border: 3px solid rgba(148, 163, 184, 0.3);
-  border-top-color: rgba(255, 255, 255, 0.9);
-}
-
-.chart-skeleton.theme-dark .chart-loading-text {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Theme: Accent */
-.chart-skeleton.theme-accent {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-}
-
-.chart-skeleton.theme-accent .chart-spinner {
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top-color: rgba(59, 130, 246, 0.9);
-}
-
-.chart-skeleton.theme-accent .chart-loading-text {
-  color: rgba(15, 23, 42, 0.8);
-}
-</style>
-
-<script>
-// Chart Lazy Loading System
-(function() {
-  const THEME = 'light';
-  const DEBUG = false;
-  
-  // Track which charts have been initialized
-  const initializedCharts = new Set();
-  
-  // Queue of charts waiting to be initialized
-  const chartQueue = [];
-  let isProcessingQueue = false;
-  
-  // Performance tracking
-  let totalChartsLoaded = 0;
-  let totalLoadTime = 0;
-  const chartTimings = [];
-  
-  // Create skeleton loader dynamically
-  function createSkeleton(container) {
-    const skeleton = document.createElement('div');
-    skeleton.className = 'chart-skeleton theme-' + THEME;
-    skeleton.innerHTML = `
-      <div class="chart-spinner"></div>
-      <div class="chart-loading-text">Loading visualization...</div>
-    `;
-    container.appendChild(skeleton);
-    return skeleton;
-  }
-  
-  // Initialize a single chart
-  function initChart(container) {
-    const chartId = container.id;
-    if (initializedCharts.has(chartId)) return;
-    
-    const startTime = DEBUG ? performance.now() : 0;
-    
-    initializedCharts.add(chartId);
-    container.dataset.loaded = 'true';
-    
-    // Remove skeleton loader
-    const skeleton = container.querySelector('.chart-skeleton');
-    if (skeleton) {
-      skeleton.style.opacity = '0';
-      setTimeout(() => skeleton.remove(), 300);
-    }
-    
-    // Trigger Highcharts reflow if present
-    setTimeout(() => {
-      if (window.Highcharts) {
-        Highcharts.charts.forEach(chart => {
-          if (chart && chart.reflow) chart.reflow();
-        });
-      }
-      
-      // Debug logging
-      if (DEBUG) {
-        const loadTime = performance.now() - startTime;
-        totalChartsLoaded++;
-        totalLoadTime += loadTime;
-        chartTimings.push({ id: chartId, time: loadTime });
-        
-        console.log(`📊 Chart loaded: ${chartId} (${loadTime.toFixed(2)}ms)`);
-        console.log(`   Total: ${totalChartsLoaded} charts, Avg: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-      }
-    }, 50);
-  }
-  
-  // Process chart queue in batches
-  function processQueue() {
-    if (isProcessingQueue || chartQueue.length === 0) return;
-    
-    isProcessingQueue = true;
-    const batchSize = 3;
-    const batch = chartQueue.splice(0, batchSize);
-    
-    if (DEBUG) {
-      console.log(`⚡ Processing batch of ${batch.length} charts (${chartQueue.length} remaining)`);
-    }
-    
-    batch.forEach(container => initChart(container));
-    
-    if (chartQueue.length > 0) {
-      requestIdleCallback(() => {
-        isProcessingQueue = false;
-        processQueue();
-      }, { timeout: 2000 });
-    } else {
-      isProcessingQueue = false;
-      
-      if (DEBUG && totalChartsLoaded > 0) {
-        console.log(`✅ All charts loaded! Summary:`);
-        console.log(`   Total charts: ${totalChartsLoaded}`);
-        console.log(`   Total time: ${totalLoadTime.toFixed(2)}ms`);
-        console.log(`   Average time per chart: ${(totalLoadTime/totalChartsLoaded).toFixed(2)}ms`);
-        console.log(`   Slowest chart: ${Math.max(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-        console.log(`   Fastest chart: ${Math.min(...chartTimings.map(t => t.time)).toFixed(2)}ms`);
-      }
-    }
-  }
-  
-  // Intersection Observer for scroll-based lazy loading
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.target.dataset.loaded === 'false') {
-        chartQueue.push(entry.target);
-        observer.unobserve(entry.target);
-        processQueue();
-      }
-    });
-  }, { rootMargin: '300px' });
-  
-  // Initialize observers when DOM is ready
-  function initLazyLoading() {
-    document.querySelectorAll('.chart-lazy[data-loaded="false"]').forEach(container => {
-      // Create skeleton for each lazy chart
-      createSkeleton(container);
-      // Start observing
-      observer.observe(container);
-    });
-  }
-  
-  // Tab-aware rendering: load charts when tab becomes visible
-  function initTabAwareLoading() {
-    document.querySelectorAll('.panel-tabset').forEach(tabset => {
-      const tabs = tabset.querySelectorAll('[role="tab"]');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          setTimeout(() => {
-            const targetId = this.getAttribute('aria-controls');
-            if (!targetId) return;
-            
-            const targetPanel = document.getElementById(targetId);
-            if (!targetPanel) return;
-            
-            // Initialize any lazy charts in this tab
-            const lazyCharts = targetPanel.querySelectorAll('.chart-lazy[data-loaded="false"]');
-            lazyCharts.forEach(chart => {
-              chartQueue.push(chart);
-              observer.unobserve(chart);
-            });
-            processQueue();
-          }, 50);
-        });
-      });
-    });
-  }
-  
-  // Start lazy loading when document is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      initLazyLoading();
-      initTabAwareLoading();
-    });
-  } else {
-    initLazyLoading();
-    initTabAwareLoading();
-  }
-})();
-</script>
-
-```
-
 ## {{< iconify ph shield-check-fill >}} Safety
+
+
+**Safety & Control of Information and Devices** encompasses protecting devices and personal information: using security measures, managing privacy settings, identifying phishing, and controlling what information is shared online.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 
 ::: {.panel-tabset}
@@ -343,12 +74,6 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r safety-wave1-overall}
 # Safety and Control of Information and Devices Skills
@@ -885,19 +610,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Safety results](safety.html)
 
 ```{r safety-wave2-overall}
 # Safety and Control of Information and Devices Skills
@@ -1431,13 +1147,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -1451,13 +1161,15 @@ result
 
 
 ```{r safety-overtime-overall-item1}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SSafDev1"
 )
@@ -1470,13 +1182,15 @@ result
 
 
 ```{r safety-overtime-overall-item2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SSafDev2"
 )
@@ -1489,13 +1203,15 @@ result
 
 
 ```{r safety-overtime-overall-item3}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv1"
 )
@@ -1508,13 +1224,15 @@ result
 
 
 ```{r safety-overtime-overall-item4}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv2"
 )
@@ -1527,13 +1245,15 @@ result
 
 
 ```{r safety-overtime-overall-item5}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv3"
 )
@@ -1546,13 +1266,15 @@ result
 
 
 ```{r safety-overtime-overall-item6}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SPriv4"
 )
@@ -1565,13 +1287,15 @@ result
 
 
 ```{r safety-overtime-overall-item7}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SCom3"
 )
@@ -1592,14 +1316,16 @@ result
 
 
 ```{r safety-overtime-age-item1}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev1",
   group_var = "AgeGroup"
@@ -1613,14 +1339,16 @@ result
 
 
 ```{r safety-overtime-age-item2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev2",
   group_var = "AgeGroup"
@@ -1634,14 +1362,16 @@ result
 
 
 ```{r safety-overtime-age-item3}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv1",
   group_var = "AgeGroup"
@@ -1655,14 +1385,16 @@ result
 
 
 ```{r safety-overtime-age-item4}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv2",
   group_var = "AgeGroup"
@@ -1676,14 +1408,16 @@ result
 
 
 ```{r safety-overtime-age-item5}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv3",
   group_var = "AgeGroup"
@@ -1697,14 +1431,16 @@ result
 
 
 ```{r safety-overtime-age-item6}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv4",
   group_var = "AgeGroup"
@@ -1718,14 +1454,16 @@ result
 
 
 ```{r safety-overtime-age-item7}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SCom3",
   group_var = "AgeGroup"
@@ -1747,14 +1485,16 @@ result
 
 
 ```{r safety-overtime-gender-item1}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev1",
   group_var = "geslacht"
@@ -1768,14 +1508,16 @@ result
 
 
 ```{r safety-overtime-gender-item2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev2",
   group_var = "geslacht"
@@ -1789,14 +1531,16 @@ result
 
 
 ```{r safety-overtime-gender-item3}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv1",
   group_var = "geslacht"
@@ -1810,14 +1554,16 @@ result
 
 
 ```{r safety-overtime-gender-item4}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv2",
   group_var = "geslacht"
@@ -1831,14 +1577,16 @@ result
 
 
 ```{r safety-overtime-gender-item5}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv3",
   group_var = "geslacht"
@@ -1852,14 +1600,16 @@ result
 
 
 ```{r safety-overtime-gender-item6}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv4",
   group_var = "geslacht"
@@ -1873,14 +1623,16 @@ result
 
 
 ```{r safety-overtime-gender-item7}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SCom3",
   group_var = "geslacht"
@@ -1902,14 +1654,16 @@ result
 
 
 ```{r safety-overtime-edu-item1}
-# timeline visualization
+# I know how to protect a device against access (e.g. a PIN code or fingerprint).
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint).",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev1",
   group_var = "Education"
@@ -1923,14 +1677,16 @@ result
 
 
 ```{r safety-overtime-edu-item2}
-# timeline visualization
+# I know how to protect devices against viruses.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to protect devices against viruses.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SSafDev2",
   group_var = "Education"
@@ -1944,14 +1700,16 @@ result
 
 
 ```{r safety-overtime-edu-item3}
-# timeline visualization
+# I know how to adjust the privacy settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to adjust the privacy settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv1",
   group_var = "Education"
@@ -1965,14 +1723,16 @@ result
 
 
 ```{r safety-overtime-edu-item4}
-# timeline visualization
+# I know how to change the location settings on a mobile phone or tablet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to change the location settings on a mobile phone or tablet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv2",
   group_var = "Education"
@@ -1986,14 +1746,16 @@ result
 
 
 ```{r safety-overtime-edu-item5}
-# timeline visualization
+# I know how to identify suspicious e-mail messages that try to get my personal data.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to identify suspicious e-mail messages that try to get my personal data.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv3",
   group_var = "Education"
@@ -2007,14 +1769,16 @@ result
 
 
 ```{r safety-overtime-edu-item6}
-# timeline visualization
+# I know how to delete the history of websites that I have visited before.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to delete the history of websites that I have visited before.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SPriv4",
   group_var = "Education"
@@ -2028,14 +1792,16 @@ result
 
 
 ```{r safety-overtime-edu-item7}
-# timeline visualization
+# I know how to block messages from someone that I don't want to hear from.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to block messages from someone that I don't want to hear from.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SCom3",
   group_var = "Education"
@@ -2053,10 +1819,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph heart-fill >}} Digital Health
+
+
+**Digital Health & Wellbeing** skills relate to managing healthy digital habits: controlling screen time, minimizing distractions, taking digital breaks, and understanding how technology affects sleep and wellbeing.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
 
 
 ::: {.panel-tabset}
@@ -2068,12 +1838,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
 
 ```{r dhealth-wave1-overall}
 # Digital Health and Wellbeing Skills
@@ -2334,19 +2098,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
 
 ```{r dhealth-wave2-overall}
 # Digital Health and Wellbeing Skills
@@ -2604,13 +2359,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -2624,13 +2373,15 @@ result
 
 
 ```{r dhealth-overtime-overall-item1}
-# timeline visualization
+# I know how to control how much time I spend on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to control how much time I spend on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SHealth1"
 )
@@ -2643,13 +2394,15 @@ result
 
 
 ```{r dhealth-overtime-overall-item2}
-# timeline visualization
+# I know how to make sure my phone does not distract me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to make sure my phone does not distract me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SHealth2_V2"
 )
@@ -2662,13 +2415,15 @@ result
 
 
 ```{r dhealth-overtime-overall-item3}
-# timeline visualization
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SHealth3_V2"
 )
@@ -2689,14 +2444,16 @@ result
 
 
 ```{r dhealth-overtime-age-item1}
-# timeline visualization
+# I know how to control how much time I spend on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to control how much time I spend on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth1",
   group_var = "AgeGroup"
@@ -2710,14 +2467,16 @@ result
 
 
 ```{r dhealth-overtime-age-item2}
-# timeline visualization
+# I know how to make sure my phone does not distract me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to make sure my phone does not distract me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth2_V2",
   group_var = "AgeGroup"
@@ -2731,14 +2490,16 @@ result
 
 
 ```{r dhealth-overtime-age-item3}
-# timeline visualization
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth3_V2",
   group_var = "AgeGroup"
@@ -2760,14 +2521,16 @@ result
 
 
 ```{r dhealth-overtime-gender-item1}
-# timeline visualization
+# I know how to control how much time I spend on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to control how much time I spend on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth1",
   group_var = "geslacht"
@@ -2781,14 +2544,16 @@ result
 
 
 ```{r dhealth-overtime-gender-item2}
-# timeline visualization
+# I know how to make sure my phone does not distract me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to make sure my phone does not distract me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth2_V2",
   group_var = "geslacht"
@@ -2802,14 +2567,16 @@ result
 
 
 ```{r dhealth-overtime-gender-item3}
-# timeline visualization
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth3_V2",
   group_var = "geslacht"
@@ -2831,14 +2598,16 @@ result
 
 
 ```{r dhealth-overtime-edu-item1}
-# timeline visualization
+# I know how to control how much time I spend on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to control how much time I spend on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth1",
   group_var = "Education"
@@ -2852,14 +2621,16 @@ result
 
 
 ```{r dhealth-overtime-edu-item2}
-# timeline visualization
+# I know how to make sure my phone does not distract me.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to make sure my phone does not distract me.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth2_V2",
   group_var = "Education"
@@ -2873,14 +2644,16 @@ result
 
 
 ```{r dhealth-overtime-edu-item3}
-# timeline visualization
+# I know how I can stop using my phone and computer for a while, if I want to.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can stop using my phone and computer for a while, if I want to.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SHealth3_V2",
   group_var = "Education"
@@ -2898,10 +2671,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph recycle-fill >}} Green Digital
+
+
+**Sustainable/Green Digital Skills** focus on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 
 ::: {.panel-tabset}
@@ -2913,12 +2690,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r green-wave1-overall}
 # Sustainable/Green Digital Skills
@@ -3179,19 +2950,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 ```{r green-wave2-overall}
 # Sustainable/Green Digital Skills
@@ -3449,13 +3211,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -3469,13 +3225,15 @@ result
 
 
 ```{r green-overtime-overall-item1}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SEnv1"
 )
@@ -3488,13 +3246,15 @@ result
 
 
 ```{r green-overtime-overall-item2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SEnv2"
 )
@@ -3507,13 +3267,15 @@ result
 
 
 ```{r green-overtime-overall-item3}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SEnv3"
 )
@@ -3534,14 +3296,16 @@ result
 
 
 ```{r green-overtime-age-item1}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv1",
   group_var = "AgeGroup"
@@ -3555,14 +3319,16 @@ result
 
 
 ```{r green-overtime-age-item2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv2",
   group_var = "AgeGroup"
@@ -3576,14 +3342,16 @@ result
 
 
 ```{r green-overtime-age-item3}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv3",
   group_var = "AgeGroup"
@@ -3605,14 +3373,16 @@ result
 
 
 ```{r green-overtime-gender-item1}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv1",
   group_var = "geslacht"
@@ -3626,14 +3396,16 @@ result
 
 
 ```{r green-overtime-gender-item2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv2",
   group_var = "geslacht"
@@ -3647,14 +3419,16 @@ result
 
 
 ```{r green-overtime-gender-item3}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv3",
   group_var = "geslacht"
@@ -3676,14 +3450,16 @@ result
 
 
 ```{r green-overtime-edu-item1}
-# timeline visualization
+# I know how to reduce the battery use of a phone or computer.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to reduce the battery use of a phone or computer.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv1",
   group_var = "Education"
@@ -3697,14 +3473,16 @@ result
 
 
 ```{r green-overtime-edu-item2}
-# timeline visualization
+# I know how I can buy a phone or computer in a 'green' or sustainable way.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how I can buy a phone or computer in a 'green' or sustainable way.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv2",
   group_var = "Education"
@@ -3718,14 +3496,16 @@ result
 
 
 ```{r green-overtime-edu-item3}
-# timeline visualization
+# I know how to have a phone or computer recycled.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know how to have a phone or computer recycled.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SEnv3",
   group_var = "Education"
@@ -3743,10 +3523,14 @@ result
 
 :::
 
-
-:::
-
 ## {{< iconify ph lightbulb-fill >}} Digital Problem Solving
+
+
+**Digital Problem Solving** measures the ability to find help and solutions for digital challenges: knowing where to get help to improve digital skills and who to turn to when facing technical difficulties.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
 
 
 ::: {.panel-tabset}
@@ -3758,12 +3542,6 @@ result
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
 
 ```{r dprob-wave1-overall}
 # Digital Problem Solving Skills
@@ -3955,19 +3733,10 @@ result
 ### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
-::: {#chart-nested-wave2 .chart-lazy data-loaded='false'}
-
-
 ::: {.panel-tabset}
 
 ##### {{< iconify ph users-fill >}} Overall
 
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
 
 ```{r dprob-wave2-overall}
 # Digital Problem Solving Skills
@@ -4156,13 +3925,7 @@ result
 :::
 
 
-:::
-
-
 ### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {#chart-nested-overtime .chart-lazy data-loaded='false'}
 
 
 ::: {.panel-tabset}
@@ -4176,13 +3939,15 @@ result
 
 
 ```{r dprob-overtime-overall-item1}
-# timeline visualization
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help to improve my digital skills.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SProbl1"
 )
@@ -4195,13 +3960,15 @@ result
 
 
 ```{r dprob-overtime-overall-item2}
-# timeline visualization
+# I know where or from whom I can get help if I'm unable to do something on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help if I'm unable to do something on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
+  y_min = 0,
+  y_max = 100,
   response_filter_label = NULL,
   response_var = "SProbl2"
 )
@@ -4222,14 +3989,16 @@ result
 
 
 ```{r dprob-overtime-age-item1}
-# timeline visualization
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help to improve my digital skills.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SProbl1",
   group_var = "AgeGroup"
@@ -4243,14 +4012,16 @@ result
 
 
 ```{r dprob-overtime-age-item2}
-# timeline visualization
+# I know where or from whom I can get help if I'm unable to do something on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help if I'm unable to do something on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SProbl2",
   group_var = "AgeGroup"
@@ -4272,14 +4043,16 @@ result
 
 
 ```{r dprob-overtime-gender-item1}
-# timeline visualization
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help to improve my digital skills.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SProbl1",
   group_var = "geslacht"
@@ -4293,14 +4066,16 @@ result
 
 
 ```{r dprob-overtime-gender-item2}
-# timeline visualization
+# I know where or from whom I can get help if I'm unable to do something on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help if I'm unable to do something on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SProbl2",
   group_var = "geslacht"
@@ -4322,14 +4097,16 @@ result
 
 
 ```{r dprob-overtime-edu-item1}
-# timeline visualization
+# I know where or from whom I can get help to improve my digital skills.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help to improve my digital skills.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SProbl1",
   group_var = "Education"
@@ -4343,14 +4120,16 @@ result
 
 
 ```{r dprob-overtime-edu-item2}
-# timeline visualization
+# I know where or from whom I can get help if I'm unable to do something on the internet.
 result <- create_timeline(
   data = data,
-  title = NULL,
+  title = "I know where or from whom I can get help if I'm unable to do something on the internet.",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
   response_filter_label = NULL,
+  y_min = 0,
+  y_max = 100,
   weight_var = "weging_GAMO",
   response_var = "SProbl2",
   group_var = "Education"
@@ -4358,9 +4137,6 @@ result <- create_timeline(
 
 result
 ```
-
-
-:::
 
 
 :::
