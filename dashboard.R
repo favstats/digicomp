@@ -2818,7 +2818,9 @@ dashboard <- create_dashboard(
   code_tools = TRUE, 
   mobile_toc = T,
   navbar_bg_color = "#f0f0f0",
-  navbar_text_color = "#3A1B00E6",
+  navbar_text_color = "#3A1B00E6", 
+  viewport_width = 1200,
+  viewport_scale = 0.3,
   # toc = "floating",
   # toc_depth = 3,
   plausible = "example.com",
@@ -3094,3 +3096,6 @@ generate_dashboard(dashboard, render = T, open = "browser")
 
 
 
+gert::git_add(".")
+gert::git_commit("update")
+gert::git_push()
