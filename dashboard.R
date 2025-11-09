@@ -2790,47 +2790,52 @@ strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_
 ## 8.2 Dashboard Pages & Configuration ----
 # Create comprehensive dashboard with ALL features
 dashboard <- create_dashboard(
-  output_dir = "qmds", 
+  ## Descriptions
   title = "Digital Competence Insights", 
+  output_dir = "qmds", 
+  publish_dir = "../docs",
+  author = "Digital Competence Insights Dashboard Team",
+  description = "Digital Competence Insights Dashboard",
+  page_footer = "© 2025 Digital Competence Insights Dashboard - All Rights Reserved",
+  date = "2025-11-20",
+  logo = "logo.png",
+  ## Themes / Styles
+  page_layout = "full",
+  theme = "flatly",  # Options: cosmo, flatly, darkly, minty, pulse, etc.
+  tabset_theme = "minimal",  # This is YOUR style! 
+  math = "katex",
+  mobile_toc = T,
+  search = TRUE,
+  code_overflow = "wrap",        # ← From your original
+  html_math_method = "mathjax",  # ← From your original
+  #### Navbar settings
+  navbar_sections = list(dimensions_menu),  # Just pass the menus!
+  navbar_style = "dark",
+  navbar_brand = "Digital Competence Insights Dashboard",
+  navbar_toggle = "collapse",
+  navbar_bg_color = "#f0f0f0",
+  navbar_text_color = "#3A1B00E6", 
+  navbar_text_hover_color = "lightgrey",
+  ## pagination settings
+  pagination_position = "both",
+  pagination_separator = "/", 
   github = "https://github.com/favstats/dashboardr",
-  twitter = "https://twitter.com/username",
   linkedin = "https://linkedin.com/in/username",
   email = "user@example.com",
-  website = "https://example.com",
-  logo = "logo.png",
-  search = TRUE,
-  navbar_sections = list(dimensions_menu),  # Just pass the menus!
-  theme = "flatly",  # Options: cosmo, flatly, darkly, minty, pulse, etc.
-  author = "Dr. Jane Smith",
-  description = "Comprehensive data analysis dashboard with all features",
-  page_footer = "© 2025 Digital Competence Insights Dashboard - All Rights Reserved",
-  date = "2024-01-15",
-  tabset_theme = "minimal",  # This is YOUR style! 
-  breadcrumbs = F,
+  website = "https://www.dedigiq.nl/",
+  breadcrumbs = FALSE,
   page_navigation = TRUE,
   back_to_top = TRUE,
   # repo_url = "https://github.com/username/dashboardr",
-  navbar_style = "dark",
-  # navbar_brand = "Dashboardr",
-  navbar_toggle = "collapse",
-  math = "katex",
-  code_tools = FALSE, 
-  mobile_toc = T,
   self_contained = TRUE,        # ← From your original
-  code_overflow = "wrap",        # ← From your original
-  html_math_method = "mathjax",  # ← From your original
-  navbar_bg_color = "#f0f0f0",
-  navbar_text_color = "#3A1B00E6", 
   # viewport_width = 1200,
   # viewport_scale = 0.3,
   # toc = "floating",
   # toc_depth = 3,
+  code_tools = FALSE,  # ← Add this to explicitly disable the Code button
+  code_folding = NULL, # ← Make sure this is NULL or FALSE too
   plausible = "example.com",
-  metrics_style = "bootstrap",
-  page_layout = "full",
-  publish_dir = "../docs",
-  pagination_separator = "/", 
-  navbar_text_hover_color = "lightgrey",
+  metrics_style = "bootstrap"
 ) %>%
   # Landing page with icon
   add_page(
