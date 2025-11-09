@@ -2814,8 +2814,7 @@ dashboard <- create_dashboard(
   # navbar_brand = "Dashboardr",
   navbar_toggle = "collapse",
   math = "katex",
-  code_folding = "none",
-  code_tools = F, 
+  code_tools = FALSE, 
   mobile_toc = T,
   self_contained = TRUE,        # ← From your original
   code_overflow = "wrap",        # ← From your original
