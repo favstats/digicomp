@@ -3083,7 +3083,8 @@ dashboard <- create_dashboard(
       "and plots, even when the user is inexperienced with programming.",
       "In a variety of contexts, this means that you can get quick, beautiful insights to present findings to wider audiences."
     )
-  )
+  ) %>%
+  add_powered_by_dashboardr(style = "badge", size = "large")
 
 # Test the print methods
 cat("=== Dashboard Project Summary ===\n")

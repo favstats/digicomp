@@ -13,13 +13,14 @@
 
 /* Top position - inline with title using CSS Grid, no underline */
 /* Use CSS Grid to place title and pagination on the same line */
-body:has(.pagination-nav.pagination-top) main {
+/* PERFORMANCE: Using class instead of :has() for much faster rendering */
+body.has-pagination-top main {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 1rem;
 }
 
-body:has(.pagination-nav.pagination-top) header.quarto-title-block {
+body.has-pagination-top header.quarto-title-block {
   grid-column: 1;
   grid-row: 1;
   border-bottom: none !important;
@@ -40,18 +41,18 @@ body:has(.pagination-nav.pagination-top) header.quarto-title-block {
 }
 
 /* Remove separator lines from title */
-body:has(.pagination-nav.pagination-top) .quarto-title::after {
+body.has-pagination-top .quarto-title::after {
   display: none !important;
 }
 
 /* All other content goes in second row spanning both columns */
-body:has(.pagination-nav.pagination-top) main > *:not(header):not(.pagination-nav) {
+body.has-pagination-top main > *:not(header):not(.pagination-nav) {
   grid-column: 1 / -1;
 }
 
 /* Ensure pagination doesn't break layout on smaller screens */
 @media (max-width: 768px) {
-  body:has(.pagination-nav.pagination-top) main {
+  body.has-pagination-top main {
     display: block;
   }
   
