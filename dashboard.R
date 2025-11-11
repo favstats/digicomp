@@ -205,8 +205,8 @@ digicom_data <- data %>%
   smart_bind_rows(data_w1 %>% 
                     mutate(wave = 1)) %>% 
   mutate_at(vars(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PDHWS1_1, PDHWS1_3), as.numeric) %>% 
-  mutate(wave_time_label = ifelse(wave == 1, "Dec. 24 (Wave 1)", "Jun. 24 (Wave 2)")) %>% 
-  mutate(wave_time_label = factor(wave_time_label, levels = c("Dec. 24 (Wave 1)", "Jun. 24 (Wave 2)"))) %>% 
+  mutate(wave_time_label = ifelse(wave == 1, "Dec. 24 (Wave 1)", "Jun. 25 (Wave 2)")) %>% 
+  mutate(wave_time_label = factor(wave_time_label, levels = c("Dec. 24 (Wave 1)", "Jun. 25 (Wave 2)"))) %>% 
   mutate(Education = case_when(
     Education == "66" ~ NA_character_,
     Education == "99" ~ NA_character_,
@@ -1879,8 +1879,8 @@ perf_sis_viz_wo_link <- create_vizzes2(
 
 ## 5.2 Performance: Critical Information (perf_cis_viz) ----
 perf_cis_questions <- c(
-  "Classify a social media post (task 1)",
-  "Classify a social media post (task 2)",
+  "Classify a fake news social media post",
+  "Classify an advertisement social media post",
   "What to check for fake news"
 )
 
@@ -2839,21 +2839,27 @@ dashboard <- create_dashboard(
 ) %>%
   # Landing page with icon
   add_page(
-    name = "Welkom bij de Digital Competence Insights Dashboard",
+    name = "Welcome to the Digital Competence Insights Dashboard",
     text = md_text(
-      "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
+      "<div style='text-align: justify;'>",
+      "{{< iconify ph warning-circle-fill >}} **THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
-      "This dashboard contains the results of multiple data collections using the DigIQ2.0, a measurement instrument that maps the digital competence of Dutch people aged 10 and older. Digital competence consists of digital skills and knowledge, such as the skills and knowledge needed to use online media and digital technology safely and effectively, as well as the performance of these skills through tests and behavioral measurements. Digital competence is broken down into 11 dimensions.",
-"",
-"By using multiple surveys at different times with different samples, we can gain a clear picture of the current state of digital competence among Dutch people, whether it is changing, and which groups of people are most vulnerable online.",
-"",
-"This dashboard allows you to examine general trends in digital skills, knowledge, and performance for each of the 11 dimensions, with the option to differentiate by age, gender, and education level.",
-"",
-"More information about DigIQ2.0 can be found at https://osf.io/dfvqb/overview."
-"",
-"For questions about the dashboard or DigIQ2.0, please email digiq-cw-fmg@uva.nl.",
-"",
-"This project was made possible by a grant from the Ministry of the Interior and Kingdom Relations (principal investigator: Piotrowski)."
+      "This dashboard contains the results of multiple data collections using the **DigIQ2.0**, a measurement instrument that maps the digital competence of Dutch people aged 10 and older. Digital competence consists of digital skills and knowledge, such as the skills and knowledge needed to use online media and digital technology safely and effectively, as well as the performance of these skills through tests and behavioral measurements. Digital competence is broken down into 11 dimensions.",
+      "",
+      "By using multiple surveys at different times with different samples, we can gain a clear picture of the current state of digital competence among Dutch people, whether it is changing, and which groups of people are most vulnerable online.",
+      "",
+      "{{< iconify ph chart-bar-fill >}} This dashboard allows you to examine general trends in digital skills, knowledge, and performance for each of the 11 dimensions, with the option to differentiate by age, gender, and education level.",
+      "",
+      "More information about DigIQ2.0 can be found at [https://osf.io/dfvqb/overview](https://osf.io/dfvqb/overview).",
+      "",
+      "{{< iconify ph envelope-simple-open-fill >}} For questions about the dashboard or DigIQ2.0, please email [digiq-cw-fmg@uva.nl](mailto:digiq-cw-fmg@uva.nl).",
+      "",
+      "<small>This project was made possible by a grant from the Ministry of the Interior and Kingdom Relations (principal investigator: Piotrowski).</small>",
+      "",
+      "<br>",
+      "<br>",
+      "<center><img src='bzk.jpg' width='360'></center>",
+      "</div>"
     ),
     icon = "ph:house-fill",
     is_landing_page = TRUE
@@ -2906,16 +2912,21 @@ dashboard <- create_dashboard(
     icon = "ph:star-fill", 
     visualizations = genai_viz,
     text = md_text(
-      "If you’ve spent time around anyone under 25 lately, you’ve probably heard phrases like “I’ll just ask Chat” or “ChatGPT can do that faster.” Generative AI tools have quickly become part of everyday life for young people in the Netherlands. Whether for homework, social media posts, or just curiosity, Gen Z and even Gen Alpha are driving the adoption of these technologies at an astonishing pace.",
+      "<div style='text-align: justify;'>",
+      "### Wave 1",
+      "Based on data from **2,417** Dutch people aged between **10 and 94**, we drew the following conclusions:",
       "",
-      "The flood of AI-generated images, videos, and memes means it’s almost impossible to grow up today without encountering artificial intelligence. For many, AI isn’t a futuristic concept: it’s a daily companion. Young people now turn to tools like ChatGPT for information, writing help, and even casual conversation. This has been documented in the [Dutch AI Opinion Monitor](https://monitor.algosoc.nl/engagement.html), which shows that young people are the fastest adopters of this technology.
-",
+      "1. {{< iconify ph device-mobile-camera-fill >}} **People generally feel digitally skilled, and this largely corresponds with their knowledge, but not always with their performance.**",
+      "   For some skills, such as online health and well-being, or netiquette, there are discrepancies between people's high scores on trust in their own skills and low scores on performance and behavior.",
+      "   These findings may indicate that Dutch people have blind spots regarding (some) digital skills and are unaware of what is possible online and where they actually lack skills.",
       "",
-      "## The Confidence Boom",
-      
-      "Our latest survey reflects this cultural shift. When asked how confident they felt using prompts to get useful responses from ChatGPT, a striking **71.2% of 16–25-year-olds** said they were confident. Even among those aged **10–15**, more than **half (54.4%)** expressed confidence in their ability to prompt AI effectively.",
+      "2. {{< iconify ph sparkles-fill >}} **Skills and knowledge in the field of (gen)AI are low.**",
+      "   Children, the elderly, and low-educated Dutch people score low on knowledge about the privacy, validity, and reliability of genAI and the personalization of news and entertainment by AI, and are not well-equipped to create prompts that leverage the benefits of genAI.",
+      "   People perform poorly in recognizing and using genAI, and, aside from social media, don't always know which apps or websites use AI to tailor content to them.",
       "",
-      "In other words, pre-teens today feel just as capable of “talking to AI” as many highly educated professionals in their thirties and forties. This growing sense of mastery highlights how intuitively young people adapt to new technologies. But confidence isn’t the same as competence."
+      "3. {{< iconify ph users-three-fill >}} **Differences among Dutch people can be distinguished based on age and education level, not on migration background.**",
+      "   Children (10–14 years old), the elderly (66+), and the less educated score lower on digital skills and knowledge.",
+      "</div>"
     )
   )%>%
   # Analysis page with data and visualizations
@@ -3092,7 +3103,14 @@ dashboard <- create_dashboard(
       "In a variety of contexts, this means that you can get quick, beautiful insights to present findings to wider audiences."
     )
   ) %>%
-  add_powered_by_dashboardr(style = "badge", size = "large")
+  add_powered_by_dashboardr(style = "badge", size = "large") %>%
+  # Add a "Powered by" link with icon and text
+  add_navbar_element(
+    icon = "circle-flags:lang-nl",
+    # circle-flags:uk
+    href = "https://example.com",
+    align = "right"
+  )  
 
 # Test the print methods
 cat("=== Dashboard Project Summary ===\n")
@@ -3104,6 +3122,7 @@ cat("\n=== Visualization Collection Summary ===\n")
 # cat("\n=== Summary Visualizations ===\n")
 # print(summary_vizzes)
 
+# generate_dashboard(dashboard, render = F,  open = "browser")
 
 ## 8.3 Generate Dashboard ----
 # Generate the dashboard
