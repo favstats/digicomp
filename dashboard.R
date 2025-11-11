@@ -3106,6 +3106,7 @@ dashboard <- create_dashboard(
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text
   add_navbar_element(
+    text = "nl",
     icon = "circle-flags:lang-nl",
     # circle-flags:uk
     href = "https://example.com",
