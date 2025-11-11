@@ -2843,9 +2843,17 @@ dashboard <- create_dashboard(
     text = md_text(
       "**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**",
       "",
-      "Je kunt algemene trends onderzoeken in de verschillende secties, met de mogelijkheid om te differentiëren naar leeftijd, geslacht, opleidingsniveau en politieke voorkeur.",
-      "",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+      "This dashboard contains the results of multiple data collections using the DigIQ2.0, a measurement instrument that maps the digital competence of Dutch people aged 10 and older. Digital competence consists of digital skills and knowledge, such as the skills and knowledge needed to use online media and digital technology safely and effectively, as well as the performance of these skills through tests and behavioral measurements. Digital competence is broken down into 11 dimensions.",
+"",
+"By using multiple surveys at different times with different samples, we can gain a clear picture of the current state of digital competence among Dutch people, whether it is changing, and which groups of people are most vulnerable online.",
+"",
+"This dashboard allows you to examine general trends in digital skills, knowledge, and performance for each of the 11 dimensions, with the option to differentiate by age, gender, and education level.",
+"",
+"More information about DigIQ2.0 can be found at https://osf.io/dfvqb/overview."
+"",
+"For questions about the dashboard or DigIQ2.0, please email digiq-cw-fmg@uva.nl.",
+"",
+"This project was made possible by a grant from the Ministry of the Interior and Kingdom Relations (principal investigator: Piotrowski)."
     ),
     icon = "ph:house-fill",
     is_landing_page = TRUE
