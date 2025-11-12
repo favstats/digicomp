@@ -1,0 +1,2571 @@
+---
+title: "{{< iconify ph clipboard-text >}} Performance"
+format: html
+---
+
+
+```{=html}
+<script>document.body.classList.add('has-pagination-top');</script>
+<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
+  <div class='pagination-container'>
+    <button class='pagination-btn pagination-prev pagination-disabled' disabled aria-label='Previous page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </button>
+    <div class='pagination-info'>
+      <span class='pagination-prefix'>Page </span>
+      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='1' aria-label='Current page'>
+      <span class='pagination-separator'> / 3</span>
+    </div>
+    <a href='performance_p2.html' class='pagination-btn pagination-next' aria-label='Next page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+<!-- Pagination Navigation Script -->
+<script>
+(function() {
+  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html"];
+  const pageInput = document.getElementById('page-input-top');
+  
+  if (pageInput) {
+    pageInput.addEventListener('change', function() {
+      const pageNum = parseInt(this.value);
+      if (pageNum >= 1 && pageNum <= pageUrls.length) {
+        window.location.href = pageUrls[pageNum - 1];
+      } else {
+        this.value = this.getAttribute('value');
+      }
+    });
+    
+    pageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  }
+})();
+</script>
+```
+
+
+
+```{r}
+#| include: false
+library(dashboardr)
+```
+
+**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
+
+The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover ten areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment.
+
+```{r, echo=FALSE}
+dashboardr::enable_modals()
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load required libraries
+library(dashboardr)
+library(dplyr)
+library(highcharter)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data from dataset_4014obs.rds
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# Use dashboardr's loading overlay function
+dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+```
+
+
+```{r, echo=FALSE, results='asis'}
+cat(as.character(dashboardr::modal_content(
+  modal_id = 'PDCCS1R',
+  text = '<h2>Digital Content Creation & Collaboration: Performance Questions</h2>
+<img src="https://placehold.co/600x400/EEE/31343C" style="max-width:100%; height:auto;">
+<p>This modal provides additional context about the digital content creation and collaboration performance questions.</p>'
+)))
+```
+
+## {{< iconify ph magnifying-glass >}} Strategic Information
+
+
+**Strategic Information Skills** assess the ability to effectively search for and locate information online. This includes choosing good keywords, using search functions, and finding answers to questions on the internet.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Strategic Information results](strategic_information.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-sis-wave1-overall}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  questions = "PSIS2R",
+  question_labels = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-sis-wave1-age}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-sis-wave1-gender}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-sis-wave1-edu}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-sis-wave1-mig}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-sis-wave2-overall}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  questions = "PSIS2R",
+  question_labels = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-sis-wave2-age}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-sis-wave2-gender}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-sis-wave2-edu}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-sis-wave2-mig}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, PSIS2R),
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PSIS2R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-sis-overtime-overall}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_timeline(
+  data = data,
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "PSIS2R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-sis-overtime-age}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_timeline(
+  data = data,
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSIS2R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-sis-overtime-gender}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_timeline(
+  data = data,
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSIS2R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-sis-overtime-edu}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_timeline(
+  data = data,
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSIS2R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-sis-overtime-mig}
+# How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.
+result <- create_timeline(
+  data = data,
+  title = "How can you make sure that only Dutch sources are shown? Click on the spot in the image where you can indicate this.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PSIS2R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+## {{< iconify ph detective-fill >}} Critical Information
+
+
+**Critical Information Skills** measure the ability to evaluate online information: checking whether information is true, assessing website reliability, and understanding the purpose of online content (to inform, influence, entertain, or sell).
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance questions for Critical Information dimension", preset = "question")
+```
+[{{< iconify ph cards >}} See all Critical Information results](critical_information.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-cis-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PCIS1R, PCIS2R, PCIS3R),
+  title = "",
+  questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
+  question_labels = c("Look closely at this post on social media. What kind of post do you think this is?", "Look closely at this post on social media as well. What kind of post do you think this is?", "What do you need to look at to check whether a post on social media is fake news or not?"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave1-age-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave1-age-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave1-age-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave1-gender-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave1-gender-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave1-gender-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave1-edu-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave1-edu-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave1-edu-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave1-mig-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave1-mig-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave1-mig-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-cis-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PCIS1R, PCIS2R, PCIS3R),
+  title = "",
+  questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
+  question_labels = c("Look closely at this post on social media. What kind of post do you think this is?", "Look closely at this post on social media as well. What kind of post do you think this is?", "What do you need to look at to check whether a post on social media is fake news or not?"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave2-age-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave2-age-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave2-age-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave2-gender-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave2-gender-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave2-gender-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave2-edu-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave2-edu-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave2-edu-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-wave2-mig-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, PCIS1R),
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-wave2-mig-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, PCIS2R),
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-wave2-mig-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, PCIS3R),
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-overtime-overall-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "PCIS1R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-overtime-overall-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "PCIS2R"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-overtime-overall-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_timeline(
+  data = data,
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "PCIS3R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-overtime-age-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS1R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-overtime-age-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS2R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-overtime-age-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_timeline(
+  data = data,
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS3R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-overtime-gender-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS1R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-overtime-gender-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS2R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-overtime-gender-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_timeline(
+  data = data,
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS3R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-overtime-edu-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS1R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-overtime-edu-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS2R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-overtime-edu-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_timeline(
+  data = data,
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS3R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-cis-overtime-mig-item1}
+# Look closely at this post on social media. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS1R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-cis-overtime-mig-item2}
+# Look closely at this post on social media as well. What kind of post do you think this is?
+result <- create_timeline(
+  data = data,
+  title = "Look closely at this post on social media as well. What kind of post do you think this is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS2R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-cis-overtime-mig-item3}
+# What do you need to look at to check whether a post on social media is fake news or not?
+result <- create_timeline(
+  data = data,
+  title = "What do you need to look at to check whether a post on social media is fake news or not?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PCIS3R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph palette-fill >}} Digital Content Creation
+
+
+**Digital Content Creation** skills cover the ability to create and modify digital content: making presentations, combining different media, editing images/music/video, and understanding copyright rules around digital content.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote('Performance questions for Digital Content Creation dimension', preset = 'question')
+```
+[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-dccs-wave1-overall}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  questions = "PDCCS1R",
+  question_labels = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-dccs-wave1-age}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-dccs-wave1-gender}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-dccs-wave1-edu}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-dccs-wave1-mig}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-dccs-wave2-overall}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  questions = "PDCCS1R",
+  question_labels = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-dccs-wave2-age}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-dccs-wave2-gender}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-dccs-wave2-edu}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-dccs-wave2-mig}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, PDCCS1R),
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PDCCS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-dccs-overtime-overall}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_timeline(
+  data = data,
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "PDCCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-dccs-overtime-age}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_timeline(
+  data = data,
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDCCS1R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-dccs-overtime-gender}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_timeline(
+  data = data,
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDCCS1R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-dccs-overtime-edu}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_timeline(
+  data = data,
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDCCS1R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-dccs-overtime-mig}
+# Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?
+result <- create_timeline(
+  data = data,
+  title = "Which of the following icons refer to the function for cutting or removing parts of a picture ('cropping')?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PDCCS1R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+## {{< iconify ph chats-fill >}} Netiquette
+
+
+**Netiquette** refers to proper online communication etiquette: knowing when to ask permission before sharing, choosing the right communication tool, understanding what not to share online, and using emoticons appropriately.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Performance tasks: proportion correct or selected. Where items are multi-select, we show the share selecting each action.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Netiquette results](netiquette.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-netiquette-wave1-overall}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  questions = "PNS1R",
+  question_labels = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-netiquette-wave1-age}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-netiquette-wave1-gender}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-netiquette-wave1-edu}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-netiquette-wave1-mig}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-netiquette-wave2-overall}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  questions = "PNS1R",
+  question_labels = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-netiquette-wave2-age}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-netiquette-wave2-gender}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-netiquette-wave2-edu}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-netiquette-wave2-mig}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, PNS1R),
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Incorrect", "Correct"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "PNS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-netiquette-overtime-overall}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_timeline(
+  data = data,
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "PNS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-netiquette-overtime-age}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_timeline(
+  data = data,
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PNS1R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-netiquette-overtime-gender}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_timeline(
+  data = data,
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PNS1R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-netiquette-overtime-edu}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_timeline(
+  data = data,
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PNS1R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-netiquette-overtime-mig}
+# Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)
+result <- create_timeline(
+  data = data,
+  title = "Imagine, you find this picture of your friend/acquaintance on social media. For which picture, or pictures, would you ask permission from this friend/acquaintance to share it with others online? (multiple answers are possible)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "PNS1R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+
+```{=html}
+<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
+  <div class='pagination-container'>
+    <button class='pagination-btn pagination-prev pagination-disabled' disabled aria-label='Previous page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </button>
+    <div class='pagination-info'>
+      <span class='pagination-prefix'></span>
+      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='1' aria-label='Current page'>
+      <span class='pagination-separator'> / 3</span>
+    </div>
+    <a href='performance_p2.html' class='pagination-btn pagination-next' aria-label='Next page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+<!-- Pagination Navigation Script -->
+<script>
+(function() {
+  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html"];
+  const pageInput = document.getElementById('page-input-bottom');
+  
+  if (pageInput) {
+    pageInput.addEventListener('change', function() {
+      const pageNum = parseInt(this.value);
+      if (pageNum >= 1 && pageNum <= pageUrls.length) {
+        window.location.href = pageUrls[pageNum - 1];
+      } else {
+        this.value = this.getAttribute('value');
+      }
+    });
+    
+    pageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  }
+})();
+</script>
+```
+

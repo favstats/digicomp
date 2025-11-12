@@ -1,0 +1,156 @@
+project:
+  type: website
+  output-dir: ../docs/en
+
+website:
+  title: "Digital Competence Insights"
+  navbar:
+    style: dark
+    brand: "Digital Competence Insights Dashboard"
+    toggle: collapse
+    logo: logo.png
+    left:
+      - text: "{{< iconify ph books-fill >}} Dimensions"
+        menu:
+          - href: strategic_information.qmd
+            text: "{{< iconify ph magnifying-glass >}} Strategic Information"
+          - href: critical_information.qmd
+            text: "{{< iconify ph detective-fill >}} Critical Information"
+          - href: netiquette.qmd
+            text: "{{< iconify ph chats-fill >}} Netiquette"
+          - href: digital_content_creation.qmd
+            text: "{{< iconify ph palette-fill >}} Digital Content Creation"
+          - href: safety.qmd
+            text: "{{< iconify ph shield-check-fill >}} Safety"
+          - href: digital_health.qmd
+            text: "{{< iconify ph heart-fill >}} Digital Health"
+          - href: green_digital.qmd
+            text: "{{< iconify ph recycle-fill >}} Green Digital"
+          - href: digital_problem_solving.qmd
+            text: "{{< iconify ph lightbulb-fill >}} Digital Problem Solving"
+          - href: transactional.qmd
+            text: "{{< iconify ph wallet-fill >}} Transactional"
+          - href: ai.qmd
+            text: "{{< iconify ph robot-fill >}} AI"
+          - href: gen_ai.qmd
+            text: "{{< iconify ph magic-wand-fill >}} Gen AI"
+      - href: skills.qmd
+        text: "{{< iconify ph lightning-fill >}} Skills"
+      - href: performance.qmd
+        text: "{{< iconify ph clipboard-text >}} Performance"
+      - href: knowledge.qmd
+        text: "{{< iconify ph book-open-fill >}} Knowledge"
+      - href: highlights.qmd
+        text: "{{< iconify ph star-fill >}} Highlights"
+    right:
+      - href: about.qmd
+        text: "{{< iconify ph info-fill >}} About"
+      - text: "{{< iconify circle-flags lang-nl >}} en"
+        href: https://favstats.github.io/digicomp/en
+    search: true
+  bread-crumbs: false
+  page-navigation: true
+  back-to-top-navigation: true
+  reader-mode: false
+  page-footer:
+    left: "© 2025 Digital Competence Insights Dashboard - All Rights Reserved"
+    right: |
+      <a href="https://favstats.github.io/dashboardr/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: 4px; font-size: 1rem; color: inherit; text-decoration: none; opacity: 0.8; transition: opacity 0.2s ease, background 0.2s ease;" onmouseover="this.style.opacity='1'; this.style.background='rgba(0, 0, 0, 0.08)';" onmouseout="this.style.opacity='0.8'; this.style.background='rgba(0, 0, 0, 0.05)';"><img src="https://raw.githubusercontent.com/favstats/dashboardr/refs/heads/main/man/figures/logo.svg" alt="dashboardr logo" style="width: 24px; height: 24px; object-fit: contain;" /><span style="font-weight: 500;">Powered by dashboardr</span></a>
+
+format:
+  html:
+    prefer-html: true
+    theme:
+      - flatly
+      - _tabset_minimal.scss
+      - _theme_custom.scss
+
+    css:
+      - assets/modal.css
+      - assets/pagination.css
+    include-in-header:
+      text: |
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    mainfont: "Fira Sans"
+    fontsize: 16px
+    monofont: "Fira Code"
+    math:
+      engine: katex
+    page-layout: full
+    self-contained: true
+    code-overflow: wrap
+    html-math-method: mathjax
+    plausible:
+      domain: "example.com"
+    include-after-body:
+      text: |
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+              var toc = document.createElement("div");
+              toc.id = "custom-toc";
+              toc.style.position = "fixed";
+              toc.style.top = "0";
+              toc.style.right = "-300px";
+              toc.style.width = "260px";
+              toc.style.height = "100%";
+              toc.style.background = "white";
+              toc.style.padding = "10px";
+              toc.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+              toc.style.transition = "right 0.3s ease-in-out";
+              toc.style.overflowY = "auto";
+              toc.style.zIndex = "999";
+          
+              var tocTitle = document.createElement("h3");
+              tocTitle.innerText = "Navigation";
+              toc.appendChild(tocTitle);
+          
+              var headers = document.querySelectorAll("h2, h3, h4");
+              headers.forEach(function (header, index) {
+                  if (!header.id) {
+                      header.id = "section-" + index;
+                  }
+          
+                  var link = document.createElement("a");
+                  link.innerText = header.innerText;
+                  link.href = "#" + header.id;
+                  link.style.display = "block";
+                  link.style.padding = "5px 0";
+                  link.style.color = "#007bff";
+                  link.style.textDecoration = "none";
+          
+                  toc.appendChild(link);
+              });
+          
+              document.body.appendChild(toc);
+          
+              var button = document.createElement("button");
+              button.id = "toggle-toc";
+              button.innerHTML = "📑";
+              button.style.position = "fixed";
+              button.style.top = "15px";
+              button.style.right = "15px";
+              button.style.backgroundColor = "white";
+              button.style.color = "#333";
+              button.style.border = "2px solid #ccc";
+              button.style.padding = "10px 12px";
+              button.style.cursor = "pointer";
+              button.style.borderRadius = "8px";
+              button.style.fontSize = "22px";
+              button.style.zIndex = "1000";
+              button.style.boxShadow = "0px 3px 6px rgba(0, 0, 0, 0.2)";
+              button.style.width = "50px";
+              button.style.height = "50px";
+          
+              document.body.appendChild(button);
+          
+              button.addEventListener("click", function () {
+                  if (toc.style.right === "0px") {
+                      toc.style.right = "-300px";
+                  } else {
+                      toc.style.right = "0px";
+                  }
+              });
+          });
+        </script>

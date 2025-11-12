@@ -8,9 +8,9 @@ format: html
 library(dashboardr)
 ```
 
-**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
+**DIT IS EEN MOCKUP VERSIE GELIEVE NIET TE CITEREN**
 
-**Generative AI Skills** measure competencies with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
+**Generatieve AI-vaardigheden** meten competenties met AI-tools zoals ChatGPT: weten hoe AI-gegenereerde informatie te verifiëren, effectieve prompts schrijven, AI-gegenereerde content detecteren, en de mogelijkheden en beperkingen van GenAI begrijpen.
 
 ```{r setup}
 #| echo: false
@@ -49,10 +49,12 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ```
 
-## {{< iconify ph lightning-fill >}} GenAI Skills
+## {{< iconify ph lightning-fill >}} Gen AI Vaardigheden
 
 
-ADD TEXT BEFORE TABSET
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoonlijk, als je de activiteit nu en in je eentje zou moeten doen. Wees vooral eerlijk, het is heel normaal dat je sommige dingen nooit doet. Dat willen we juist weten! Als je niet begrijpt wat de vraag inhoudt, kruis dan aan 'Ik begrijp de vraag niet'.", preset = "question")
+```
 
 
 ::: {.panel-tabset}
@@ -62,23 +64,23 @@ ADD TEXT BEFORE TABSET
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r genai-wave1-overall-3}
+```{r genai-wave1-overall-2}
 # GenAI Skills
 result <- create_stackedbars(
   data = data_filtered_984a0efe %>% tidyr::drop_na(SGAI1, SGAI2, SGAI3),
   title = "GenAI Skills",
   questions = c("SGAI1", "SGAI2", "SGAI3"),
-  question_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"),
+  question_labels = c("Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat", "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen", "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -87,24 +89,24 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave1-age-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave1-age-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -115,19 +117,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave1-age-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave1-age-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -138,19 +140,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave1-age-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave1-age-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -164,24 +166,24 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave1-gender-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave1-gender-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -192,19 +194,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave1-gender-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave1-gender-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -215,19 +217,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave1-gender-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave1-gender-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -241,24 +243,24 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave1-edu-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave1-edu-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -269,19 +271,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave1-edu-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave1-edu-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -292,19 +294,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave1-edu-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave1-edu-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -318,24 +320,24 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave1-mig-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave1-mig-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -346,19 +348,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave1-mig-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave1-mig-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -369,19 +371,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave1-mig-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave1-mig-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -403,23 +405,23 @@ result
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r genai-wave2-overall-3}
+```{r genai-wave2-overall-2}
 # GenAI Skills
 result <- create_stackedbars(
-  data = data_filtered_4af682fd %>% tidyr::drop_na(SGAI1, SGAI2, SGAI3),
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SGAI1, SGAI2, SGAI3, SGAI4, SGAI5),
   title = "GenAI Skills",
-  questions = c("SGAI1", "SGAI2", "SGAI3"),
-  question_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"),
+  questions = c("SGAI1", "SGAI2", "SGAI3", "SGAI4", "SGAI5"),
+  question_labels = c("Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat", "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen", "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens", "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen", "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -428,24 +430,24 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave2-age-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave2-age-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -456,19 +458,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave2-age-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave2-age-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -479,19 +481,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave2-age-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave2-age-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -502,27 +504,73 @@ result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r genai-wave2-age-item4-2}
+# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI4),
+  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r genai-wave2-age-item5-2}
+# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SGAI5),
+  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SGAI5"
+)
+
+result
+```
+
+
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave2-gender-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave2-gender-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -533,19 +581,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave2-gender-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave2-gender-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -556,19 +604,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave2-gender-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave2-gender-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -579,27 +627,73 @@ result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r genai-wave2-gender-item4-2}
+# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI4),
+  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r genai-wave2-gender-item5-2}
+# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SGAI5),
+  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SGAI5"
+)
+
+result
+```
+
+
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave2-edu-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave2-edu-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -610,19 +704,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave2-edu-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave2-edu-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -633,19 +727,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave2-edu-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave2-edu-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -656,27 +750,73 @@ result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r genai-wave2-edu-item4-2}
+# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI4),
+  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r genai-wave2-edu-item5-2}
+# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SGAI5),
+  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SGAI5"
+)
+
+result
+```
+
+
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-wave2-mig-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-wave2-mig-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SGAI1),
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -687,19 +827,19 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-wave2-mig-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-wave2-mig-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SGAI2),
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -710,23 +850,69 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-wave2-mig-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-wave2-mig-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SGAI3),
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   stack_var = "SGAI3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r genai-wave2-mig-item4-2}
+# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SGAI4),
+  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r genai-wave2-mig-item5-2}
+# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SGAI5),
+  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SGAI5"
 )
 
 result
@@ -739,24 +925,24 @@ result
 :::
 
 
-### {{< iconify ph chart-line-fill >}} Over Time
+### {{< iconify ph chart-line-fill >}} Verloop over tijd
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-overtime-overall-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-overtime-overall-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_timeline(
   data = data,
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -767,6 +953,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
+  weight_var = "weging_GAMO",
   response_var = "SGAI1"
 )
 
@@ -774,14 +961,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-overtime-overall-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-overtime-overall-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_timeline(
   data = data,
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -792,6 +979,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
+  weight_var = "weging_GAMO",
   response_var = "SGAI2"
 )
 
@@ -799,14 +987,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-overall-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-overtime-overall-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_timeline(
   data = data,
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -817,6 +1005,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
+  weight_var = "weging_GAMO",
   response_var = "SGAI3"
 )
 
@@ -827,19 +1016,19 @@ result
 :::
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-overtime-age-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-overtime-age-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_timeline(
   data = data,
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -857,14 +1046,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-overtime-age-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-overtime-age-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_timeline(
   data = data,
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -882,14 +1071,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-age-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-overtime-age-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_timeline(
   data = data,
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -910,19 +1099,19 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-overtime-gender-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-overtime-gender-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_timeline(
   data = data,
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -940,14 +1129,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-overtime-gender-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-overtime-gender-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_timeline(
   data = data,
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -965,14 +1154,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-gender-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-overtime-gender-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_timeline(
   data = data,
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -993,19 +1182,19 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-overtime-edu-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-overtime-edu-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_timeline(
   data = data,
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -1023,14 +1212,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-overtime-edu-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-overtime-edu-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_timeline(
   data = data,
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -1048,14 +1237,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-edu-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-overtime-edu-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_timeline(
   data = data,
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -1076,19 +1265,19 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-overtime-mig-item1-3}
-# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.
+```{r genai-overtime-mig-item1-2}
+# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
 result <- create_timeline(
   data = data,
-  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information.",
+  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -1106,14 +1295,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-overtime-mig-item2-3}
-# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.
+```{r genai-overtime-mig-item2-2}
+# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
 result <- create_timeline(
   data = data,
-  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result.",
+  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -1131,14 +1320,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-mig-item3-3}
-# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+```{r genai-overtime-mig-item3-2}
+# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
 result <- create_timeline(
   data = data,
-  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -1164,13 +1353,13 @@ result
 
 :::
 
-## {{< iconify ph book-open-fill >}} GenAI Knowledge
+## {{< iconify ph book-open-fill >}} Gen AI Kennis
 
 
-**Generative AI Skills** measure competencies with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
+**Generatieve AI-vaardigheden** meten competenties met AI-tools zoals ChatGPT: weten hoe AI-gegenereerde informatie te verifiëren, effectieve prompts schrijven, AI-gegenereerde content detecteren, en de mogelijkheden en beperkingen van GenAI begrijpen.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+create_blockquote("Nu volgen een aantal uitspraken die gaan over het online media en digitale technologie. Geef aan of de zin volgens jou feitelijk wel waar of juist niet waar is (dus in het algemeen, niet voor jou persoonlijk). Als je het niet weet, kruis dan aan 'ik weet het niet'. Je hoeft dus niet te gokken.", preset = "question")
 ```
 
 
@@ -1181,7 +1370,7 @@ create_blockquote("The following statements are about the internet. Please indic
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
 ```{r kgai-wave1-overall-2}
@@ -1190,15 +1379,15 @@ result <- create_stackedbars(
   data = data_filtered_984a0efe %>% tidyr::drop_na(KGAI1RC, KGAI2RC, KGAI3RC, KGAI4RC, KGAI5RC),
   title = "",
   questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.", "Someone else can also get access to the information you give to GenAI, such as ChatGPT.", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times."),
+  question_labels = c("Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar", "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu", "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft", "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')", "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -1207,25 +1396,25 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave1-age-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1236,20 +1425,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave1-age-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1260,20 +1449,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave1-age-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1284,20 +1473,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave1-age-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1308,20 +1497,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave1-age-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1335,25 +1524,25 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave1-gender-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1364,20 +1553,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave1-gender-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1388,20 +1577,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave1-gender-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1412,20 +1601,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave1-gender-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1436,20 +1625,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave1-gender-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1463,25 +1652,25 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave1-edu-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -1492,20 +1681,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave1-edu-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -1516,20 +1705,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave1-edu-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -1540,20 +1729,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave1-edu-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -1564,20 +1753,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave1-edu-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -1591,25 +1780,25 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave1-mig-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -1620,20 +1809,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave1-mig-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -1644,20 +1833,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave1-mig-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -1668,20 +1857,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave1-mig-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -1692,20 +1881,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave1-mig-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -1727,7 +1916,7 @@ result
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
 ```{r kgai-wave2-overall-2}
@@ -1736,15 +1925,15 @@ result <- create_stackedbars(
   data = data_filtered_4af682fd %>% tidyr::drop_na(KGAI1RC, KGAI2RC, KGAI3RC, KGAI4RC, KGAI5RC),
   title = "",
   questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.", "Someone else can also get access to the information you give to GenAI, such as ChatGPT.", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times."),
+  question_labels = c("Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar", "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu", "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft", "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')", "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -1753,25 +1942,25 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave2-age-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1782,20 +1971,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave2-age-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1806,20 +1995,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave2-age-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1830,20 +2019,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave2-age-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1854,20 +2043,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave2-age-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
@@ -1881,25 +2070,25 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave2-gender-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1910,20 +2099,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave2-gender-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1934,20 +2123,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave2-gender-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1958,20 +2147,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave2-gender-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -1982,20 +2171,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave2-gender-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
@@ -2009,25 +2198,25 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave2-edu-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -2038,20 +2227,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave2-edu-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -2062,20 +2251,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave2-edu-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -2086,20 +2275,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave2-edu-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -2110,20 +2299,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave2-edu-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
@@ -2137,25 +2326,25 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-wave2-mig-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI1RC),
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -2166,20 +2355,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-wave2-mig-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI2RC),
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -2190,20 +2379,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-wave2-mig-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI3RC),
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -2214,20 +2403,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-wave2-mig-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI4RC),
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -2238,20 +2427,20 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-wave2-mig-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI5RC),
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
-  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
-  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
@@ -2268,24 +2457,24 @@ result
 :::
 
 
-### {{< iconify ph chart-line-fill >}} Over Time
+### {{< iconify ph chart-line-fill >}} Verloop over tijd
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-overtime-overall-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_timeline(
   data = data,
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2304,14 +2493,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-overtime-overall-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_timeline(
   data = data,
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2330,14 +2519,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-overtime-overall-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_timeline(
   data = data,
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2356,14 +2545,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-overtime-overall-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_timeline(
   data = data,
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2382,14 +2571,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-overtime-overall-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_timeline(
   data = data,
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2411,19 +2600,19 @@ result
 :::
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-overtime-age-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_timeline(
   data = data,
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2442,14 +2631,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-overtime-age-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_timeline(
   data = data,
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2468,14 +2657,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-overtime-age-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_timeline(
   data = data,
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2494,14 +2683,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-overtime-age-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_timeline(
   data = data,
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2520,14 +2709,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-overtime-age-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_timeline(
   data = data,
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2549,19 +2738,19 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-overtime-gender-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_timeline(
   data = data,
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2580,14 +2769,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-overtime-gender-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_timeline(
   data = data,
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2606,14 +2795,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-overtime-gender-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_timeline(
   data = data,
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2632,14 +2821,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-overtime-gender-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_timeline(
   data = data,
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2658,14 +2847,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-overtime-gender-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_timeline(
   data = data,
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2687,19 +2876,19 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-overtime-edu-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_timeline(
   data = data,
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2718,14 +2907,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-overtime-edu-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_timeline(
   data = data,
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2744,14 +2933,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-overtime-edu-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_timeline(
   data = data,
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2770,14 +2959,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-overtime-edu-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_timeline(
   data = data,
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2796,14 +2985,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-overtime-edu-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_timeline(
   data = data,
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2825,19 +3014,19 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Question 1
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
 ```{r kgai-overtime-mig-item1-2}
-# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
 result <- create_timeline(
   data = data,
-  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2856,14 +3045,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 2
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
 ```{r kgai-overtime-mig-item2-2}
-# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
 result <- create_timeline(
   data = data,
-  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2882,14 +3071,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 3
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
 ```{r kgai-overtime-mig-item3-2}
-# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
 result <- create_timeline(
   data = data,
-  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2908,14 +3097,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 4
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
 ```{r kgai-overtime-mig-item4-2}
-# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
 result <- create_timeline(
   data = data,
-  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2934,14 +3123,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Question 5
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
 ```{r kgai-overtime-mig-item5-2}
-# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
 result <- create_timeline(
   data = data,
-  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2968,7 +3157,7 @@ result
 
 :::
 
-## {{< iconify ph clipboard-text >}} GenAI Performance
+## {{< iconify ph clipboard-text >}} Gen AI Prestatie
 
 
 ADD TEXT BEFORE TABSET
@@ -2981,16 +3170,16 @@ ADD TEXT BEFORE TABSET
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
 ```{r perf-genai-wave1-overall-2}
-# Spot non-AI image
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbars(
   data = data_filtered_984a0efe %>% tidyr::drop_na(PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   questions = "PAIS1R",
-  question_labels = "Spot non-AI image",
+  question_labels = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3007,19 +3196,14 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave1-age-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave1-age-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3036,22 +3220,14 @@ result
 ```
 
 
-:::
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave1-gender-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave1-gender-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3068,22 +3244,14 @@ result
 ```
 
 
-:::
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave1-edu-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave1-edu-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(Education, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3100,22 +3268,14 @@ result
 ```
 
 
-:::
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave1-mig-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave1-mig-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3130,9 +3290,6 @@ result <- create_stackedbar(
 
 result
 ```
-
-
-:::
 
 
 :::
@@ -3143,16 +3300,16 @@ result
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
 ```{r perf-genai-wave2-overall-2}
-# Spot non-AI image
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbars(
   data = data_filtered_4af682fd %>% tidyr::drop_na(PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   questions = "PAIS1R",
-  question_labels = "Spot non-AI image",
+  question_labels = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3169,19 +3326,14 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave2-age-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave2-age-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3198,22 +3350,14 @@ result
 ```
 
 
-:::
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave2-gender-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave2-gender-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3230,22 +3374,14 @@ result
 ```
 
 
-:::
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave2-edu-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave2-edu-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(Education, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3262,22 +3398,14 @@ result
 ```
 
 
-:::
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-wave2-mig-item1-2}
-# Spot non-AI image
+```{r perf-genai-wave2-mig-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, PAIS1R),
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3297,27 +3425,19 @@ result
 :::
 
 
-:::
-
-
-### {{< iconify ph chart-line-fill >}} Over Time
+### {{< iconify ph chart-line-fill >}} Verloop over tijd
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Overall
+##### {{< iconify ph users-fill >}} Algemeen
 
 
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-overtime-overall-item1-2}
-# Spot non-AI image
+```{r perf-genai-overtime-overall-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_timeline(
   data = data,
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3336,22 +3456,14 @@ result
 ```
 
 
-:::
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-overtime-age-item1-2}
-# Spot non-AI image
+```{r perf-genai-overtime-age-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_timeline(
   data = data,
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3370,22 +3482,14 @@ result
 ```
 
 
-:::
+##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-overtime-gender-item1-2}
-# Spot non-AI image
+```{r perf-genai-overtime-gender-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_timeline(
   data = data,
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3404,22 +3508,14 @@ result
 ```
 
 
-:::
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-overtime-edu-item1-2}
-# Spot non-AI image
+```{r perf-genai-overtime-edu-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_timeline(
   data = data,
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3438,22 +3534,14 @@ result
 ```
 
 
-:::
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r perf-genai-overtime-mig-item1-2}
-# Spot non-AI image
+```{r perf-genai-overtime-mig-2}
+# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
 result <- create_timeline(
   data = data,
-  title = "Spot non-AI image",
+  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3470,9 +3558,6 @@ result <- create_timeline(
 
 result
 ```
-
-
-:::
 
 
 :::
