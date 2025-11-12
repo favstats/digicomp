@@ -3449,11 +3449,11 @@ cat("\n=== Visualization Collection Summary ===\n")
 # cat("\n=== Summary Visualizations ===\n")
 # print(summary_vizzes)
 
-# generate_dashboard(dashboard, render = F,  open = "browser")
+# generate_dashboard(dashboard, render = T,  open = "browser")
 
 ## 8.3 Generate Dashboard ----
 # Generate the dashboard
 cat("\n=== Generating Dashboard ===\n")
-generate_dashboard(dashboard, render = F, open = "browser")
+generate_dashboard(dashboard, render = T, open = "browser")
 
 

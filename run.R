@@ -13,21 +13,21 @@ library(dplyr)
 read_lines("qmds/_quarto.yml") %>%
   
   # navbar labels
-  str_replace_all("Dimensies", "Dimensions") %>%
-  str_replace_all("Strategische Informatie", "Strategic Information") %>%
-  str_replace_all("Kritische Informatie", "Critical Information") %>%
-  str_replace_all("Netiquette", "Netiquette") %>%
-  str_replace_all("Digitale Inhoudscreatie", "Digital Content Creation") %>%
-  str_replace_all("Veiligheid", "Safety") %>%
-  str_replace_all("Digitale Gezondheid", "Digital Health") %>%
-  str_replace_all("Groene Digitaal", "Green Digital") %>%
-  str_replace_all("Digitaal Probleemoplossen", "Digital Problem Solving") %>%
-  str_replace_all("Transactioneel", "Transactional") %>%
-  str_replace_all("Vaardigheden", "Skills") %>%
-  str_replace_all("Prestatie", "Performance") %>%
-  str_replace_all("Kennis", "Knowledge") %>%
-  str_replace_all("Hoogtepunten", "Highlights") %>%
-  str_replace_all("Over", "About") %>%
+  # str_replace_all("Dimensies", "Dimensions") %>%
+  # str_replace_all("Strategische Informatie", "Strategic Information") %>%
+  # str_replace_all("Kritische Informatie", "Critical Information") %>%
+  # str_replace_all("Netiquette", "Netiquette") %>%
+  # str_replace_all("Digitale Inhoudscreatie", "Digital Content Creation") %>%
+  # str_replace_all("Veiligheid", "Safety") %>%
+  # str_replace_all("Digitale Gezondheid", "Digital Health") %>%
+  # str_replace_all("Groene Digitaal", "Green Digital") %>%
+  # str_replace_all("Digitaal Probleemoplossen", "Digital Problem Solving") %>%
+  # str_replace_all("Transactioneel", "Transactional") %>%
+  # str_replace_all("Vaardigheden", "Skills") %>%
+  # str_replace_all("Prestatie", "Performance") %>%
+  # str_replace_all("Kennis", "Knowledge") %>%
+  # str_replace_all("Hoogtepunten", "Highlights") %>%
+  # str_replace_all("Over", "About") %>%
   
   # link targets (.qmd)
   str_replace_all("strategische_informatie.qmd", "strategic_information.qmd") %>%
@@ -109,6 +109,8 @@ read_lines("dashboard.R") %>%
   str_replace_all('"nl"', '"en"')  %>% 
   str_replace_all('digicomp', 'digicomp/en') %>% 
   str_replace_all('qmds', 'qmds_en') %>% 
+  str_replace_all('render = F', 'render = T') %>% 
+  
   write_lines("dashboard_en.R")
 
 
