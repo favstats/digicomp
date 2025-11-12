@@ -106,8 +106,8 @@ quarto::quarto_render("qmds", as_job = F)
 read_lines("dashboard.R") %>% 
   str_replace_all("\\.\\./docs", "../docs/en") %>% 
   str_replace_all("circle-flags:uk", "circle-flags:lang-nl") %>% 
-  str_replace_all('"nl"', '"en"')  %>% 
-  str_replace_all('digicomp', 'digicomp/en') %>% 
+  # str_replace_all('"nl"', '"en"')  %>% 
+  str_replace_all('digicomp/en', 'digicomp') %>% 
   str_replace_all('qmds', 'qmds_en') %>% 
   str_replace_all('render = F', 'render = T') %>% 
   

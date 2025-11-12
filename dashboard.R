@@ -20,6 +20,12 @@ if(!exists("lang")){
   lang <- "en"
 }
 
+
+change_lang <- function(lang) {
+  if(lang == "nl") return("en")
+  if(lang == "en") return("nl")
+}
+
 # 1. SETUP & CONFIGURATION =====================================================
 
 ## TODO check if the recoding is actually correct please
@@ -3432,12 +3438,13 @@ dashboard <- create_dashboard(
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text
   add_navbar_element(
-    text = "nl",
+    text = change_lang(lang),
     icon = "circle-flags:uk",
     # circle-flags:uk
-    href = "https://favstats.github.io/digicomp",
+    href = "https://favstats.github.io/digicomp/en",
     align = "right"
   )  
+
 
 # Test the print methods
 cat("=== Dashboard Project Summary ===\n")
