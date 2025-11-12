@@ -19,11 +19,17 @@
 
 (function() {
   'use strict';
+
+  // Simple check to ensure script is loaded
+  console.log('dashboardr modal.js loaded successfully');
   
   // Initialize modals
   function initializeModals() {
+    console.log('Initializing dashboardr modals...');
+
     // Prevent duplicate initialization
     if (document.getElementById('dashboardr-modal-overlay')) {
+      console.log('Modal overlay already exists, skipping initialization');
       return;
     }
     
@@ -50,7 +56,14 @@
     modalContainer.appendChild(modalClose);
     modalContainer.appendChild(modalBody);
     modalOverlay.appendChild(modalContainer);
-    document.body.appendChild(modalOverlay);
+
+    // Ensure document.body exists before appending
+    if (document.body) {
+      document.body.appendChild(modalOverlay);
+      console.log('Modal overlay created and appended to document.body:', modalOverlay);
+    } else {
+      console.error('document.body not available, cannot append modal overlay');
+    }
     
     // Close modal function
     function closeModal() {
@@ -61,20 +74,34 @@
     
     // Open modal function
     function openModal(contentId) {
+      console.log('Attempting to open modal:', contentId);
+
       const content = document.getElementById(contentId);
       if (!content) {
         console.error('Modal content not found: ' + contentId);
         return;
       }
-      
+
+      console.log('Found modal content:', content);
+
       // Clone the content to avoid moving it from its original location
       const clonedContent = content.cloneNode(true);
       clonedContent.style.display = 'block';
-      
+
       modalBody.innerHTML = '';
       modalBody.appendChild(clonedContent);
       modalOverlay.style.display = 'flex';
+      modalOverlay.style.zIndex = '100000';
       document.body.style.overflow = 'hidden';
+
+      console.log('Modal should now be visible');
+      console.log('Modal overlay display:', window.getComputedStyle(modalOverlay).display);
+      console.log('Modal overlay z-index:', window.getComputedStyle(modalOverlay).zIndex);
+      console.log('Modal overlay visibility:', window.getComputedStyle(modalOverlay).visibility);
+      console.log('Modal container display:', window.getComputedStyle(modalContainer).display);
+      console.log('Modal container visibility:', window.getComputedStyle(modalContainer).visibility);
+      console.log('Modal body display:', window.getComputedStyle(modalBody).display);
+      console.log('Modal body content length:', modalBody.innerHTML.length);
     }
     
     // Event listeners for closing
@@ -96,26 +123,40 @@
     document.addEventListener('click', function(e) {
       const link = e.target.closest('a');
       if (!link) return;
-      
+
+      console.log('Click detected on link:', link);
+
       // Check for data-modal attribute first
       const dataModal = link.getAttribute('data-modal');
       if (dataModal) {
+        console.log('Found data-modal attribute:', dataModal);
         e.preventDefault();
         openModal(dataModal);
         return;
       }
-      
+
       // Check if link has modal-link class
       if (link.classList.contains('modal-link')) {
+        console.log('Link has modal-link class');
         const href = link.getAttribute('href');
         if (href && href.startsWith('#')) {
           const modalId = href.substring(1); // Remove the '#'
+          console.log('Modal ID from href:', modalId);
           const modalContent = document.getElementById(modalId);
-          
+
           // Only open if there's a matching modal-content div
           if (modalContent && modalContent.classList.contains('modal-content')) {
+            console.log('Found matching modal content:', modalContent);
+            console.log('Modal content classes:', modalContent.className);
+            console.log('Modal content display:', window.getComputedStyle(modalContent).display);
             e.preventDefault();
             openModal(modalId);
+          } else {
+            console.log('No matching modal content found for ID:', modalId);
+            console.log('modalContent element:', modalContent);
+            if (modalContent) {
+              console.log('modalContent classes:', modalContent.className);
+            }
           }
         }
       }
@@ -131,6 +172,12 @@
     // DOM is already loaded, initialize immediately
     initializeModals();
   }
+
+  // Also initialize on window load as a fallback
+  window.addEventListener('load', function() {
+    console.log('Window loaded, ensuring modals are initialized...');
+    initializeModals();
+  });
   
 })();
 

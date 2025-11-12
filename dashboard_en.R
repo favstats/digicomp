@@ -2332,9 +2332,7 @@ perf_dccs_tex_link <- md_text(
   paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)"),
-  "",
-  # ADD MODAL TRIGGER LINK - this is what was missing!
-  paste0("[{{< iconify ph:info-circle >}} ", transl("modal_title_dccs", lang), "](#PDCCS1R){.modal-link}")
+  ""
 ) 
 
 
@@ -3167,7 +3165,7 @@ dashboard <- create_dashboard(
   code_overflow = "wrap",        # ← From your original
   html_math_method = "mathjax",  # ← From your original
   #### Navbar settings
-  navbar_sections = list(dimensions_menu),  # Just pass the menus!
+  # navbar_sections = list(dimensions_menu),  # Just pass the menus!
   navbar_style = "dark",
   navbar_brand = "Digital Competence Insights Dashboard",
   navbar_toggle = "collapse",
@@ -3211,19 +3209,19 @@ dashboard <- create_dashboard(
     is_landing_page = TRUE
   ) %>%
   # Analysis page with data and visualizations
-  add_page(
-    overlay = T,
-    overlay_duration = 1,
-    name = transl("page_name_skills", lang),
-    data = digicom_data,
-    visualizations = skills_viz,
-    icon = "ph:lightning-fill",
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("page_text_skills", lang)
-    )
-  ) %>%
+  # add_page(
+  #   overlay = T,
+  #   overlay_duration = 1,
+  #   name = transl("page_name_skills", lang),
+  #   data = digicom_data,
+  #   visualizations = skills_viz,
+  #   icon = "ph:lightning-fill",
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("page_text_skills", lang)
+  #   )
+  # ) %>%
   add_page(
     overlay = T,
     overlay_duration = 1,
@@ -3238,170 +3236,170 @@ dashboard <- create_dashboard(
     )
   ) %>%
   # Analysis page with data and visualizations
-  add_page(
-    overlay = T,
-    overlay_duration = 1,
-    name = transl("page_name_knowledge", lang),
-    data = digicom_data,
-    visualizations = knowledge_collection,
-    icon = "ph:book-open-fill",
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("page_text_knowledge", lang)
-    )
-  ) %>%
-  # Analysis page with data and visualizations
-  add_page(
-    name = transl("page_name_highlights", lang),
-    data = digicom_data,
-    icon = "ph:star-fill", 
-    # visualizations = genai_viz,
-    text = md_text(
-      "<div style='text-align: justify;'>",
-      paste0("### ", transl("highlights_wave1_title", lang)),
-      transl("highlights_intro", lang),
-      "",
-      transl("key_finding_1", lang),
-      "",
-      transl("key_finding_2", lang),
-      "",
-      transl("key_finding_3", lang),
-      "</div>"
-    )
-  )%>%
-  # Analysis page with data and visualizations
-  add_page(
-    name = transl("page_name_strategic_info", lang),
-    icon = "ph:magnifying-glass",
-    data = digicom_data,
-    visualizations = strategic_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("strategic_info_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_critical_info", lang),
-    icon = "ph:detective-fill",
-    data = digicom_data,
-    visualizations = critical_info_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("critical_info_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_netiquette", lang),
-    icon = "ph:chats-fill",
-    data = digicom_data,
-    visualizations = netiquette_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("netiquette_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_content_creation", lang),
-    icon = "ph:palette-fill",
-    data = digicom_data,
-    visualizations = content_creation_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("content_creation_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_safety", lang),
-    icon = "ph:shield-check-fill",
-    data = digicom_data,
-    visualizations = safety_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("safety_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_digital_health", lang),
-    icon = "ph:heart-fill",
-    data = digicom_data,
-    visualizations = health_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("digital_health_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_green", lang),
-    icon = "ph:recycle-fill",
-    data = digicom_data,
-    visualizations = green_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("green_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_problem_solving", lang),
-    icon = "ph:lightbulb-fill",
-    data = digicom_data,
-    visualizations = problem_solving_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("problem_solving_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_transactional", lang),
-    icon = "ph:wallet-fill",
-    data = digicom_data,
-    visualizations = transactional_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("transactional_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_ai", lang),
-    icon = "ph:robot-fill",
-    data = digicom_data,
-    visualizations = ai_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("ai_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_genai", lang),
-    icon = "ph:magic-wand-fill",
-    data = digicom_data,
-    visualizations = genai_combined_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("genai_description", lang)
-    )
-  ) %>% 
+  # add_page(
+  #   overlay = T,
+  #   overlay_duration = 1,
+  #   name = transl("page_name_knowledge", lang),
+  #   data = digicom_data,
+  #   visualizations = knowledge_collection,
+  #   icon = "ph:book-open-fill",
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("page_text_knowledge", lang)
+  #   )
+  # ) %>%
+  # # Analysis page with data and visualizations
+  # add_page(
+  #   name = transl("page_name_highlights", lang),
+  #   data = digicom_data,
+  #   icon = "ph:star-fill", 
+  #   # visualizations = genai_viz,
+  #   text = md_text(
+  #     "<div style='text-align: justify;'>",
+  #     paste0("### ", transl("highlights_wave1_title", lang)),
+  #     transl("highlights_intro", lang),
+  #     "",
+  #     transl("key_finding_1", lang),
+  #     "",
+  #     transl("key_finding_2", lang),
+  #     "",
+  #     transl("key_finding_3", lang),
+  #     "</div>"
+  #   )
+  # )%>%
+  # # Analysis page with data and visualizations
+  # add_page(
+  #   name = transl("page_name_strategic_info", lang),
+  #   icon = "ph:magnifying-glass",
+  #   data = digicom_data,
+  #   visualizations = strategic_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("strategic_info_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_critical_info", lang),
+  #   icon = "ph:detective-fill",
+  #   data = digicom_data,
+  #   visualizations = critical_info_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("critical_info_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_netiquette", lang),
+  #   icon = "ph:chats-fill",
+  #   data = digicom_data,
+  #   visualizations = netiquette_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("netiquette_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_content_creation", lang),
+  #   icon = "ph:palette-fill",
+  #   data = digicom_data,
+  #   visualizations = content_creation_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("content_creation_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_safety", lang),
+  #   icon = "ph:shield-check-fill",
+  #   data = digicom_data,
+  #   visualizations = safety_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("safety_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_digital_health", lang),
+  #   icon = "ph:heart-fill",
+  #   data = digicom_data,
+  #   visualizations = health_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("digital_health_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_green", lang),
+  #   icon = "ph:recycle-fill",
+  #   data = digicom_data,
+  #   visualizations = green_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("green_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_problem_solving", lang),
+  #   icon = "ph:lightbulb-fill",
+  #   data = digicom_data,
+  #   visualizations = problem_solving_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("problem_solving_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_transactional", lang),
+  #   icon = "ph:wallet-fill",
+  #   data = digicom_data,
+  #   visualizations = transactional_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("transactional_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_ai", lang),
+  #   icon = "ph:robot-fill",
+  #   data = digicom_data,
+  #   visualizations = ai_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("ai_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_genai", lang),
+  #   icon = "ph:magic-wand-fill",
+  #   data = digicom_data,
+  #   visualizations = genai_combined_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("genai_description", lang)
+  #   )
+  # ) %>% 
   # Text-only page with icon showcasing card function
   add_page(
     name = transl("page_name_about", lang), 
