@@ -216,6 +216,8 @@ digicom_data <- data %>%
 
 std.error <- function(x) sd(x, na.rm =T)/sqrt(length(x))
 
+# digicom_data %>% count(MigrationBackground, wave)
+
 # 2. HELPER FUNCTIONS & DATA PREPARATION =======================================
 
 education_levels <- c("Primary (basisonderwijs)", 
@@ -352,7 +354,9 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   ) |>
     add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 1") |>       # Pass tbgrp AND "age"
     add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>   # Pass tbgrp AND "gender"
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")        # Pass tbgrp AND "edu"
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>   # Pass tbgrp AND "gender"
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")        # Pass tbgrp AND "edu"
+  # Pass tbgrp AND "edu"
   
   # Wave 2 by Age/Gender/Education
   sis_subvizzes2 <- create_viz(
@@ -370,7 +374,8 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   ) |>
     add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 2") |>
     add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 2") |>
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 2")
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 2")|>
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 2")
   
   # Over Time by Age/Gender/Education
   sis_subvizzes3 <- create_viz(
@@ -388,7 +393,8 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   ) |>
     add_all_viz_timeline(vs, "AgeGroup", tbgrp, "age", wave_label = "Over Time", questions = qs) |>
     add_all_viz_timeline(vs, "geslacht", tbgrp, "gender", wave_label = "Over Time", questions = qs) |>
-    add_all_viz_timeline(vs, "Education", tbgrp, "edu", wave_label = "Over Time", questions = qs)
+    add_all_viz_timeline(vs, "Education", tbgrp, "edu", wave_label = "Over Time", questions = qs)|>
+    add_all_viz_timeline(vs, "MigrationBackground", tbgrp, "mig", wave_label = "Over Time", questions = qs)
   
   # Combine all
   sis_viz %>% 
@@ -470,7 +476,8 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   ) |>
     add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 1") |>       # Pass tbgrp AND "age"
     add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>   # Pass tbgrp AND "gender"
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")        # Pass tbgrp AND "edu"
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>   # Pass tbgrp AND "gender"
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")         # Pass tbgrp AND "edu"
   
   # Wave 2 by Age/Gender/Education
   sis_subvizzes2 <- create_viz(
@@ -488,7 +495,8 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   ) |>
     add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 2") |>
     add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 2") |>
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 2")
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 2")|>
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 2")
   
   # Over Time by Age/Gender/Education
   sis_subvizzes3 <- create_viz(
@@ -506,7 +514,8 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   ) |>
     add_all_viz_timeline(vs, "AgeGroup", tbgrp, "age", wave_label = "Over Time", questions = qs) |>
     add_all_viz_timeline(vs, "geslacht", tbgrp, "gender", wave_label = "Over Time", questions = qs) |>
-    add_all_viz_timeline(vs, "Education", tbgrp, "edu", wave_label = "Over Time", questions = qs)
+    add_all_viz_timeline(vs, "Education", tbgrp, "edu", wave_label = "Over Time", questions = qs)|>
+    add_all_viz_timeline(vs, "MigrationBackground", tbgrp, "mig", wave_label = "Over Time", questions = qs)
   
   # Combine all
   sis_viz %>% 
@@ -599,6 +608,12 @@ knowledge_subvizzes_wave1 <- create_viz(
     x_var = "Education",
     stack_var = vs,
     tabgroup = "knowledge/wave1/edu"
+  ) |>
+  add_viz(
+    title = qs,
+    x_var = "MigrationBackground",
+    stack_var = vs,
+    tabgroup = "knowledge/wave1/mig"
   )
 
 # Wave 2 by demographics
@@ -631,6 +646,12 @@ knowledge_subvizzes_wave2 <- create_viz(
     x_var = "Education",
     stack_var = vs,
     tabgroup = "knowledge/wave2/edu"
+  ) |>
+  add_viz(
+    title = qs,
+    x_var = "MigrationBackground",
+    stack_var = vs,
+    tabgroup = "knowledge/wave2/mig"
   )
 
 # Over Time - Overall (timeline without group_var)
@@ -674,6 +695,10 @@ knowledge_overtime_demographics <- create_viz(
   add_viz(
     group_var = "Education",
     tabgroup = "knowledge/overtime/edu"
+  ) |>
+  add_viz(
+    group_var = "MigrationBackground",
+    tabgroup = "knowledge/overtime/mig"
   )
 
 # Combine all
@@ -1294,6 +1319,7 @@ knowledge_collection <- #knowledge_viz %>%
     gender = "{{< iconify mdi gender-transgender >}} Gender",
     edu    = "{{< iconify ph graduation-cap-fill >}} Education",
     overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1",
     wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
     overall = "{{< iconify ph users-fill >}} Overall",
@@ -1797,6 +1823,7 @@ skills_viz <- sis_viz %>%
     age    = "{{< iconify mdi:human-male-male-child >}} Age",
     gender = "{{< iconify mdi gender-transgender >}} Gender",
     edu    = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
     overall = "{{< iconify ph users-fill >}} Overall",
     item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
@@ -2491,6 +2518,7 @@ performance_collection <- perf_sis_viz %>%
     age    = "{{< iconify mdi:human-male-male-child >}} Age",
     gender = "{{< iconify mdi gender-transgender >}} Gender",
     edu    = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
     overall = "{{< iconify ph users-fill >}} Overall",
     item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
@@ -2535,6 +2563,7 @@ strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_
     gender = "{{< iconify mdi gender-transgender >}} Gender",
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
     item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
@@ -2552,6 +2581,7 @@ critical_info_visualizations <- (cis_viz_wo_link + critinfo_viz_wo_link + perf_c
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2569,6 +2599,7 @@ netiquette_visualizations <- (nskills_viz_wo_link + knet_viz_wo_link) %>%
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2589,6 +2620,7 @@ content_creation_visualizations <- (dccs_viz_wo_link + kcrea_viz_wo_link + perf_
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
     item2 = "{{< iconify ph chat-circle-fill >}} Question 2", 
@@ -2607,6 +2639,7 @@ safety_visualizations <- (safety_viz_wo_link + ksafety_viz_wo_link + perf_safety
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2631,6 +2664,7 @@ health_visualizations <- (dhealth_viz_wo_link + khealth_viz_wo_link + perf_healt
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2653,6 +2687,7 @@ green_visualizations <- (green_viz_wo_link + kgreen_viz_wo_link + perf_green_viz
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2675,6 +2710,7 @@ problem_solving_visualizations <- (dprob_viz_wo_link + perf_ps_viz_wo_link) %>%
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2699,6 +2735,7 @@ transactional_visualizations <- (trans_viz_wo_link + ktrans_viz_wo_link + perf_t
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2719,6 +2756,7 @@ ai_visualizations <- (ai_viz_wo_link + kai_viz_wo_link + perf_ai_viz_wo_link) %>
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2743,6 +2781,7 @@ genai_combined_visualizations <- (genai_viz_wo_link + kgai_viz_wo_link + perf_ge
     age = "{{< iconify mdi:human-male-male-child >}} Age", 
     gender = "{{< iconify mdi gender-transgender >}} Gender", 
     edu = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime = "{{< iconify ph chart-line-fill >}} Over Time", 
     overall = "{{< iconify ph users-fill >}} Overall",
     item1 = "{{< iconify ph chat-circle-fill >}} Question 1", 
@@ -2775,6 +2814,7 @@ strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_
     age    = "{{< iconify mdi:human-male-male-child >}} Age",
     gender = "{{< iconify mdi gender-transgender >}} Gender",
     edu    = "{{< iconify ph graduation-cap-fill >}} Education",
+    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
     overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
     overall = "{{< iconify ph users-fill >}} Overall",
     item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
@@ -2848,7 +2888,7 @@ dashboard <- create_dashboard(
       "",
       "By using multiple surveys at different times with different samples, we can gain a clear picture of the current state of digital competence among Dutch people, whether it is changing, and which groups of people are most vulnerable online.",
       "",
-      "{{< iconify ph chart-bar-fill >}} This dashboard allows you to examine general trends in digital skills, knowledge, and performance for each of the 11 dimensions, with the option to differentiate by age, gender, and education level.",
+      "{{< iconify ph chart-bar-fill >}} This dashboard allows you to examine general trends in digital skills, knowledge, and performance for each of the 11 dimensions, with the option to differentiate by age, gender, education level, and migration background.",
       "",
       "More information about DigIQ2.0 can be found at [https://osf.io/dfvqb/overview](https://osf.io/dfvqb/overview).",
       "",
@@ -3131,7 +3171,7 @@ cat("\n=== Generating Dashboard ===\n")
 generate_dashboard(dashboard, render = T, open = "browser")
 
 
-
-gert::git_add(".")
-gert::git_commit("update")
-gert::git_push()
+# 
+# gert::git_add(".")
+# gert::git_commit("update")
+# gert::git_push()

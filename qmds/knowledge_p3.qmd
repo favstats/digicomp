@@ -318,6 +318,62 @@ result
 :::
 
 
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave1-mig-item1}
+# In case of a medical emergency, you make an online appointment with your healthcare provider.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, Ktrans2RC),
+  title = "In case of a medical emergency, you make an online appointment with your healthcare provider.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave1-mig-item2}
+# A webshop is trustworthy when you can pay with iDeal
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, Ktrans3RC),
+  title = "A webshop is trustworthy when you can pay with iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
 :::
 
 
@@ -510,6 +566,62 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave2-mig-item1}
+# In case of a medical emergency, you make an online appointment with your healthcare provider.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, Ktrans2RC),
+  title = "In case of a medical emergency, you make an online appointment with your healthcare provider.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave2-mig-item2}
+# A webshop is trustworthy when you can pay with iDeal
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, Ktrans3RC),
+  title = "A webshop is trustworthy when you can pay with iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
   stack_var = "Ktrans3RC"
 )
 
@@ -759,6 +871,66 @@ result <- create_timeline(
   weight_var = "weging_GAMO",
   response_var = "Ktrans3RC",
   group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-overtime-mig-item1}
+# In case of a medical emergency, you make an online appointment with your healthcare provider.
+result <- create_timeline(
+  data = data,
+  title = "In case of a medical emergency, you make an online appointment with your healthcare provider.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-overtime-mig-item2}
+# A webshop is trustworthy when you can pay with iDeal
+result <- create_timeline(
+  data = data,
+  title = "A webshop is trustworthy when you can pay with iDeal",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans3RC",
+  group_var = "MigrationBackground"
 )
 
 result
@@ -1129,6 +1301,110 @@ result
 :::
 
 
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-mig-item1}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-mig-item2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-mig-item3}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-mig-item4}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
 :::
 
 
@@ -1465,6 +1741,110 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-mig-item1}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI1RC),
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-mig-item2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI2RC),
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-mig-item3}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI3RC),
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-mig-item4}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI4RC),
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
   stack_var = "KAI4RC"
 )
 
@@ -1931,6 +2311,118 @@ result
 :::
 
 
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-mig-item1}
+# Some websites and apps for news and entertainment use artificial intelligence (AI).
+result <- create_timeline(
+  data = data,
+  title = "Some websites and apps for news and entertainment use artificial intelligence (AI).",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-mig-item2}
+# Websites and apps for news and entertainment show the same content to everyone.
+result <- create_timeline(
+  data = data,
+  title = "Websites and apps for news and entertainment show the same content to everyone.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-mig-item3}
+# Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.
+result <- create_timeline(
+  data = data,
+  title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-mig-item4}
+# Your online behavior determines what is shown to you on websites and apps for news and entertainment.
+result <- create_timeline(
+  data = data,
+  title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
 :::
 
 
@@ -2364,6 +2856,134 @@ result
 :::
 
 
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave1-mig-item1}
+# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI1RC),
+  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave1-mig-item2}
+# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI2RC),
+  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave1-mig-item3}
+# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI3RC),
+  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave1-mig-item4}
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI4RC),
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave1-mig-item5}
+# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI5RC),
+  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
 :::
 
 
@@ -2772,6 +3392,134 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave2-mig-item1}
+# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI1RC),
+  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave2-mig-item2}
+# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI2RC),
+  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave2-mig-item3}
+# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI3RC),
+  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave2-mig-item4}
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI4RC),
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave2-mig-item5}
+# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI5RC),
+  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
   stack_var = "KGAI5RC"
 )
 
@@ -3333,6 +4081,144 @@ result <- create_timeline(
   weight_var = "weging_GAMO",
   response_var = "KGAI5RC",
   group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-overtime-mig-item1}
+# Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.
+result <- create_timeline(
+  data = data,
+  title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI1RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-overtime-mig-item2}
+# The usage of GenAI, such as ChatGPT, has almost no impact on the environment.
+result <- create_timeline(
+  data = data,
+  title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-overtime-mig-item3}
+# Someone else can also get access to the information you give to GenAI, such as ChatGPT.
+result <- create_timeline(
+  data = data,
+  title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-overtime-mig-item4}
+# People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').
+result <- create_timeline(
+  data = data,
+  title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes').",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI4RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-overtime-mig-item5}
+# GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.
+result <- create_timeline(
+  data = data,
+  title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI5RC",
+  group_var = "MigrationBackground"
 )
 
 result
