@@ -45,10 +45,6 @@ read_lines("qmds/_quarto.yml") %>%
   str_replace_all("hoogtepunten.qmd", "highlights.qmd") %>%
   str_replace_all("over.qmd", "about.qmd") %>%
   
-  # language switcher text (right side)
-  str_replace_all("\\{\\{< iconify circle-flags uk >\\}\\} nl",
-                  "{{< iconify circle-flags uk >}} en") %>%
-  
   write_lines("qmds/_quarto.yml")
 
 

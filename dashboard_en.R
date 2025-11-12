@@ -2325,7 +2325,10 @@ perf_dccs_tex_link <- md_text(
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
   paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
   "```",
-  paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)")
+  paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)"),
+  "",
+  # ADD MODAL TRIGGER LINK - this is what was missing!
+  paste0("[{{< iconify ph:info-circle >}} ", transl("modal_title_dccs", lang), "](#PDCCS1R){.modal-link}")
 ) 
 
 
@@ -2353,7 +2356,10 @@ perf_dccs_tex_wo_link <- md_text(
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
   paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
-  "```"
+  "```",
+  "",
+  # ADD MODAL TRIGGER LINK - this is what was missing!
+  paste0("[{{< iconify ph:info-circle >}} ", transl("modal_title_dccs", lang), "](#PDCCS1R){.modal-link}")
 ) 
 
 perf_dccs_viz_wo_link <- create_vizzes2(
