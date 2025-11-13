@@ -113,7 +113,7 @@ read_lines("dashboard.R") %>%
   
   write_lines("dashboard_en.R")
 
-# dir("qmds")
+
 
 
 # run English

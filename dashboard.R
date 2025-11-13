@@ -31,7 +31,8 @@ if(!exists("lang")){
 ## TODO mix between text and graphs needs to be possible!
 ## TODO: Knowledge question seem perhaps incorrect and are missing sometimes across waves
 
-the_colors <- c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD")
+# the_colors <- c("#F5D76E", "#E28D50", "#3D7271", "#C7E6D5", "#0F6B5A", "#BABACD")
+the_colors <- c("#3D7271",  "#E28D50",  "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD")
 
 recode_survey <- function(df) {
   
@@ -250,8 +251,8 @@ digicom_data <- data %>%
   )) %>% 
   mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>% 
   mutate(MigrationBackground = case_when(
-    MigrationBackground == "Yes" ~ transl("label_yes", lang),
-    MigrationBackground == "No" ~ transl("label_no", lang),
+    MigrationBackground == "yes" ~ transl("label_yes", lang),
+    MigrationBackground == "no" ~ transl("label_no", lang),
     T ~ MigrationBackground
   ))
 
@@ -395,7 +396,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     text_before_tabset = text_b_tabset,
     stack_breaks = breaks,
     stack_bin_labels = lbs,
-    stack_order = lbs,
+    stack_order = rev(lbs),
     drop_na_vars = T,
     stack_label = NULL,
     weight_var = "weging_GAMO"
@@ -441,7 +442,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_breaks = breaks,
     stack_bin_labels = lbs,
     text_before_tabset = text_b_tabset,
-    stack_order = lbs,
+    stack_order = rev(lbs),
     filter = ~ wave == 1,
     drop_na_vars = T,
     color_palette = colors,
@@ -460,7 +461,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     horizontal = T,
     stack_breaks = breaks,
     stack_bin_labels = lbs,
-    stack_order = lbs,
+    stack_order = rev(lbs),
     text_before_tabset = text_b_tabset,
     filter = ~ wave == 2,
     drop_na_vars = T,
@@ -621,6 +622,132 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     combine_viz(sis_subvizzes2) %>%
     combine_viz(sis_subvizzes3)
 }
+
+
+
+create_vizzes3 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
+                           colors = the_colors, 
+                           tbgrp, graph_title, high_values = 1, map_values, 
+                           text_b_tabset = "ADD TEXT BEFORE TABSET", 
+                           aggr_lab = transl("label_percentage_correct", lang),
+                           lang = "en") {
+  
+  # Wave 1 & 2 Overall (stackedbars)
+  sis_viz <- create_viz(
+    type = "stackedbars",
+    questions = vs,
+    question_labels = qs,
+    stacked_type = "percent",
+    color_palette = colors,
+    horizontal = TRUE,
+    x_label = "",
+    stack_breaks = breaks,
+    stack_bin_labels = lbs,
+    stack_map_values = map_values,
+    stack_order = rev(lbs),
+    text = "", 
+    text_before_tabset = text_b_tabset,
+    drop_na_vars = T,
+    stack_label = NULL,
+    weight_var = "weging_GAMO"
+  ) %>%
+    add_viz(
+      title = graph_title, 
+      title_tabset = "Wave 1",
+      filter = ~ wave == 1,
+      icon = "ph:chart-bar",
+      tabgroup = glue::glue("{tbgrp}/wave1/overall")
+    ) %>%
+    add_viz(
+      title = graph_title, 
+      title_tabset = "Wave 2",
+      filter = ~ wave == 2,
+      icon = "ph:chart-bar",
+      tabgroup = glue::glue("{tbgrp}/wave2/overall")
+    )
+  
+  # Over Time Overall (timeline without group_var)
+  sis_subvizzes_time <- create_viz(
+    type = "timeline",
+    time_var = "wave_time_label",
+    chart_type = "line",
+    response_filter = high_values, 
+    y_min = 0,
+    y_max = 100,
+    response_filter_label = aggr_lab,
+    response_filter_combine = T,
+    x_label = "", 
+    y_label = aggr_lab,
+    color_palette = the_colors,
+    weight_var = "weging_GAMO"
+  ) |>
+    add_all_viz_timeline_single(vs, tbgrp, "overall", wave_label = "Over Time", questions = qs)  # Pass tbgrp!
+  
+  # Wave 1 by Age/Gender/Education
+  sis_subvizzes <- create_viz(
+    type = "stackedbar",
+    stacked_type = "percent",
+    horizontal = T,
+    stack_breaks = breaks,
+    stack_bin_labels = lbs,
+    stack_map_values = map_values,
+    stack_order = rev(lbs),
+    filter = ~ wave == 1,
+    drop_na_vars = T,
+    color_palette = colors,
+    weight_var = "weging_GAMO"
+  ) |>
+    add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 1") |>       # Pass tbgrp AND "age"
+    add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")         # Pass tbgrp AND "edu"
+  
+  # Wave 2 by Age/Gender/Education
+  sis_subvizzes2 <- create_viz(
+    type = "stackedbar",
+    stacked_type = "percent",
+    horizontal = T,
+    stack_breaks = breaks,
+    stack_bin_labels = lbs,
+    stack_map_values = map_values,
+    stack_order = rev(lbs),
+    filter = ~ wave == 2,
+    drop_na_vars = T,
+    color_palette = colors,
+    weight_var = "weging_GAMO"
+  ) |>
+    add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 2") |>
+    add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 2") |>
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 2")|>
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 2")
+  
+  # Over Time by Age/Gender/Education
+  sis_subvizzes3 <- create_viz(
+    type = "timeline",
+    time_var = "wave_time_label",
+    chart_type = "line",
+    response_filter = high_values, 
+    y_min = 0,
+    y_max = 100,
+    x_label = "", 
+    y_label = aggr_lab,
+    color_palette = the_colors,
+    response_filter_label = NULL,
+    weight_var = "weging_GAMO"
+  ) |>
+    add_all_viz_timeline(vs, "AgeGroup", tbgrp, "age", wave_label = "Over Time", questions = qs) |>
+    add_all_viz_timeline(vs, "geslacht", tbgrp, "gender", wave_label = "Over Time", questions = qs) |>
+    add_all_viz_timeline(vs, "Education", tbgrp, "edu", wave_label = "Over Time", questions = qs)|>
+    add_all_viz_timeline(vs, "MigrationBackground", tbgrp, "mig", wave_label = "Over Time", questions = qs)
+  
+  # Combine all
+  sis_viz %>% 
+    combine_viz(sis_subvizzes_time) %>%
+    combine_viz(sis_subvizzes) %>%
+    combine_viz(sis_subvizzes2) %>%
+    combine_viz(sis_subvizzes3)
+}
+
 
 # 3. KNOWLEDGE VISUALIZATIONS ==================================================
 
@@ -1473,7 +1600,7 @@ sis_labs <- c(
   transl("scale_completely_untrue", lang), 
   transl("scale_neither", lang), 
   transl("scale_completely_true", lang)
-)
+) #%>% rev()
 
 sis_info_text <- transl("strategic_info_description", lang)
 
@@ -2255,7 +2382,7 @@ perf_sis_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_strategic", lang), "](strategic_information.html)")
 )
 
-perf_sis_viz <- create_vizzes2(
+perf_sis_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_sis_questions,
   perf_sis_vars,
@@ -2276,7 +2403,7 @@ perf_sis_tex_wo_link <- md_text(
   "```"
 )
 
-perf_sis_viz_wo_link <- create_vizzes2(
+perf_sis_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_sis_questions,
   perf_sis_vars,
@@ -2309,7 +2436,7 @@ perf_cis_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_critical", lang), "](critical_information.html)")
 )
 
-perf_cis_viz <- create_vizzes2(
+perf_cis_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_cis_questions,
   perf_cis_vars,
@@ -2330,7 +2457,7 @@ perf_cis_tex_wo_link <- md_text(
   "```"
 )
 
-perf_cis_viz_wo_link <- create_vizzes2(
+perf_cis_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_cis_questions,
   perf_cis_vars,
@@ -2360,7 +2487,7 @@ perf_n_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_netiquette", lang), "](netiquette.html)")
 )
 
-perf_netiquette_viz <- create_vizzes2(
+perf_netiquette_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_n_questions,
   perf_n_vars,
@@ -2381,7 +2508,7 @@ perf_n_tex_wo_link <- md_text(
   "```"
 )
 
-perf_netiquette_viz_wo_link <- create_vizzes2(
+perf_netiquette_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_n_questions,
   perf_n_vars,
@@ -2414,7 +2541,7 @@ perf_dccs_tex_link <- md_text(
 ) 
 
 
-perf_dccs_viz <- create_vizzes2(
+perf_dccs_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_dccs_questions,
   perf_dccs_vars,
@@ -2443,7 +2570,7 @@ perf_dccs_tex_wo_link <- md_text(
   "```"
 ) 
 
-perf_dccs_viz_wo_link <- create_vizzes2(
+perf_dccs_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_dccs_questions,
   perf_dccs_vars,
@@ -2497,7 +2624,7 @@ perf_safety_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_safety", lang), "](safety.html)")
 )
 
-perf_safety_viz <- create_vizzes2(
+perf_safety_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_safety_questions,
   perf_safety_vars,
@@ -2518,7 +2645,7 @@ perf_safety_tex_wo_link <- md_text(
   "```"
 )
 
-perf_safety_viz_wo_link <- create_vizzes2(
+perf_safety_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_safety_questions,
   perf_safety_vars,
@@ -2559,7 +2686,7 @@ perf_health_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_digital_health", lang), "](digital_health.html)")
 )
 
-perf_health_viz <- create_vizzes2(
+perf_health_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_health_questions,
   perf_health_vars,
@@ -2580,7 +2707,7 @@ perf_health_tex_wo_link <- md_text(
   "```"
 )
 
-perf_health_viz_wo_link <- create_vizzes2(
+perf_health_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_health_questions,
   perf_health_vars,
@@ -2622,7 +2749,7 @@ perf_green_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_green", lang), "](green_digital.html)")
 )
 
-perf_green_viz <- create_vizzes2(
+perf_green_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_green_questions,
   perf_green_vars,
@@ -2643,7 +2770,7 @@ perf_green_tex_wo_link <- md_text(
   "```"
 )
 
-perf_green_viz_wo_link <- create_vizzes2(
+perf_green_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_green_questions,
   perf_green_vars,
@@ -2685,7 +2812,7 @@ perf_ps_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_problem_solving", lang), "](digital_problem_solving.html)")
 )
 
-perf_ps_viz <- create_vizzes2(
+perf_ps_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_ps_questions,
   perf_ps_vars,
@@ -2706,7 +2833,7 @@ perf_ps_tex_wo_link <- md_text(
   "```"
 )
 
-perf_ps_viz_wo_link <- create_vizzes2(
+perf_ps_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_ps_questions,
   perf_ps_vars,
@@ -2737,7 +2864,7 @@ perf_trans_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_transactional", lang), "](transactional.html)")
 )
 
-perf_trans_viz <- create_vizzes2(
+perf_trans_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_trans_questions,
   perf_trans_vars,
@@ -2758,7 +2885,7 @@ perf_trans_tex_wo_link <- md_text(
   "```"
 )
 
-perf_trans_viz_wo_link <- create_vizzes2(
+perf_trans_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_trans_questions,
   perf_trans_vars,
@@ -2800,7 +2927,7 @@ perf_ai_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_ai", lang), "](ai.html)")
 )
 
-perf_ai_viz <- create_vizzes2(
+perf_ai_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_ai_questions,
   perf_ai_vars,
@@ -2821,7 +2948,7 @@ perf_ai_tex_wo_link <- md_text(
   "```"
 )
 
-perf_ai_viz_wo_link <- create_vizzes2(
+perf_ai_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_ai_questions,
   perf_ai_vars,
@@ -2852,7 +2979,7 @@ perf_genai_tex_link <- md_text(
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_genai", lang), "](gen_ai.html)")
 )
 
-perf_genai_viz <- create_vizzes2(
+perf_genai_viz <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_genai_questions,
   perf_genai_vars,
@@ -2874,7 +3001,7 @@ perf_genai_tex_wo_link <- md_text(
   "```"
 )
 
-perf_genai_viz_wo_link <- create_vizzes2(
+perf_genai_viz_wo_link <- create_vizzes3(
   breaks       = knowledge_breaks,
   perf_genai_questions,
   perf_genai_vars,
@@ -3528,10 +3655,10 @@ dashboard <- create_dashboard(
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text
   add_navbar_element(
-    text = "nl",
+    text = "en",
     icon = "circle-flags:uk",
     # circle-flags:uk
-    href = "https://favstats.github.io/digicomp",
+    href = "https://favstats.github.io/digicomp/en",
     align = "right"
   )  
 
@@ -3545,6 +3672,11 @@ cat("\n=== Visualization Collection Summary ===\n")
 # cat("\n=== Summary Visualizations ===\n")
 # print(summary_vizzes)
 
+files_to_delete <- dir("qmds", pattern = "\\.markdown$", full.names = TRUE)
+file.remove(files_to_delete)
+
+files_to_delete <- dir("qmds_en", pattern = "\\.markdown$", full.names = TRUE)
+file.remove(files_to_delete)
 # generate_dashboard(dashboard, render = F,  open = "browser")
 
 ## 8.3 Generate Dashboard ----
