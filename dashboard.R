@@ -3675,7 +3675,7 @@ cat("\n=== Visualization Collection Summary ===\n")
 files_to_delete <- dir("qmds", pattern = "\\.markdown$", full.names = TRUE)
 file.remove(files_to_delete)
 
-files_to_delete <- dir("qmds_en", pattern = "\\.markdown$", full.names = TRUE)
+files_to_delete <- dir("qmds", pattern = "\\.markdown$", full.names = TRUE)
 file.remove(files_to_delete)
 # generate_dashboard(dashboard, render = F,  open = "browser")
 
