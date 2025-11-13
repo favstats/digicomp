@@ -20,12 +20,6 @@ if(!exists("lang")){
   lang <- "en"
 }
 
-
-change_lang <- function(lang) {
-  if(lang == "nl") return("en")
-  if(lang == "en") return("nl")
-}
-
 # 1. SETUP & CONFIGURATION =====================================================
 
 ## TODO check if the recoding is actually correct please
@@ -128,7 +122,7 @@ recode_survey <- function(df) {
     "KHealth1RC","KHealth2RC","KHealth3RC",
     "KEnv1RC","KEnv2RC","KEnv3RC",
     "Ktrans1RC","Ktrans2RC","Ktrans3RC",
-    "KAI1RC","KAI2RC","KAI3RC",
+    "KAI1RC","KAI2RC","KAI3RC", "KAI4RC",
     "KGAI1RC","KGAI2RC","KGAI3RC","KGAI4RC","KGAI5RC"
   )
   # df <- data
@@ -140,7 +134,14 @@ recode_survey <- function(df) {
     df$MeanKnowledge <- NA_real_
   }
   
-  df
+  
+  df %>% 
+    mutate(
+      across(
+        any_of(knowledge_rc_order),
+        ~ ifelse(is.na(.x),   transl("dunno_understand", lang), .x)
+      )
+    )
 }
 # read_csv2("data/wave1.csv") -> wads
 # wads <- read_csv("data/wave1.csv")
@@ -158,12 +159,18 @@ recode_survey <- function(df) {
 data_w1 <- read_csv("data/wave1.csv") %>% #table()
   mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
   mutate(geslacht = case_when(
-    geslacht == 1 ~"Male",
-    geslacht == 2 ~"Female",
+    geslacht == 1 ~ transl("label_male", lang),
+    geslacht == 2 ~ transl("label_female", lang),
     T ~ NA_character_
   )) %>% 
   mutate(Education = EducationR) %>% 
-  mutate(Education = fct_relevel(Education, c("Low", "Middle", "High"))) %>% 
+  mutate(Education = case_when(
+    Education == "Low" ~ transl("label_low_education", lang),
+    Education == "Middle" ~ transl("label_middle_education", lang),
+    Education == "High" ~ transl("label_high_education", lang),
+    T ~ Education
+  )) %>% 
+  mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>% 
   recode_survey()
 # getwd()
 # data <- read_csv2("data/DigCom25CompleteWithWeights.csv") %>% #table()
@@ -179,12 +186,18 @@ data <- read_csv("data/wave2.csv") %>%
   # )) %>%
   mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
   mutate(geslacht = case_when(
-    Gender == 1 | Gender == "Male" ~"Male",
-    Gender == 2 | Gender == "Female" ~"Female",
+    Gender == 1 | Gender == "Male" ~ transl("label_male", lang),
+    Gender == 2 | Gender == "Female" ~ transl("label_female", lang),
     T ~ NA_character_
   )) %>% 
   mutate(Education = EducationR)  %>% 
-  mutate(Education = fct_relevel(Education, c("Low", "Middle", "High"))) %>% 
+  mutate(Education = case_when(
+    Education == "Low" ~ transl("label_low_education", lang),
+    Education == "Middle" ~ transl("label_middle_education", lang),
+    Education == "High" ~ transl("label_high_education", lang),
+    T ~ Education
+  )) %>% 
+  mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>% 
   recode_survey()
 
 smart_bind_rows <- function(...) {
@@ -228,20 +241,56 @@ digicom_data <- data %>%
   smart_bind_rows(data_w1 %>% 
                     mutate(wave = 1)) %>% 
   mutate_at(vars(PSCS3_1, PSCS3_2, PSCS3_3, PSCS3_4, PSCS3_5, PSCS3_6, PSCS3_7, PSCS3_8, PSCS3_9, PDHWS1_1, PDHWS1_3), as.numeric) %>% 
-  mutate(wave_time_label = ifelse(wave == 1, "Dec. 24 (Wave 1)", "Jun. 25 (Wave 2)")) %>% 
-  mutate(wave_time_label = factor(wave_time_label, levels = c("Dec. 24 (Wave 1)", "Jun. 25 (Wave 2)"))) %>% 
+  mutate(wave_time_label = ifelse(wave == 1, paste0("Dec. 24 (", transl("tab_wave1", lang), ")"), paste0("Jun. 25 (", transl("tab_wave2", lang), ")"))) %>% 
+  mutate(wave_time_label = factor(wave_time_label, levels = c(paste0("Dec. 24 (", transl("tab_wave1", lang), ")"), paste0("Jun. 25 (", transl("tab_wave2", lang), ")")))) %>% 
   mutate(Education = case_when(
     Education == "66" ~ NA_character_,
     Education == "99" ~ NA_character_,
     T ~ Education
   )) %>% 
-  mutate(Education = fct_relevel(Education, c("Low", "Middle", "High")))
+  mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>% 
+  mutate(MigrationBackground = case_when(
+    MigrationBackground == "Yes" ~ transl("label_yes", lang),
+    MigrationBackground == "No" ~ transl("label_no", lang),
+    T ~ MigrationBackground
+  ))
 
 std.error <- function(x) sd(x, na.rm =T)/sqrt(length(x))
 
 # digicom_data %>% count(MigrationBackground, wave)
 
 # 2. HELPER FUNCTIONS & DATA PREPARATION =======================================
+
+# Translation mapping functions for common demographic values
+get_gender_map <- function(lang) {
+  list(
+    "Male" = transl("label_male", lang),
+    "Female" = transl("label_female", lang)
+  )
+}
+
+get_education_map <- function(lang) {
+  list(
+    "Low" = transl("label_low_education", lang),
+    "Middle" = transl("label_middle_education", lang),
+    "High" = transl("label_high_education", lang)
+  )
+}
+
+get_yes_no_map <- function(lang) {
+  list(
+    "Yes" = transl("label_yes", lang),
+    "No" = transl("label_no", lang)
+  )
+}
+
+get_y_label_percentage <- function(lang) {
+  transl("label_percentage_respondents", lang)
+}
+
+get_y_label_number <- function(lang) {
+  transl("label_number_respondents", lang)
+}
 
 education_levels <- c("Primary (basisonderwijs)", 
                       "Pre-Vocational (vmbo)", 
@@ -330,7 +379,9 @@ add_all_viz_stackedbar <- function(viz, vars, questions, stack_var, tbgrp, demog
 create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
                           colors = the_colors, 
                           tbgrp, graph_title, high_values = 4:5, 
-                          text_b_tabset = "ADD TEXT BEFORE TABSET", aggr_lab = "Percentage who answered (Completely) True (4-5)") {
+                          text_b_tabset = "ADD TEXT BEFORE TABSET", 
+                          aggr_lab = get_y_label_percentage(lang),
+                          lang = "en") {
   
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
@@ -397,9 +448,9 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     weight_var = "weging_GAMO"
   ) |>
     add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 1") |>       # Pass tbgrp AND "age"
-    add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>   # Pass tbgrp AND "gender"
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>   # Pass tbgrp AND "gender"
-    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")        # Pass tbgrp AND "edu"
+    add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")
   # Pass tbgrp AND "edu"
   
   # Wave 2 by Age/Gender/Education
@@ -451,7 +502,9 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
 create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5), 
                            colors = the_colors, 
                            tbgrp, graph_title, high_values = 1, map_values, 
-                           text_b_tabset = "ADD TEXT BEFORE TABSET", aggr_lab = "Percentage who selected/answered correctly") {
+                           text_b_tabset = "ADD TEXT BEFORE TABSET", 
+                           aggr_lab = transl("label_percentage_correct", lang),
+                           lang = "en") {
   
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
@@ -519,8 +572,8 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     weight_var = "weging_GAMO"
   ) |>
     add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 1") |>       # Pass tbgrp AND "age"
-    add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>   # Pass tbgrp AND "gender"
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>   # Pass tbgrp AND "gender"
+    add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>
     add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")         # Pass tbgrp AND "edu"
   
   # Wave 2 by Age/Gender/Education
@@ -763,7 +816,7 @@ kinfo_questions <- c(
 kinfo_vars <- c("KInfo1RC", "KInfo2RC")
 
 # keep the order from your original code: rev(c("Incorrectly", "Correctly", "X"))
-kinfo_labs <- c("X", transl("label_correctly_answered", lang), transl("label_incorrectly_answered", lang))
+kinfo_labs <- c(transl("label_correctly_answered", lang), transl("label_incorrectly_answered", lang), transl("dunno_understand", lang))
 
 kinfo_info_text <- transl("strategic_info_description", lang)
 
@@ -784,7 +837,8 @@ kinfo_viz <- create_vizzes2(
   "",
   tbgrp   = "kinfo",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kinfo_tex_link
+  text_b_tabset = kinfo_tex_link,
+  lang = lang
 )
 
 kinfo_tex_wo_link <- md_text(
@@ -803,7 +857,8 @@ kinfo_viz_wo_link <- create_vizzes2(
   "",
   tbgrp   = "kinfo",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kinfo_tex_wo_link
+  text_b_tabset = kinfo_tex_wo_link,
+  lang = lang
 )
 
 ## 3.3 Critical Information Knowledge (critinfo_viz) ----
@@ -817,9 +872,9 @@ critinfo_questions <- c(
 critinfo_vars <- c("KInfo3RC")
 
 critinfo_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 critinfo_info_text <- transl("critical_info_description", lang)
@@ -842,7 +897,8 @@ critinfo_viz <- create_vizzes2(
   tbgrp        = "critinfo",
   graph_title  = critinfo_questions, 
   map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = critinfo_tex_link
+  text_b_tabset = critinfo_tex_link,
+  lang = lang
 )
 
 critinfo_tex_wo_link <- md_text(
@@ -862,9 +918,9 @@ critinfo_viz_wo_link <- create_vizzes2(
   tbgrp        = "critinfo",
   graph_title  = critinfo_questions,
   map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = critinfo_tex_wo_link
+  text_b_tabset = critinfo_tex_wo_link,
+  lang = lang
 )
-
 
 ## 3.4 Netiquette Knowledge (knet_viz) ----
 
@@ -875,9 +931,9 @@ knet_questions <- c(
 knet_vars <- c("KCom3RC")
 
 knet_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 knet_info_text <- transl("netiquette_description", lang)
@@ -900,7 +956,8 @@ knet_viz <- create_vizzes2(
   tbgrp        = "knet",
   graph_title  = knet_questions,
   map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = knet_tex_link
+  text_b_tabset = knet_tex_link,
+  lang = lang
 )
 
 knet_tex_wo_link <- md_text(
@@ -920,7 +977,8 @@ knet_viz_wo_link <- create_vizzes2(
   tbgrp        = "knet",
   graph_title  = knet_questions, 
   map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = knet_tex_wo_link
+  text_b_tabset = knet_tex_wo_link,
+  lang = lang
 )
 
 
@@ -934,9 +992,9 @@ kcrea_questions <- c(
 kcrea_vars <- c("KCrea2RC", "KCrea3RC")
 
 kcrea_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 kcrea_info_text <- transl("content_creation_description", lang)
@@ -958,7 +1016,8 @@ kcrea_viz <- create_vizzes2(
   "",
   tbgrp        = "kcrea",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kcrea_tex_link
+  text_b_tabset = kcrea_tex_link,
+  lang = lang
 )
 
 kcrea_tex_wo_link <- md_text(
@@ -977,7 +1036,8 @@ kcrea_viz_wo_link <- create_vizzes2(
   "",
   tbgrp        = "kcrea",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kcrea_tex_wo_link
+  text_b_tabset = kcrea_tex_wo_link,
+  lang = lang
 )
 
 
@@ -996,9 +1056,9 @@ ksafety_vars <- c(
 )
 
 ksafety_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 ksafety_info_text <- transl("safety_description", lang)
@@ -1020,7 +1080,8 @@ ksafety_viz <- create_vizzes2(
   "",
   tbgrp        = "ksafety",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = ksafety_tex_link
+  text_b_tabset = ksafety_tex_link,
+  lang = lang
 )
 
 ksafety_tex_wo_link <- md_text(
@@ -1039,7 +1100,8 @@ ksafety_viz_wo_link <- create_vizzes2(
   "",
   tbgrp        = "ksafety",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = ksafety_tex_wo_link
+  text_b_tabset = ksafety_tex_wo_link,
+  lang = lang
 )
 
 
@@ -1053,9 +1115,9 @@ khealth_questions <- c(
 khealth_vars <- c("KHealth2RC", "KHealth3RC")
 
 khealth_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 khealth_info_text <- transl("health_description", lang)
@@ -1077,7 +1139,8 @@ khealth_viz <- create_vizzes2(
   "",
   tbgrp        = "khealth",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = khealth_tex_link
+  text_b_tabset = khealth_tex_link,
+  lang = lang
 )
 
 khealth_tex_wo_link <- md_text(
@@ -1096,7 +1159,8 @@ khealth_viz_wo_link <- create_vizzes2(
   "",
   tbgrp        = "khealth",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = khealth_tex_wo_link
+  text_b_tabset = khealth_tex_wo_link,
+  lang = lang
 )
 
 
@@ -1110,9 +1174,9 @@ kgreen_questions <- c(
 kgreen_vars <- c("KEnv2RC", "KEnv3RC")
 
 kgreen_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 kgreen_info_text <- transl("green_description", lang)
@@ -1134,7 +1198,8 @@ kgreen_viz <- create_vizzes2(
   "",
   tbgrp        = "kgreen",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kgreen_tex_link
+  text_b_tabset = kgreen_tex_link,
+  lang = lang
 )
 
 kgreen_tex_wo_link <- md_text(
@@ -1153,7 +1218,8 @@ kgreen_viz_wo_link <- create_vizzes2(
   "",
   tbgrp        = "kgreen",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kgreen_tex_wo_link
+  text_b_tabset = kgreen_tex_wo_link,
+  lang = lang
 )
 
 
@@ -1167,9 +1233,9 @@ ktrans_questions <- c(
 ktrans_vars <- c("Ktrans2RC", "Ktrans3RC")
 
 ktrans_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 ktrans_info_text <- transl("transactional_description", lang)
@@ -1191,7 +1257,8 @@ ktrans_viz <- create_vizzes2(
   "",
   tbgrp        = "ktrans",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = ktrans_tex_link
+  text_b_tabset = ktrans_tex_link,
+  lang = lang
 )
 
 ktrans_tex_wo_link <- md_text(
@@ -1210,7 +1277,8 @@ ktrans_viz_wo_link <- create_vizzes2(
   "",
   tbgrp        = "ktrans",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = ktrans_tex_wo_link
+  text_b_tabset = ktrans_tex_wo_link,
+  lang = lang
 )
 
 
@@ -1226,9 +1294,9 @@ kai_questions <- c(
 kai_vars <- c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC")
 
 kai_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 kai_info_text <- transl("ai_description", lang)
@@ -1250,7 +1318,8 @@ kai_viz <- create_vizzes2(
   "",
   tbgrp        = "kai",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kai_tex_link
+  text_b_tabset = kai_tex_link,
+  lang = lang
 )
 
 kai_tex_wo_link <- md_text(
@@ -1269,7 +1338,8 @@ kai_viz_wo_link <- create_vizzes2(
   "",
   tbgrp        = "kai",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kai_tex_wo_link
+  text_b_tabset = kai_tex_wo_link,
+  lang = lang
 )
 
 
@@ -1286,9 +1356,9 @@ kgai_questions <- c(
 kgai_vars <- c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC")
 
 kgai_labs <- c(
-  transl("label_dont_know", lang),
+  # transl("label_dont_know", lang),
   transl("label_correctly_answered", lang),
-  transl("label_incorrectly_answered", lang)
+  transl("label_incorrectly_answered", lang), transl("dunno_understand", lang)
 )
 
 kgai_info_text <- transl("genai_description", lang)
@@ -1310,7 +1380,8 @@ kgai_viz <- create_vizzes2(
   "",
   tbgrp        = "kgai",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kgai_tex_link
+  text_b_tabset = kgai_tex_link,
+  lang = lang
 )
 
 kgai_tex_wo_link <- md_text(
@@ -1329,7 +1400,8 @@ kgai_viz_wo_link <- create_vizzes2(
   "",
   tbgrp        = "kgai",
   graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kgai_tex_wo_link
+  text_b_tabset = kgai_tex_wo_link,
+  lang = lang
 )
 
 ## 3.12 Knowledge Collection ----
@@ -1427,7 +1499,7 @@ sis_viz <- create_vizzes(sis_questions,
                          breaks = c(0.5, 2.5, 3.5, 5.5), 
                          tbgrp = "sis", 
                          text_b_tabset = sis_tex_complete,
-                         graph_title = "Strategic Information Skills")
+                         graph_title = transl("title_strategic_information_skills", lang))
 
 
 ## 4.2 Critical Information Skills (cis_viz) ----
@@ -1461,13 +1533,13 @@ cis_viz <- create_vizzes(cis_questions,
                          breaks = c(0.5, 2.5, 3.5, 5.5), 
                          tbgrp = "cis",
                          text_b_tabset = cis_tex_complete,
-                         graph_title = "Critical Information Skills")
+                         graph_title = transl("title_critical_information_skills", lang))
 
 cis_viz_wo_link <- create_vizzes(cis_questions, 
                                  cis_vars, sis_labs, 
                                  cis_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
                                  tbgrp = "cis",
-                                 graph_title = "Critical Information Skills")
+                                 graph_title = transl("title_critical_information_skills", lang))
 
 ## 4.3 Netiquette Skills (nskills_viz) ----
 
@@ -1499,13 +1571,13 @@ nskills_viz  <- create_vizzes(nskills_questions,
                               breaks = c(0.5, 2.5, 3.5, 5.5), 
                               tbgrp = "nskills",
                               text_b_tabset = nskills_tex_complete,
-                              graph_title = "Netiquette Skills")
+                              graph_title = transl("title_netiquette_skills", lang))
 
 nskills_viz_wo_link  <- create_vizzes(nskills_questions, 
                                       nskills_vars, sis_labs, 
                                       nskills_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
                                       tbgrp = "nskills",
-                                      graph_title = "Netiquette Skills")
+                                      graph_title = transl("title_netiquette_skills", lang))
 
 
 ## 4.4 Digital Content Creation Skills (dccs_viz) ----
@@ -1537,13 +1609,13 @@ dccs_viz  <- create_vizzes(dccs_questions,
                            breaks = c(0.5, 2.5, 3.5, 5.5), 
                            tbgrp = "dccs",
                            text_b_tabset = dccs_tex_complete,
-                           graph_title = "Digital Content Creation Skills")
+                           graph_title = transl("title_digital_content_creation_skills", lang))
 
 dccs_viz_wo_link  <- create_vizzes(dccs_questions, 
                                    dccs_vars, sis_labs, 
                                    dccs_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
                                    tbgrp = "dccs",
-                                   graph_title = "Digital Content Creation Skills")
+                                   graph_title = transl("title_digital_content_creation_skills", lang))
 
 
 ## 4.5 Safety & Control of Devices (safety_viz) ----
@@ -1580,14 +1652,14 @@ safety_viz <- create_vizzes(
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "safety",
   text_b_tabset = safety_tex_complete,
-  graph_title = "Safety and Control of Information and Devices Skills")
+  graph_title = transl("title_safety_control_skills", lang))
 
 safety_viz_wo_link <- create_vizzes(
   safety_questions, safety_vars, sis_labs,
   safety_tex_question,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "safety",
-  graph_title = "Safety and Control of Information and Devices Skills")
+  graph_title = transl("title_safety_control_skills", lang))
 
 ## 4.6 Digital Health & Wellbeing (dhealth_viz) ----
 dhealth_questions <- c(
@@ -1619,14 +1691,14 @@ dhealth_viz <- create_vizzes(
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "dhealth",
   text_b_tabset = dhealth_tex_complete,
-  graph_title = "Digital Health and Wellbeing Skills")
+  graph_title = transl("title_digital_health_wellbeing_skills", lang))
 
 dhealth_viz_wo_link <- create_vizzes(
   dhealth_questions, dhealth_vars, sis_labs,
   dhealth_tex_question,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "dhealth",
-  graph_title = "Digital Health and Wellbeing Skills")
+  graph_title = transl("title_digital_health_wellbeing_skills", lang))
 
 ## 4.7 Green / Sustainable Digital (green_viz) ----
 green_questions <- c(
@@ -1658,14 +1730,14 @@ green_viz <- create_vizzes(
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "green",
   text_b_tabset = green_tex_complete,
-  graph_title = "Sustainable/Green Digital Skills")
+  graph_title = transl("title_sustainable_green_digital_skills", lang))
 
 green_viz_wo_link <- create_vizzes(
   green_questions, green_vars, sis_labs,
   green_tex_question,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "green",
-  graph_title = "Sustainable/Green Digital Skills")
+  graph_title = transl("title_sustainable_green_digital_skills", lang))
 
 ## 4.8 Digital Problem Solving (dprob_viz) ----
 dprob_questions <- c(
@@ -1696,7 +1768,7 @@ dprob_viz <- create_vizzes(
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "dprob",
   text_b_tabset = dprob_tex_complete,
-  graph_title = "Digital Problem Solving Skills"
+  graph_title = transl("title_digital_problem_solving_skills", lang)
 )
 
 dprob_viz_wo_link <- create_vizzes(
@@ -1704,7 +1776,7 @@ dprob_viz_wo_link <- create_vizzes(
   dprob_tex_question,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "dprob",
-  graph_title = "Digital Problem Solving Skills"
+  graph_title = transl("title_digital_problem_solving_skills", lang)
 )
 
 ## 4.9 Transactional Skills (trans_viz) ----
@@ -1739,7 +1811,7 @@ trans_viz <- create_vizzes(
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "trans",
   text_b_tabset = trans_tex_complete,
-  graph_title = "Transactional Skills"
+  graph_title = transl("title_transactional_skills", lang)
 )
 
 trans_viz_wo_link <- create_vizzes(
@@ -1747,7 +1819,7 @@ trans_viz_wo_link <- create_vizzes(
   trans_tex_question,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "trans",
-  graph_title = "Transactional Skills"
+  graph_title = transl("title_transactional_skills", lang)
 )
 
 ## 4.10 AI Skills (ai_viz) ----
@@ -1782,7 +1854,7 @@ ai_viz <- create_vizzes(
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "ai",
   text_b_tabset = ai_tex_complete,
-  graph_title = "AI Skills"
+  graph_title = transl("title_ai_skills", lang)
 )
 
 ai_viz_wo_link <- create_vizzes(
@@ -1790,7 +1862,7 @@ ai_viz_wo_link <- create_vizzes(
   ai_tex_question,
   breaks = c(0.5, 2.5, 3.5, 5.5),
   tbgrp  = "ai",
-  graph_title = "AI Skills"
+  graph_title = transl("title_ai_skills", lang)
 )
 
 ## 4.11 Generative AI Skills (genai_viz) ----
@@ -2129,22 +2201,22 @@ skills_viz <- sis_viz %>%
     trans   = "{{< iconify ph wallet-fill >}} Transactional",
     ai      = "{{< iconify ph robot-fill >}} AI",
     genai   = "{{< iconify ph magic-wand-fill >}} Gen AI",
-    wave1 = "{{< iconify ph number-circle-one-fill >}} Wave 1",
-    wave2 = "{{< iconify ph number-circle-two-fill >}} Wave 2",
-    age    = "{{< iconify mdi:human-male-male-child >}} Age",
-    gender = "{{< iconify mdi gender-transgender >}} Gender",
-    edu    = "{{< iconify ph graduation-cap-fill >}} Education",
-    mig = "{{< iconify ph globe-hemisphere-east >}} Migration Background",
-    overtime   = "{{< iconify ph chart-line-fill >}} Over Time",
-    overall = "{{< iconify ph users-fill >}} Overall",
-    item1  = "{{< iconify ph chat-circle-fill >}} Question 1",
-    item2  = "{{< iconify ph chat-circle-fill >}} Question 2",
-    item3  = "{{< iconify ph chat-circle-fill >}} Question 3",
-    item4  = "{{< iconify ph chat-circle-fill >}} Question 4",
-    item5  = "{{< iconify ph chat-circle-fill >}} Question 5",
-    item6  = "{{< iconify ph chat-circle-fill >}} Question 6",
-    item7  = "{{< iconify ph chat-circle-fill >}} Question 7",
-    item8  = "{{< iconify ph chat-circle-fill >}} Question 8"
+    wave1 = paste0("{{< iconify ph number-circle-one-fill >}} ", transl("tab_wave1", lang)),
+    wave2 = paste0("{{< iconify ph number-circle-two-fill >}} ", transl("tab_wave2", lang)),
+    age    = paste0("{{< iconify mdi:human-male-male-child >}} ", transl("tab_age", lang)),
+    gender = paste0("{{< iconify mdi gender-transgender >}} ", transl("tab_gender", lang)),
+    edu    = paste0("{{< iconify ph graduation-cap-fill >}} ", transl("tab_education", lang)),
+    mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
+    overtime   = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)),
+    overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
+    item1  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 1"),
+    item2  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 2"),
+    item3  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 3"),
+    item4  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 4"),
+    item5  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 5"),
+    item6  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 6"),
+    item7  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 7"),
+    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question", lang), " 8")
   )
 
 
@@ -2192,7 +2264,8 @@ perf_sis_viz <- create_vizzes2(
   tbgrp        = "perf_sis",
   graph_title  = perf_sis_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  text_b_tabset = perf_sis_tex_link
+  text_b_tabset = perf_sis_tex_link,
+  lang = lang
 )
 
 perf_sis_tex_wo_link <- md_text(
@@ -2211,7 +2284,8 @@ perf_sis_viz_wo_link <- create_vizzes2(
   perf_sis_tex_wo_link,
   tbgrp        = "perf_sis",
   graph_title  = perf_sis_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang))
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
 )
 
 
@@ -2244,7 +2318,8 @@ perf_cis_viz <- create_vizzes2(
   tbgrp        = "perf_cis",
   graph_title  = "",
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  text_b_tabset = perf_cis_tex_link
+  text_b_tabset = perf_cis_tex_link,
+  lang = lang
 )
 
 perf_cis_tex_wo_link <- md_text(
@@ -2263,7 +2338,8 @@ perf_cis_viz_wo_link <- create_vizzes2(
   perf_cis_tex_wo_link,
   tbgrp        = "perf_cis",
   graph_title  = "",
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang))
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
 )
 
 ## 5.3 Performance: Netiquette (perf_netiquette_viz) ----
@@ -2293,7 +2369,8 @@ perf_netiquette_viz <- create_vizzes2(
   tbgrp        = "perf_netiquette",
   graph_title  = perf_n_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  text_b_tabset = perf_n_tex_link
+  text_b_tabset = perf_n_tex_link,
+  lang = lang
 )
 
 perf_n_tex_wo_link <- md_text(
@@ -2312,7 +2389,8 @@ perf_netiquette_viz_wo_link <- create_vizzes2(
   perf_n_tex_wo_link,
   tbgrp        = "perf_netiquette",
   graph_title  = perf_n_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang))
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
 )
 
 
@@ -2329,10 +2407,10 @@ perf_dccs_tex_link <- md_text(
   perf_dccs_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
+  # Use the actual question text (PDCCS1) which now has the modal link embedded
+  paste0("create_blockquote('", transl("PDCCS1", lang), "', preset = 'question')"),
   "```",
-  paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)"),
-  ""
+  paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)")
 ) 
 
 
@@ -2345,7 +2423,8 @@ perf_dccs_viz <- create_vizzes2(
   tbgrp        = "perf_dccs",
   graph_title  = perf_dccs_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  text_b_tabset = perf_dccs_tex_link
+  text_b_tabset = perf_dccs_tex_link,
+  lang = lang
 )  %>%
   # Modal 2: With image
   add_modal(
@@ -2359,9 +2438,9 @@ perf_dccs_tex_wo_link <- md_text(
   perf_dccs_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
-  "```",
-  ""
+  # Use the actual question text (PDCCS1) which now has the modal link embedded
+  paste0("create_blockquote('", transl("PDCCS1", lang), "', preset = 'question')"),
+  "```"
 ) 
 
 perf_dccs_viz_wo_link <- create_vizzes2(
@@ -2372,7 +2451,8 @@ perf_dccs_viz_wo_link <- create_vizzes2(
   perf_dccs_tex_wo_link,
   tbgrp        = "perf_dccs",
   graph_title  = perf_dccs_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang))
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
 )  %>%
   # Modal 2: With image
   add_modal(
@@ -2426,7 +2506,8 @@ perf_safety_viz <- create_vizzes2(
   tbgrp        = "perf_safety",
   graph_title  = "",
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  text_b_tabset = perf_safety_tex_link
+  text_b_tabset = perf_safety_tex_link,
+  lang = lang
 )
 
 perf_safety_tex_wo_link <- md_text(
@@ -2445,7 +2526,8 @@ perf_safety_viz_wo_link <- create_vizzes2(
   perf_safety_tex_wo_link,
   tbgrp        = "perf_safety",
   graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang))
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
 )
 
 
@@ -2486,7 +2568,8 @@ perf_health_viz <- create_vizzes2(
   tbgrp        = "perf_health",
   graph_title  = "",
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  text_b_tabset = perf_health_tex_link
+  text_b_tabset = perf_health_tex_link,
+  lang = lang
 )
 
 perf_health_tex_wo_link <- md_text(
@@ -2505,7 +2588,8 @@ perf_health_viz_wo_link <- create_vizzes2(
   perf_health_tex_wo_link,
   tbgrp        = "perf_health",
   graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang))
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
 )
 
 
@@ -2547,7 +2631,8 @@ perf_green_viz <- create_vizzes2(
   tbgrp        = "perf_green",
   graph_title  = "",
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  text_b_tabset = perf_green_tex_link
+  text_b_tabset = perf_green_tex_link,
+  lang = lang
 )
 
 perf_green_tex_wo_link <- md_text(
@@ -2566,7 +2651,8 @@ perf_green_viz_wo_link <- create_vizzes2(
   perf_green_tex_wo_link,
   tbgrp        = "perf_green",
   graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang))
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
 )
 
 
@@ -2608,7 +2694,8 @@ perf_ps_viz <- create_vizzes2(
   tbgrp        = "perf_ps",
   graph_title  = "",
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  text_b_tabset = perf_ps_tex_link
+  text_b_tabset = perf_ps_tex_link,
+  lang = lang
 )
 
 perf_ps_tex_wo_link <- md_text(
@@ -2627,7 +2714,8 @@ perf_ps_viz_wo_link <- create_vizzes2(
   perf_ps_tex_wo_link,
   tbgrp        = "perf_ps",
   graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang))
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
 )
 
 
@@ -2658,7 +2746,8 @@ perf_trans_viz <- create_vizzes2(
   tbgrp        = "perf_trans",
   graph_title  = perf_trans_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  text_b_tabset = perf_trans_tex_link
+  text_b_tabset = perf_trans_tex_link,
+  lang = lang
 )
 
 perf_trans_tex_wo_link <- md_text(
@@ -2677,7 +2766,8 @@ perf_trans_viz_wo_link <- create_vizzes2(
   perf_trans_tex_wo_link,
   tbgrp        = "perf_trans",
   graph_title  = perf_trans_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang))
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
 )
 
 
@@ -2719,7 +2809,8 @@ perf_ai_viz <- create_vizzes2(
   tbgrp        = "perf_ai",
   graph_title  = "",
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  text_b_tabset = perf_ai_tex_link
+  text_b_tabset = perf_ai_tex_link,
+  lang = lang
 )
 
 perf_ai_tex_wo_link <- md_text(
@@ -2738,7 +2829,8 @@ perf_ai_viz_wo_link <- create_vizzes2(
   perf_ai_tex_wo_link,
   tbgrp        = "perf_ai",
   graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang))
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
 )
 
 
@@ -2770,7 +2862,8 @@ perf_genai_viz <- create_vizzes2(
   graph_title  = perf_genai_questions,
   # in original you reversed categories_dat; here we can still map 1=Correct
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  text_b_tabset = perf_genai_tex_link
+  text_b_tabset = perf_genai_tex_link,
+  lang = lang
 )
 
 perf_genai_tex_wo_link <- md_text(
@@ -2790,7 +2883,8 @@ perf_genai_viz_wo_link <- create_vizzes2(
   tbgrp        = "perf_genai",
   graph_title  = perf_genai_questions,
   # in original you reversed categories_dat; here we can still map 1=Correct
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang))
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
 )
 
 
@@ -2830,16 +2924,16 @@ performance_collection <- perf_sis_viz %>%
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime   = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)),
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)),
-    item2  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)),
-    item3  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)),
-    item5  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang)),
-    item6  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_6", lang)),
-    item7  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_7", lang)),
-    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_8", lang)),
-    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_9", lang)),
-    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_10", lang))
+    item1  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")),
+    item2  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")),
+    item3  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")),
+    item5  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5")),
+    item6  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")),
+    item7  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")),
+    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8")),
+    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 9")),
+    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 10"))
   )
 
 # 7. DIMENSION-SPECIFIC COMBINED VISUALIZATIONS ================================
@@ -2858,7 +2952,7 @@ sis_viz_wo_link <- create_vizzes(sis_questions,
                                  sis_vars, sis_labs, 
                                  sis_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
                                  tbgrp = "sis",
-                                 graph_title = "Strategic Information Skills")
+                                 graph_title = transl("title_strategic_information_skills", lang))
 
 ## 7.1 Strategic Information Dimension ----
 strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_wo_link)  %>%
@@ -2874,9 +2968,9 @@ strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)),
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3"))
   )
 
 ## 7.2 Critical Information Dimension ----
@@ -2893,9 +2987,9 @@ critical_info_visualizations <- (cis_viz_wo_link + critinfo_viz_wo_link + perf_c
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3"))
   )
 
 ## 7.3 Netiquette Dimension ----
@@ -2911,10 +3005,10 @@ netiquette_visualizations <- (nskills_viz_wo_link + knet_viz_wo_link) %>%
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)), 
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")), 
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4"))
   )
 
 ## 7.4 Digital Content Creation Dimension ----
@@ -2931,10 +3025,10 @@ content_creation_visualizations <- (dccs_viz_wo_link + kcrea_viz_wo_link + perf_
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)), 
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")), 
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4"))
   )
 
 ## 7.5 Safety & Control Dimension ----
@@ -2951,15 +3045,15 @@ safety_visualizations <- (safety_viz_wo_link + ksafety_viz_wo_link + perf_safety
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)), 
-    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang)), 
-    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_6", lang)),
-    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_7", lang)), 
-    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_8", lang)), 
-    item9 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_9", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")), 
+    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5")), 
+    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")),
+    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")), 
+    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8")), 
+    item9 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 9"))
   )
 
 ## 7.6 Digital Health & Wellbeing Dimension ----
@@ -2976,13 +3070,13 @@ health_visualizations <- (dhealth_viz_wo_link + khealth_viz_wo_link + perf_healt
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)), 
-    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang)), 
-    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_6", lang)), 
-    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_7", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")), 
+    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5")), 
+    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")), 
+    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7"))
   )
 
 ## 7.7 Green / Sustainable Digital Dimension ----
@@ -2999,14 +3093,14 @@ green_visualizations <- (green_viz_wo_link + kgreen_viz_wo_link + perf_green_viz
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)), 
-    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang)), 
-    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_6", lang)),
-    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_7", lang)), 
-    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_8", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")), 
+    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5")), 
+    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")),
+    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")), 
+    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8"))
   )
 
 ## 7.8 Digital Problem Solving Dimension ----
@@ -3022,15 +3116,15 @@ problem_solving_visualizations <- (dprob_viz_wo_link + perf_ps_viz_wo_link) %>%
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)), 
-    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang)), 
-    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_6", lang)),
-    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_7", lang)), 
-    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_8", lang)), 
-    item9 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_9", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")), 
+    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5")), 
+    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")),
+    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")), 
+    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8")), 
+    item9 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 9"))
   )
 
 ## 7.9 Transactional Dimension ----
@@ -3047,11 +3141,11 @@ transactional_visualizations <- (trans_viz_wo_link + ktrans_viz_wo_link + perf_t
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)), 
-    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")), 
+    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5"))
   )
 
 ## 7.10 AI Dimension ----
@@ -3068,15 +3162,15 @@ ai_visualizations <- (ai_viz_wo_link + kai_viz_wo_link + perf_ai_viz_wo_link) %>
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)), 
-    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang)), 
-    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_6", lang)),
-    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_7", lang)), 
-    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_8", lang)), 
-    item9 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_9", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")), 
+    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5")), 
+    item6 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")),
+    item7 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")), 
+    item8 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8")), 
+    item9 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 9"))
   )
 
 ## 7.11 Generative AI Dimension ----
@@ -3093,11 +3187,11 @@ genai_combined_visualizations <- (genai_viz_wo_link + kgai_viz_wo_link + perf_ge
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)), 
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)), 
-    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)), 
-    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)), 
-    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang))
+    item1 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")), 
+    item2 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")), 
+    item3 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")), 
+    item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5"))
   )
 
 # 8. DASHBOARD CREATION ========================================================
@@ -3127,14 +3221,14 @@ strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_
     mig = paste0("{{< iconify ph globe-hemisphere-east >}} ", transl("tab_migration", lang)),
     overtime   = paste0("{{< iconify ph chart-line-fill >}} ", transl("tab_overtime", lang)),
     overall = paste0("{{< iconify ph users-fill >}} ", transl("tab_overall", lang)),
-    item1  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_1", lang)),
-    item2  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_2", lang)),
-    item3  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_3", lang)),
-    item4  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_4", lang)),
-    item5  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_5", lang)),
-    item6  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_6", lang)),
-    item7  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_7", lang)),
-    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", transl("tab_question_8", lang))
+    item1  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 1")),
+    item2  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 2")),
+    item3  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 3")),
+    item4  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 4")),
+    item5  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5")),
+    item6  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")),
+    item7  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")),
+    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8"))
   )
 
 
@@ -3434,13 +3528,12 @@ dashboard <- create_dashboard(
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text
   add_navbar_element(
-    text = change_lang(lang),
+    text = "nl",
     icon = "circle-flags:uk",
     # circle-flags:uk
-    href = "https://favstats.github.io/digicomp/en",
+    href = "https://favstats.github.io/digicomp",
     align = "right"
   )  
-
 
 # Test the print methods
 cat("=== Dashboard Project Summary ===\n")

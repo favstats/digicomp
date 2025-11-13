@@ -139,9 +139,19 @@
       if (link.classList.contains('modal-link')) {
         console.log('Link has modal-link class');
         const href = link.getAttribute('href');
-        if (href && href.startsWith('#')) {
-          const modalId = href.substring(1); // Remove the '#'
-          console.log('Modal ID from href:', modalId);
+        console.log('Raw href:', href);
+
+        // Extract modal ID from href - handle both relative (#id) and absolute URLs (https://...#id)
+        let modalId = null;
+        if (href) {
+          const hashIndex = href.indexOf('#');
+          if (hashIndex !== -1) {
+            modalId = href.substring(hashIndex + 1); // Get everything after '#'
+          }
+        }
+
+        if (modalId) {
+          console.log('Extracted modal ID:', modalId);
           const modalContent = document.getElementById(modalId);
 
           // Only open if there's a matching modal-content div
@@ -149,7 +159,7 @@
             console.log('Found matching modal content:', modalContent);
             console.log('Modal content classes:', modalContent.className);
             console.log('Modal content display:', window.getComputedStyle(modalContent).display);
-            e.preventDefault();
+            e.preventDefault(); // Only prevent default if we found a valid modal
             openModal(modalId);
           } else {
             console.log('No matching modal content found for ID:', modalId);
@@ -157,7 +167,10 @@
             if (modalContent) {
               console.log('modalContent classes:', modalContent.className);
             }
+            // Don't prevent default if no valid modal found - let the link work normally
           }
+        } else {
+          console.log('No modal ID found in href');
         }
       }
     });

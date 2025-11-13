@@ -113,6 +113,8 @@ read_lines("dashboard.R") %>%
   
   write_lines("dashboard_en.R")
 
+# dir("qmds")
+
 
 # run English
 en_env <- new.env(parent = globalenv())
