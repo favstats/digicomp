@@ -1,0 +1,3835 @@
+---
+title: "{{< iconify ph book-open-fill >}} Knowledge"
+format: html
+---
+
+
+```{=html}
+<script>document.body.classList.add('has-pagination-top');</script>
+<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
+  <div class='pagination-container'>
+    <a href='knowledge.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+    <div class='pagination-info'>
+      <span class='pagination-prefix'>Page </span>
+      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='2' aria-label='Current page'>
+      <span class='pagination-separator'> / 3</span>
+    </div>
+    <a href='knowledge_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+<!-- Pagination Navigation Script -->
+<script>
+(function() {
+  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
+  const pageInput = document.getElementById('page-input-top');
+  
+  if (pageInput) {
+    pageInput.addEventListener('change', function() {
+      const pageNum = parseInt(this.value);
+      if (pageNum >= 1 && pageNum <= pageUrls.length) {
+        window.location.href = pageUrls[pageNum - 1];
+      } else {
+        this.value = this.getAttribute('value');
+      }
+    });
+    
+    pageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  }
+})();
+</script>
+```
+
+
+
+```{r}
+#| include: false
+library(dashboardr)
+```
+
+**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
+
+The **Knowledge** section measures what participants *know* about the digital world: how it works, what risks it involves, and how different technologies affect everyday life. These items test factual understanding across topics such as information reliability, communication and privacy, online safety, AI, and generative AI. Respondents indicate whether each statement is true or false (or if they don’t know), allowing us to assess their level of digital literacy and awareness beyond self-perceived skills.
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load required libraries
+library(dashboardr)
+library(dplyr)
+library(highcharter)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data from dataset_4014obs.rds
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# Use dashboardr's loading overlay function
+dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+```
+
+## {{< iconify ph palette-fill >}} Digital Content Creation
+
+
+**Digital Content Creation** skills cover the ability to create and modify digital content: making presentations, combining different media, editing images/music/video, and understanding copyright rules around digital content.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kcrea-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KCrea2RC, KCrea3RC),
+  title = "",
+  questions = c("KCrea2RC", "KCrea3RC"),
+  question_labels = c("Some people are paid to use products in the videos they make. (Correct Statement)", "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave1-age-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave1-age-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave1-gender-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave1-gender-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave1-edu-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave1-edu-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave1-mig-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave1-mig-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kcrea-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KCrea2RC, KCrea3RC),
+  title = "",
+  questions = c("KCrea2RC", "KCrea3RC"),
+  question_labels = c("Some people are paid to use products in the videos they make. (Correct Statement)", "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave2-age-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave2-age-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave2-gender-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave2-gender-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave2-edu-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave2-edu-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-wave2-mig-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KCrea2RC),
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-wave2-mig-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KCrea3RC),
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-overtime-overall-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-overtime-overall-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-overtime-age-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-overtime-age-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-overtime-gender-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-overtime-gender-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-overtime-edu-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-overtime-edu-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kcrea-overtime-mig-item1}
+# Some people are paid to use products in the videos they make. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Some people are paid to use products in the videos they make. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kcrea-overtime-mig-item2}
+# You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCrea3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph shield-check-fill >}} Safety
+
+
+**Safety & Control of Information and Devices** encompasses protecting devices and personal information: using security measures, managing privacy settings, identifying phishing, and controlling what information is shared online.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Safety results](safety.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r ksafety-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KSafDev2RC, KPriv1RC, KPriv2RC),
+  title = "",
+  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  question_labels = c("To keep your devices safer, you should always install updates immediately. (Correct Statement)", "It's best to have the same password for each account. (False Statement)", "What you do online is used by companies to advertise their products and services. (Correct Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave1-age-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave1-age-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave1-age-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave1-gender-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave1-gender-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave1-gender-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave1-edu-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave1-edu-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave1-edu-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave1-mig-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave1-mig-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave1-mig-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r ksafety-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KSafDev2RC, KPriv1RC, KPriv2RC),
+  title = "",
+  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  question_labels = c("To keep your devices safer, you should always install updates immediately. (Correct Statement)", "It's best to have the same password for each account. (False Statement)", "What you do online is used by companies to advertise their products and services. (Correct Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave2-age-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave2-age-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave2-age-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave2-gender-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave2-gender-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave2-gender-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave2-edu-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave2-edu-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave2-edu-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-wave2-mig-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KSafDev2RC),
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-wave2-mig-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KPriv1RC),
+  title = "It's best to have the same password for each account. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-wave2-mig-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KPriv2RC),
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-overtime-overall-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KSafDev2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-overtime-overall-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "It's best to have the same password for each account. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KPriv1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-overtime-overall-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KPriv2RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-overtime-age-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KSafDev2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-overtime-age-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "It's best to have the same password for each account. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv1RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-overtime-age-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-overtime-gender-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KSafDev2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-overtime-gender-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "It's best to have the same password for each account. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv1RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-overtime-gender-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-overtime-edu-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KSafDev2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-overtime-edu-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "It's best to have the same password for each account. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv1RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-overtime-edu-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ksafety-overtime-mig-item1}
+# To keep your devices safer, you should always install updates immediately. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KSafDev2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ksafety-overtime-mig-item2}
+# It's best to have the same password for each account. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "It's best to have the same password for each account. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv1RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r ksafety-overtime-mig-item3}
+# What you do online is used by companies to advertise their products and services. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KPriv2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph heart-fill >}} Digital Health
+
+
+**Digital Health & Wellbeing** skills relate to managing healthy digital habits: controlling screen time, minimizing distractions, taking digital breaks, and understanding how technology affects sleep and wellbeing.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r khealth-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KHealth2RC, KHealth3RC),
+  title = "",
+  questions = c("KHealth2RC", "KHealth3RC"),
+  question_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)", "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave1-age-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave1-age-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave1-gender-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave1-gender-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave1-edu-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave1-edu-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave1-mig-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave1-mig-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r khealth-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KHealth2RC, KHealth3RC),
+  title = "",
+  questions = c("KHealth2RC", "KHealth3RC"),
+  question_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)", "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave2-age-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave2-age-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave2-gender-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave2-gender-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave2-edu-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave2-edu-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-wave2-mig-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KHealth2RC),
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-wave2-mig-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KHealth3RC),
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-overtime-overall-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KHealth2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-overtime-overall-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KHealth3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-overtime-age-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-overtime-age-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-overtime-gender-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-overtime-gender-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-overtime-edu-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-overtime-edu-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r khealth-overtime-mig-item1}
+# Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r khealth-overtime-mig-item2}
+# You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KHealth3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph recycle-fill >}} Green Digital
+
+
+**Sustainable/Green Digital Skills** focus on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
+```
+[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kgreen-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KEnv2RC, KEnv3RC),
+  title = "",
+  questions = c("KEnv2RC", "KEnv3RC"),
+  question_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave1-age-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave1-age-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave1-gender-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave1-gender-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave1-edu-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave1-edu-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave1-mig-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave1-mig-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kgreen-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KEnv2RC, KEnv3RC),
+  title = "",
+  questions = c("KEnv2RC", "KEnv3RC"),
+  question_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave2-age-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave2-age-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave2-gender-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave2-gender-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave2-edu-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave2-edu-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-wave2-mig-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KEnv2RC),
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-wave2-mig-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KEnv3RC),
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  stack_map_values = list("1" = "Correctly Answered", "0" = "Incorrectly Answered"),
+  stack_order = c("Don't Know", "Correctly Answered", "Incorrectly Answered"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-overtime-overall-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-overtime-overall-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-overtime-age-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-overtime-age-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-overtime-gender-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-overtime-gender-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-overtime-edu-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-overtime-edu-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgreen-overtime-mig-item1}
+# Phones contain materials that mineworkers extract from mines. (Correct Statement)
+result <- create_timeline(
+  data = data,
+  title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgreen-overtime-mig-item2}
+# The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
+result <- create_timeline(
+  data = data,
+  title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+
+```{=html}
+<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
+  <div class='pagination-container'>
+    <a href='knowledge.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+    <div class='pagination-info'>
+      <span class='pagination-prefix'></span>
+      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='2' aria-label='Current page'>
+      <span class='pagination-separator'> / 3</span>
+    </div>
+    <a href='knowledge_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+<!-- Pagination Navigation Script -->
+<script>
+(function() {
+  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
+  const pageInput = document.getElementById('page-input-bottom');
+  
+  if (pageInput) {
+    pageInput.addEventListener('change', function() {
+      const pageNum = parseInt(this.value);
+      if (pageNum >= 1 && pageNum <= pageUrls.length) {
+        window.location.href = pageUrls[pageNum - 1];
+      } else {
+        this.value = this.getAttribute('value');
+      }
+    });
+    
+    pageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  }
+})();
+</script>
+```
+

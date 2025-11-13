@@ -1,0 +1,1887 @@
+---
+title: "{{< iconify ph chats-fill >}} Netiquette"
+format: html
+---
+
+```{r}
+#| include: false
+library(dashboardr)
+```
+
+**DIT IS EEN MOCKUP VERSIE GELIEVE NIET TE CITEREN**
+
+**Netiquette** verwijst naar correct online communicatie-etiquette: weten wanneer je toestemming moet vragen voor het delen, de juiste communicatietool kiezen, begrijpen wat je niet online moet delen, en emoticons op de juiste manier gebruiken.
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load required libraries
+library(dashboardr)
+library(dplyr)
+library(highcharter)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data from dataset_4014obs.rds
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+
+```
+
+## {{< iconify ph lightning-fill >}} Netiquette Vaardigheden
+
+
+ADD TEXT BEFORE TABSET
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r nskills-wave1-overall-2}
+# Netiquette Skills
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(SCom1_V2, SCom2, SCom4_V2, SCom5),
+  title = "Netiquette Skills",
+  questions = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
+  question_labels = c("Ik weet wanneer ik toestemming moet vragen om iets online te delen", "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)", "Ik weet welke dingen ik niet hoor te delen online", "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave1-age-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave1-age-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave1-age-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave1-age-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave1-gender-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave1-gender-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave1-gender-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave1-gender-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave1-edu-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave1-edu-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave1-edu-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave1-edu-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave1-mig-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave1-mig-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave1-mig-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave1-mig-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r nskills-wave2-overall-2}
+# Netiquette Skills
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(SCom1_V2, SCom2, SCom4_V2, SCom5),
+  title = "Netiquette Skills",
+  questions = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
+  question_labels = c("Ik weet wanneer ik toestemming moet vragen om iets online te delen", "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)", "Ik weet welke dingen ik niet hoor te delen online", "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave2-age-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave2-age-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave2-age-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave2-age-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave2-gender-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave2-gender-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave2-gender-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave2-gender-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave2-edu-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave2-edu-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave2-edu-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave2-edu-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-wave2-mig-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SCom1_V2),
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-wave2-mig-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SCom2),
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-wave2-mig-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SCom4_V2),
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-wave2-mig-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, SCom5),
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Verloop over tijd
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-overtime-overall-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = "Percentage who answered (Completely) True (4-5)",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  response_var = "SCom1_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-overtime-overall-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = "Percentage who answered (Completely) True (4-5)",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  response_var = "SCom2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-overtime-overall-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = "Percentage who answered (Completely) True (4-5)",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  response_var = "SCom4_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-overtime-overall-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = "Percentage who answered (Completely) True (4-5)",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  response_var = "SCom5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-overtime-age-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom1_V2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-overtime-age-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-overtime-age-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom4_V2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-overtime-age-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-overtime-gender-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom1_V2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-overtime-gender-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-overtime-gender-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom4_V2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-overtime-gender-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-overtime-edu-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom1_V2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-overtime-edu-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-overtime-edu-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom4_V2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-overtime-edu-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r nskills-overtime-mig-item1-2}
+# Ik weet wanneer ik toestemming moet vragen om iets online te delen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom1_V2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r nskills-overtime-mig-item2-2}
+# Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r nskills-overtime-mig-item3-2}
+# Ik weet welke dingen ik niet hoor te delen online
+result <- create_timeline(
+  data = data,
+  title = "Ik weet welke dingen ik niet hoor te delen online",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom4_V2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r nskills-overtime-mig-item4-2}
+# Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
+result <- create_timeline(
+  data = data,
+  title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SCom5",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph book-open-fill >}} Netiquette Kennis
+
+
+**Netiquette** verwijst naar correct online communicatie-etiquette: weten wanneer je toestemming moet vragen voor het delen, de juiste communicatietool kiezen, begrijpen wat je niet online moet delen, en emoticons op de juiste manier gebruiken.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Nu volgen een aantal uitspraken die gaan over het online media en digitale technologie. Geef aan of de zin volgens jou feitelijk wel waar of juist niet waar is (dus in het algemeen, niet voor jou persoonlijk). Als je het niet weet, kruis dan aan 'ik weet het niet'. Je hoeft dus niet te gokken.", preset = "question")
+```
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r knet-wave1-overall-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  questions = "KCom3RC",
+  question_labels = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+```{r knet-wave1-age-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+```{r knet-wave1-gender-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+```{r knet-wave1-edu-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+```{r knet-wave1-mig-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r knet-wave2-overall-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  questions = "KCom3RC",
+  question_labels = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+```{r knet-wave2-age-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+```{r knet-wave2-gender-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+```{r knet-wave2-edu-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+```{r knet-wave2-mig-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KCom3RC),
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Weet niet", "Correct beantwoord", "Incorrect beantwoord"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KCom3RC"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Verloop over tijd
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r knet-overtime-overall-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_timeline(
+  data = data,
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage who selected/answered correctly",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KCom3RC"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+```{r knet-overtime-age-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_timeline(
+  data = data,
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCom3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+```{r knet-overtime-gender-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_timeline(
+  data = data,
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCom3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+```{r knet-overtime-edu-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_timeline(
+  data = data,
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCom3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+```{r knet-overtime-mig-2}
+# Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
+result <- create_timeline(
+  data = data,
+  title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KCom3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
