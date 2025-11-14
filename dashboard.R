@@ -3410,7 +3410,7 @@ dashboard <- create_dashboard(
   page_navigation = TRUE,
   back_to_top = TRUE,
   # repo_url = "https://github.com/username/dashboardr",
-  self_contained = TRUE,        # ← From your original
+  self_contained = F,        # ← From your original
   # viewport_width = 1200,
   # viewport_scale = 0.3,
   # toc = "floating",
