@@ -360,11 +360,22 @@ add_all_viz_timeline_single <- function(viz, vars, tbgrp, demographic, wave_labe
   viz
 }
 
-add_all_viz_stackedbar <- function(viz, vars, questions, stack_var, tbgrp, demographic, wave_label) {
+add_all_viz_stackedbar <- function(viz, vars, questions, stack_var,
+                                   tbgrp, demographic, wave_label) {
+  
   wave_path <- tolower(gsub(" ", "", wave_label))
   
+  # map demographic -> translation key
+  label_keys <- c(
+    age    = "tab_age",
+    gender = "tab_gender",
+    edu    = "tab_education",
+    mig    = "tab_migration"
+  )
+  
+  label_key <- label_keys[[demographic]]
+  
   for (i in seq_along(vars)) {
-    # When there's only 1 question, don't add item{i} to avoid single subtab
     tabgroup_path <- if (length(vars) == 1) {
       glue::glue("{tbgrp}/{wave_path}/{demographic}")
     } else {
@@ -373,15 +384,15 @@ add_all_viz_stackedbar <- function(viz, vars, questions, stack_var, tbgrp, demog
     
     viz <- viz |>
       add_viz(
-        title = questions[[i]],
-        x_var = stack_var,
+        title    = questions[[i]],
+        x_var    = stack_var,
+        x_label  = transl(label_key, lang),   # <- changes with demographic
         stack_var = vars[[i]],
-        tabgroup = tabgroup_path
+        tabgroup  = tabgroup_path
       )
   }
   viz
 }
-
 # stack_map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang))
 
 # Main function
@@ -3067,8 +3078,8 @@ performance_collection <- perf_sis_viz %>%
     item6  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 6")),
     item7  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")),
     item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8")),
-    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 9")),
-    item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 10"))
+    item9  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 9")),
+    item10  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 10"))
   )
 
 # 7. DIMENSION-SPECIFIC COMBINED VISUALIZATIONS ================================

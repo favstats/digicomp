@@ -103,23 +103,23 @@ for (f in files) {
 # renders every .qmd in qmds/ per its _quarto.yml
 quarto::quarto_render("qmds", as_job = F)
 
-# read_lines("dashboard.R") %>%
-#   str_replace_all("\\.\\./docs", "../docs/en") %>%
-#   str_replace_all("circle-flags:uk", "circle-flags:lang-nl") %>%
-#   # str_replace_all('"nl"', '"en"')  %>%
-#   str_replace_all('digicomp/en', 'digicomp') %>%
-#   str_replace_all('qmds', 'qmds_en') %>%
-#   str_replace_all('render = F', 'render = T') %>%
-# 
-#   write_lines("dashboard_en.R")
-# 
-# 
-# 
-# 
-# # run English
-# en_env <- new.env(parent = globalenv())
-# en_env$lang <- "en"
-# source("dashboard_en.R", local = en_env)
+read_lines("dashboard.R") %>%
+  str_replace_all("\\.\\./docs", "../docs/en") %>%
+  str_replace_all("circle-flags:uk", "circle-flags:lang-nl") %>%
+  # str_replace_all('"nl"', '"en"')  %>%
+  str_replace_all('digicomp/en', 'digicomp') %>%
+  str_replace_all('qmds', 'qmds_en') %>%
+  str_replace_all('render = F', 'render = T') %>%
+
+  write_lines("dashboard_en.R")
+
+
+
+
+# run English
+en_env <- new.env(parent = globalenv())
+en_env$lang <- "en"
+source("dashboard_en.R", local = en_env)
 
 
 
