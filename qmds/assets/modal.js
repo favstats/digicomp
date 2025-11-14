@@ -150,9 +150,26 @@
           }
         }
 
+        console.log('About to check for modalId, current value:', modalId);
+        
         if (modalId) {
           console.log('Extracted modal ID:', modalId);
-          const modalContent = document.getElementById(modalId);
+          let modalContent = document.getElementById(modalId);
+          console.log('Searched for element with ID:', modalId);
+          console.log('Result of getElementById:', modalContent);
+          
+          // Fallback: try case-insensitive search if not found
+          if (!modalContent) {
+            console.log('Trying case-insensitive search...');
+            const allElements = document.querySelectorAll('[id]');
+            for (const el of allElements) {
+              if (el.id.toLowerCase() === modalId.toLowerCase()) {
+                modalContent = el;
+                console.log('Found with case-insensitive match:', el.id);
+                break;
+              }
+            }
+          }
 
           // Only open if there's a matching modal-content div
           if (modalContent && modalContent.classList.contains('modal-content')) {
@@ -166,11 +183,16 @@
             console.log('modalContent element:', modalContent);
             if (modalContent) {
               console.log('modalContent classes:', modalContent.className);
+              console.log('Does it have modal-content class?', modalContent.classList.contains('modal-content'));
+            } else {
+              console.log('Element with ID not found in document');
+              console.log('All elements with modal-content class:', document.querySelectorAll('.modal-content').length);
             }
             // Don't prevent default if no valid modal found - let the link work normally
           }
         } else {
           console.log('No modal ID found in href');
+          console.log('href was:', href);
         }
       }
     });
@@ -190,6 +212,13 @@
   window.addEventListener('load', function() {
     console.log('Window loaded, ensuring modals are initialized...');
     initializeModals();
+    
+    // Diagnostic: List all elements with IDs that might be modal content
+    console.log('=== MODAL DIAGNOSTIC ===');
+    console.log('All elements with modal-content class:', document.querySelectorAll('.modal-content'));
+    console.log('All elements with IDs starting with P:', document.querySelectorAll('[id^="P"]'));
+    console.log('Sample of all IDs in document:', Array.from(document.querySelectorAll('[id]')).slice(0, 20).map(el => el.id));
+    console.log('=== END DIAGNOSTIC ===');
   });
   
 })();
