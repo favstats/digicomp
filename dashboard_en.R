@@ -2543,7 +2543,7 @@ perf_dccs_tex_link <- md_text(
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
   # Use the actual question text (PDCCS1) which now has the modal link embedded
-  paste0("create_blockquote('", transl("PDCCS1", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)")
 ) 
