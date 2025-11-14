@@ -137,20 +137,21 @@
 
       // Check if link has modal-link class
       if (link.classList.contains('modal-link')) {
-        console.log('Link has modal-link class');
-        const href = link.getAttribute('href');
-        console.log('Raw href:', href);
+        try {
+          console.log('Link has modal-link class');
+          const href = link.getAttribute('href');
+          console.log('Raw href:', href);
 
-        // Extract modal ID from href - handle both relative (#id) and absolute URLs (https://...#id)
-        let modalId = null;
-        if (href) {
-          const hashIndex = href.indexOf('#');
-          if (hashIndex !== -1) {
-            modalId = href.substring(hashIndex + 1); // Get everything after '#'
+          // Extract modal ID from href - handle both relative (#id) and absolute URLs (https://...#id)
+          let modalId = null;
+          if (href) {
+            const hashIndex = href.indexOf('#');
+            if (hashIndex !== -1) {
+              modalId = href.substring(hashIndex + 1); // Get everything after '#'
+            }
           }
-        }
 
-        console.log('About to check for modalId, current value:', modalId);
+          console.log('About to check for modalId, current value:', modalId);
         
         if (modalId) {
           console.log('Extracted modal ID:', modalId);
@@ -194,6 +195,10 @@
           console.log('No modal ID found in href');
           console.log('href was:', href);
         }
+        } catch (err) {
+          console.error('Error in modal-link handler:', err);
+          console.error('Error stack:', err.stack);
+        }
       }
     });
   }
@@ -214,11 +219,15 @@
     initializeModals();
     
     // Diagnostic: List all elements with IDs that might be modal content
-    console.log('=== MODAL DIAGNOSTIC ===');
-    console.log('All elements with modal-content class:', document.querySelectorAll('.modal-content'));
-    console.log('All elements with IDs starting with P:', document.querySelectorAll('[id^="P"]'));
-    console.log('Sample of all IDs in document:', Array.from(document.querySelectorAll('[id]')).slice(0, 20).map(el => el.id));
-    console.log('=== END DIAGNOSTIC ===');
+    try {
+      console.log('=== MODAL DIAGNOSTIC ===');
+      console.log('All elements with modal-content class:', document.querySelectorAll('.modal-content'));
+      console.log('All elements with IDs starting with P:', document.querySelectorAll('[id^="P"]'));
+      console.log('Sample of all IDs in document:', Array.from(document.querySelectorAll('[id]')).slice(0, 20).map(el => el.id));
+      console.log('=== END DIAGNOSTIC ===');
+    } catch (err) {
+      console.error('Diagnostic failed:', err);
+    }
     
     // Set up MutationObserver to watch for dynamically added modal content
     const observer = new MutationObserver(function(mutations) {
