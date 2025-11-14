@@ -1,0 +1,4285 @@
+---
+title: "{{< iconify ph book-open-fill >}} Kennis"
+format: html
+---
+
+
+```{=html}
+<script>document.body.classList.add('has-pagination-top');</script>
+<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
+  <div class='pagination-container'>
+    <a href='kennis_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+    <div class='pagination-info'>
+      <span class='pagination-prefix'>Page </span>
+      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='3' aria-label='Current page'>
+      <span class='pagination-separator'> / 3</span>
+    </div>
+    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Pagination Navigation Script -->
+<script>
+(function() {
+  const pageUrls = ["kennis.html","kennis_p2.html","kennis_p3.html"];
+  const pageInput = document.getElementById('page-input-top');
+  
+  if (pageInput) {
+    pageInput.addEventListener('change', function() {
+      const pageNum = parseInt(this.value);
+      if (pageNum >= 1 && pageNum <= pageUrls.length) {
+        window.location.href = pageUrls[pageNum - 1];
+      } else {
+        this.value = this.getAttribute('value');
+      }
+    });
+    
+    pageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  }
+})();
+</script>
+```
+
+
+
+```{r}
+#| include: false
+library(dashboardr)
+```
+
+**DIT IS EEN MOCKUP VERSIE GELIEVE NIET TE CITEREN**
+
+De Kennis-sectie meet wat deelnemers weten over de digitale wereld: hoe die werkt, welke risico’s eraan verbonden zijn en hoe verschillende technologieën het dagelijks leven beïnvloeden. Deze items toetsen feitelijke kennis over onderwerpen als betrouwbaarheid van informatie, communicatie en privacy, online veiligheid, AI en generatieve AI. Respondenten geven aan of elke stelling waar of onwaar is (of dat ze het niet weten), zodat we hun niveau van digitale geletterdheid en bewustzijn kunnen inschatten, los van hun zelfingeschatte vaardigheden.
+
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load required libraries
+library(dashboardr)
+library(dplyr)
+library(highcharter)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data from dataset_4014obs.rds
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# Use dashboardr's loading overlay function
+dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+```
+
+## {{< iconify ph wallet-fill >}} Transactional
+
+
+**Transactionele Vaardigheden** omvatten het vermogen om officiële online zaken af te handelen: overheidsdiensten beheren, digitale betalingen, gezondheidszorgafspraken, en documenten uploaden.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Nu volgen een aantal uitspraken die gaan over het online media en digitale technologie. Geef aan of de zin volgens jou feitelijk wel waar of juist niet waar is (dus in het algemeen, niet voor jou persoonlijk). Als je het niet weet, kruis dan aan 'ik weet het niet'. Je hoeft dus niet te gokken.", preset = "question")
+```
+[{{< iconify ph cards >}} Bekijk alle Transactionele resultaten](transactional.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r ktrans-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Ktrans2RC, Ktrans3RC),
+  title = "",
+  questions = c("Ktrans2RC", "Ktrans3RC"),
+  question_labels = c("Bij medische spoed maak je online een afspraak met je zorgverlener", "Een webshop is betrouwbaar als je er kunt betalen met iDeal"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave1-age-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave1-age-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave1-gender-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave1-gender-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave1-edu-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave1-edu-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave1-mig-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave1-mig-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r ktrans-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Ktrans2RC, Ktrans3RC),
+  title = "",
+  questions = c("Ktrans2RC", "Ktrans3RC"),
+  question_labels = c("Bij medische spoed maak je online een afspraak met je zorgverlener", "Een webshop is betrouwbaar als je er kunt betalen met iDeal"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave2-age-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave2-age-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave2-gender-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave2-gender-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave2-edu-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave2-edu-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-wave2-mig-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, Ktrans2RC),
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-wave2-mig-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, Ktrans3RC),
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-overtime-overall-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_timeline(
+  data = data,
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-overtime-overall-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_timeline(
+  data = data,
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-overtime-age-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_timeline(
+  data = data,
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-overtime-age-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_timeline(
+  data = data,
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-overtime-gender-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_timeline(
+  data = data,
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-overtime-gender-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_timeline(
+  data = data,
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-overtime-edu-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_timeline(
+  data = data,
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-overtime-edu-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_timeline(
+  data = data,
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r ktrans-overtime-mig-item1}
+# Bij medische spoed maak je online een afspraak met je zorgverlener
+result <- create_timeline(
+  data = data,
+  title = "Bij medische spoed maak je online een afspraak met je zorgverlener",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r ktrans-overtime-mig-item2}
+# Een webshop is betrouwbaar als je er kunt betalen met iDeal
+result <- create_timeline(
+  data = data,
+  title = "Een webshop is betrouwbaar als je er kunt betalen met iDeal",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "Ktrans3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph robot-fill >}} AI
+
+
+**AI-vaardigheden** meten het vermogen om te herkennen wanneer websites en apps artificiële intelligentie gebruiken om content en aanbevelingen te personaliseren.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Nu volgen een aantal uitspraken die gaan over het online media en digitale technologie. Geef aan of de zin volgens jou feitelijk wel waar of juist niet waar is (dus in het algemeen, niet voor jou persoonlijk). Als je het niet weet, kruis dan aan 'ik weet het niet'. Je hoeft dus niet te gokken.", preset = "question")
+```
+[{{< iconify ph cards >}} Bekijk alle AI resultaten](ai.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kai-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KAI1RC, KAI2RC, KAI3RC, KAI4RC),
+  title = "",
+  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  question_labels = c("Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)", "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien", "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet", "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-age-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-age-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-age-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-age-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-gender-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-gender-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-gender-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-gender-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-edu-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-edu-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-edu-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-edu-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave1-mig-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave1-mig-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave1-mig-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave1-mig-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kai-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KAI1RC, KAI2RC, KAI3RC, KAI4RC),
+  title = "",
+  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  question_labels = c("Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)", "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien", "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet", "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-age-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-age-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-age-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-age-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-gender-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-gender-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-gender-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-gender-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-edu-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-edu-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-edu-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-edu-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-wave2-mig-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI1RC),
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-wave2-mig-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI2RC),
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-wave2-mig-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI3RC),
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-wave2-mig-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KAI4RC),
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-overall-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_timeline(
+  data = data,
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-overall-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_timeline(
+  data = data,
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-overall-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_timeline(
+  data = data,
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-overall-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_timeline(
+  data = data,
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-age-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_timeline(
+  data = data,
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-age-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_timeline(
+  data = data,
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-age-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_timeline(
+  data = data,
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-age-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_timeline(
+  data = data,
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-gender-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_timeline(
+  data = data,
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-gender-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_timeline(
+  data = data,
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-gender-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_timeline(
+  data = data,
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-gender-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_timeline(
+  data = data,
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-edu-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_timeline(
+  data = data,
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-edu-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_timeline(
+  data = data,
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-edu-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_timeline(
+  data = data,
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-edu-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_timeline(
+  data = data,
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kai-overtime-mig-item1}
+# Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
+result <- create_timeline(
+  data = data,
+  title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI1RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kai-overtime-mig-item2}
+# Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
+result <- create_timeline(
+  data = data,
+  title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kai-overtime-mig-item3}
+# Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
+result <- create_timeline(
+  data = data,
+  title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kai-overtime-mig-item4}
+# Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
+result <- create_timeline(
+  data = data,
+  title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KAI4RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph magic-wand-fill >}} Gen AI
+
+
+**Generatieve AI-vaardigheden** meten competenties met AI-tools zoals ChatGPT: weten hoe AI-gegenereerde informatie te verifiëren, effectieve prompts schrijven, AI-gegenereerde content detecteren, en de mogelijkheden en beperkingen van GenAI begrijpen.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Nu volgen een aantal uitspraken die gaan over het online media en digitale technologie. Geef aan of de zin volgens jou feitelijk wel waar of juist niet waar is (dus in het algemeen, niet voor jou persoonlijk). Als je het niet weet, kruis dan aan 'ik weet het niet'. Je hoeft dus niet te gokken.", preset = "question")
+```
+[{{< iconify ph cards >}} Bekijk alle Gen AI resultaten](gen_ai.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kgai-wave1-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(KGAI1RC, KGAI2RC, KGAI3RC, KGAI4RC, KGAI5RC),
+  title = "",
+  questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
+  question_labels = c("Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar", "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu", "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft", "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')", "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave1-age-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave1-age-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave1-age-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave1-age-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave1-age-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(AgeGroup, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave1-gender-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave1-gender-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave1-gender-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave1-gender-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave1-gender-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(geslacht, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave1-edu-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave1-edu-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave1-edu-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave1-edu-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave1-edu-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(Education, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave1-mig-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave1-mig-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave1-mig-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave1-mig-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave1-mig-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_984a0efe %>% tidyr::drop_na(MigrationBackground, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r kgai-wave2-overall}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(KGAI1RC, KGAI2RC, KGAI3RC, KGAI4RC, KGAI5RC),
+  title = "",
+  questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
+  question_labels = c("Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar", "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu", "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft", "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')", "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave2-age-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave2-age-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave2-age-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave2-age-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave2-age-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(AgeGroup, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave2-gender-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave2-gender-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave2-gender-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave2-gender-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave2-gender-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(geslacht, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave2-edu-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave2-edu-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave2-edu-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave2-edu-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave2-edu-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(Education, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-wave2-mig-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI1RC),
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-wave2-mig-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI2RC),
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-wave2-mig-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI3RC),
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-wave2-mig-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI4RC),
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-wave2-mig-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_stackedbar(
+  data = data_filtered_4af682fd %>% tidyr::drop_na(MigrationBackground, KGAI5RC),
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  stack_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-overtime-overall-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_timeline(
+  data = data,
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KGAI1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-overtime-overall-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_timeline(
+  data = data,
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KGAI2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-overtime-overall-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_timeline(
+  data = data,
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KGAI3RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-overtime-overall-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_timeline(
+  data = data,
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KGAI4RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-overtime-overall-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_timeline(
+  data = data,
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage die correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KGAI5RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-overtime-age-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_timeline(
+  data = data,
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI1RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-overtime-age-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_timeline(
+  data = data,
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-overtime-age-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_timeline(
+  data = data,
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-overtime-age-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_timeline(
+  data = data,
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI4RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-overtime-age-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_timeline(
+  data = data,
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI5RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-overtime-gender-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_timeline(
+  data = data,
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI1RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-overtime-gender-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_timeline(
+  data = data,
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-overtime-gender-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_timeline(
+  data = data,
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-overtime-gender-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_timeline(
+  data = data,
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI4RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-overtime-gender-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_timeline(
+  data = data,
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI5RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-overtime-edu-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_timeline(
+  data = data,
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI1RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-overtime-edu-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_timeline(
+  data = data,
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-overtime-edu-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_timeline(
+  data = data,
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-overtime-edu-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_timeline(
+  data = data,
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI4RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-overtime-edu-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_timeline(
+  data = data,
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI5RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r kgai-overtime-mig-item1}
+# Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar
+result <- create_timeline(
+  data = data,
+  title = "Omdat GenAI, zoals ChatGPT, veel websites van het internet doorzoekt, is de informatie die het geeft betrouwbaar",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI1RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r kgai-overtime-mig-item2}
+# Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu
+result <- create_timeline(
+  data = data,
+  title = "Het gebruik van GenAI, zoals ChatGPT, heeft bijna geen invloed op het milieu",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r kgai-overtime-mig-item3}
+# Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft
+result <- create_timeline(
+  data = data,
+  title = "Iemand anders kan ook toegang krijgen tot de informatie die je aan GenAI, zoals ChatGPT, geeft",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r kgai-overtime-mig-item4}
+# Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')
+result <- create_timeline(
+  data = data,
+  title = "Mensen kunnen genAI gebruiken om afbeeldingen, video's of audiofragmenten te maken van gebeurtenissen of mensen die niet echt bestaan of die niet echt hebben plaatsgevonden (bijvoorbeeld 'deepfakes')",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI4RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r kgai-overtime-mig-item5}
+# GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt
+result <- create_timeline(
+  data = data,
+  title = "GenAI, zoals ChatGPT, kan verschillende resultaten geven wanneer je dezelfde vraag meerdere keren stelt",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage die correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KGAI5RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+
+```{=html}
+<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
+  <div class='pagination-container'>
+    <a href='kennis_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </a>
+    <div class='pagination-info'>
+      <span class='pagination-prefix'></span>
+      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='3' aria-label='Current page'>
+      <span class='pagination-separator'> / 3</span>
+    </div>
+    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
+      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Pagination Navigation Script -->
+<script>
+(function() {
+  const pageUrls = ["kennis.html","kennis_p2.html","kennis_p3.html"];
+  const pageInput = document.getElementById('page-input-bottom');
+  
+  if (pageInput) {
+    pageInput.addEventListener('change', function() {
+      const pageNum = parseInt(this.value);
+      if (pageNum >= 1 && pageNum <= pageUrls.length) {
+        window.location.href = pageUrls[pageNum - 1];
+      } else {
+        this.value = this.getAttribute('value');
+      }
+    });
+    
+    pageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+  }
+})();
+</script>
+```
+

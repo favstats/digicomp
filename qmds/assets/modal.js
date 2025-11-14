@@ -219,6 +219,29 @@
     console.log('All elements with IDs starting with P:', document.querySelectorAll('[id^="P"]'));
     console.log('Sample of all IDs in document:', Array.from(document.querySelectorAll('[id]')).slice(0, 20).map(el => el.id));
     console.log('=== END DIAGNOSTIC ===');
+    
+    // Set up MutationObserver to watch for dynamically added modal content
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1) { // Element node
+            // Check if the added node or any of its children have modal-content class
+            if (node.classList && node.classList.contains('modal-content')) {
+              console.log('New modal content detected:', node.id);
+            } else if (node.querySelectorAll) {
+              const modalContents = node.querySelectorAll('.modal-content');
+              if (modalContents.length > 0) {
+                console.log('New modal content(s) detected in added node:', Array.from(modalContents).map(el => el.id));
+              }
+            }
+          }
+        });
+      });
+    });
+    
+    // Start observing the document body for child additions
+    observer.observe(document.body, { childList: true, subtree: true });
+    console.log('MutationObserver set up to watch for dynamic modal content');
   });
   
 })();
