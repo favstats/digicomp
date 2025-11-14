@@ -152,49 +152,49 @@
           }
 
           console.log('About to check for modalId, current value:', modalId);
-        
-        if (modalId) {
-          console.log('Extracted modal ID:', modalId);
-          let modalContent = document.getElementById(modalId);
-          console.log('Searched for element with ID:', modalId);
-          console.log('Result of getElementById:', modalContent);
           
-          // Fallback: try case-insensitive search if not found
-          if (!modalContent) {
-            console.log('Trying case-insensitive search...');
-            const allElements = document.querySelectorAll('[id]');
-            for (const el of allElements) {
-              if (el.id.toLowerCase() === modalId.toLowerCase()) {
-                modalContent = el;
-                console.log('Found with case-insensitive match:', el.id);
-                break;
+          if (modalId) {
+            console.log('Extracted modal ID:', modalId);
+            let modalContent = document.getElementById(modalId);
+            console.log('Searched for element with ID:', modalId);
+            console.log('Result of getElementById:', modalContent);
+            
+            // Fallback: try case-insensitive search if not found
+            if (!modalContent) {
+              console.log('Trying case-insensitive search...');
+              const allElements = document.querySelectorAll('[id]');
+              for (const el of allElements) {
+                if (el.id.toLowerCase() === modalId.toLowerCase()) {
+                  modalContent = el;
+                  console.log('Found with case-insensitive match:', el.id);
+                  break;
+                }
               }
             }
-          }
 
-          // Only open if there's a matching modal-content div
-          if (modalContent && modalContent.classList.contains('modal-content')) {
-            console.log('Found matching modal content:', modalContent);
-            console.log('Modal content classes:', modalContent.className);
-            console.log('Modal content display:', window.getComputedStyle(modalContent).display);
-            e.preventDefault(); // Only prevent default if we found a valid modal
-            openModal(modalId);
-          } else {
-            console.log('No matching modal content found for ID:', modalId);
-            console.log('modalContent element:', modalContent);
-            if (modalContent) {
-              console.log('modalContent classes:', modalContent.className);
-              console.log('Does it have modal-content class?', modalContent.classList.contains('modal-content'));
+            // Only open if there's a matching modal-content div
+            if (modalContent && modalContent.classList.contains('modal-content')) {
+              console.log('Found matching modal content:', modalContent);
+              console.log('Modal content classes:', modalContent.className);
+              console.log('Modal content display:', window.getComputedStyle(modalContent).display);
+              e.preventDefault(); // Only prevent default if we found a valid modal
+              openModal(modalId);
             } else {
-              console.log('Element with ID not found in document');
-              console.log('All elements with modal-content class:', document.querySelectorAll('.modal-content').length);
+              console.log('No matching modal content found for ID:', modalId);
+              console.log('modalContent element:', modalContent);
+              if (modalContent) {
+                console.log('modalContent classes:', modalContent.className);
+                console.log('Does it have modal-content class?', modalContent.classList.contains('modal-content'));
+              } else {
+                console.log('Element with ID not found in document');
+                console.log('All elements with modal-content class:', document.querySelectorAll('.modal-content').length);
+              }
+              // Don't prevent default if no valid modal found - let the link work normally
             }
-            // Don't prevent default if no valid modal found - let the link work normally
+          } else {
+            console.log('No modal ID found in href');
+            console.log('href was:', href);
           }
-        } else {
-          console.log('No modal ID found in href');
-          console.log('href was:', href);
-        }
         } catch (err) {
           console.error('Error in modal-link handler:', err);
           console.error('Error stack:', err.stack);

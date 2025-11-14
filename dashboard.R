@@ -3392,7 +3392,7 @@ dashboard <- create_dashboard(
   code_overflow = "wrap",        # ← From your original
   html_math_method = "mathjax",  # ← From your original
   #### Navbar settings
-  navbar_sections = list(dimensions_menu),  # Just pass the menus!
+  # navbar_sections = list(dimensions_menu),  # Just pass the menus!
   navbar_style = "dark",
   navbar_brand = "Digital Competence Insights Dashboard",
   navbar_toggle = "collapse",
