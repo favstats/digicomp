@@ -3417,7 +3417,7 @@ dashboard <- create_dashboard(
   # toc_depth = 3,
   code_tools = FALSE,  # ← Add this to explicitly disable the Code button
   code_folding = NULL, # ← Make sure this is NULL or FALSE too
-  plausible = "https://favstats.github.io/digicomp",
+  plausible = "pa-UnPiJwxFi8TS-XAvCdgQx",
   metrics_style = "bootstrap"
 ) %>%
   # Landing page with icon
