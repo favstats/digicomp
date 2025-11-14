@@ -3436,19 +3436,19 @@ dashboard <- create_dashboard(
     is_landing_page = TRUE
   ) %>%
   # Analysis page with data and visualizations
-  add_page(
-    overlay = T,
-    overlay_duration = 1,
-    name = transl("page_name_skills", lang),
-    data = digicom_data,
-    visualizations = skills_viz,
-    icon = "ph:lightning-fill",
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("page_text_skills", lang)
-    )
-  ) %>%
+  # add_page(
+  #   overlay = T,
+  #   overlay_duration = 1,
+  #   name = transl("page_name_skills", lang),
+  #   data = digicom_data,
+  #   visualizations = skills_viz,
+  #   icon = "ph:lightning-fill",
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("page_text_skills", lang)
+  #   )
+  # ) %>%
   add_page(
     overlay = T,
     overlay_duration = 1,
@@ -3462,204 +3462,204 @@ dashboard <- create_dashboard(
       transl("page_text_performance", lang)
     )
   ) %>%
-  # Analysis page with data and visualizations
-  add_page(
-    overlay = T,
-    overlay_duration = 1,
-    name = transl("page_name_knowledge", lang),
-    data = digicom_data,
-    visualizations = knowledge_collection,
-    icon = "ph:book-open-fill",
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("page_text_knowledge", lang)
-    )
-  ) %>%
-  # Analysis page with data and visualizations
-  add_page(
-    name = transl("page_name_highlights", lang),
-    data = digicom_data,
-    icon = "ph:star-fill", 
-    # visualizations = genai_viz,
-    text = md_text(
-      "<div style='text-align: justify;'>",
-      paste0("### ", transl("highlights_wave1_title", lang)),
-      transl("highlights_intro", lang),
-      "",
-      transl("key_finding_1", lang),
-      "",
-      transl("key_finding_2", lang),
-      "",
-      transl("key_finding_3", lang),
-      "</div>"
-    )
-  )%>%
-  # Analysis page with data and visualizations
-  add_page(
-    name = transl("page_name_strategic_info", lang),
-    icon = "ph:magnifying-glass",
-    data = digicom_data,
-    visualizations = strategic_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("strategic_info_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_critical_info", lang),
-    icon = "ph:detective-fill",
-    data = digicom_data,
-    visualizations = critical_info_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("critical_info_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_netiquette", lang),
-    icon = "ph:chats-fill",
-    data = digicom_data,
-    visualizations = netiquette_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("netiquette_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_content_creation", lang),
-    icon = "ph:palette-fill",
-    data = digicom_data,
-    visualizations = content_creation_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("content_creation_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_safety", lang),
-    icon = "ph:shield-check-fill",
-    data = digicom_data,
-    visualizations = safety_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("safety_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_digital_health", lang),
-    icon = "ph:heart-fill",
-    data = digicom_data,
-    visualizations = health_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("digital_health_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_green", lang),
-    icon = "ph:recycle-fill",
-    data = digicom_data,
-    visualizations = green_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("green_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_problem_solving", lang),
-    icon = "ph:lightbulb-fill",
-    data = digicom_data,
-    visualizations = problem_solving_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("problem_solving_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_transactional", lang),
-    icon = "ph:wallet-fill",
-    data = digicom_data,
-    visualizations = transactional_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("transactional_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_ai", lang),
-    icon = "ph:robot-fill",
-    data = digicom_data,
-    visualizations = ai_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("ai_description", lang)
-    )
-  ) %>% 
-  
-  add_page(
-    name = transl("page_name_genai", lang),
-    icon = "ph:magic-wand-fill",
-    data = digicom_data,
-    visualizations = genai_combined_visualizations,
-    text = md_text(
-      transl("mockup_warning", lang),
-      "",
-      transl("genai_description", lang)
-    )
-  ) %>% 
-  # Text-only page with icon showcasing card function
-  add_page(
-    name = transl("page_name_about", lang), 
-    icon = "ph:info-fill",
-    navbar_align = "right",
-    text = md_text(
-      "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-      "library(htmltools)",
-      "library(dashboardr)",
-      "",
-      "mario_card <- card(",
-      "  content = \"Mario il Gatto is a data scientist who believes that every dataset has a soul and that R is the language of the gods. He spends his days making beautiful visualizations and his nights dreaming of perfectly normalized databases.\",",
-      "  title = \"Mario il Gatto\",",
-      "  image = \"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=200&fit=crop\",",
-      "  image_alt = \"Photo of a majestic orange cat\",",
-      "  footer = \"Website: mario-il-gatto.data\",",
-      "  class = \"mb-3\"",
-      ")",
-      "",
-      "giuseppe_card <- card(",
-      "  content = \"Giuseppe il Cane is a machine learning engineer who thinks that neural networks are just very complicated dogs. He's convinced that every algorithm needs a good walk and that overfitting is just a sign of too much enthusiasm.\",",
-      "  title = \"Giuseppe il Cane\",",
-      "  image = \"https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=200&fit=crop\",",
-      "  image_alt = \"Photo of a happy golden retriever\",",
-      "  footer = \"Website: giuseppe-il-cane.ai\",",
-      "  class = \"mb-3\"",
-      ")",
-      "",
-      "# Display cards in a row using the card_row function",
-      "card_row(mario_card, giuseppe_card)",
-      "```"
-    )
-  ) %>%
+  # # Analysis page with data and visualizations
+  # add_page(
+  #   overlay = T,
+  #   overlay_duration = 1,
+  #   name = transl("page_name_knowledge", lang),
+  #   data = digicom_data,
+  #   visualizations = knowledge_collection,
+  #   icon = "ph:book-open-fill",
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("page_text_knowledge", lang)
+  #   )
+  # ) %>%
+  # # Analysis page with data and visualizations
+  # add_page(
+  #   name = transl("page_name_highlights", lang),
+  #   data = digicom_data,
+  #   icon = "ph:star-fill", 
+  #   # visualizations = genai_viz,
+  #   text = md_text(
+  #     "<div style='text-align: justify;'>",
+  #     paste0("### ", transl("highlights_wave1_title", lang)),
+  #     transl("highlights_intro", lang),
+  #     "",
+  #     transl("key_finding_1", lang),
+  #     "",
+  #     transl("key_finding_2", lang),
+  #     "",
+  #     transl("key_finding_3", lang),
+  #     "</div>"
+  #   )
+  # )%>%
+  # # Analysis page with data and visualizations
+  # add_page(
+  #   name = transl("page_name_strategic_info", lang),
+  #   icon = "ph:magnifying-glass",
+  #   data = digicom_data,
+  #   visualizations = strategic_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("strategic_info_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_critical_info", lang),
+  #   icon = "ph:detective-fill",
+  #   data = digicom_data,
+  #   visualizations = critical_info_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("critical_info_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_netiquette", lang),
+  #   icon = "ph:chats-fill",
+  #   data = digicom_data,
+  #   visualizations = netiquette_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("netiquette_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_content_creation", lang),
+  #   icon = "ph:palette-fill",
+  #   data = digicom_data,
+  #   visualizations = content_creation_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("content_creation_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_safety", lang),
+  #   icon = "ph:shield-check-fill",
+  #   data = digicom_data,
+  #   visualizations = safety_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("safety_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_digital_health", lang),
+  #   icon = "ph:heart-fill",
+  #   data = digicom_data,
+  #   visualizations = health_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("digital_health_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_green", lang),
+  #   icon = "ph:recycle-fill",
+  #   data = digicom_data,
+  #   visualizations = green_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("green_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_problem_solving", lang),
+  #   icon = "ph:lightbulb-fill",
+  #   data = digicom_data,
+  #   visualizations = problem_solving_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("problem_solving_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_transactional", lang),
+  #   icon = "ph:wallet-fill",
+  #   data = digicom_data,
+  #   visualizations = transactional_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("transactional_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_ai", lang),
+  #   icon = "ph:robot-fill",
+  #   data = digicom_data,
+  #   visualizations = ai_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("ai_description", lang)
+  #   )
+  # ) %>% 
+  # 
+  # add_page(
+  #   name = transl("page_name_genai", lang),
+  #   icon = "ph:magic-wand-fill",
+  #   data = digicom_data,
+  #   visualizations = genai_combined_visualizations,
+  #   text = md_text(
+  #     transl("mockup_warning", lang),
+  #     "",
+  #     transl("genai_description", lang)
+  #   )
+  # ) %>% 
+  # # Text-only page with icon showcasing card function
+  # add_page(
+  #   name = transl("page_name_about", lang), 
+  #   icon = "ph:info-fill",
+  #   navbar_align = "right",
+  #   text = md_text(
+  #     "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  #     "library(htmltools)",
+  #     "library(dashboardr)",
+  #     "",
+  #     "mario_card <- card(",
+  #     "  content = \"Mario il Gatto is a data scientist who believes that every dataset has a soul and that R is the language of the gods. He spends his days making beautiful visualizations and his nights dreaming of perfectly normalized databases.\",",
+  #     "  title = \"Mario il Gatto\",",
+  #     "  image = \"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=200&fit=crop\",",
+  #     "  image_alt = \"Photo of a majestic orange cat\",",
+  #     "  footer = \"Website: mario-il-gatto.data\",",
+  #     "  class = \"mb-3\"",
+  #     ")",
+  #     "",
+  #     "giuseppe_card <- card(",
+  #     "  content = \"Giuseppe il Cane is a machine learning engineer who thinks that neural networks are just very complicated dogs. He's convinced that every algorithm needs a good walk and that overfitting is just a sign of too much enthusiasm.\",",
+  #     "  title = \"Giuseppe il Cane\",",
+  #     "  image = \"https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=200&fit=crop\",",
+  #     "  image_alt = \"Photo of a happy golden retriever\",",
+  #     "  footer = \"Website: giuseppe-il-cane.ai\",",
+  #     "  class = \"mb-3\"",
+  #     ")",
+  #     "",
+  #     "# Display cards in a row using the card_row function",
+  #     "card_row(mario_card, giuseppe_card)",
+  #     "```"
+  #   )
+  # ) %>%
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text
   add_navbar_element(
