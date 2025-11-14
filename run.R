@@ -101,7 +101,7 @@ for (f in files) {
 }
 
 # renders every .qmd in qmds/ per its _quarto.yml
-quarto::quarto_render("qmds", as_job = F)
+# quarto::quarto_render("qmds", as_job = F)
 
 read_lines("dashboard.R") %>% 
   str_replace_all("\\.\\./docs", "../docs/en") %>% 
