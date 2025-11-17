@@ -996,6 +996,25 @@ kinfo_viz <- create_vizzes2(
   lang = lang
 )
 
+kinfo_tex_wo_link <- md_text(
+  kinfo_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+kinfo_viz_wo_link <- create_vizzes2(
+  breaks = knowledge_breaks,
+  kinfo_questions,
+  kinfo_vars,
+  kinfo_labs,
+  "",
+  tbgrp   = "kinfo",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = kinfo_tex_wo_link,
+  lang = lang
+)
 
 ## 3.3 Critical Information Knowledge (critinfo_viz) ----
 
@@ -1037,6 +1056,26 @@ critinfo_viz <- create_vizzes2(
   lang = lang
 )
 
+critinfo_tex_wo_link <- md_text(
+  critinfo_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+critinfo_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  critinfo_questions,
+  critinfo_vars,
+  critinfo_labs,
+  "",
+  tbgrp        = "critinfo",
+  graph_title  = critinfo_questions,
+  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = critinfo_tex_wo_link,
+  lang = lang
+)
 
 ## 3.4 Netiquette Knowledge (knet_viz) ----
 
@@ -1076,6 +1115,26 @@ knet_viz <- create_vizzes2(
   lang = lang
 )
 
+knet_tex_wo_link <- md_text(
+  knet_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+knet_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  knet_questions,
+  knet_vars,
+  knet_labs,
+  "",
+  tbgrp        = "knet",
+  graph_title  = knet_questions, 
+  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = knet_tex_wo_link,
+  lang = lang
+)
 
 
 ## 3.5 Creative / Content Creation Knowledge (kcrea_viz) ----
@@ -1116,6 +1175,25 @@ kcrea_viz <- create_vizzes2(
   lang = lang
 )
 
+kcrea_tex_wo_link <- md_text(
+  kcrea_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+kcrea_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  kcrea_questions,
+  kcrea_vars,
+  kcrea_labs,
+  "",
+  tbgrp        = "kcrea",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = kcrea_tex_wo_link,
+  lang = lang
+)
 
 
 ## 3.6 Safety & Control of Devices Knowledge (ksafety_viz) ----
@@ -1161,6 +1239,25 @@ ksafety_viz <- create_vizzes2(
   lang = lang
 )
 
+ksafety_tex_wo_link <- md_text(
+  ksafety_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+ksafety_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  ksafety_questions,
+  ksafety_vars,
+  ksafety_labs,
+  "",
+  tbgrp        = "ksafety",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = ksafety_tex_wo_link,
+  lang = lang
+)
 
 
 ## 3.7 Health & Wellbeing Knowledge (khealth_viz) ----
@@ -1201,6 +1298,25 @@ khealth_viz <- create_vizzes2(
   lang = lang
 )
 
+khealth_tex_wo_link <- md_text(
+  khealth_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+khealth_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  khealth_questions,
+  khealth_vars,
+  khealth_labs,
+  "",
+  tbgrp        = "khealth",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = khealth_tex_wo_link,
+  lang = lang
+)
 
 
 ## 3.8 Green / Sustainable Digital Knowledge (kgreen_viz) ----
@@ -1241,6 +1357,25 @@ kgreen_viz <- create_vizzes2(
   lang = lang
 )
 
+kgreen_tex_wo_link <- md_text(
+  kgreen_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+kgreen_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  kgreen_questions,
+  kgreen_vars,
+  kgreen_labs,
+  "",
+  tbgrp        = "kgreen",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = kgreen_tex_wo_link,
+  lang = lang
+)
 
 
 ## 3.9 Transactional Knowledge (ktrans_viz) ----
@@ -1281,6 +1416,25 @@ ktrans_viz <- create_vizzes2(
   lang = lang
 )
 
+ktrans_tex_wo_link <- md_text(
+  ktrans_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+ktrans_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  ktrans_questions,
+  ktrans_vars,
+  ktrans_labs,
+  "",
+  tbgrp        = "ktrans",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = ktrans_tex_wo_link,
+  lang = lang
+)
 
 
 ## 3.10 AI Knowledge (kai_viz) ----
@@ -1323,6 +1477,25 @@ kai_viz <- create_vizzes2(
   lang = lang
 )
 
+kai_tex_wo_link <- md_text(
+  kai_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+kai_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  kai_questions,
+  kai_vars,
+  kai_labs,
+  "",
+  tbgrp        = "kai",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = kai_tex_wo_link,
+  lang = lang
+)
 
 
 ## 3.11 Generative AI Knowledge (kgai_viz) ----
@@ -1366,6 +1539,25 @@ kgai_viz <- create_vizzes2(
   lang = lang
 )
 
+kgai_tex_wo_link <- md_text(
+  kgai_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+  "```"
+)
+
+kgai_viz_wo_link <- create_vizzes2(
+  breaks       = knowledge_breaks,
+  kgai_questions,
+  kgai_vars,
+  kgai_labs,
+  "",
+  tbgrp        = "kgai",
+  graph_title  = "", map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
+  text_b_tabset = kgai_tex_wo_link,
+  lang = lang
+)
 
 ## 3.12 Knowledge Collection ----
 knowledge_collection <- #knowledge_viz %>% 
@@ -1534,6 +1726,11 @@ nskills_viz  <- create_vizzes(nskills_questions,
                               text_b_tabset = nskills_tex_complete,
                               graph_title = transl("title_netiquette_skills", lang))
 
+nskills_viz_wo_link  <- create_vizzes(nskills_questions, 
+                                      nskills_vars, sis_labs, 
+                                      nskills_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
+                                      tbgrp = "nskills",
+                                      graph_title = transl("title_netiquette_skills", lang))
 
 
 ## 4.4 Digital Content Creation Skills (dccs_viz) ----
@@ -1567,6 +1764,11 @@ dccs_viz  <- create_vizzes(dccs_questions,
                            text_b_tabset = dccs_tex_complete,
                            graph_title = transl("title_digital_content_creation_skills", lang))
 
+dccs_viz_wo_link  <- create_vizzes(dccs_questions, 
+                                   dccs_vars, sis_labs, 
+                                   dccs_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
+                                   tbgrp = "dccs",
+                                   graph_title = transl("title_digital_content_creation_skills", lang))
 
 
 ## 4.5 Safety & Control of Devices (safety_viz) ----
@@ -1605,6 +1807,12 @@ safety_viz <- create_vizzes(
   text_b_tabset = safety_tex_complete,
   graph_title = transl("title_safety_control_skills", lang))
 
+safety_viz_wo_link <- create_vizzes(
+  safety_questions, safety_vars, sis_labs,
+  safety_tex_question,
+  breaks = c(0.5, 2.5, 3.5, 5.5),
+  tbgrp  = "safety",
+  graph_title = transl("title_safety_control_skills", lang))
 
 ## 4.6 Digital Health & Wellbeing (dhealth_viz) ----
 dhealth_questions <- c(
@@ -1638,6 +1846,12 @@ dhealth_viz <- create_vizzes(
   text_b_tabset = dhealth_tex_complete,
   graph_title = transl("title_digital_health_wellbeing_skills", lang))
 
+dhealth_viz_wo_link <- create_vizzes(
+  dhealth_questions, dhealth_vars, sis_labs,
+  dhealth_tex_question,
+  breaks = c(0.5, 2.5, 3.5, 5.5),
+  tbgrp  = "dhealth",
+  graph_title = transl("title_digital_health_wellbeing_skills", lang))
 
 ## 4.7 Green / Sustainable Digital (green_viz) ----
 green_questions <- c(
@@ -1671,6 +1885,12 @@ green_viz <- create_vizzes(
   text_b_tabset = green_tex_complete,
   graph_title = transl("title_sustainable_green_digital_skills", lang))
 
+green_viz_wo_link <- create_vizzes(
+  green_questions, green_vars, sis_labs,
+  green_tex_question,
+  breaks = c(0.5, 2.5, 3.5, 5.5),
+  tbgrp  = "green",
+  graph_title = transl("title_sustainable_green_digital_skills", lang))
 
 ## 4.8 Digital Problem Solving (dprob_viz) ----
 dprob_questions <- c(
@@ -1704,6 +1924,13 @@ dprob_viz <- create_vizzes(
   graph_title = transl("title_digital_problem_solving_skills", lang)
 )
 
+dprob_viz_wo_link <- create_vizzes(
+  dprob_questions, dprob_vars, sis_labs,
+  dprob_tex_question,
+  breaks = c(0.5, 2.5, 3.5, 5.5),
+  tbgrp  = "dprob",
+  graph_title = transl("title_digital_problem_solving_skills", lang)
+)
 
 ## 4.9 Transactional Skills (trans_viz) ----
 trans_questions <- c(
@@ -1740,6 +1967,13 @@ trans_viz <- create_vizzes(
   graph_title = transl("title_transactional_skills", lang)
 )
 
+trans_viz_wo_link <- create_vizzes(
+  trans_questions, trans_vars, sis_labs,
+  trans_tex_question,
+  breaks = c(0.5, 2.5, 3.5, 5.5),
+  tbgrp  = "trans",
+  graph_title = transl("title_transactional_skills", lang)
+)
 
 ## 4.10 AI Skills (ai_viz) ----
 ai_questions <- c(
@@ -1776,6 +2010,13 @@ ai_viz <- create_vizzes(
   graph_title = transl("title_ai_skills", lang)
 )
 
+ai_viz_wo_link <- create_vizzes(
+  ai_questions, ai_vars, sis_labs,
+  ai_tex_question,
+  breaks = c(0.5, 2.5, 3.5, 5.5),
+  tbgrp  = "ai",
+  graph_title = transl("title_ai_skills", lang)
+)
 
 ## 4.11 Generative AI Skills (genai_viz) ----
 # SGAI4 and SGAI5 are only in wave 2+
@@ -1950,6 +2191,140 @@ genai_viz <- genai_viz_w1 %>%
   combine_viz(genai_demo_w2) %>%
   combine_viz(genai_overtime_demo)
 
+# Same for wo_link version (without links to other pages)
+# Wave 1 visualizations (only SGAI1-3)
+genai_viz_wo_link_w1 <- create_viz(
+  type = "stackedbars",
+  questions = genai_vars_w1,
+  question_labels = genai_questions_w1,
+  stacked_type = "percent",
+  color_palette = the_colors,
+  horizontal = TRUE,
+  x_label = "", 
+  text_before_tabset = genai_tex_question,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = sis_labs,
+  stack_order = rev(sis_labs),
+  drop_na_vars = F,
+  stack_label = NULL,
+  filter = ~ wave == 1,
+  weight_var = "weging_GAMO"
+) %>%
+  add_viz(
+    title = "GenAI Skills", 
+    title_tabset = "Wave 1",
+    icon = "ph:chart-bar",
+    tabgroup = "genai/wave1/overall"
+  )
+
+# Wave 2 visualizations (all SGAI1-5)
+genai_viz_wo_link_w2 <- create_viz(
+  type = "stackedbars",
+  questions = genai_vars_w2,
+  question_labels = genai_questions_w2,
+  stacked_type = "percent",
+  color_palette = the_colors,
+  horizontal = TRUE,
+  x_label = "", 
+  text_before_tabset = genai_tex_question,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = sis_labs,
+  stack_order = rev(sis_labs),
+  drop_na_vars = F,
+  stack_label = NULL,
+  filter = ~ wave == 2,
+  weight_var = "weging_GAMO"
+) %>%
+  add_viz(
+    title = "GenAI Skills", 
+    title_tabset = "Wave 2",
+    icon = "ph:chart-bar",
+    tabgroup = "genai/wave2/overall"
+  )
+
+# Over Time Overall (timeline without group_var) - only for SGAI1-3
+genai_overtime_overall_wo_link <- create_viz(
+  type = "timeline",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  text_before_tabset = genai_tex_question,
+  response_filter = 4:5, 
+  response_filter_label = "Percentage who answered (Completely) True (4-5)",
+  response_filter_combine = T,
+  x_label = "", 
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = the_colors,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO"
+) |>
+  add_all_viz_timeline_single(genai_vars_w1, "genai", "overall", wave_label = "Over Time", questions = genai_questions_w1)
+
+# Wave 1 by Age/Gender/Education/Migration - only SGAI1-3
+genai_demo_w1_wo_link <- create_viz(
+  type = "stackedbar",
+  stacked_type = "percent",
+  horizontal = T,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = sis_labs,
+  text_before_tabset = genai_tex_question,
+  stack_order = rev(sis_labs),
+  filter = ~ wave == 1,
+  drop_na_vars = F,
+  color_palette = the_colors,
+  weight_var = "weging_GAMO"
+) |>
+  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "AgeGroup", "genai", "age", wave_label = "Wave 1") |>
+  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "geslacht", "genai", "gender", wave_label = "Wave 1") |>
+  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "Education", "genai", "edu", wave_label = "Wave 1") |>
+  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "MigrationBackground", "genai", "mig", wave_label = "Wave 1")
+
+# Wave 2 by Age/Gender/Education/Migration - all SGAI1-5
+genai_demo_w2_wo_link <- create_viz(
+  type = "stackedbar",
+  stacked_type = "percent",
+  horizontal = T,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = sis_labs,
+  stack_order = rev(sis_labs),
+  text_before_tabset = genai_tex_question,
+  filter = ~ wave == 2,
+  drop_na_vars = F,
+  color_palette = the_colors,
+  weight_var = "weging_GAMO"
+) |>
+  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "AgeGroup", "genai", "age", wave_label = "Wave 2") |>
+  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "geslacht", "genai", "gender", wave_label = "Wave 2") |>
+  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "Education", "genai", "edu", wave_label = "Wave 2") |>
+  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "MigrationBackground", "genai", "mig", wave_label = "Wave 2")
+
+# Over Time by Age/Gender/Education/Migration - only for SGAI1-3
+genai_overtime_demo_wo_link <- create_viz(
+  type = "timeline",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 4:5, 
+  text_before_tabset = genai_tex_question,
+  x_label = "", 
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = the_colors,
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO"
+) |>
+  add_all_viz_timeline(genai_vars_w1, "AgeGroup", "genai", "age", wave_label = "Over Time", questions = genai_questions_w1) |>
+  add_all_viz_timeline(genai_vars_w1, "geslacht", "genai", "gender", wave_label = "Over Time", questions = genai_questions_w1) |>
+  add_all_viz_timeline(genai_vars_w1, "Education", "genai", "edu", wave_label = "Over Time", questions = genai_questions_w1) |>
+  add_all_viz_timeline(genai_vars_w1, "MigrationBackground", "genai", "mig", wave_label = "Over Time", questions = genai_questions_w1)
+
+# Combine them all
+genai_viz_wo_link <- genai_viz_wo_link_w1 %>% 
+  combine_viz(genai_viz_wo_link_w2) %>%
+  combine_viz(genai_overtime_overall_wo_link) %>%
+  combine_viz(genai_demo_w1_wo_link) %>%
+  combine_viz(genai_demo_w2_wo_link) %>%
+  combine_viz(genai_overtime_demo_wo_link)
 
 ## 4.12 Skills Collection ----
 skills_viz <- sis_viz %>% 
@@ -2046,6 +2421,25 @@ perf_sis_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_sis_tex_wo_link <- md_text(
+  perf_sis_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_sis_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_sis_questions,
+  perf_sis_vars,
+  perf_correct_labs,
+  perf_sis_tex_wo_link,
+  tbgrp        = "perf_sis",
+  graph_title  = perf_sis_questions,
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
+)
 
 
 ## 5.2 Performance: Critical Information (perf_cis_viz) ----
@@ -2081,6 +2475,25 @@ perf_cis_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_cis_tex_wo_link <- md_text(
+  perf_cis_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_cis", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_cis_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_cis_questions,
+  perf_cis_vars,
+  perf_correct_labs,
+  perf_cis_tex_wo_link,
+  tbgrp        = "perf_cis",
+  graph_title  = "",
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
+)
 
 ## 5.3 Performance: Netiquette (perf_netiquette_viz) ----
 perf_n_questions <- c(
@@ -2113,6 +2526,25 @@ perf_netiquette_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_n_tex_wo_link <- md_text(
+  perf_n_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_netiquette_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_n_questions,
+  perf_n_vars,
+  perf_correct_labs,
+  perf_n_tex_wo_link,
+  tbgrp        = "perf_netiquette",
+  graph_title  = perf_n_questions,
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
+)
 
 
 ## 5.4 Performance: Digital Content Creation (perf_dccs_viz) ----
@@ -2155,6 +2587,33 @@ perf_dccs_viz <- create_vizzes3(
     modal_content = transl("modal_content_dccs", lang)
   )
 
+perf_dccs_tex_wo_link <- md_text(
+  perf_dccs_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  # Use the actual question text (PDCCS1) which now has the modal link embedded
+  paste0("create_blockquote('", transl("PDCCS1", lang), "', preset = 'question')"),
+  "```"
+) 
+
+perf_dccs_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_dccs_questions,
+  perf_dccs_vars,
+  perf_correct_labs,
+  perf_dccs_tex_wo_link,
+  tbgrp        = "perf_dccs",
+  graph_title  = perf_dccs_questions,
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
+)  %>%
+  # Modal 2: With image
+  add_modal(
+    modal_id = "PDCCS1R",
+    title = transl("modal_title_dccs", lang), 
+    image = "https://placehold.co/600x400/EEE/31343C",
+    modal_content = transl("modal_content_dccs", lang)
+  )
 
 
 ## 5.5 Performance: Safety & Control of Devices (perf_safety_viz) ----
@@ -2204,6 +2663,25 @@ perf_safety_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_safety_tex_wo_link <- md_text(
+  perf_safety_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_safety", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_safety_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_safety_questions,
+  perf_safety_vars,
+  perf_selected_labs,
+  perf_safety_tex_wo_link,
+  tbgrp        = "perf_safety",
+  graph_title  = "",
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
+)
 
 
 ## 5.6 Performance: Health & Wellbeing (perf_health_viz) ----
@@ -2247,6 +2725,25 @@ perf_health_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_health_tex_wo_link <- md_text(
+  perf_health_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_health", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_health_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_health_questions,
+  perf_health_vars,
+  perf_selected_labs,
+  perf_health_tex_wo_link,
+  tbgrp        = "perf_health",
+  graph_title  = "",
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
+)
 
 
 ## 5.7 Performance: Green Skills (perf_green_viz) ----
@@ -2291,6 +2788,25 @@ perf_green_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_green_tex_wo_link <- md_text(
+  perf_green_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_green", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_green_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_green_questions,
+  perf_green_vars,
+  perf_selected_labs,
+  perf_green_tex_wo_link,
+  tbgrp        = "perf_green",
+  graph_title  = "",
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
+)
 
 
 ## 5.8 Performance: Problem Solving (perf_ps_viz) ----
@@ -2335,6 +2851,25 @@ perf_ps_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_ps_tex_wo_link <- md_text(
+  perf_ps_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_problem_solving", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_ps_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_ps_questions,
+  perf_ps_vars,
+  perf_selected_labs,
+  perf_ps_tex_wo_link,
+  tbgrp        = "perf_ps",
+  graph_title  = "",
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
+)
 
 
 ## 5.9 Performance: Transactional (perf_trans_viz) ----
@@ -2368,6 +2903,25 @@ perf_trans_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_trans_tex_wo_link <- md_text(
+  perf_trans_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_trans_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_trans_questions,
+  perf_trans_vars,
+  perf_correct_labs,
+  perf_trans_tex_wo_link,
+  tbgrp        = "perf_trans",
+  graph_title  = perf_trans_questions,
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
+)
 
 
 ## 5.10 Performance: AI (perf_ai_viz) ----
@@ -2412,6 +2966,25 @@ perf_ai_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_ai_tex_wo_link <- md_text(
+  perf_ai_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_ai", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_ai_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_ai_questions,
+  perf_ai_vars,
+  perf_selected_labs,
+  perf_ai_tex_wo_link,
+  tbgrp        = "perf_ai",
+  graph_title  = "",
+  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
+  lang = lang
+)
 
 
 ## 5.11 Performance: GenAI (perf_genai_viz) ----
@@ -2446,6 +3019,26 @@ perf_genai_viz <- create_vizzes3(
   lang = lang
 )
 
+perf_genai_tex_wo_link <- md_text(
+  perf_genai_info_text,
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  "```"
+)
+
+perf_genai_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_genai_questions,
+  perf_genai_vars,
+  perf_correct_labs,
+  perf_genai_tex_wo_link,
+  tbgrp        = "perf_genai",
+  graph_title  = perf_genai_questions,
+  # in original you reversed categories_dat; here we can still map 1=Correct
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
+)
 
 
 # 6. VISUALIZATION COLLECTIONS =================================================
@@ -2454,15 +3047,14 @@ perf_genai_viz <- create_vizzes3(
 performance_collection <- perf_sis_viz %>%
   combine_viz(perf_cis_viz) %>%
   combine_viz(perf_dccs_viz) %>%
-  add_pagination() %>% 
   combine_viz(perf_netiquette_viz) %>%
+  add_pagination() %>% 
   combine_viz(perf_safety_viz) %>%
   combine_viz(perf_health_viz) %>%
-  add_pagination() %>%
   combine_viz(perf_green_viz) %>%
   combine_viz(perf_ps_viz)  %>%
-  combine_viz(perf_trans_viz) %>%
   add_pagination() %>%
+  combine_viz(perf_trans_viz) %>%
   combine_viz(perf_ai_viz) %>%
   combine_viz(perf_genai_viz) %>%
   set_tabgroup_labels(
@@ -2528,651 +3120,11 @@ sis_tex_wo_complete <- paste0(
 )
 
 
-## Knowledge _wo_link vizzes ----
-
-kinfo_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-kinfo_viz_wo_link <- create_vizzes2(
-  breaks = knowledge_breaks,
-  kinfo_questions,
-  kinfo_vars,
-  kinfo_labs,
-  "",
-  tbgrp   = "kinfo",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kinfo_tex_wo_complete,
-  lang = lang
-)
-
-critinfo_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-critinfo_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  critinfo_questions,
-  critinfo_vars,
-  critinfo_labs,
-  "",
-  tbgrp        = "critinfo",
-  graph_title  = critinfo_questions,
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = critinfo_tex_wo_complete,
-  lang = lang
-)
-
-knet_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-knet_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  knet_questions,
-  knet_vars,
-  knet_labs,
-  "",
-  tbgrp        = "knet",
-  graph_title  = knet_questions, 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = knet_tex_wo_complete,
-  lang = lang
-)
-
-kcrea_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-kcrea_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  kcrea_questions,
-  kcrea_vars,
-  kcrea_labs,
-  "",
-  tbgrp        = "kcrea",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kcrea_tex_wo_complete,
-  lang = lang
-)
-
-ksafety_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-ksafety_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  ksafety_questions,
-  ksafety_vars,
-  ksafety_labs,
-  "",
-  tbgrp        = "ksafety",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = ksafety_tex_wo_complete,
-  lang = lang
-)
-
-khealth_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-khealth_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  khealth_questions,
-  khealth_vars,
-  khealth_labs,
-  "",
-  tbgrp        = "khealth",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = khealth_tex_wo_complete,
-  lang = lang
-)
-
-kgreen_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-kgreen_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  kgreen_questions,
-  kgreen_vars,
-  kgreen_labs,
-  "",
-  tbgrp        = "kgreen",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kgreen_tex_wo_complete,
-  lang = lang
-)
-
-ktrans_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-ktrans_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  ktrans_questions,
-  ktrans_vars,
-  ktrans_labs,
-  "",
-  tbgrp        = "ktrans",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = ktrans_tex_wo_complete,
-  lang = lang
-)
-
-kai_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-kai_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  kai_questions,
-  kai_vars,
-  kai_labs,
-  "",
-  tbgrp        = "kai",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kai_tex_wo_complete,
-  lang = lang
-)
-
-kgai_tex_wo_complete <- paste0(
-  knowledge_short, "\n",
-  knowledge_tex_more_link
-)
-
-kgai_viz_wo_link <- create_vizzes2(
-  breaks       = knowledge_breaks,
-  kgai_questions,
-  kgai_vars,
-  kgai_labs,
-  "",
-  tbgrp        = "kgai",
-  graph_title  = "", 
-  map_values = list("1" = transl("label_correctly_answered", lang), "0" = transl("label_incorrectly_answered", lang)),
-  text_b_tabset = kgai_tex_wo_complete,
-  lang = lang
-)
-
-## Skills _wo_link vizzes ----
-
-sis_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
 sis_viz_wo_link <- create_vizzes(sis_questions, 
                                  sis_vars, sis_labs, 
                                  sis_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
                                  tbgrp = "sis", text_b_tabset = sis_tex_wo_complete,
                                  graph_title = transl("title_strategic_information_skills", lang))
-
-cis_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-cis_viz_wo_link <- create_vizzes(cis_questions, 
-                                 cis_vars, sis_labs, 
-                                 cis_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                                 tbgrp = "cis",
-                                 text_b_tabset = cis_tex_wo_complete,
-                                 graph_title = transl("title_critical_information_skills", lang))
-
-nskills_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-nskills_viz_wo_link  <- create_vizzes(nskills_questions, 
-                                      nskills_vars, sis_labs, 
-                                      nskills_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                                      tbgrp = "nskills",
-                                      text_b_tabset = nskills_tex_wo_complete,
-                                      graph_title = transl("title_netiquette_skills", lang))
-
-dccs_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-dccs_viz_wo_link  <- create_vizzes(dccs_questions, 
-                                   dccs_vars, sis_labs, 
-                                   dccs_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                                   tbgrp = "dccs",
-                                   text_b_tabset = dccs_tex_wo_complete,
-                                   graph_title = transl("title_digital_content_creation_skills", lang))
-
-safety_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-safety_viz_wo_link <- create_vizzes(
-  safety_questions, safety_vars, sis_labs,
-  safety_tex_question,
-  breaks = c(0.5, 2.5, 3.5, 5.5),
-  tbgrp  = "safety",
-  text_b_tabset = safety_tex_wo_complete,
-  graph_title = transl("title_safety_control_skills", lang))
-
-dhealth_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-dhealth_viz_wo_link <- create_vizzes(
-  dhealth_questions, dhealth_vars, sis_labs,
-  dhealth_tex_question,
-  breaks = c(0.5, 2.5, 3.5, 5.5),
-  tbgrp  = "dhealth",
-  text_b_tabset = dhealth_tex_wo_complete,
-  graph_title = transl("title_digital_health_wellbeing_skills", lang))
-
-green_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-green_viz_wo_link <- create_vizzes(
-  green_questions, green_vars, sis_labs,
-  green_tex_question,
-  breaks = c(0.5, 2.5, 3.5, 5.5),
-  tbgrp  = "green",
-  text_b_tabset = green_tex_wo_complete,
-  graph_title = transl("title_sustainable_green_digital_skills", lang))
-
-dprob_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-dprob_viz_wo_link <- create_vizzes(
-  dprob_questions, dprob_vars, sis_labs,
-  dprob_tex_question,
-  breaks = c(0.5, 2.5, 3.5, 5.5),
-  tbgrp  = "dprob",
-  text_b_tabset = dprob_tex_wo_complete,
-  graph_title = transl("title_digital_problem_solving_skills", lang)
-)
-
-trans_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-trans_viz_wo_link <- create_vizzes(
-  trans_questions, trans_vars, sis_labs,
-  trans_tex_question,
-  breaks = c(0.5, 2.5, 3.5, 5.5),
-  tbgrp  = "trans",
-  text_b_tabset = trans_tex_wo_complete,
-  graph_title = transl("title_transactional_skills", lang)
-)
-
-ai_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-ai_viz_wo_link <- create_vizzes(
-  ai_questions, ai_vars, sis_labs,
-  ai_tex_question,
-  breaks = c(0.5, 2.5, 3.5, 5.5),
-  tbgrp  = "ai",
-  text_b_tabset = ai_tex_wo_complete,
-  graph_title = transl("title_ai_skills", lang)
-)
-
-genai_tex_wo_complete <- paste0(
-  skills_short, "\n",
-  skills_tex_more_link
-)
-
-# Wave 1 visualizations (only SGAI1-3)
-genai_viz_wo_link_w1 <- create_viz(
-  type = "stackedbars",
-  questions = genai_vars_w1,
-  question_labels = genai_questions_w1,
-  stacked_type = "percent",
-  color_palette = the_colors,
-  horizontal = TRUE,
-  x_label = "", 
-  text_before_tabset = genai_tex_wo_complete,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = sis_labs,
-  stack_order = rev(sis_labs),
-  drop_na_vars = F,
-  stack_label = NULL,
-  filter = ~ wave == 1,
-  weight_var = "weging_GAMO"
-) %>%
-  add_viz(
-    title = "GenAI Skills", 
-    title_tabset = "Wave 1",
-    icon = "ph:chart-bar",
-    tabgroup = "genai/wave1/overall"
-  )
-
-# Wave 2 visualizations (all SGAI1-5)
-genai_viz_wo_link_w2 <- create_viz(
-  type = "stackedbars",
-  questions = genai_vars_w2,
-  question_labels = genai_questions_w2,
-  stacked_type = "percent",
-  color_palette = the_colors,
-  horizontal = TRUE,
-  x_label = "", 
-  text_before_tabset = genai_tex_wo_complete,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = sis_labs,
-  stack_order = rev(sis_labs),
-  drop_na_vars = F,
-  stack_label = NULL,
-  filter = ~ wave == 2,
-  weight_var = "weging_GAMO"
-) %>%
-  add_viz(
-    title = "GenAI Skills", 
-    title_tabset = "Wave 2",
-    icon = "ph:chart-bar",
-    tabgroup = "genai/wave2/overall"
-  )
-
-# Over Time Overall (timeline without group_var) - only for SGAI1-3
-genai_overtime_overall_wo_link <- create_viz(
-  type = "timeline",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  text_before_tabset = genai_tex_wo_complete,
-  response_filter = 4:5, 
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = T,
-  x_label = "", 
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = the_colors,
-  y_min = 0,
-  y_max = 100,
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO"
-) |>
-  add_all_viz_timeline_single(genai_vars_w1, "genai", "overall", wave_label = "Over Time", questions = genai_questions_w1)
-
-# Wave 1 by Age/Gender/Education/Migration - only SGAI1-3
-genai_demo_w1_wo_link <- create_viz(
-  type = "stackedbar",
-  stacked_type = "percent",
-  horizontal = T,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = sis_labs,
-  text_before_tabset = genai_tex_wo_complete,
-  stack_order = rev(sis_labs),
-  filter = ~ wave == 1,
-  drop_na_vars = F,
-  color_palette = the_colors,
-  weight_var = "weging_GAMO"
-) |>
-  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "AgeGroup", "genai", "age", wave_label = "Wave 1") |>
-  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "geslacht", "genai", "gender", wave_label = "Wave 1") |>
-  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "Education", "genai", "edu", wave_label = "Wave 1") |>
-  add_all_viz_stackedbar(genai_vars_w1, genai_questions_w1, "MigrationBackground", "genai", "mig", wave_label = "Wave 1")
-
-# Wave 2 by Age/Gender/Education/Migration - all SGAI1-5
-genai_demo_w2_wo_link <- create_viz(
-  type = "stackedbar",
-  stacked_type = "percent",
-  horizontal = T,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = sis_labs,
-  stack_order = rev(sis_labs),
-  text_before_tabset = genai_tex_wo_complete,
-  filter = ~ wave == 2,
-  drop_na_vars = F,
-  color_palette = the_colors,
-  weight_var = "weging_GAMO"
-) |>
-  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "AgeGroup", "genai", "age", wave_label = "Wave 2") |>
-  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "geslacht", "genai", "gender", wave_label = "Wave 2") |>
-  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "Education", "genai", "edu", wave_label = "Wave 2") |>
-  add_all_viz_stackedbar(genai_vars_w2, genai_questions_w2, "MigrationBackground", "genai", "mig", wave_label = "Wave 2")
-
-# Over Time by Age/Gender/Education/Migration - only for SGAI1-3
-genai_overtime_demo_wo_link <- create_viz(
-  type = "timeline",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 4:5, 
-  text_before_tabset = genai_tex_wo_complete,
-  x_label = "", 
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = the_colors,
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO"
-) |>
-  add_all_viz_timeline(genai_vars_w1, "AgeGroup", "genai", "age", wave_label = "Over Time", questions = genai_questions_w1) |>
-  add_all_viz_timeline(genai_vars_w1, "geslacht", "genai", "gender", wave_label = "Over Time", questions = genai_questions_w1) |>
-  add_all_viz_timeline(genai_vars_w1, "Education", "genai", "edu", wave_label = "Over Time", questions = genai_questions_w1) |>
-  add_all_viz_timeline(genai_vars_w1, "MigrationBackground", "genai", "mig", wave_label = "Over Time", questions = genai_questions_w1)
-
-# Combine them all
-genai_viz_wo_link <- genai_viz_wo_link_w1 %>% 
-  combine_viz(genai_viz_wo_link_w2) %>%
-  combine_viz(genai_overtime_overall_wo_link) %>%
-  combine_viz(genai_demo_w1_wo_link) %>%
-  combine_viz(genai_demo_w2_wo_link) %>%
-  combine_viz(genai_overtime_demo_wo_link)
-
-## Performance _wo_link vizzes ----
-
-perf_sis_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_sis_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_sis_questions,
-  perf_sis_vars,
-  perf_correct_labs,
-  perf_sis_tex_wo_complete,
-  tbgrp        = "perf_sis",
-  graph_title  = perf_sis_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  lang = lang
-)
-
-perf_cis_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_cis_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_cis_questions,
-  perf_cis_vars,
-  perf_correct_labs,
-  perf_cis_tex_wo_complete,
-  tbgrp        = "perf_cis",
-  graph_title  = "",
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  lang = lang
-)
-
-perf_n_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_netiquette_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_n_questions,
-  perf_n_vars,
-  perf_correct_labs,
-  perf_n_tex_wo_complete,
-  tbgrp        = "perf_netiquette",
-  graph_title  = perf_n_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  lang = lang
-)
-
-perf_dccs_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_dccs_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_dccs_questions,
-  perf_dccs_vars,
-  perf_correct_labs,
-  perf_dccs_tex_wo_complete,
-  tbgrp        = "perf_dccs",
-  graph_title  = perf_dccs_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  lang = lang
-)  %>%
-  add_modal(
-    modal_id = "PDCCS1R",
-    title = transl("modal_title_dccs", lang), 
-    image = "https://placehold.co/600x400/EEE/31343C",
-    modal_content = transl("modal_content_dccs", lang)
-  )
-
-perf_safety_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_safety_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_safety_questions,
-  perf_safety_vars,
-  perf_selected_labs,
-  perf_safety_tex_wo_complete,
-  tbgrp        = "perf_safety",
-  graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  lang = lang
-)
-
-perf_health_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_health_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_health_questions,
-  perf_health_vars,
-  perf_selected_labs,
-  perf_health_tex_wo_complete,
-  tbgrp        = "perf_health",
-  graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  lang = lang
-)
-
-perf_green_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_green_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_green_questions,
-  perf_green_vars,
-  perf_selected_labs,
-  perf_green_tex_wo_complete,
-  tbgrp        = "perf_green",
-  graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  lang = lang
-)
-
-perf_ps_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_ps_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_ps_questions,
-  perf_ps_vars,
-  perf_selected_labs,
-  perf_ps_tex_wo_complete,
-  tbgrp        = "perf_ps",
-  graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  lang = lang
-)
-
-perf_trans_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_trans_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_trans_questions,
-  perf_trans_vars,
-  perf_correct_labs,
-  perf_trans_tex_wo_complete,
-  tbgrp        = "perf_trans",
-  graph_title  = perf_trans_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  lang = lang
-)
-
-perf_ai_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_ai_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_ai_questions,
-  perf_ai_vars,
-  perf_selected_labs,
-  perf_ai_tex_wo_complete,
-  tbgrp        = "perf_ai",
-  graph_title  = "",
-  map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
-  lang = lang
-)
-
-perf_genai_tex_wo_complete <- paste0(
-  performance_short, "\n",
-  performance_tex_more_link
-)
-
-perf_genai_viz_wo_link <- create_vizzes3(
-  breaks       = knowledge_breaks,
-  perf_genai_questions,
-  perf_genai_vars,
-  perf_correct_labs,
-  perf_genai_tex_wo_complete,
-  tbgrp        = "perf_genai",
-  graph_title  = perf_genai_questions,
-  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
-  lang = lang
-)
 
 ## 7.1 Strategic Information Dimension ----
 strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_wo_link)  %>%
@@ -3194,6 +3146,15 @@ strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_
   )
 
 ## 7.2 Critical Information Dimension ----
+
+
+cis_viz_wo_link <- create_vizzes(cis_questions, 
+                                 cis_vars, sis_labs, 
+                                 cis_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
+                                 tbgrp = "cis",
+                                 graph_title = transl("title_critical_information_skills", lang))
+
+
 critical_info_visualizations <- (cis_viz_wo_link + critinfo_viz_wo_link + perf_cis_viz_wo_link) %>%
   set_tabgroup_labels(
     cis = paste0("{{< iconify ph lightning-fill >}} ", transl("tab_critical_info_skills", lang)),

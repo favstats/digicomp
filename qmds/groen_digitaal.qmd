@@ -1,5 +1,5 @@
 ---
-title: "{{< iconify ph lightbulb-fill >}} Digitaal Probleemoplossen"
+title: "{{< iconify ph recycle-fill >}} Groen Digitaal"
 format: html
 ---
 
@@ -10,7 +10,7 @@ library(dashboardr)
 
 **DIT IS EEN MOCKUP VERSIE GELIEVE NIET TE CITEREN**
 
-**Digitaal Probleemoplossen competentie** heeft betrekking op weten waar je hulp kunt vinden bij digitale uitdagingen en begrijpen hoe je digitale competenties kunt verbeteren.
+**Duurzame/Groene Digitale competentie** richt zich op milieubewust technologiegebruik: energieverbruik verminderen, duurzame apparaten kopen, elektronica recyclen, en de milieu-impact van digitale activiteiten begrijpen.
 
 ```{r setup}
 #| echo: false
@@ -49,7 +49,7 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 
 ```
 
-## {{< iconify ph lightning-fill >}} Probleemoplossen Vaardigheden
+## {{< iconify ph lightning-fill >}} Groen Digitaal Vaardigheden
 
 
 **Vaardigheden** meet het *zelfgerapporteerde vermogen* van deelnemers om een ​​breed scala aan digitale taken uit te voeren. Deze items leggen vast hoe zelfverzekerd mensen zich voelen bij het zoeken naar informatie.
@@ -66,13 +66,13 @@ data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r dprob-wave1-overall-2}
-# Digitale Probleemoplossingsvaardigheden
+```{r green-wave1-overall-2}
+# Duurzame/Groene Digitale Vaardigheden
 result <- create_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Digitale Probleemoplossingsvaardigheden",
-  questions = c("SProbl1", "SProbl2"),
-  question_labels = c("Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren", "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet"),
+  title = "Duurzame/Groene Digitale Vaardigheden",
+  questions = c("SEnv1", "SEnv2", "SEnv3"),
+  question_labels = c("Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen", "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen", "Ik weet hoe ik een telefoon of computer kan laten recyclen"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -96,11 +96,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave1-age-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave1-age-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -110,7 +110,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -120,11 +120,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave1-age-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave1-age-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -134,7 +134,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave1-age-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SEnv3"
 )
 
 result
@@ -152,11 +176,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave1-gender-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave1-gender-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -166,7 +190,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -176,11 +200,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave1-gender-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave1-gender-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -190,7 +214,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave1-gender-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SEnv3"
 )
 
 result
@@ -208,11 +256,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave1-edu-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave1-edu-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -222,7 +270,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -232,11 +280,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave1-edu-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave1-edu-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -246,7 +294,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave1-edu-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SEnv3"
 )
 
 result
@@ -264,11 +336,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave1-mig-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave1-mig-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -278,7 +350,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -288,11 +360,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave1-mig-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave1-mig-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -302,7 +374,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave1-mig-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SEnv3"
 )
 
 result
@@ -323,13 +419,13 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r dprob-wave2-overall-2}
-# Digitale Probleemoplossingsvaardigheden
+```{r green-wave2-overall-2}
+# Duurzame/Groene Digitale Vaardigheden
 result <- create_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Digitale Probleemoplossingsvaardigheden",
-  questions = c("SProbl1", "SProbl2"),
-  question_labels = c("Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren", "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet"),
+  title = "Duurzame/Groene Digitale Vaardigheden",
+  questions = c("SEnv1", "SEnv2", "SEnv3"),
+  question_labels = c("Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen", "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen", "Ik weet hoe ik een telefoon of computer kan laten recyclen"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -353,11 +449,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave2-age-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave2-age-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -367,7 +463,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -377,11 +473,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave2-age-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave2-age-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -391,7 +487,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave2-age-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SEnv3"
 )
 
 result
@@ -409,11 +529,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave2-gender-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave2-gender-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -423,7 +543,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -433,11 +553,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave2-gender-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave2-gender-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -447,7 +567,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave2-gender-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SEnv3"
 )
 
 result
@@ -465,11 +609,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave2-edu-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave2-edu-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -479,7 +623,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -489,11 +633,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave2-edu-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave2-edu-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -503,7 +647,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave2-edu-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SEnv3"
 )
 
 result
@@ -521,11 +689,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-wave2-mig-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-wave2-mig-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -535,7 +703,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SProbl1"
+  stack_var = "SEnv1"
 )
 
 result
@@ -545,11 +713,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-wave2-mig-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-wave2-mig-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -559,7 +727,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SProbl2"
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-wave2-mig-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SEnv3"
 )
 
 result
@@ -585,11 +777,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-overtime-overall-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-overtime-overall-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -601,7 +793,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1"
+  response_var = "SEnv1"
 )
 
 result
@@ -611,11 +803,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-overtime-overall-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-overtime-overall-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -627,7 +819,33 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2"
+  response_var = "SEnv2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-overtime-overall-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  response_filter_label = "Percentage of Respondents",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SEnv3"
 )
 
 result
@@ -645,11 +863,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-overtime-age-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-overtime-age-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -659,7 +877,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  response_var = "SEnv1",
   group_var = "AgeGroup"
 )
 
@@ -670,11 +888,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-overtime-age-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-overtime-age-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -684,7 +902,32 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  response_var = "SEnv2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-overtime-age-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SEnv3",
   group_var = "AgeGroup"
 )
 
@@ -703,11 +946,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-overtime-gender-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-overtime-gender-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -717,7 +960,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  response_var = "SEnv1",
   group_var = "geslacht"
 )
 
@@ -728,11 +971,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-overtime-gender-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-overtime-gender-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -742,7 +985,32 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  response_var = "SEnv2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-overtime-gender-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SEnv3",
   group_var = "geslacht"
 )
 
@@ -761,11 +1029,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-overtime-edu-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-overtime-edu-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -775,7 +1043,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  response_var = "SEnv1",
   group_var = "Education"
 )
 
@@ -786,11 +1054,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-overtime-edu-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-overtime-edu-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -800,7 +1068,32 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  response_var = "SEnv2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-overtime-edu-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SEnv3",
   group_var = "Education"
 )
 
@@ -819,11 +1112,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dprob-overtime-mig-item1-2}
-# Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren
+```{r green-overtime-mig-item1-2}
+# Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen om mijn digitale vaardigheden te verbeteren",
+  title = "Ik weet hoe ik het batterijgebruik van een telefoon of computer kan verminderen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -833,7 +1126,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  response_var = "SEnv1",
   group_var = "MigrationBackground"
 )
 
@@ -844,11 +1137,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dprob-overtime-mig-item2-2}
-# Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet
+```{r green-overtime-mig-item2-2}
+# Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen
 result <- create_timeline(
   data = data,
-  title = "Ik weet waar of van wie ik hulp kan krijgen als iets niet lukt op het internet",
+  title = "Ik weet hoe ik op een 'groene' of duurzame manier een telefoon of computer kan kopen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = c(4, 5),
@@ -858,7 +1151,32 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  response_var = "SEnv2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r green-overtime-mig-item3-2}
+# Ik weet hoe ik een telefoon of computer kan laten recyclen
+result <- create_timeline(
+  data = data,
+  title = "Ik weet hoe ik een telefoon of computer kan laten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  response_var = "SEnv3",
   group_var = "MigrationBackground"
 )
 
@@ -874,7 +1192,858 @@ result
 
 :::
 
-## {{< iconify ph clipboard-text >}} Probleemoplossen Prestatie
+## {{< iconify ph book-open-fill >}} Groen Digitaal Kennis
+
+
+**Kennis** meet wat deelnemers *weten* over de digitale wereld. Deze items testen het feitelijke begrip door respondenten te laten aangeven of beweringen waar of onwaar zijn.
+[{{< iconify ph cards >}} Bekijk alle Kennisresultaten](knowledge.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Ronde 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r kgreen-wave1-overall-2}
+# 
+result <- create_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "",
+  questions = c("KEnv2RC", "KEnv3RC"),
+  question_labels = c("In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden", "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave1-age-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave1-age-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave1-gender-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave1-gender-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave1-edu-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave1-edu-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave1-mig-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave1-mig-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Ronde 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r kgreen-wave2-overall-2}
+# 
+result <- create_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "",
+  questions = c("KEnv2RC", "KEnv3RC"),
+  question_labels = c("In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden", "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave2-age-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave2-age-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave2-gender-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave2-gender-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave2-edu-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave2-edu-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-wave2-mig-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-wave2-mig-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Verloop over tijd
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-overtime-overall-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_timeline(
+  data = data,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-overtime-overall-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_timeline(
+  data = data,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-overtime-age-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_timeline(
+  data = data,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-overtime-age-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_timeline(
+  data = data,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-overtime-gender-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_timeline(
+  data = data,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-overtime-gender-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_timeline(
+  data = data,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-overtime-edu-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_timeline(
+  data = data,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-overtime-edu-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_timeline(
+  data = data,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kgreen-overtime-mig-item1-2}
+# In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
+result <- create_timeline(
+  data = data,
+  title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv2RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kgreen-overtime-mig-item2-2}
+# De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
+result <- create_timeline(
+  data = data,
+  title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  response_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  response_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  response_var = "KEnv3RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph clipboard-text >}} Groen Digitaal Prestatie
 
 
 ADD TEXT BEFORE TABSET
@@ -890,13 +2059,13 @@ ADD TEXT BEFORE TABSET
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-ps-wave1-overall-2}
+```{r perf-green-wave1-overall-2}
 # 
 result <- create_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
-  question_labels = c("Ik heb geen hulp nodig", "Ik ken niemand", "Familie", "Vrienden", "Collega's/klasgenoten", "Buren/kennissen", "Helpdesk", "Bibliotheek", "Telecom/online helpdesk"),
+  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  question_labels = c("Mailbox opschonen", "Duurzame zoekmachines gebruiken", "Onnodige Cloud-opslag vermijden", "Schermhelderheid verlagen", "Slaapstand gebruiken", "Ongebruikte telefoon-apps sluiten", "Apparaten recyclen", "Repareren voor vervangen", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -921,11 +2090,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave1-age-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave1-age-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -936,7 +2105,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -946,11 +2115,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave1-age-item2-2}
-# Ik ken niemand
+```{r perf-green-wave1-age-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -961,7 +2130,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -971,11 +2140,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave1-age-item3-2}
-# Familie
+```{r perf-green-wave1-age-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -986,7 +2155,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -996,11 +2165,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave1-age-item4-2}
-# Vrienden
+```{r perf-green-wave1-age-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1011,7 +2180,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -1021,11 +2190,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave1-age-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave1-age-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1036,7 +2205,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -1046,11 +2215,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave1-age-item6-2}
-# Buren/kennissen
+```{r perf-green-wave1-age-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1061,7 +2230,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -1071,11 +2240,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave1-age-item7-2}
-# Helpdesk
+```{r perf-green-wave1-age-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1086,7 +2255,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -1096,11 +2265,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave1-age-item8-2}
-# Bibliotheek
+```{r perf-green-wave1-age-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1111,21 +2280,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave1-age-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave1-age-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1136,7 +2305,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -1154,11 +2323,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave1-gender-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave1-gender-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1169,7 +2338,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -1179,11 +2348,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave1-gender-item2-2}
-# Ik ken niemand
+```{r perf-green-wave1-gender-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1194,7 +2363,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -1204,11 +2373,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave1-gender-item3-2}
-# Familie
+```{r perf-green-wave1-gender-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1219,7 +2388,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -1229,11 +2398,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave1-gender-item4-2}
-# Vrienden
+```{r perf-green-wave1-gender-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1244,7 +2413,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -1254,11 +2423,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave1-gender-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave1-gender-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1269,7 +2438,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -1279,11 +2448,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave1-gender-item6-2}
-# Buren/kennissen
+```{r perf-green-wave1-gender-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1294,7 +2463,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -1304,11 +2473,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave1-gender-item7-2}
-# Helpdesk
+```{r perf-green-wave1-gender-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1319,7 +2488,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -1329,11 +2498,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave1-gender-item8-2}
-# Bibliotheek
+```{r perf-green-wave1-gender-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1344,21 +2513,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave1-gender-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave1-gender-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1369,7 +2538,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -1387,11 +2556,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave1-edu-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave1-edu-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1402,7 +2571,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -1412,11 +2581,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave1-edu-item2-2}
-# Ik ken niemand
+```{r perf-green-wave1-edu-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1427,7 +2596,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -1437,11 +2606,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave1-edu-item3-2}
-# Familie
+```{r perf-green-wave1-edu-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1452,7 +2621,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -1462,11 +2631,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave1-edu-item4-2}
-# Vrienden
+```{r perf-green-wave1-edu-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1477,7 +2646,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -1487,11 +2656,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave1-edu-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave1-edu-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1502,7 +2671,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -1512,11 +2681,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave1-edu-item6-2}
-# Buren/kennissen
+```{r perf-green-wave1-edu-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1527,7 +2696,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -1537,11 +2706,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave1-edu-item7-2}
-# Helpdesk
+```{r perf-green-wave1-edu-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1552,7 +2721,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -1562,11 +2731,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave1-edu-item8-2}
-# Bibliotheek
+```{r perf-green-wave1-edu-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1577,21 +2746,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave1-edu-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave1-edu-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1602,7 +2771,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -1620,11 +2789,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave1-mig-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave1-mig-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1635,7 +2804,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -1645,11 +2814,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave1-mig-item2-2}
-# Ik ken niemand
+```{r perf-green-wave1-mig-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1660,7 +2829,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -1670,11 +2839,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave1-mig-item3-2}
-# Familie
+```{r perf-green-wave1-mig-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1685,7 +2854,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -1695,11 +2864,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave1-mig-item4-2}
-# Vrienden
+```{r perf-green-wave1-mig-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1710,7 +2879,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -1720,11 +2889,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave1-mig-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave1-mig-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1735,7 +2904,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -1745,11 +2914,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave1-mig-item6-2}
-# Buren/kennissen
+```{r perf-green-wave1-mig-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1760,7 +2929,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -1770,11 +2939,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave1-mig-item7-2}
-# Helpdesk
+```{r perf-green-wave1-mig-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1785,7 +2954,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -1795,11 +2964,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave1-mig-item8-2}
-# Bibliotheek
+```{r perf-green-wave1-mig-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1810,21 +2979,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave1-mig-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave1-mig-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1835,7 +3004,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -1856,13 +3025,13 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-ps-wave2-overall-2}
+```{r perf-green-wave2-overall-2}
 # 
 result <- create_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
-  question_labels = c("Ik heb geen hulp nodig", "Ik ken niemand", "Familie", "Vrienden", "Collega's/klasgenoten", "Buren/kennissen", "Helpdesk", "Bibliotheek", "Telecom/online helpdesk"),
+  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  question_labels = c("Mailbox opschonen", "Duurzame zoekmachines gebruiken", "Onnodige Cloud-opslag vermijden", "Schermhelderheid verlagen", "Slaapstand gebruiken", "Ongebruikte telefoon-apps sluiten", "Apparaten recyclen", "Repareren voor vervangen", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1887,11 +3056,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave2-age-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave2-age-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1902,7 +3071,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -1912,11 +3081,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave2-age-item2-2}
-# Ik ken niemand
+```{r perf-green-wave2-age-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1927,7 +3096,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -1937,11 +3106,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave2-age-item3-2}
-# Familie
+```{r perf-green-wave2-age-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1952,7 +3121,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -1962,11 +3131,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave2-age-item4-2}
-# Vrienden
+```{r perf-green-wave2-age-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1977,7 +3146,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -1987,11 +3156,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave2-age-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave2-age-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2002,7 +3171,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -2012,11 +3181,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave2-age-item6-2}
-# Buren/kennissen
+```{r perf-green-wave2-age-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2027,7 +3196,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -2037,11 +3206,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave2-age-item7-2}
-# Helpdesk
+```{r perf-green-wave2-age-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2052,7 +3221,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -2062,11 +3231,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave2-age-item8-2}
-# Bibliotheek
+```{r perf-green-wave2-age-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2077,21 +3246,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave2-age-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave2-age-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2102,7 +3271,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -2120,11 +3289,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave2-gender-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave2-gender-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2135,7 +3304,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -2145,11 +3314,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave2-gender-item2-2}
-# Ik ken niemand
+```{r perf-green-wave2-gender-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2160,7 +3329,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -2170,11 +3339,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave2-gender-item3-2}
-# Familie
+```{r perf-green-wave2-gender-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2185,7 +3354,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -2195,11 +3364,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave2-gender-item4-2}
-# Vrienden
+```{r perf-green-wave2-gender-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2210,7 +3379,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -2220,11 +3389,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave2-gender-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave2-gender-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2235,7 +3404,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -2245,11 +3414,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave2-gender-item6-2}
-# Buren/kennissen
+```{r perf-green-wave2-gender-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2260,7 +3429,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -2270,11 +3439,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave2-gender-item7-2}
-# Helpdesk
+```{r perf-green-wave2-gender-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2285,7 +3454,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -2295,11 +3464,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave2-gender-item8-2}
-# Bibliotheek
+```{r perf-green-wave2-gender-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2310,21 +3479,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave2-gender-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave2-gender-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2335,7 +3504,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -2353,11 +3522,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave2-edu-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave2-edu-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2368,7 +3537,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -2378,11 +3547,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave2-edu-item2-2}
-# Ik ken niemand
+```{r perf-green-wave2-edu-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2393,7 +3562,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -2403,11 +3572,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave2-edu-item3-2}
-# Familie
+```{r perf-green-wave2-edu-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2418,7 +3587,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -2428,11 +3597,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave2-edu-item4-2}
-# Vrienden
+```{r perf-green-wave2-edu-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2443,7 +3612,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -2453,11 +3622,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave2-edu-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave2-edu-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2468,7 +3637,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -2478,11 +3647,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave2-edu-item6-2}
-# Buren/kennissen
+```{r perf-green-wave2-edu-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2493,7 +3662,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -2503,11 +3672,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave2-edu-item7-2}
-# Helpdesk
+```{r perf-green-wave2-edu-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2518,7 +3687,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -2528,11 +3697,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave2-edu-item8-2}
-# Bibliotheek
+```{r perf-green-wave2-edu-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2543,21 +3712,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave2-edu-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave2-edu-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2568,7 +3737,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -2586,11 +3755,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-wave2-mig-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-wave2-mig-item1-2}
+# Mailbox opschonen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2601,7 +3770,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_1"
+  stack_var = "PSGDS1_1"
 )
 
 result
@@ -2611,11 +3780,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-wave2-mig-item2-2}
-# Ik ken niemand
+```{r perf-green-wave2-mig-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2626,7 +3795,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_2"
+  stack_var = "PSGDS1_2"
 )
 
 result
@@ -2636,11 +3805,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-wave2-mig-item3-2}
-# Familie
+```{r perf-green-wave2-mig-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2651,7 +3820,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_3"
+  stack_var = "PSGDS1_3"
 )
 
 result
@@ -2661,11 +3830,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-wave2-mig-item4-2}
-# Vrienden
+```{r perf-green-wave2-mig-item4-2}
+# Schermhelderheid verlagen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2676,7 +3845,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_4"
+  stack_var = "PSGDS1_4"
 )
 
 result
@@ -2686,11 +3855,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-wave2-mig-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-wave2-mig-item5-2}
+# Slaapstand gebruiken
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2701,7 +3870,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_5"
+  stack_var = "PSGDS1_5"
 )
 
 result
@@ -2711,11 +3880,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-wave2-mig-item6-2}
-# Buren/kennissen
+```{r perf-green-wave2-mig-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2726,7 +3895,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_6"
+  stack_var = "PSGDS1_6"
 )
 
 result
@@ -2736,11 +3905,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-wave2-mig-item7-2}
-# Helpdesk
+```{r perf-green-wave2-mig-item7-2}
+# Apparaten recyclen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2751,7 +3920,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_7"
+  stack_var = "PSGDS1_7"
 )
 
 result
@@ -2761,11 +3930,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-wave2-mig-item8-2}
-# Bibliotheek
+```{r perf-green-wave2-mig-item8-2}
+# Repareren voor vervangen
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2776,21 +3945,21 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_8"
+  stack_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-wave2-mig-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-wave2-mig-item9-2}
+# Geen van deze acties
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2801,7 +3970,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SourceHelp_9"
+  stack_var = "PSGDS1_9"
 )
 
 result
@@ -2827,11 +3996,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-overtime-overall-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-overtime-overall-item1-2}
+# Mailbox opschonen
 result <- create_timeline(
   data = data,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2843,7 +4012,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1"
+  response_var = "PSGDS1_1"
 )
 
 result
@@ -2853,11 +4022,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-overtime-overall-item2-2}
-# Ik ken niemand
+```{r perf-green-overtime-overall-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_timeline(
   data = data,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2869,7 +4038,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2"
+  response_var = "PSGDS1_2"
 )
 
 result
@@ -2879,11 +4048,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-overtime-overall-item3-2}
-# Familie
+```{r perf-green-overtime-overall-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_timeline(
   data = data,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2895,7 +4064,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3"
+  response_var = "PSGDS1_3"
 )
 
 result
@@ -2905,11 +4074,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-overtime-overall-item4-2}
-# Vrienden
+```{r perf-green-overtime-overall-item4-2}
+# Schermhelderheid verlagen
 result <- create_timeline(
   data = data,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2921,7 +4090,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4"
+  response_var = "PSGDS1_4"
 )
 
 result
@@ -2931,11 +4100,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-overtime-overall-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-overtime-overall-item5-2}
+# Slaapstand gebruiken
 result <- create_timeline(
   data = data,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2947,7 +4116,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5"
+  response_var = "PSGDS1_5"
 )
 
 result
@@ -2957,11 +4126,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-overtime-overall-item6-2}
-# Buren/kennissen
+```{r perf-green-overtime-overall-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_timeline(
   data = data,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2973,7 +4142,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6"
+  response_var = "PSGDS1_6"
 )
 
 result
@@ -2983,11 +4152,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-overtime-overall-item7-2}
-# Helpdesk
+```{r perf-green-overtime-overall-item7-2}
+# Apparaten recyclen
 result <- create_timeline(
   data = data,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -2999,7 +4168,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7"
+  response_var = "PSGDS1_7"
 )
 
 result
@@ -3009,11 +4178,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-overtime-overall-item8-2}
-# Bibliotheek
+```{r perf-green-overtime-overall-item8-2}
+# Repareren voor vervangen
 result <- create_timeline(
   data = data,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3025,21 +4194,21 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8"
+  response_var = "PSGDS1_8"
 )
 
 result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-overtime-overall-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-overtime-overall-item9-2}
+# Geen van deze acties
 result <- create_timeline(
   data = data,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3051,7 +4220,7 @@ result <- create_timeline(
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9"
+  response_var = "PSGDS1_9"
 )
 
 result
@@ -3069,11 +4238,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-overtime-age-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-overtime-age-item1-2}
+# Mailbox opschonen
 result <- create_timeline(
   data = data,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3084,7 +4253,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  response_var = "PSGDS1_1",
   group_var = "AgeGroup"
 )
 
@@ -3095,11 +4264,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-overtime-age-item2-2}
-# Ik ken niemand
+```{r perf-green-overtime-age-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_timeline(
   data = data,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3110,7 +4279,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  response_var = "PSGDS1_2",
   group_var = "AgeGroup"
 )
 
@@ -3121,11 +4290,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-overtime-age-item3-2}
-# Familie
+```{r perf-green-overtime-age-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_timeline(
   data = data,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3136,7 +4305,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  response_var = "PSGDS1_3",
   group_var = "AgeGroup"
 )
 
@@ -3147,11 +4316,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-overtime-age-item4-2}
-# Vrienden
+```{r perf-green-overtime-age-item4-2}
+# Schermhelderheid verlagen
 result <- create_timeline(
   data = data,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3162,7 +4331,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  response_var = "PSGDS1_4",
   group_var = "AgeGroup"
 )
 
@@ -3173,11 +4342,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-overtime-age-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-overtime-age-item5-2}
+# Slaapstand gebruiken
 result <- create_timeline(
   data = data,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3188,7 +4357,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  response_var = "PSGDS1_5",
   group_var = "AgeGroup"
 )
 
@@ -3199,11 +4368,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-overtime-age-item6-2}
-# Buren/kennissen
+```{r perf-green-overtime-age-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_timeline(
   data = data,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3214,7 +4383,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  response_var = "PSGDS1_6",
   group_var = "AgeGroup"
 )
 
@@ -3225,11 +4394,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-overtime-age-item7-2}
-# Helpdesk
+```{r perf-green-overtime-age-item7-2}
+# Apparaten recyclen
 result <- create_timeline(
   data = data,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3240,7 +4409,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  response_var = "PSGDS1_7",
   group_var = "AgeGroup"
 )
 
@@ -3251,11 +4420,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-overtime-age-item8-2}
-# Bibliotheek
+```{r perf-green-overtime-age-item8-2}
+# Repareren voor vervangen
 result <- create_timeline(
   data = data,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3266,7 +4435,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  response_var = "PSGDS1_8",
   group_var = "AgeGroup"
 )
 
@@ -3274,14 +4443,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-overtime-age-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-overtime-age-item9-2}
+# Geen van deze acties
 result <- create_timeline(
   data = data,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3292,7 +4461,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  response_var = "PSGDS1_9",
   group_var = "AgeGroup"
 )
 
@@ -3311,11 +4480,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-overtime-gender-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-overtime-gender-item1-2}
+# Mailbox opschonen
 result <- create_timeline(
   data = data,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3326,7 +4495,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  response_var = "PSGDS1_1",
   group_var = "geslacht"
 )
 
@@ -3337,11 +4506,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-overtime-gender-item2-2}
-# Ik ken niemand
+```{r perf-green-overtime-gender-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_timeline(
   data = data,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3352,7 +4521,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  response_var = "PSGDS1_2",
   group_var = "geslacht"
 )
 
@@ -3363,11 +4532,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-overtime-gender-item3-2}
-# Familie
+```{r perf-green-overtime-gender-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_timeline(
   data = data,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3378,7 +4547,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  response_var = "PSGDS1_3",
   group_var = "geslacht"
 )
 
@@ -3389,11 +4558,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-overtime-gender-item4-2}
-# Vrienden
+```{r perf-green-overtime-gender-item4-2}
+# Schermhelderheid verlagen
 result <- create_timeline(
   data = data,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3404,7 +4573,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  response_var = "PSGDS1_4",
   group_var = "geslacht"
 )
 
@@ -3415,11 +4584,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-overtime-gender-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-overtime-gender-item5-2}
+# Slaapstand gebruiken
 result <- create_timeline(
   data = data,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3430,7 +4599,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  response_var = "PSGDS1_5",
   group_var = "geslacht"
 )
 
@@ -3441,11 +4610,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-overtime-gender-item6-2}
-# Buren/kennissen
+```{r perf-green-overtime-gender-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_timeline(
   data = data,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3456,7 +4625,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  response_var = "PSGDS1_6",
   group_var = "geslacht"
 )
 
@@ -3467,11 +4636,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-overtime-gender-item7-2}
-# Helpdesk
+```{r perf-green-overtime-gender-item7-2}
+# Apparaten recyclen
 result <- create_timeline(
   data = data,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3482,7 +4651,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  response_var = "PSGDS1_7",
   group_var = "geslacht"
 )
 
@@ -3493,11 +4662,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-overtime-gender-item8-2}
-# Bibliotheek
+```{r perf-green-overtime-gender-item8-2}
+# Repareren voor vervangen
 result <- create_timeline(
   data = data,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3508,7 +4677,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  response_var = "PSGDS1_8",
   group_var = "geslacht"
 )
 
@@ -3516,14 +4685,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-overtime-gender-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-overtime-gender-item9-2}
+# Geen van deze acties
 result <- create_timeline(
   data = data,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3534,7 +4703,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  response_var = "PSGDS1_9",
   group_var = "geslacht"
 )
 
@@ -3553,11 +4722,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-overtime-edu-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-overtime-edu-item1-2}
+# Mailbox opschonen
 result <- create_timeline(
   data = data,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3568,7 +4737,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  response_var = "PSGDS1_1",
   group_var = "Education"
 )
 
@@ -3579,11 +4748,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-overtime-edu-item2-2}
-# Ik ken niemand
+```{r perf-green-overtime-edu-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_timeline(
   data = data,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3594,7 +4763,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  response_var = "PSGDS1_2",
   group_var = "Education"
 )
 
@@ -3605,11 +4774,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-overtime-edu-item3-2}
-# Familie
+```{r perf-green-overtime-edu-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_timeline(
   data = data,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3620,7 +4789,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  response_var = "PSGDS1_3",
   group_var = "Education"
 )
 
@@ -3631,11 +4800,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-overtime-edu-item4-2}
-# Vrienden
+```{r perf-green-overtime-edu-item4-2}
+# Schermhelderheid verlagen
 result <- create_timeline(
   data = data,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3646,7 +4815,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  response_var = "PSGDS1_4",
   group_var = "Education"
 )
 
@@ -3657,11 +4826,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-overtime-edu-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-overtime-edu-item5-2}
+# Slaapstand gebruiken
 result <- create_timeline(
   data = data,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3672,7 +4841,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  response_var = "PSGDS1_5",
   group_var = "Education"
 )
 
@@ -3683,11 +4852,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-overtime-edu-item6-2}
-# Buren/kennissen
+```{r perf-green-overtime-edu-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_timeline(
   data = data,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3698,7 +4867,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  response_var = "PSGDS1_6",
   group_var = "Education"
 )
 
@@ -3709,11 +4878,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-overtime-edu-item7-2}
-# Helpdesk
+```{r perf-green-overtime-edu-item7-2}
+# Apparaten recyclen
 result <- create_timeline(
   data = data,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3724,7 +4893,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  response_var = "PSGDS1_7",
   group_var = "Education"
 )
 
@@ -3735,11 +4904,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-overtime-edu-item8-2}
-# Bibliotheek
+```{r perf-green-overtime-edu-item8-2}
+# Repareren voor vervangen
 result <- create_timeline(
   data = data,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3750,7 +4919,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  response_var = "PSGDS1_8",
   group_var = "Education"
 )
 
@@ -3758,14 +4927,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-overtime-edu-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-overtime-edu-item9-2}
+# Geen van deze acties
 result <- create_timeline(
   data = data,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3776,7 +4945,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  response_var = "PSGDS1_9",
   group_var = "Education"
 )
 
@@ -3795,11 +4964,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ps-overtime-mig-item1-2}
-# Ik heb geen hulp nodig
+```{r perf-green-overtime-mig-item1-2}
+# Mailbox opschonen
 result <- create_timeline(
   data = data,
-  title = "Ik heb geen hulp nodig",
+  title = "Mailbox opschonen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3810,7 +4979,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  response_var = "PSGDS1_1",
   group_var = "MigrationBackground"
 )
 
@@ -3821,11 +4990,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ps-overtime-mig-item2-2}
-# Ik ken niemand
+```{r perf-green-overtime-mig-item2-2}
+# Duurzame zoekmachines gebruiken
 result <- create_timeline(
   data = data,
-  title = "Ik ken niemand",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3836,7 +5005,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  response_var = "PSGDS1_2",
   group_var = "MigrationBackground"
 )
 
@@ -3847,11 +5016,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ps-overtime-mig-item3-2}
-# Familie
+```{r perf-green-overtime-mig-item3-2}
+# Onnodige Cloud-opslag vermijden
 result <- create_timeline(
   data = data,
-  title = "Familie",
+  title = "Onnodige Cloud-opslag vermijden",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3862,7 +5031,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  response_var = "PSGDS1_3",
   group_var = "MigrationBackground"
 )
 
@@ -3873,11 +5042,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ps-overtime-mig-item4-2}
-# Vrienden
+```{r perf-green-overtime-mig-item4-2}
+# Schermhelderheid verlagen
 result <- create_timeline(
   data = data,
-  title = "Vrienden",
+  title = "Schermhelderheid verlagen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3888,7 +5057,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  response_var = "PSGDS1_4",
   group_var = "MigrationBackground"
 )
 
@@ -3899,11 +5068,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ps-overtime-mig-item5-2}
-# Collega's/klasgenoten
+```{r perf-green-overtime-mig-item5-2}
+# Slaapstand gebruiken
 result <- create_timeline(
   data = data,
-  title = "Collega's/klasgenoten",
+  title = "Slaapstand gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3914,7 +5083,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  response_var = "PSGDS1_5",
   group_var = "MigrationBackground"
 )
 
@@ -3925,11 +5094,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ps-overtime-mig-item6-2}
-# Buren/kennissen
+```{r perf-green-overtime-mig-item6-2}
+# Ongebruikte telefoon-apps sluiten
 result <- create_timeline(
   data = data,
-  title = "Buren/kennissen",
+  title = "Ongebruikte telefoon-apps sluiten",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3940,7 +5109,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  response_var = "PSGDS1_6",
   group_var = "MigrationBackground"
 )
 
@@ -3951,11 +5120,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ps-overtime-mig-item7-2}
-# Helpdesk
+```{r perf-green-overtime-mig-item7-2}
+# Apparaten recyclen
 result <- create_timeline(
   data = data,
-  title = "Helpdesk",
+  title = "Apparaten recyclen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3966,7 +5135,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  response_var = "PSGDS1_7",
   group_var = "MigrationBackground"
 )
 
@@ -3977,11 +5146,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ps-overtime-mig-item8-2}
-# Bibliotheek
+```{r perf-green-overtime-mig-item8-2}
+# Repareren voor vervangen
 result <- create_timeline(
   data = data,
-  title = "Bibliotheek",
+  title = "Repareren voor vervangen",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -3992,7 +5161,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  response_var = "PSGDS1_8",
   group_var = "MigrationBackground"
 )
 
@@ -4000,14 +5169,14 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### item9
 
 
-```{r perf-ps-overtime-mig-item9-2}
-# Telecom/online helpdesk
+```{r perf-green-overtime-mig-item9-2}
+# Geen van deze acties
 result <- create_timeline(
   data = data,
-  title = "Telecom/online helpdesk",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -4018,7 +5187,7 @@ result <- create_timeline(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  response_var = "PSGDS1_9",
   group_var = "MigrationBackground"
 )
 

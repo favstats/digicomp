@@ -1,5 +1,5 @@
 ---
-title: "{{< iconify ph clipboard-text >}} Prestatie"
+title: "{{< iconify ph clipboard-text >}} Performance"
 format: html
 ---
 
@@ -8,15 +8,15 @@ format: html
 <script>document.body.classList.add('has-pagination-top');</script>
 <nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
   <div class='pagination-container'>
-    <a href='performance_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
+    <a href='performance_p3.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
       <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
         <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
       </svg>
     </a>
     <div class='pagination-info'>
       <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='3' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
+      <input type='number' class='pagination-input' id='page-input-top' min='1' max='4' value='4' aria-label='Current page'>
+      <span class='pagination-separator'> / 4</span>
     </div>
     <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
       <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -29,7 +29,7 @@ format: html
 <!-- Pagination Navigation Script -->
 <script>
 (function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html"];
+  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
   const pageInput = document.getElementById('page-input-top');
   
   if (pageInput) {
@@ -59,10 +59,9 @@ format: html
 library(dashboardr)
 ```
 
-**DIT IS EEN MOCKUP VERSIE GELIEVE NIET TE CITEREN**
+**THIS IS A MOCKUP VERSION PLEASE DO NOT CITE**
 
-De Performance-sectie meet de praktische digitale vaardigheden van deelnemers aan de hand van uiteenlopende alledaagse taken. In plaats van zelfrapportage testen deze items wat mensen daadwerkelijk kunnen: bijvoorbeeld betrouwbare informatie opzoeken, AI-gegenereerde beelden herkennen, hun apparaten beveiligen of AI-tools effectief gebruiken. De items bestrijken elf domeinen van digitale competentie, van strategische en kritische informatievaardigheden tot AI- en generatieve-AI-vaardigheden, en geven zo een totaalbeeld van hoe goed mensen zich in de digitale omgeving van vandaag kunnen bewegen.
-
+The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover eleven areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment.
 
 ```{r, echo=FALSE, results='asis'}
 dashboardr::enable_modals()
@@ -115,452 +114,31 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 ```{r, echo=FALSE, results='asis'}
 dashboardr::modal_content(
   modal_id = 'PDCCS1R',
-  text = '<h2>Digitale Inhoudscreatie & Samenwerking: Prestatie Vragen</h2>
+  text = '<h2>Digital Content Creation & Collaboration: Performance Questions</h2>
 <img src="https://placehold.co/600x400/EEE/31343C" style="max-width:100%; height:auto;">
-<p>Deze modal biedt aanvullende context over de prestatievragen voor digitale inhoudscreatie en samenwerking.</p>'
+<p>This modal provides additional context about the digital content creation and collaboration performance questions.</p>'
 )
 ```
-
-## {{< iconify ph wallet-fill >}} Transactioneel
-
-
-**Transactionele competentie** omvat het vermogen om officiële online zaken af te handelen: overheidsdiensten beheren, digitale betalingen, gezondheidszorgafspraken, en documenten uploaden.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Wie vraag je om hulp als je met online media of digitale technologie niets kunt? (meerdere antwoorden mogelijk)", preset = "question")
-```
-[{{< iconify ph cards >}} Bekijk alle Transactionele resultaten](transactional.html)
-
-
-::: {.panel-tabset}
-
-### {{< iconify ph number-circle-one-fill >}} Ronde 1
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r perf-trans-wave1-overall}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbars(
-  data = data_filtered_984a0efe,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  questions = "PTS1R",
-  question_labels = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-```{r perf-trans-wave1-age}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-```{r perf-trans-wave1-gender}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-```{r perf-trans-wave1-edu}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-```{r perf-trans-wave1-mig}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-:::
-
-
-### {{< iconify ph number-circle-two-fill >}} Ronde 2
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r perf-trans-wave2-overall}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbars(
-  data = data_filtered_4af682fd,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  questions = "PTS1R",
-  question_labels = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-```{r perf-trans-wave2-age}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-```{r perf-trans-wave2-gender}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-```{r perf-trans-wave2-edu}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-```{r perf-trans-wave2-mig}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "PTS1R"
-)
-
-result
-```
-
-
-:::
-
-
-### {{< iconify ph chart-line-fill >}} Verloop over tijd
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r perf-trans-overtime-overall}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_timeline(
-  data = data,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  response_var = "PTS1R"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-```{r perf-trans-overtime-age}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_timeline(
-  data = data,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PTS1R",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-```{r perf-trans-overtime-gender}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_timeline(
-  data = data,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PTS1R",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-```{r perf-trans-overtime-edu}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_timeline(
-  data = data,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PTS1R",
-  group_var = "Education"
-)
-
-result
-```
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-```{r perf-trans-overtime-mig}
-# Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?
-result <- create_timeline(
-  data = data,
-  title = "Hieronder zie je 4 icoontjes die je op een website tegen kan komen. Op welk van de icoontjes moet je klikken om te weten of je veilig kunt winkelen op een online webshop (bijvoorbeeld met veilige opslag van persoonsgegevens en een veilige betaalomgeving)?",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PTS1R",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-:::
-
-
-:::
 
 ## {{< iconify ph robot-fill >}} AI
 
 
-**AI competentie** omvat het vermogen om te herkennen wanneer websites en apps artificiële intelligentie gebruiken om content en aanbevelingen te personaliseren.
+**AI Competence** covers the ability to recognize when websites and apps use artificial intelligence to personalize content and recommendations.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Selecteer alle apps of websites die AI gebruiken om hun inhoud voor u te personaliseren", preset = "question")
+create_blockquote("Select all apps or websites that use AI to personalize their content for you", preset = "question")
 ```
-[{{< iconify ph cards >}} Bekijk alle AI resultaten](ai.html)
+[{{< iconify ph cards >}} See all AI results](ai.html)
 
 
 ::: {.panel-tabset}
 
-### {{< iconify ph number-circle-one-fill >}} Ronde 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Algemeen
+##### {{< iconify ph users-fill >}} Overall
 
 
 ```{r perf-ai-wave1-overall}
@@ -569,15 +147,15 @@ result <- create_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
   questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
+  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -586,12 +164,12 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave1-age-item1}
@@ -602,13 +180,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_1"
 )
 
@@ -616,7 +194,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave1-age-item2}
@@ -627,13 +205,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_2"
 )
 
@@ -641,7 +219,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave1-age-item3}
@@ -652,13 +230,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_3"
 )
 
@@ -666,7 +244,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave1-age-item4}
@@ -677,13 +255,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_4"
 )
 
@@ -691,7 +269,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave1-age-item5}
@@ -702,13 +280,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_5"
 )
 
@@ -716,7 +294,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave1-age-item6}
@@ -727,13 +305,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_6"
 )
 
@@ -741,24 +319,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave1-age-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_7"
 )
 
@@ -766,7 +344,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave1-age-item8}
@@ -777,13 +355,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_8"
 )
 
@@ -791,7 +369,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave1-age-item9}
@@ -802,13 +380,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_9"
 )
 
@@ -819,12 +397,12 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave1-gender-item1}
@@ -835,13 +413,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_1"
 )
 
@@ -849,7 +427,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave1-gender-item2}
@@ -860,13 +438,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_2"
 )
 
@@ -874,7 +452,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave1-gender-item3}
@@ -885,13 +463,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_3"
 )
 
@@ -899,7 +477,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave1-gender-item4}
@@ -910,13 +488,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_4"
 )
 
@@ -924,7 +502,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave1-gender-item5}
@@ -935,13 +513,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_5"
 )
 
@@ -949,7 +527,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave1-gender-item6}
@@ -960,13 +538,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_6"
 )
 
@@ -974,24 +552,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave1-gender-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_7"
 )
 
@@ -999,7 +577,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave1-gender-item8}
@@ -1010,13 +588,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_8"
 )
 
@@ -1024,7 +602,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave1-gender-item9}
@@ -1035,13 +613,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_9"
 )
 
@@ -1052,12 +630,12 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave1-edu-item1}
@@ -1068,13 +646,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_1"
 )
 
@@ -1082,7 +660,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave1-edu-item2}
@@ -1093,13 +671,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_2"
 )
 
@@ -1107,7 +685,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave1-edu-item3}
@@ -1118,13 +696,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_3"
 )
 
@@ -1132,7 +710,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave1-edu-item4}
@@ -1143,13 +721,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_4"
 )
 
@@ -1157,7 +735,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave1-edu-item5}
@@ -1168,13 +746,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_5"
 )
 
@@ -1182,7 +760,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave1-edu-item6}
@@ -1193,13 +771,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_6"
 )
 
@@ -1207,24 +785,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave1-edu-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_7"
 )
 
@@ -1232,7 +810,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave1-edu-item8}
@@ -1243,13 +821,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_8"
 )
 
@@ -1257,7 +835,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave1-edu-item9}
@@ -1268,13 +846,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_9"
 )
 
@@ -1285,12 +863,12 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave1-mig-item1}
@@ -1301,13 +879,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_1"
 )
 
@@ -1315,7 +893,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave1-mig-item2}
@@ -1326,13 +904,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_2"
 )
 
@@ -1340,7 +918,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave1-mig-item3}
@@ -1351,13 +929,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_3"
 )
 
@@ -1365,7 +943,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave1-mig-item4}
@@ -1376,13 +954,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_4"
 )
 
@@ -1390,7 +968,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave1-mig-item5}
@@ -1401,13 +979,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_5"
 )
 
@@ -1415,7 +993,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave1-mig-item6}
@@ -1426,13 +1004,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_6"
 )
 
@@ -1440,24 +1018,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave1-mig-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_7"
 )
 
@@ -1465,7 +1043,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave1-mig-item8}
@@ -1476,13 +1054,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_8"
 )
 
@@ -1490,7 +1068,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave1-mig-item9}
@@ -1501,13 +1079,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_9"
 )
 
@@ -1521,12 +1099,12 @@ result
 :::
 
 
-### {{< iconify ph number-circle-two-fill >}} Ronde 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Algemeen
+##### {{< iconify ph users-fill >}} Overall
 
 
 ```{r perf-ai-wave2-overall}
@@ -1535,15 +1113,15 @@ result <- create_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
   questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
+  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -1552,12 +1130,12 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave2-age-item1}
@@ -1568,13 +1146,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_1"
 )
 
@@ -1582,7 +1160,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave2-age-item2}
@@ -1593,13 +1171,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_2"
 )
 
@@ -1607,7 +1185,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave2-age-item3}
@@ -1618,13 +1196,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_3"
 )
 
@@ -1632,7 +1210,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave2-age-item4}
@@ -1643,13 +1221,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_4"
 )
 
@@ -1657,7 +1235,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave2-age-item5}
@@ -1668,13 +1246,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_5"
 )
 
@@ -1682,7 +1260,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave2-age-item6}
@@ -1693,13 +1271,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_6"
 )
 
@@ -1707,24 +1285,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave2-age-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_7"
 )
 
@@ -1732,7 +1310,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave2-age-item8}
@@ -1743,13 +1321,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_8"
 )
 
@@ -1757,7 +1335,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave2-age-item9}
@@ -1768,13 +1346,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS2_9"
 )
 
@@ -1785,12 +1363,12 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave2-gender-item1}
@@ -1801,13 +1379,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_1"
 )
 
@@ -1815,7 +1393,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave2-gender-item2}
@@ -1826,13 +1404,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_2"
 )
 
@@ -1840,7 +1418,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave2-gender-item3}
@@ -1851,13 +1429,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_3"
 )
 
@@ -1865,7 +1443,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave2-gender-item4}
@@ -1876,13 +1454,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_4"
 )
 
@@ -1890,7 +1468,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave2-gender-item5}
@@ -1901,13 +1479,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_5"
 )
 
@@ -1915,7 +1493,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave2-gender-item6}
@@ -1926,13 +1504,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_6"
 )
 
@@ -1940,24 +1518,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave2-gender-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_7"
 )
 
@@ -1965,7 +1543,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave2-gender-item8}
@@ -1976,13 +1554,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_8"
 )
 
@@ -1990,7 +1568,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave2-gender-item9}
@@ -2001,13 +1579,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS2_9"
 )
 
@@ -2018,12 +1596,12 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave2-edu-item1}
@@ -2034,13 +1612,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_1"
 )
 
@@ -2048,7 +1626,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave2-edu-item2}
@@ -2059,13 +1637,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_2"
 )
 
@@ -2073,7 +1651,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave2-edu-item3}
@@ -2084,13 +1662,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_3"
 )
 
@@ -2098,7 +1676,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave2-edu-item4}
@@ -2109,13 +1687,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_4"
 )
 
@@ -2123,7 +1701,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave2-edu-item5}
@@ -2134,13 +1712,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_5"
 )
 
@@ -2148,7 +1726,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave2-edu-item6}
@@ -2159,13 +1737,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_6"
 )
 
@@ -2173,24 +1751,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave2-edu-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_7"
 )
 
@@ -2198,7 +1776,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave2-edu-item8}
@@ -2209,13 +1787,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_8"
 )
 
@@ -2223,7 +1801,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave2-edu-item9}
@@ -2234,13 +1812,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS2_9"
 )
 
@@ -2251,12 +1829,12 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-wave2-mig-item1}
@@ -2267,13 +1845,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_1"
 )
 
@@ -2281,7 +1859,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-wave2-mig-item2}
@@ -2292,13 +1870,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_2"
 )
 
@@ -2306,7 +1884,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-wave2-mig-item3}
@@ -2317,13 +1895,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_3"
 )
 
@@ -2331,7 +1909,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-wave2-mig-item4}
@@ -2342,13 +1920,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_4"
 )
 
@@ -2356,7 +1934,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-wave2-mig-item5}
@@ -2367,13 +1945,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_5"
 )
 
@@ -2381,7 +1959,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-wave2-mig-item6}
@@ -2392,13 +1970,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_6"
 )
 
@@ -2406,24 +1984,24 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-wave2-mig-item7}
-# NOS Nieuws
+# NOS News
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "NOS News",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_7"
 )
 
@@ -2431,7 +2009,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-wave2-mig-item8}
@@ -2442,13 +2020,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_8"
 )
 
@@ -2456,7 +2034,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-wave2-mig-item9}
@@ -2467,13 +2045,13 @@ result <- create_stackedbar(
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS2_9"
 )
 
@@ -2487,17 +2065,17 @@ result
 :::
 
 
-### {{< iconify ph chart-line-fill >}} Verloop over tijd
+### {{< iconify ph chart-line-fill >}} Over Time
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Algemeen
+##### {{< iconify ph users-fill >}} Overall
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-overtime-overall-item1}
@@ -2510,10 +2088,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_1"
@@ -2523,7 +2101,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-overtime-overall-item2}
@@ -2536,10 +2114,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_2"
@@ -2549,7 +2127,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-overtime-overall-item3}
@@ -2562,10 +2140,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_3"
@@ -2575,7 +2153,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-overtime-overall-item4}
@@ -2588,10 +2166,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_4"
@@ -2601,7 +2179,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-overtime-overall-item5}
@@ -2614,10 +2192,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_5"
@@ -2627,7 +2205,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-overtime-overall-item6}
@@ -2640,10 +2218,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_6"
@@ -2653,23 +2231,23 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-overtime-overall-item7}
-# NOS Nieuws
+# NOS News
 result <- create_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "NOS News",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_7"
@@ -2679,7 +2257,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-overtime-overall-item8}
@@ -2692,10 +2270,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_8"
@@ -2705,7 +2283,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-overtime-overall-item9}
@@ -2718,10 +2296,10 @@ result <- create_timeline(
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS2_9"
@@ -2734,12 +2312,12 @@ result
 :::
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-overtime-age-item1}
@@ -2753,7 +2331,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2765,7 +2343,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-overtime-age-item2}
@@ -2779,7 +2357,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2791,7 +2369,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-overtime-age-item3}
@@ -2805,7 +2383,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2817,7 +2395,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-overtime-age-item4}
@@ -2831,7 +2409,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2843,7 +2421,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-overtime-age-item5}
@@ -2857,7 +2435,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2869,7 +2447,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-overtime-age-item6}
@@ -2883,7 +2461,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2895,21 +2473,21 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-overtime-age-item7}
-# NOS Nieuws
+# NOS News
 result <- create_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "NOS News",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2921,7 +2499,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-overtime-age-item8}
@@ -2935,7 +2513,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2947,7 +2525,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-overtime-age-item9}
@@ -2961,7 +2539,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -2976,12 +2554,12 @@ result
 :::
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-overtime-gender-item1}
@@ -2995,7 +2573,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3007,7 +2585,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-overtime-gender-item2}
@@ -3021,7 +2599,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3033,7 +2611,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-overtime-gender-item3}
@@ -3047,7 +2625,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3059,7 +2637,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-overtime-gender-item4}
@@ -3073,7 +2651,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3085,7 +2663,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-overtime-gender-item5}
@@ -3099,7 +2677,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3111,7 +2689,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-overtime-gender-item6}
@@ -3125,7 +2703,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3137,21 +2715,21 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-overtime-gender-item7}
-# NOS Nieuws
+# NOS News
 result <- create_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "NOS News",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3163,7 +2741,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-overtime-gender-item8}
@@ -3177,7 +2755,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3189,7 +2767,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-overtime-gender-item9}
@@ -3203,7 +2781,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3218,12 +2796,12 @@ result
 :::
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-overtime-edu-item1}
@@ -3237,7 +2815,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3249,7 +2827,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-overtime-edu-item2}
@@ -3263,7 +2841,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3275,7 +2853,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-overtime-edu-item3}
@@ -3289,7 +2867,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3301,7 +2879,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-overtime-edu-item4}
@@ -3315,7 +2893,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3327,7 +2905,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-overtime-edu-item5}
@@ -3341,7 +2919,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3353,7 +2931,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-overtime-edu-item6}
@@ -3367,7 +2945,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3379,21 +2957,21 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-overtime-edu-item7}
-# NOS Nieuws
+# NOS News
 result <- create_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "NOS News",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3405,7 +2983,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-overtime-edu-item8}
@@ -3419,7 +2997,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3431,7 +3009,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-overtime-edu-item9}
@@ -3445,7 +3023,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3460,12 +3038,12 @@ result
 :::
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
 ::: {.panel-tabset}
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
+###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
 ```{r perf-ai-overtime-mig-item1}
@@ -3479,7 +3057,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3491,7 +3069,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
 ```{r perf-ai-overtime-mig-item2}
@@ -3505,7 +3083,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3517,7 +3095,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
+###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
 ```{r perf-ai-overtime-mig-item3}
@@ -3531,7 +3109,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3543,7 +3121,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
 ```{r perf-ai-overtime-mig-item4}
@@ -3557,7 +3135,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3569,7 +3147,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
+###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
 ```{r perf-ai-overtime-mig-item5}
@@ -3583,7 +3161,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3595,7 +3173,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 6
+###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
 ```{r perf-ai-overtime-mig-item6}
@@ -3609,7 +3187,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3621,21 +3199,21 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 7
+###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
 ```{r perf-ai-overtime-mig-item7}
-# NOS Nieuws
+# NOS News
 result <- create_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "NOS News",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3647,7 +3225,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 8
+###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
 ```{r perf-ai-overtime-mig-item8}
@@ -3661,7 +3239,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3673,7 +3251,7 @@ result
 ```
 
 
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
+###### {{< iconify ph chat-circle-fill >}} Question 9
 
 
 ```{r perf-ai-overtime-mig-item9}
@@ -3687,7 +3265,7 @@ result <- create_timeline(
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -3710,31 +3288,31 @@ result
 ## {{< iconify ph magic-wand-fill >}} Gen AI
 
 
-**Generatieve AI competentie** heeft betrekking op het omgaan met AI-tools zoals ChatGPT: weten hoe AI-gegenereerde informatie te verifiëren, effectieve prompts schrijven, AI-gegenereerde content detecteren, en de mogelijkheden en beperkingen van GenAI begrijpen.
+**Generative AI competence** covers the ability to engage with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Wie vraag je om hulp als je met online media of digitale technologie niets kunt? (meerdere antwoorden mogelijk)", preset = "question")
+create_blockquote("Who do you ask for help if you aren’t able to do something with online media or digital technology? (you can choose multiple answers)", preset = "question")
 ```
-[{{< iconify ph cards >}} Bekijk alle Gen AI resultaten](gen_ai.html)
+[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
 
 
 ::: {.panel-tabset}
 
-### {{< iconify ph number-circle-one-fill >}} Ronde 1
+### {{< iconify ph number-circle-one-fill >}} Wave 1
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Algemeen
+##### {{< iconify ph users-fill >}} Overall
 
 
 ```{r perf-genai-wave1-overall}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   questions = "PAIS1R",
-  question_labels = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  question_labels = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3751,14 +3329,14 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ```{r perf-genai-wave1-age}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3768,7 +3346,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS1R"
 )
 
@@ -3776,14 +3354,14 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ```{r perf-genai-wave1-gender}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3793,7 +3371,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS1R"
 )
 
@@ -3801,14 +3379,14 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ```{r perf-genai-wave1-edu}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3818,7 +3396,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS1R"
 )
 
@@ -3826,14 +3404,14 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
 ```{r perf-genai-wave1-mig}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3843,7 +3421,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS1R"
 )
 
@@ -3854,21 +3432,21 @@ result
 :::
 
 
-### {{< iconify ph number-circle-two-fill >}} Ronde 2
+### {{< iconify ph number-circle-two-fill >}} Wave 2
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Algemeen
+##### {{< iconify ph users-fill >}} Overall
 
 
 ```{r perf-genai-wave2-overall}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   questions = "PAIS1R",
-  question_labels = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  question_labels = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3885,14 +3463,14 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ```{r perf-genai-wave2-age}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3902,7 +3480,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
-  x_label = "Leeftijd",
+  x_label = "Age",
   stack_var = "PAIS1R"
 )
 
@@ -3910,14 +3488,14 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ```{r perf-genai-wave2-gender}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3927,7 +3505,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
-  x_label = "Geslacht",
+  x_label = "Gender",
   stack_var = "PAIS1R"
 )
 
@@ -3935,14 +3513,14 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ```{r perf-genai-wave2-edu}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3952,7 +3530,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
-  x_label = "Opleidingsniveau",
+  x_label = "Education",
   stack_var = "PAIS1R"
 )
 
@@ -3960,14 +3538,14 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
 ```{r perf-genai-wave2-mig}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -3977,7 +3555,7 @@ result <- create_stackedbar(
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
+  x_label = "Migration Background",
   stack_var = "PAIS1R"
 )
 
@@ -3988,28 +3566,28 @@ result
 :::
 
 
-### {{< iconify ph chart-line-fill >}} Verloop over tijd
+### {{< iconify ph chart-line-fill >}} Over Time
 
 
 ::: {.panel-tabset}
 
-##### {{< iconify ph users-fill >}} Algemeen
+##### {{< iconify ph users-fill >}} Overall
 
 
 ```{r perf-genai-overtime-overall}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
+  response_filter_label = "Percentage who selected/answered correctly",
   response_filter_combine = TRUE,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   response_var = "PAIS1R"
@@ -4019,21 +3597,21 @@ result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+##### {{< iconify mdi:human-male-male-child >}} Age
 
 
 ```{r perf-genai-overtime-age}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -4045,21 +3623,21 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+##### {{< iconify mdi gender-transgender >}} Gender
 
 
 ```{r perf-genai-overtime-gender}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -4071,21 +3649,21 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+##### {{< iconify ph graduation-cap-fill >}} Education
 
 
 ```{r perf-genai-overtime-edu}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -4097,21 +3675,21 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
 ```{r perf-genai-overtime-mig}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
 result <- create_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
+  y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   response_filter_label = NULL,
   weight_var = "weging_GAMO",
@@ -4133,15 +3711,15 @@ result
 ```{=html}
 <nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
   <div class='pagination-container'>
-    <a href='performance_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
+    <a href='performance_p3.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
       <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
         <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
       </svg>
     </a>
     <div class='pagination-info'>
       <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='3' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
+      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='4' value='4' aria-label='Current page'>
+      <span class='pagination-separator'> / 4</span>
     </div>
     <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
       <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -4154,7 +3732,7 @@ result
 <!-- Pagination Navigation Script -->
 <script>
 (function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html"];
+  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
   const pageInput = document.getElementById('page-input-bottom');
   
   if (pageInput) {
