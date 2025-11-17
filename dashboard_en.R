@@ -416,7 +416,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_breaks = breaks,
     stack_bin_labels = lbs,
     stack_order = rev(lbs),
-    drop_na_vars = T,
+    drop_na_vars = F,
     stack_label = NULL,
     weight_var = "weging_GAMO"
   ) %>%
@@ -449,7 +449,8 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     color_palette = the_colors,
     y_min = 0,
     y_max = 100,
-    response_filter_label = NULL
+    response_filter_label = NULL,
+    weight_var = "weging_GAMO"
   ) |>
     add_all_viz_timeline_single(vs, tbgrp, "overall", wave_label = "Over Time", questions = qs)  # Pass tbgrp!
   
@@ -463,7 +464,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     text_before_tabset = text_b_tabset,
     stack_order = rev(lbs),
     filter = ~ wave == 1,
-    drop_na_vars = T,
+    drop_na_vars = F,
     color_palette = colors,
     weight_var = "weging_GAMO"
   ) |>
@@ -483,7 +484,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_order = rev(lbs),
     text_before_tabset = text_b_tabset,
     filter = ~ wave == 2,
-    drop_na_vars = T,
+    drop_na_vars = F,
     color_palette = colors,
     weight_var = "weging_GAMO"
   ) |>
@@ -541,7 +542,7 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_order = lbs,
     text = "", 
     text_before_tabset = text_b_tabset,
-    drop_na_vars = T,
+    drop_na_vars = F,
     stack_label = NULL,
     weight_var = "weging_GAMO"
   ) %>%
@@ -587,7 +588,7 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_map_values = map_values,
     stack_order = lbs,
     filter = ~ wave == 1,
-    drop_na_vars = T,
+    drop_na_vars = F,
     color_palette = colors,
     weight_var = "weging_GAMO"
   ) |>
@@ -606,7 +607,7 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_map_values = map_values,
     stack_order = lbs,
     filter = ~ wave == 2,
-    drop_na_vars = T,
+    drop_na_vars = F,
     color_palette = colors,
     weight_var = "weging_GAMO"
   ) |>
@@ -666,7 +667,7 @@ create_vizzes3 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_order = rev(lbs),
     text = "", 
     text_before_tabset = text_b_tabset,
-    drop_na_vars = T,
+    drop_na_vars = F,
     stack_label = NULL,
     weight_var = "weging_GAMO"
   ) %>%
@@ -712,7 +713,7 @@ create_vizzes3 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_map_values = map_values,
     stack_order = rev(lbs),
     filter = ~ wave == 1,
-    drop_na_vars = T,
+    drop_na_vars = F,
     color_palette = colors,
     weight_var = "weging_GAMO"
   ) |>
@@ -731,7 +732,7 @@ create_vizzes3 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     stack_map_values = map_values,
     stack_order = rev(lbs),
     filter = ~ wave == 2,
-    drop_na_vars = T,
+    drop_na_vars = F,
     color_palette = colors,
     weight_var = "weging_GAMO"
   ) |>
@@ -794,10 +795,10 @@ knowledge_viz <- create_viz(
   bar_type = "percent",
   icon = "ph:chart-bar",
   text_before_tabset = knowledge_tex,
-  drop_na_vars = T,
+  drop_na_vars = F,
   text_position = "above",
   color_palette = the_colors,
-  drop_na_vars = TRUE,
+  drop_na_vars = F,
   weight_var = "weging_GAMO"
 ) %>%
   add_viz(
@@ -830,7 +831,7 @@ knowledge_subvizzes_wave1 <- create_viz(
   stack_bin_labels = knowledge_labs,
   stack_order = knowledge_labs,
   filter = ~ wave == 1,
-  drop_na_vars = T,
+  drop_na_vars = F,
   weight_var = "weging_GAMO",
   color_palette = the_colors
 ) |>
@@ -868,7 +869,7 @@ knowledge_subvizzes_wave2 <- create_viz(
   stack_bin_labels = knowledge_labs,
   stack_order = knowledge_labs,
   filter = ~ wave == 2,
-  drop_na_vars = T,
+  drop_na_vars = F,
   weight_var = "weging_GAMO",
   color_palette = the_colors
 ) |>
@@ -907,7 +908,7 @@ knowledge_overtime_overall <- create_viz(
   response_bin_labels = knowledge_labs,
   y_min = 0,
   y_max = 100,
-  drop_na_vars = TRUE,
+  drop_na_vars = F,
   weight_var = "weging_GAMO"
 ) |>
   add_viz(
@@ -925,7 +926,7 @@ knowledge_overtime_demographics <- create_viz(
   y_min = 0,
   y_max = 100,
   response_bin_labels = knowledge_labs,
-  drop_na_vars = TRUE
+  drop_na_vars = F
 ) |>
   add_viz(
     group_var = "AgeGroup",
@@ -2063,7 +2064,7 @@ genai_viz_w1 <- create_viz(
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
   stack_order = sis_labs,
-  drop_na_vars = T,
+  drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 1,
   weight_var = "weging_GAMO"
@@ -2088,7 +2089,7 @@ genai_viz_w2 <- create_viz(
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
   stack_order = sis_labs,
-  drop_na_vars = T,
+  drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 2,
   weight_var = "weging_GAMO"
@@ -2129,7 +2130,7 @@ genai_demo_w1 <- create_viz(
   text_before_tabset = genai_tex_complete,
   stack_order = sis_labs,
   filter = ~ wave == 1,
-  drop_na_vars = T,
+  drop_na_vars = F,
   color_palette = the_colors,
   weight_var = "weging_GAMO"
 ) |>
@@ -2148,7 +2149,7 @@ genai_demo_w2 <- create_viz(
   stack_order = sis_labs,
   text_before_tabset = genai_tex_complete,
   filter = ~ wave == 2,
-  drop_na_vars = T,
+  drop_na_vars = F,
   color_palette = the_colors,
   weight_var = "weging_GAMO"
 ) |>
@@ -2198,7 +2199,7 @@ genai_viz_wo_link_w1 <- create_viz(
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
   stack_order = sis_labs,
-  drop_na_vars = T,
+  drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 1,
   weight_var = "weging_GAMO"
@@ -2223,7 +2224,7 @@ genai_viz_wo_link_w2 <- create_viz(
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
   stack_order = sis_labs,
-  drop_na_vars = T,
+  drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 2,
   weight_var = "weging_GAMO"
@@ -2264,7 +2265,7 @@ genai_demo_w1_wo_link <- create_viz(
   text_before_tabset = genai_tex_question,
   stack_order = sis_labs,
   filter = ~ wave == 1,
-  drop_na_vars = T,
+  drop_na_vars = F,
   color_palette = the_colors,
   weight_var = "weging_GAMO"
 ) |>
@@ -2283,7 +2284,7 @@ genai_demo_w2_wo_link <- create_viz(
   stack_order = sis_labs,
   text_before_tabset = genai_tex_question,
   filter = ~ wave == 2,
-  drop_na_vars = T,
+  drop_na_vars = F,
   color_palette = the_colors,
   weight_var = "weging_GAMO"
 ) |>
@@ -2700,7 +2701,7 @@ perf_health_tex_link <- md_text(
   perf_health_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0('create_blockquote("', transl("blockquote_performance_health", lang), '", preset = "question")'),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_digital_health", lang), "](digital_health.html)")
 )
@@ -2722,7 +2723,7 @@ perf_health_tex_wo_link <- md_text(
   perf_health_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0('create_blockquote("', transl("blockquote_performance_health", lang), '", preset = "question")'),
   "```"
 )
 
@@ -2763,7 +2764,7 @@ perf_green_tex_link <- md_text(
   perf_green_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0('create_blockquote("', transl("blockquote_performance_green", lang), '", preset = "question")'),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_green", lang), "](green_digital.html)")
 )
@@ -2785,7 +2786,7 @@ perf_green_tex_wo_link <- md_text(
   perf_green_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0('create_blockquote("', transl("blockquote_performance_green", lang), '", preset = "question")'),
   "```"
 )
 
@@ -2826,7 +2827,7 @@ perf_ps_tex_link <- md_text(
   perf_ps_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0('create_blockquote("', transl("blockquote_performance_problem_solving", lang), '", preset = "question")'),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_problem_solving", lang), "](digital_problem_solving.html)")
 )
@@ -2848,7 +2849,7 @@ perf_ps_tex_wo_link <- md_text(
   perf_ps_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0('create_blockquote("', transl("blockquote_performance_problem_solving", lang), '", preset = "question")'),
   "```"
 )
 
@@ -2963,7 +2964,7 @@ perf_ai_tex_wo_link <- md_text(
   perf_ai_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance_ai_wo_link", lang), '", preset = "question")'),
+  paste0('create_blockquote("', transl("blockquote_performance_ai", lang), '", preset = "question")'),
   "```"
 )
 

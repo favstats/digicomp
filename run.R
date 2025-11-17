@@ -47,30 +47,32 @@ read_lines("qmds/_quarto.yml") %>%
   
   write_lines("qmds/_quarto.yml")
 
-
 # directory with your files
 dir <- "qmds"  # change if needed, e.g. "docs" or "."
 
 # map Dutch -> English
 name_map <- c(
-  "kennis"                 = "knowledge",
-  "kritische_informatie"   = "critical_information",
-  "strategische_informatie"= "strategic_information",
-  "netiquette"             = "netiquette",
-  "digitale_inhoudscreatie"= "digital_content_creation",
-  "veiligheid"             = "safety",
-  "digitale_gezondheid"    = "digital_health",
-  "groene_digitaal"        = "green_digital",
+  "kennis"                    = "knowledge",
+  "kritische_informatie"      = "critical_information",
+  "strategische_informatie"   = "strategic_information",
+  "netiquette"                = "netiquette",
+  "digitale_inhoudscreatie"   = "digital_content_creation",
+  "veiligheid"                = "safety",
+  "digitale_gezondheid"       = "digital_health",
+  "groene_digitaal"           = "green_digital",
   "digitaal_probleemoplossen" = "digital_problem_solving",
-  "transactioneel"         = "transactional",
-  "vaardigheden"           = "skills",
-  "prestatie"              = "performance",
-  "hoogtepunten"           = "highlights",
-  "over"                   = "about",
-  "ai"                     = "ai",        # stays the same
-  "index"                  = "index"      # stays the same
+  "transactioneel"            = "transactional",
+  "vaardigheden"             = "skills",
+  "prestatie"                 = "performance",
+  "hoogtepunten"              = "highlights",
+  "over"                      = "about",
+  "ai"                        = "ai",        # stays the same
+  "index"                     = "index"      # stays the same
 )
 
+# -------------------------------------------------------------------
+# 1) Rename files on disk
+# -------------------------------------------------------------------
 files <- list.files(dir, full.names = TRUE)
 
 for (f in files) {
@@ -94,10 +96,49 @@ for (f in files) {
   
   # if changed, rename
   if (!identical(new_base, base)) {
-    new_path <- file.path(dir, paste0(new_base, if (nzchar(ext)) paste0(".", ext) else ""))
+    new_path <- file.path(
+      dir,
+      paste0(new_base, if (nzchar(ext)) paste0(".", ext) else "")
+    )
     message("Renaming: ", f, " -> ", new_path)
     file.rename(f, new_path)
   }
+}
+
+# -------------------------------------------------------------------
+# 2) Update internal references like "kennis.html", "kennis_p2.html"
+# -------------------------------------------------------------------
+files <- list.files(dir, full.names = TRUE) %>% keep(~str_detect(.x, ".qmd"))
+# f <- files[29]
+for (f in files) {
+  if (dir.exists(f)) next
+  
+  # simple read
+  lines <- read_lines(f)
+  
+  for (dutch in names(name_map)) {
+    eng <- name_map[[dutch]]
+    if (identical(dutch, eng)) next
+    
+    # replace e.g. "kennis.html" -> "knowledge.html"
+    lines <- gsub(
+      paste0(dutch, ".html"),
+      paste0(eng,   ".html"),
+      lines,
+      fixed = TRUE
+    )
+    
+    # replace e.g. "kennis_p2.html" -> "knowledge_p2.html"
+    # by changing the prefix before "_p"
+    lines <- gsub(
+      paste0(dutch, "_p"),
+      paste0(eng,   "_p"),
+      lines,
+      fixed = TRUE
+    )
+  }
+  
+  writeLines(lines, f)
 }
 
 # renders every .qmd in qmds/ per its _quarto.yml
