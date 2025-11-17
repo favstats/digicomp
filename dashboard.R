@@ -1632,11 +1632,15 @@ sis_tex_question <- md_text(
 
 sys_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_strategic", lang), "](strategic_information.html)")
 
+
+
 sis_tex_complete <- paste0(
   sis_info_text, "\n",
   sis_tex_question, "\n",
   sys_tex_more_link
 )
+
+
 
 
 
@@ -2063,7 +2067,7 @@ genai_viz_w1 <- create_viz(
   text_before_tabset = genai_tex_complete,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 1,
@@ -2088,7 +2092,7 @@ genai_viz_w2 <- create_viz(
   text_before_tabset = genai_tex_complete,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 2,
@@ -2128,7 +2132,7 @@ genai_demo_w1 <- create_viz(
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
   text_before_tabset = genai_tex_complete,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   filter = ~ wave == 1,
   drop_na_vars = F,
   color_palette = the_colors,
@@ -2146,7 +2150,7 @@ genai_demo_w2 <- create_viz(
   horizontal = T,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   text_before_tabset = genai_tex_complete,
   filter = ~ wave == 2,
   drop_na_vars = F,
@@ -2198,7 +2202,7 @@ genai_viz_wo_link_w1 <- create_viz(
   text_before_tabset = genai_tex_question,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 1,
@@ -2223,7 +2227,7 @@ genai_viz_wo_link_w2 <- create_viz(
   text_before_tabset = genai_tex_question,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   drop_na_vars = F,
   stack_label = NULL,
   filter = ~ wave == 2,
@@ -2263,7 +2267,7 @@ genai_demo_w1_wo_link <- create_viz(
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
   text_before_tabset = genai_tex_question,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   filter = ~ wave == 1,
   drop_na_vars = F,
   color_palette = the_colors,
@@ -2281,7 +2285,7 @@ genai_demo_w2_wo_link <- create_viz(
   horizontal = T,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
   stack_bin_labels = sis_labs,
-  stack_order = sis_labs,
+  stack_order = rev(sis_labs),
   text_before_tabset = genai_tex_question,
   filter = ~ wave == 2,
   drop_na_vars = F,
@@ -3095,10 +3099,28 @@ library(htmltools)
 # 🏆 Performance = ph:trophy-fill (achievement/testing)
 
 
+
+performance_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_performance", lang), "](performance.html)")
+
+knowledge_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_knowledge", lang), "](knowledge.html)")
+
+skills_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_skills", lang), "](skills.html)")
+
+
+
+
+
+sis_tex_wo_complete <- paste0(
+  sis_info_text, "\n",
+  sis_tex_question, "\n",
+  skills_tex_more_link
+)
+
+
 sis_viz_wo_link <- create_vizzes(sis_questions, 
                                  sis_vars, sis_labs, 
                                  sis_tex_question, breaks = c(0.5, 2.5, 3.5, 5.5), 
-                                 tbgrp = "sis",
+                                 tbgrp = "sis", text_b_tabset = sis_tex_wo_complete,
                                  graph_title = transl("title_strategic_information_skills", lang))
 
 ## 7.1 Strategic Information Dimension ----
@@ -3341,20 +3363,6 @@ genai_combined_visualizations <- (genai_viz_wo_link + kgai_viz_wo_link + perf_ge
     item5 = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 5"))
   )
 
-# 8. DASHBOARD CREATION ========================================================
-
-## 8.1 Navigation Menus ----
-dimensions_menu <- navbar_menu(
-  text = transl("menu_dimensions", lang),
-  pages = c(transl("page_name_strategic_info", lang), transl("page_name_critical_info", lang), 
-            transl("page_name_netiquette", lang), transl("page_name_content_creation", lang),
-            transl("page_name_safety", lang), transl("page_name_digital_health", lang), 
-            transl("page_name_green", lang),
-            transl("page_name_problem_solving", lang), transl("page_name_transactional", lang),
-            transl("page_name_ai", lang), transl("page_name_genai", lang)),
-  icon = "ph:books-fill"
-)
-
 strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_wo_link)  %>%
   set_tabgroup_labels(
     sis = paste0("{{< iconify ph lightning-fill >}} ", transl("tab_skills", lang)),
@@ -3377,6 +3385,22 @@ strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_
     item7  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 7")),
     item8  = paste0("{{< iconify ph chat-circle-fill >}} ", paste0(transl("tab_question", lang), " 8"))
   )
+
+
+# 8. DASHBOARD CREATION ========================================================
+
+## 8.1 Navigation Menus ----
+dimensions_menu <- navbar_menu(
+  text = transl("menu_dimensions", lang),
+  pages = c(transl("page_name_strategic_info", lang), transl("page_name_critical_info", lang), 
+            transl("page_name_netiquette", lang), transl("page_name_content_creation", lang),
+            transl("page_name_safety", lang), transl("page_name_digital_health", lang), 
+            transl("page_name_green", lang),
+            transl("page_name_problem_solving", lang), transl("page_name_transactional", lang),
+            transl("page_name_ai", lang), transl("page_name_genai", lang)),
+  icon = "ph:books-fill"
+)
+
 
 
 
