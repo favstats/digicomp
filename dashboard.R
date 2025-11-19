@@ -3731,8 +3731,8 @@ dashboard <- create_dashboard(
     visualizations = skills_viz,
     icon = "ph:lightning-fill",
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("page_text_skills", lang)
     )
   ) %>%
@@ -3744,8 +3744,8 @@ dashboard <- create_dashboard(
     visualizations = performance_collection,
     icon = "ph:clipboard-text",
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("page_text_performance", lang)
     )
   ) %>%
@@ -3758,8 +3758,8 @@ dashboard <- create_dashboard(
     visualizations = knowledge_collection,
     icon = "ph:book-open-fill",
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("page_text_knowledge", lang)
     )
   ) %>%
@@ -3789,8 +3789,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = strategic_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("strategic_info_description", lang)
     )
   ) %>%
@@ -3801,8 +3801,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = critical_info_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("critical_info_description", lang)
     )
   ) %>%
@@ -3813,8 +3813,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = netiquette_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("netiquette_description", lang)
     )
   ) %>%
@@ -3825,8 +3825,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = content_creation_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("content_creation_description", lang)
     )
   ) %>%
@@ -3837,8 +3837,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = safety_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("safety_description", lang)
     )
   ) %>%
@@ -3849,8 +3849,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = health_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("digital_health_description", lang)
     )
   ) %>%
@@ -3861,8 +3861,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = green_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("green_description", lang)
     )
   ) %>%
@@ -3873,8 +3873,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = problem_solving_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("problem_solving_description", lang)
     )
   ) %>%
@@ -3885,8 +3885,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = transactional_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("transactional_description", lang)
     )
   ) %>%
@@ -3897,8 +3897,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = ai_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("ai_description", lang)
     )
   ) %>%
@@ -3909,8 +3909,8 @@ dashboard <- create_dashboard(
     data = digicom_data,
     visualizations = genai_combined_visualizations,
     text = md_text(
-      transl("mockup_warning", lang),
-      "",
+      # transl("mockup_warning", lang),
+      # "",
       transl("genai_description", lang)
     )
   ) %>%
