@@ -1446,6 +1446,7 @@ sis_tex_question <- md_text(
   "```"
 )
 
+
 sys_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_strategic", lang), "](strategic_information.html)")
 
 
