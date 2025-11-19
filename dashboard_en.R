@@ -789,7 +789,7 @@ tbgrp <- "knowledge"
 
 knowledge_tex <- md_text(
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  "create_blockquote(\"The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.\", preset = \"question\")",
+  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
   "```"
 )
 
@@ -978,9 +978,6 @@ kinfo_info_text <- transl("strategic_info_description", lang)
 kinfo_tex_link <- md_text(
   kinfo_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_strategic", lang), "](strategic_information.html)")
 )
 
@@ -1018,9 +1015,6 @@ critinfo_info_text <- transl("critical_info_description", lang)
 critinfo_tex_link <- md_text(
   critinfo_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_critical", lang), "](critical_information.html)")
 )
 
@@ -1057,9 +1051,6 @@ knet_info_text <- transl("netiquette_description", lang)
 knet_tex_link <- md_text(
   knet_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_netiquette", lang), "](netiquette.html)")
 )
 
@@ -1098,9 +1089,6 @@ kcrea_info_text <- transl("content_creation_description", lang)
 kcrea_tex_link <- md_text(
   kcrea_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)")
 )
 
@@ -1143,9 +1131,6 @@ ksafety_info_text <- transl("safety_description", lang)
 ksafety_tex_link <- md_text(
   ksafety_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_safety", lang), "](safety.html)")
 )
 
@@ -1183,9 +1168,6 @@ khealth_info_text <- transl("health_description", lang)
 khealth_tex_link <- md_text(
   khealth_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_health", lang), "](digital_health.html)")
 )
 
@@ -1223,9 +1205,6 @@ kgreen_info_text <- transl("green_description", lang)
 kgreen_tex_link <- md_text(
   kgreen_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_green", lang), "](green_digital.html)")
 )
 
@@ -1263,9 +1242,6 @@ ktrans_info_text <- transl("transactional_description", lang)
 ktrans_tex_link <- md_text(
   ktrans_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_transactional", lang), "](transactional.html)")
 )
 
@@ -1305,9 +1281,6 @@ kai_info_text <- transl("ai_description", lang)
 kai_tex_link <- md_text(
   kai_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_ai", lang), "](ai.html)")
 )
 
@@ -1348,9 +1321,6 @@ kgai_info_text <- transl("genai_description", lang)
 kgai_tex_link <- md_text(
   kgai_info_text,
   "",
-  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-  "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_genai", lang), "](gen_ai.html)")
 )
 
@@ -1370,15 +1340,31 @@ kgai_viz <- create_vizzes2(
 ## 3.12 Knowledge Collection ----
 knowledge_collection <- #knowledge_viz %>% 
   # combine_viz(kinfo_viz) %>%
-  kinfo_viz %>% 
+  create_content() %>% 
+  add_accordion(title = transl("intro_text_knowledge", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"), 
+                  "```")) %>% 
+  combine_viz(kinfo_viz) %>% 
   combine_viz(critinfo_viz) %>%
   combine_viz(knet_viz)  %>%
-  add_pagination() %>%
+  add_pagination()  %>% 
+  add_accordion(title = transl("intro_text_knowledge", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"), 
+                  "```")) %>%
   combine_viz(kcrea_viz) %>%
   combine_viz(ksafety_viz) %>%
   combine_viz(khealth_viz) %>%
   combine_viz(kgreen_viz)  %>%
-  add_pagination() %>%
+  add_pagination()  %>% 
+  add_accordion(title = transl("intro_text_knowledge", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"), 
+                  "```")) %>%
   combine_viz(ktrans_viz) %>%
   combine_viz(kai_viz) %>%
   combine_viz(kgai_viz) %>%
@@ -1453,7 +1439,6 @@ sys_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_s
 
 sis_tex_complete <- paste0(
   sis_info_text, "\n",
-  sis_tex_question, "\n",
   sys_tex_more_link
 )
 
@@ -1491,7 +1476,6 @@ cis_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_c
 
 cis_tex_complete <- paste0(
   cis_info_text, "\n",
-  cis_tex_question, "\n",
   cis_tex_more_link
 )
 
@@ -1523,7 +1507,6 @@ nskills_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_a
 
 nskills_tex_complete <- paste0(
   nskills_info_text, "\n",
-  nskills_tex_question, "\n",
   nskills_tex_more_link
 )
 
@@ -1556,7 +1539,6 @@ dccs_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_
 
 dccs_tex_complete <- paste0(
   dccs_info_text, "\n",
-  dccs_tex_question, "\n",
   dccs_tex_more_link
 )
 
@@ -1594,7 +1576,6 @@ safety_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_al
 
 safety_tex_complete <- paste0(
   safety_info_text, "\n",
-  safety_tex_question, "\n",
   safety_tex_more_link
 )
 
@@ -1627,7 +1608,6 @@ dhealth_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_a
 
 dhealth_tex_complete <- paste0(
   dhealth_info_text, "\n",
-  dhealth_tex_question, "\n",
   dhealth_tex_more_link
 )
 
@@ -1660,7 +1640,6 @@ green_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all
 
 green_tex_complete <- paste0(
   green_info_text, "\n",
-  green_tex_question, "\n",
   green_tex_more_link
 )
 
@@ -1692,7 +1671,6 @@ dprob_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all
 
 dprob_tex_complete <- paste0(
   dprob_info_text, "\n",
-  dprob_tex_question, "\n",
   dprob_tex_more_link
 )
 
@@ -1728,7 +1706,6 @@ trans_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all
 
 trans_tex_complete <- paste0(
   trans_info_text, "\n",
-  trans_tex_question, "\n",
   trans_tex_more_link
 )
 
@@ -1764,7 +1741,6 @@ ai_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_ai
 
 ai_tex_complete <- paste0(
   ai_info_text, "\n",
-  ai_tex_question, "\n",
   ai_tex_more_link
 )
 
@@ -1810,7 +1786,6 @@ genai_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all
 
 genai_tex_complete <- paste0(
   genai_info_text, "\n",
-  genai_tex_question, "\n",
   genai_tex_more_link
 )
 
@@ -1952,18 +1927,36 @@ genai_viz <- genai_viz_w1 %>%
   combine_viz(genai_overtime_demo)
 
 
+
+
 ## 4.12 Skills Collection ----
-skills_viz <- sis_viz %>% 
+skills_viz <- create_content() %>% 
+  add_accordion(title = transl("intro_text_skills", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_skills", lang), "\", preset = \"question\")"), 
+                  "```")) %>% 
+  combine_viz(sis_viz) %>% 
   combine_viz(cis_viz) %>% 
   combine_viz(nskills_viz) %>%
   combine_viz(dccs_viz)  %>%
-  add_pagination() %>%
+  add_pagination()  %>% 
+  add_accordion(title = transl("intro_text_skills", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_skills", lang), "\", preset = \"question\")"), 
+                  "```")) %>%
   # new ones
   combine_viz(safety_viz) %>%
   combine_viz(dhealth_viz) %>%
   combine_viz(green_viz) %>%
   combine_viz(dprob_viz)  %>%
-  add_pagination() %>%
+  add_pagination()  %>% 
+  add_accordion(title = transl("intro_text_skills", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_skills", lang), "\", preset = \"question\")"), 
+                  "```")) %>%
   combine_viz(trans_viz) %>%
   combine_viz(ai_viz) %>%
   combine_viz(genai_viz) %>%
@@ -2578,6 +2571,7 @@ knowledge_short <- transl("page_text_knowledge_short", lang)
 
 sis_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2586,6 +2580,7 @@ sis_tex_wo_complete <- paste0(
 
 kinfo_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2604,6 +2599,7 @@ kinfo_viz_wo_link <- create_vizzes2(
 
 critinfo_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2622,6 +2618,7 @@ critinfo_viz_wo_link <- create_vizzes2(
 
 knet_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2640,6 +2637,7 @@ knet_viz_wo_link <- create_vizzes2(
 
 kcrea_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2658,6 +2656,7 @@ kcrea_viz_wo_link <- create_vizzes2(
 
 ksafety_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2676,6 +2675,7 @@ ksafety_viz_wo_link <- create_vizzes2(
 
 khealth_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2694,6 +2694,7 @@ khealth_viz_wo_link <- create_vizzes2(
 
 kgreen_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2712,6 +2713,7 @@ kgreen_viz_wo_link <- create_vizzes2(
 
 ktrans_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2730,6 +2732,7 @@ ktrans_viz_wo_link <- create_vizzes2(
 
 kai_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2748,6 +2751,7 @@ kai_viz_wo_link <- create_vizzes2(
 
 kgai_tex_wo_complete <- paste0(
   knowledge_short, "\n",
+  knowledge_tex, "\n",
   knowledge_tex_more_link
 )
 
@@ -2768,6 +2772,7 @@ kgai_viz_wo_link <- create_vizzes2(
 
 sis_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2779,6 +2784,7 @@ sis_viz_wo_link <- create_vizzes(sis_questions,
 
 cis_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2791,6 +2797,7 @@ cis_viz_wo_link <- create_vizzes(cis_questions,
 
 nskills_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2803,6 +2810,7 @@ nskills_viz_wo_link  <- create_vizzes(nskills_questions,
 
 dccs_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2815,6 +2823,7 @@ dccs_viz_wo_link  <- create_vizzes(dccs_questions,
 
 safety_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2828,6 +2837,7 @@ safety_viz_wo_link <- create_vizzes(
 
 dhealth_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2841,6 +2851,7 @@ dhealth_viz_wo_link <- create_vizzes(
 
 green_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2854,6 +2865,7 @@ green_viz_wo_link <- create_vizzes(
 
 dprob_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2868,6 +2880,7 @@ dprob_viz_wo_link <- create_vizzes(
 
 trans_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2882,6 +2895,7 @@ trans_viz_wo_link <- create_vizzes(
 
 ai_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -2896,6 +2910,7 @@ ai_viz_wo_link <- create_vizzes(
 
 genai_tex_wo_complete <- paste0(
   skills_short, "\n",
+  sis_tex_question, "\n",
   skills_tex_more_link
 )
 
@@ -3035,8 +3050,15 @@ genai_viz_wo_link <- genai_viz_wo_link_w1 %>%
 
 ## Performance _wo_link vizzes ----
 
+perf_sis_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_sis", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_sis_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_sis_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3058,8 +3080,15 @@ perf_sis_viz_wo_link <- create_vizzes3(
     image_width = "50%"
   )
 
+perf_cis_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_cis", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_cis_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_cis_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3093,8 +3122,15 @@ perf_cis_viz_wo_link <- create_vizzes3(
     image_width = "50%"
   )
 
+perf_n_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_netiquette", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_n_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_n_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3116,8 +3152,15 @@ perf_netiquette_viz_wo_link <- create_vizzes3(
     image_width = "50%"
   )
 
+perf_dccs_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_dccs", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_dccs_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_dccs_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3139,8 +3182,15 @@ perf_dccs_viz_wo_link <- create_vizzes3(
     image_width = "50%"
   )
 
+perf_safety_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_safety", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_safety_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_safety_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3162,8 +3212,15 @@ perf_safety_viz_wo_link <- create_vizzes3(
     image_width = "50%"
   )
 
+perf_health_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_health", lang), '", preset = "question")'),
+  "```"
+)
+
 perf_health_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_health_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3179,8 +3236,15 @@ perf_health_viz_wo_link <- create_vizzes3(
   lang = lang
 )
 
+perf_green_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_green", lang), '", preset = "question")'),
+  "```"
+)
+
 perf_green_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_green_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3196,8 +3260,15 @@ perf_green_viz_wo_link <- create_vizzes3(
   lang = lang
 )
 
+perf_ps_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0('create_blockquote("', transl("blockquote_performance_problem_solving", lang), '", preset = "question")'),
+  "```"
+)
+
 perf_ps_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_ps_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3213,8 +3284,15 @@ perf_ps_viz_wo_link <- create_vizzes3(
   lang = lang
 )
 
+perf_trans_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_trans", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_trans_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_trans_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3236,8 +3314,15 @@ perf_trans_viz_wo_link <- create_vizzes3(
     image_width = "50%"
   )
 
+perf_ai_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_ai", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_ai_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_ai_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3259,8 +3344,15 @@ perf_ai_viz_wo_link <- create_vizzes3(
     image_width = "50%"
   )
 
+perf_genai_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_genai", lang))), "', preset = 'question')"),
+  "```"
+)
+
 perf_genai_tex_wo_complete <- paste0(
   performance_short, "\n",
+  perf_genai_blockquote, "\n",
   performance_tex_more_link
 )
 
@@ -3668,7 +3760,12 @@ dashboard <- create_dashboard(
     text = md_text(
       transl("mockup_warning", lang),
       "",
-      transl("page_text_knowledge", lang)
+      transl("page_text_knowledge", lang),
+      "",
+      transl("intro_text_knowledge", lang),
+      "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+      paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
+      "```"
     )
   ) %>%
   # Analysis page with data and visualizations
