@@ -3760,12 +3760,7 @@ dashboard <- create_dashboard(
     text = md_text(
       transl("mockup_warning", lang),
       "",
-      transl("page_text_knowledge", lang),
-      "",
-      transl("intro_text_knowledge", lang),
-      "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-      paste0("create_blockquote(\"", transl("blockquote_knowledge", lang), "\", preset = \"question\")"),
-      "```"
+      transl("page_text_knowledge", lang)
     )
   ) %>%
   # Analysis page with data and visualizations
