@@ -3232,7 +3232,7 @@ perf_trans_viz_wo_link <- create_vizzes3(
   add_modal(
     modal_id = "PTS1R",
     title = transl("more_info", lang),
-    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("transcational_competence_infobox_image", lang)),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("transactional_competence_infobox_image", lang)),
     image_width = "50%"
   )
 
@@ -3828,31 +3828,13 @@ dashboard <- create_dashboard(
     icon = "ph:info-fill",
     navbar_align = "right",
     text = md_text(
-      "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-      "library(htmltools)",
-      "library(dashboardr)",
+      "<div style='text-align: justify;'>",
+      transl("about_page_text", lang),
       "",
-      "mario_card <- card(",
-      "  content = \"Mario il Gatto is a data scientist who believes that every dataset has a soul and that R is the language of the gods. He spends his days making beautiful visualizations and his nights dreaming of perfectly normalized databases.\",",
-      "  title = \"Mario il Gatto\",",
-      "  image = \"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=200&fit=crop\",",
-      "  image_alt = \"Photo of a majestic orange cat\",",
-      "  footer = \"Website: mario-il-gatto.data\",",
-      "  class = \"mb-3\"",
-      ")",
-      "",
-      "giuseppe_card <- card(",
-      "  content = \"Giuseppe il Cane is a machine learning engineer who thinks that neural networks are just very complicated dogs. He's convinced that every algorithm needs a good walk and that overfitting is just a sign of too much enthusiasm.\",",
-      "  title = \"Giuseppe il Cane\",",
-      "  image = \"https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=200&fit=crop\",",
-      "  image_alt = \"Photo of a happy golden retriever\",",
-      "  footer = \"Website: giuseppe-il-cane.ai\",",
-      "  class = \"mb-3\"",
-      ")",
-      "",
-      "# Display cards in a row using the card_row function",
-      "card_row(mario_card, giuseppe_card)",
-      "```"
+      "<br>",
+      "<br>",
+      "<center><img src='bzk.jpg' width='360'></center>",
+      "</div>"
     )
   ) %>%
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
