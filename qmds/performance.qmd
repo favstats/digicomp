@@ -61,7 +61,7 @@ library(dashboardr)
 
 **DIT IS EEN MOCKUP VERSIE GELIEVE NIET TE CITEREN**
 
-De **Performance**-sectie meet de praktische digitale vaardigheden van deelnemers aan de hand van uiteenlopende alledaagse taken. In plaats van zelfrapportage testen deze items wat mensen daadwerkelijk kunnen: bijvoorbeeld betrouwbare informatie opzoeken, AI-gegenereerde beelden herkennen, hun apparaten beveiligen of AI-tools effectief gebruiken. De items bestrijken elf domeinen van digitale competentie, van strategische en kritische informatievaardigheden tot AI- en generatieve-AI-vaardigheden, en geven zo een totaalbeeld van hoe goed mensen zich in de digitale omgeving van vandaag kunnen bewegen.
+De **Prestaties**-sectie meet de praktische digitale vaardigheden van deelnemers aan de hand van uiteenlopende alledaagse taken. In plaats van zelfrapportage testen deze items wat mensen daadwerkelijk kunnen: bijvoorbeeld betrouwbare informatie opzoeken, AI-gegenereerde beelden herkennen, hun apparaten beveiligen of AI-tools effectief gebruiken. De items bestrijken elf domeinen van digitale competentie, van strategische en kritische informatievaardigheden tot AI- en generatieve-AI-vaardigheden, en geven zo een totaalbeeld van hoe goed mensen zich in de digitale omgeving van vandaag kunnen bewegen.
 
 
 ```{r, echo=FALSE, results='asis'}
@@ -117,7 +117,7 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 **Strategische Informatie competentie** omvat het vermogen om effectief te zoeken naar, of het vinden van, online informatie. Dit omvat het kiezen van goede zoekwoorden, het gebruiken van zoekfuncties en het vinden van antwoorden op vragen op internet.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Wie vraag je om hulp als je met online media of digitale technologie niets kunt? (meerdere antwoorden mogelijk)", preset = "question")
+create_blockquote('Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op <a href="#PSIS2R" class="modal-link">de plaats in de afbeelding</a> op de plek waar je dit kunt aangeven.', preset = 'question')
 ```
 [{{< iconify ph cards >}} Bekijk alle Strategische Informatie resultaten](strategic_information.html)
 
@@ -532,13 +532,22 @@ result
 
 :::
 
+
+```{r, echo=FALSE, results='asis'}
+dashboardr::modal_content(
+  modal_id = 'PSIS2R',
+  text = '<h2>Meer info</h2>
+<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/strategic_info_infobox_image.png" style="max-width:100%; height:auto;">'
+)
+```
+
 ## {{< iconify ph detective-fill >}} Kritische Informatie
 
 
 **Kritische Informatie competentie** omvat het vermogen om online informatie te evalueren: controleren of informatie waar is, betrouwbaarheid van websites beoordelen, en begrijpen wat het doel is van online content (informeren, beïnvloeden, vermaken, of verkopen).
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?", preset = "question")
+create_blockquote('Bekijk ook <a href="#PCIS1R" class="modal-link">dit bericht</a> goed van sociale media. Welk soort post denk je dat dit is?', preset = 'question')
 ```
 [{{< iconify ph cards >}} Bekijk alle Kritische Informatie resultaten](critical_information.html)
 
@@ -559,7 +568,7 @@ result <- create_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
   questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
-  question_labels = c("Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?", "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
+  question_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -585,10 +594,10 @@ result
 
 
 ```{r perf-cis-wave1-age-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -610,10 +619,10 @@ result
 
 
 ```{r perf-cis-wave1-age-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -668,10 +677,10 @@ result
 
 
 ```{r perf-cis-wave1-gender-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -693,10 +702,10 @@ result
 
 
 ```{r perf-cis-wave1-gender-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -751,10 +760,10 @@ result
 
 
 ```{r perf-cis-wave1-edu-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -776,10 +785,10 @@ result
 
 
 ```{r perf-cis-wave1-edu-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -834,10 +843,10 @@ result
 
 
 ```{r perf-cis-wave1-mig-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -859,10 +868,10 @@ result
 
 
 ```{r perf-cis-wave1-mig-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -925,7 +934,7 @@ result <- create_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
   questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
-  question_labels = c("Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?", "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
+  question_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -951,10 +960,10 @@ result
 
 
 ```{r perf-cis-wave2-age-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -976,10 +985,10 @@ result
 
 
 ```{r perf-cis-wave2-age-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1034,10 +1043,10 @@ result
 
 
 ```{r perf-cis-wave2-gender-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1059,10 +1068,10 @@ result
 
 
 ```{r perf-cis-wave2-gender-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1117,10 +1126,10 @@ result
 
 
 ```{r perf-cis-wave2-edu-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1142,10 +1151,10 @@ result
 
 
 ```{r perf-cis-wave2-edu-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1200,10 +1209,10 @@ result
 
 
 ```{r perf-cis-wave2-mig-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1225,10 +1234,10 @@ result
 
 
 ```{r perf-cis-wave2-mig-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1291,10 +1300,10 @@ result
 
 
 ```{r perf-cis-overtime-overall-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1317,10 +1326,10 @@ result
 
 
 ```{r perf-cis-overtime-overall-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1377,10 +1386,10 @@ result
 
 
 ```{r perf-cis-overtime-age-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1403,10 +1412,10 @@ result
 
 
 ```{r perf-cis-overtime-age-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1463,10 +1472,10 @@ result
 
 
 ```{r perf-cis-overtime-gender-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1489,10 +1498,10 @@ result
 
 
 ```{r perf-cis-overtime-gender-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1549,10 +1558,10 @@ result
 
 
 ```{r perf-cis-overtime-edu-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1575,10 +1584,10 @@ result
 
 
 ```{r perf-cis-overtime-edu-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1635,10 +1644,10 @@ result
 
 
 ```{r perf-cis-overtime-mig-item1}
-# Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?
+# Herkennen nepnieuws op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk dit bericht op sociale media goed. Welk soort post denk je dat dit is?",
+  title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1661,10 +1670,10 @@ result
 
 
 ```{r perf-cis-overtime-mig-item2}
-# Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?
+# Herkennen reclame op sociale media
 result <- create_timeline(
   data = data,
-  title = "Bekijk ook dit bericht goed van sociale media. Welk soort post denk je dat dit is?",
+  title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
   response_filter = 1,
@@ -1717,13 +1726,22 @@ result
 
 :::
 
+
+```{r, echo=FALSE, results='asis'}
+dashboardr::modal_content(
+  modal_id = 'PCIS1R',
+  text = '<h2>Meer info</h2>
+<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/critical_info_competence_q1_infobox_image.png" style="max-width:100%; height:auto;">'
+)
+```
+
 ## {{< iconify ph palette-fill >}} Digitale Contentcreatie
 
 
 **Digitale Contentcreatie competentie** omvat het vermogen om digitale content te maken en aan te passen: presentaties maken, verschillende media combineren, beelden/muziek/video bewerken, en auteursrechten begrijpen rond digitale content.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Welk van <a href="#PDCCS1R" class="modal-link">onderstaande icoontjes</a> is voor het bijsnijden of stukken weghalen van een foto?', preset = 'question')
+create_blockquote('Welk van de <a href="#PDCCS1R" class="modal-link">onderstaande icoontjes</a> is voor het bijsnijden of stukken weghalen van een foto?', preset = 'question')
 ```
 [{{< iconify ph cards >}} Bekijk alle Digitale Contentcreatie resultaten](digital_content_creation.html)
 
@@ -2174,9 +2192,8 @@ result
 ```{r, echo=FALSE, results='asis'}
 dashboardr::modal_content(
   modal_id = 'PDCCS1R',
-  text = '<h2>Digitale Inhoudscreatie & Samenwerking: Prestatie Vragen</h2>
-<img src="https://placehold.co/600x400/EEE/31343C" style="max-width:100%; height:auto;">
-<p>Deze modal biedt aanvullende context over de prestatievragen voor digitale inhoudscreatie en samenwerking.</p>'
+  text = '<h2>Meer info</h2>
+<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/digital_content_creation_competence_infobox_image.png" style="max-width:100%; height:auto;">'
 )
 ```
 
