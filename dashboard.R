@@ -2029,7 +2029,7 @@ perf_sis_tex_link <- md_text(
   perf_sis_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_sis", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_sis", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_strategic", lang), "](strategic_information.html)")
 )
@@ -2069,7 +2069,7 @@ perf_cis_tex_link <- md_text(
   perf_cis_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_cis", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_cis", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_critical", lang), "](critical_information.html)")
 )
@@ -2106,7 +2106,7 @@ perf_n_tex_link <- md_text(
   perf_n_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_netiquette", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_netiquette", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_netiquette", lang), "](netiquette.html)")
 )
@@ -2145,7 +2145,7 @@ perf_dccs_tex_link <- md_text(
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
   # Use the actual question text (PDCCS1) which now has the modal link embedded
-  paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_dccs", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)")
 ) 
@@ -2200,7 +2200,7 @@ perf_safety_tex_link <- md_text(
   perf_safety_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_safety", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_safety", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_safety", lang), "](safety.html)")
 )
@@ -2369,7 +2369,7 @@ perf_trans_tex_link <- md_text(
   perf_trans_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_trans", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_trans", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_transactional", lang), "](transactional.html)")
 )
@@ -2418,7 +2418,7 @@ perf_ai_tex_link <- md_text(
   perf_ai_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_ai", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_ai", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_ai", lang), "](ai.html)")
 )
@@ -2456,7 +2456,7 @@ perf_genai_tex_link <- md_text(
   perf_genai_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0("create_blockquote('", transl("blockquote_performance_genai", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_genai", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_genai", lang), "](gen_ai.html)")
 )
@@ -3782,20 +3782,38 @@ dashboard <- create_dashboard(
       transl("genai_description", lang)
     )
   ) %>%
-  # Landing page with icon
+  # Text-only page with icon showcasing card function
   add_page(
     name = transl("page_name_about", lang),
-    text = md_text(
-      "<div style='text-align: justify;'>",
-      transl("about_page_text", lang),
-      "",
-      "<br>",
-      "<br>",
-      "<center><img src='bzk.jpg' width='360'></center>",
-      "</div>"
-    ),
     icon = "ph:info-fill",
-    navbar_align = "right"
+    navbar_align = "right",
+    text = md_text(
+      "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+      "library(htmltools)",
+      "library(dashboardr)",
+      "",
+      "mario_card <- card(",
+      "  content = \"Mario il Gatto is a data scientist who believes that every dataset has a soul and that R is the language of the gods. He spends his days making beautiful visualizations and his nights dreaming of perfectly normalized databases.\",",
+      "  title = \"Mario il Gatto\",",
+      "  image = \"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=200&fit=crop\",",
+      "  image_alt = \"Photo of a majestic orange cat\",",
+      "  footer = \"Website: mario-il-gatto.data\",",
+      "  class = \"mb-3\"",
+      ")",
+      "",
+      "giuseppe_card <- card(",
+      "  content = \"Giuseppe il Cane is a machine learning engineer who thinks that neural networks are just very complicated dogs. He's convinced that every algorithm needs a good walk and that overfitting is just a sign of too much enthusiasm.\",",
+      "  title = \"Giuseppe il Cane\",",
+      "  image = \"https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&h=200&fit=crop\",",
+      "  image_alt = \"Photo of a happy golden retriever\",",
+      "  footer = \"Website: giuseppe-il-cane.ai\",",
+      "  class = \"mb-3\"",
+      ")",
+      "",
+      "# Display cards in a row using the card_row function",
+      "card_row(mario_card, giuseppe_card)",
+      "```"
+    )
   ) %>%
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text

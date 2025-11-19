@@ -1446,6 +1446,7 @@ sis_tex_question <- md_text(
   "```"
 )
 
+
 sys_tex_more_link <- paste0("[{{< iconify ph cards >}} ", transl("link_see_all_strategic", lang), "](strategic_information.html)")
 
 
@@ -2028,7 +2029,7 @@ perf_sis_tex_link <- md_text(
   perf_sis_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_sis", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_strategic", lang), "](strategic_information.html)")
 )
@@ -2044,7 +2045,12 @@ perf_sis_viz <- create_vizzes3(
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   text_b_tabset = perf_sis_tex_link,
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PSIS2R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("strategic_info_infobox_image", lang))
+  )
 
 
 
@@ -2063,7 +2069,7 @@ perf_cis_tex_link <- md_text(
   perf_cis_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance_cis", lang), '", preset = "question")'),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_cis", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_critical", lang), "](critical_information.html)")
 )
@@ -2079,7 +2085,12 @@ perf_cis_viz <- create_vizzes3(
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   text_b_tabset = perf_cis_tex_link,
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PCIS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("critical_info_competence_q1_infobox_image", lang))
+  )
 
 
 ## 5.3 Performance: Netiquette (perf_netiquette_viz) ----
@@ -2095,7 +2106,7 @@ perf_n_tex_link <- md_text(
   perf_n_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_netiquette", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_netiquette", lang), "](netiquette.html)")
 )
@@ -2111,7 +2122,12 @@ perf_netiquette_viz <- create_vizzes3(
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   text_b_tabset = perf_n_tex_link,
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PNS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("netiquette_competence_infobox_image", lang))
+  )
 
 
 
@@ -2129,7 +2145,7 @@ perf_dccs_tex_link <- md_text(
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
   # Use the actual question text (PDCCS1) which now has the modal link embedded
-  paste0("create_blockquote('", transl("blockquote_performance_dccs", lang), "', preset = 'question')"),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_dccs", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_content_creation", lang), "](digital_content_creation.html)")
 ) 
@@ -2147,12 +2163,10 @@ perf_dccs_viz <- create_vizzes3(
   text_b_tabset = perf_dccs_tex_link,
   lang = lang
 )  %>%
-  # Modal 2: With image
   add_modal(
     modal_id = "PDCCS1R",
-    title = transl("modal_title_dccs", lang), 
-    image = "https://placehold.co/600x400/EEE/31343C",
-    modal_content = transl("modal_content_dccs", lang)
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("digital_content_creation_competence_infobox_image", lang))
   )
 
 
@@ -2186,7 +2200,7 @@ perf_safety_tex_link <- md_text(
   perf_safety_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance_safety", lang), '", preset = "question")'),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_safety", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_safety", lang), "](safety.html)")
 )
@@ -2202,7 +2216,12 @@ perf_safety_viz <- create_vizzes3(
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
   text_b_tabset = perf_safety_tex_link,
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PSCS3_1",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("safety_competence_infobox_image", lang))
+  )
 
 
 
@@ -2350,7 +2369,7 @@ perf_trans_tex_link <- md_text(
   perf_trans_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_trans", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_transactional", lang), "](transactional.html)")
 )
@@ -2366,7 +2385,12 @@ perf_trans_viz <- create_vizzes3(
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   text_b_tabset = perf_trans_tex_link,
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PTS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("transcational_competence_infobox_image", lang))
+  )
 
 
 
@@ -2394,7 +2418,7 @@ perf_ai_tex_link <- md_text(
   perf_ai_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance_ai", lang), '", preset = "question")'),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_ai", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_ai", lang), "](ai.html)")
 )
@@ -2410,7 +2434,12 @@ perf_ai_viz <- create_vizzes3(
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
   text_b_tabset = perf_ai_tex_link,
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PAIS2_1",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("ai_competence_infobox_image", lang))
+  )
 
 
 
@@ -2427,7 +2456,7 @@ perf_genai_tex_link <- md_text(
   perf_genai_info_text,
   "",
   "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
-  paste0('create_blockquote("', transl("blockquote_performance", lang), '", preset = "question")'),
+  paste0("create_blockquote('", gsub("'", "\\\\'", transl("blockquote_performance_genai", lang)), "', preset = 'question')"),
   "```",
   paste0("[{{< iconify ph cards >}} ", transl("link_see_all_genai", lang), "](gen_ai.html)")
 )
@@ -2444,7 +2473,12 @@ perf_genai_viz <- create_vizzes3(
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   text_b_tabset = perf_genai_tex_link,
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PAIS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("genai_competence_infobox_image", lang))
+  )
 
 
 
@@ -2996,7 +3030,12 @@ perf_sis_viz_wo_link <- create_vizzes3(
   graph_title  = perf_sis_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PSIS2R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("strategic_info_infobox_image", lang))
+  )
 
 perf_cis_tex_wo_complete <- paste0(
   performance_short, "\n",
@@ -3013,7 +3052,12 @@ perf_cis_viz_wo_link <- create_vizzes3(
   graph_title  = "",
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PCIS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("critical_info_competence_q1_infobox_image", lang))
+  )
 
 perf_n_tex_wo_complete <- paste0(
   performance_short, "\n",
@@ -3030,7 +3074,12 @@ perf_netiquette_viz_wo_link <- create_vizzes3(
   graph_title  = perf_n_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PNS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("netiquette_competence_infobox_image", lang))
+  )
 
 perf_dccs_tex_wo_complete <- paste0(
   performance_short, "\n",
@@ -3050,9 +3099,8 @@ perf_dccs_viz_wo_link <- create_vizzes3(
 )  %>%
   add_modal(
     modal_id = "PDCCS1R",
-    title = transl("modal_title_dccs", lang), 
-    image = "https://placehold.co/600x400/EEE/31343C",
-    modal_content = transl("modal_content_dccs", lang)
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("digital_content_creation_competence_infobox_image", lang))
   )
 
 perf_safety_tex_wo_complete <- paste0(
@@ -3070,7 +3118,12 @@ perf_safety_viz_wo_link <- create_vizzes3(
   graph_title  = "",
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PSCS3_1",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("safety_competence_infobox_image", lang))
+  )
 
 perf_health_tex_wo_complete <- paste0(
   performance_short, "\n",
@@ -3138,7 +3191,12 @@ perf_trans_viz_wo_link <- create_vizzes3(
   graph_title  = perf_trans_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PTS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("transcational_competence_infobox_image", lang))
+  )
 
 perf_ai_tex_wo_complete <- paste0(
   performance_short, "\n",
@@ -3155,7 +3213,12 @@ perf_ai_viz_wo_link <- create_vizzes3(
   graph_title  = "",
   map_values   = list("1" = transl("label_selected", lang), "0" = transl("label_not_selected", lang)),
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PAIS2_1",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("ai_competence_infobox_image", lang))
+  )
 
 perf_genai_tex_wo_complete <- paste0(
   performance_short, "\n",
@@ -3172,7 +3235,12 @@ perf_genai_viz_wo_link <- create_vizzes3(
   graph_title  = perf_genai_questions,
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   lang = lang
-)
+) %>%
+  add_modal(
+    modal_id = "PAIS1R",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("genai_competence_infobox_image", lang))
+  )
 
 ## 7.1 Strategic Information Dimension ----
 strategic_visualizations <- (sis_viz_wo_link + kinfo_viz_wo_link + perf_sis_viz_wo_link)  %>%
@@ -3461,7 +3529,7 @@ dimensions_menu <- navbar_menu(
 # Create comprehensive dashboard with ALL features
 dashboard <- create_dashboard(
   ## Descriptions
-  title = "Digital Competence Insights", 
+  title = "DigIQ Monitor", 
   output_dir = "qmds_en", 
   publish_dir = "../docs/en",
   author = "Fabio Votta",
@@ -3472,7 +3540,7 @@ dashboard <- create_dashboard(
   ## Themes / Styles
   page_layout = "full",
   theme = "flatly",  # Options: cosmo, flatly, darkly, minty, pulse, etc.
-  tabset_theme = "minimal",  # This is YOUR style! 
+  tabset_theme = "underline",  # This is YOUR style! 
   math = "katex",
   mobile_toc = T,
   search = TRUE,
