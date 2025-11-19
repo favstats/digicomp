@@ -3472,7 +3472,7 @@ dashboard <- create_dashboard(
   ## Themes / Styles
   page_layout = "full",
   theme = "flatly",  # Options: cosmo, flatly, darkly, minty, pulse, etc.
-  tabset_theme = "minimal",  # This is YOUR style! 
+  tabset_theme = "underline",  # This is YOUR style! 
   math = "katex",
   mobile_toc = T,
   search = TRUE,
