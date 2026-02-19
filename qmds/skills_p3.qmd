@@ -4,59 +4,14 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='skills_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='3' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["skills.html","skills_p2.html","skills_p3.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(3, 6, "skills", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "skills")
 ```
 
 De **Vaardigheden**-sectie meet de zelfingeschatte bekwaamheid van deelnemers om een breed scala aan digitale taken uit te voeren. Deze items leggen vast hoe zeker mensen zich voelen bij zaken als informatie zoeken, content maken, hun privacy beschermen of herkennen wanneer AI wordt ingezet. De vragen bestrijken verschillende domeinen van digitale competentie, van informatie- en communicatievaardigheden tot AI- en generatieve-AI-vaardigheden, en geven samen inzicht in de alledaagse digitale handelingsbekwaamheid en het zelfvertrouwen van deelnemers.
@@ -68,10 +23,8 @@ De **Vaardigheden**-sectie meet de zelfingeschatte bekwaamheid van deelnemers om
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -84,7 +37,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -93,32 +46,22 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
 
-
-<details>
-<summary>Voor alle vaardigheidsvragen gebruikten we de volgende formulering</summary>
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoonlijk, als je de activiteit nu en in je eentje zou moeten doen. Wees vooral eerlijk, het is heel normaal dat je sommige dingen nooit doet. Dat willen we juist weten! Als je niet begrijpt wat de vraag inhoudt, kruis dan aan 'Ik begrijp de vraag niet'.", preset = "question")
-```
-
-</details>
-
-## {{< iconify ph wallet-fill >}} Transactional
+## {{< iconify ph shield-check-fill >}} Safety
 
 
-**Transactionele competentie** omvat het vermogen om officiële online zaken af te handelen: overheidsdiensten beheren, digitale betalingen, gezondheidszorgafspraken, en documenten uploaden.
-[{{< iconify ph cards >}} Bekijk alle Transactionele resultaten](transactional.html)
+**Veiligheid & Controle van Informatie en Apparaten competentie** omvat het beschermen van apparaten en persoonlijke informatie: beveiligingsmaatregelen gebruiken, privacy-instellingen beheren, phishing herkennen, en controleren welke informatie online gedeeld wordt.
+[{{< iconify ph cards >}} Bekijk alle Veiligheid resultaten](safety.html)
 
 
 ::: {.panel-tabset}
@@ -131,13 +74,13 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r trans-wave1-overall}
-# Transactionele Vaardigheden
-result <- create_stackedbars(
+```{r safety-wave1-overall}
+# Veiligheid en Controle van Informatie en Apparaten Vaardigheden
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Transactionele Vaardigheden",
-  questions = c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5"),
-  question_labels = c("Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)", "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)", "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)", "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken", "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)"),
+  title = "Veiligheid en Controle van Informatie en Apparaten Vaardigheden",
+  x_vars = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
+  x_var_labels = c("Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)", "Ik weet hoe ik apparaten kan beschermen tegen virussen", "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen", "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet", "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen", "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen", "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -161,11 +104,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave1-age-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave1-age-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -175,7 +118,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -185,11 +128,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave1-age-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave1-age-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -199,7 +142,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -209,11 +152,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave1-age-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave1-age-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -223,7 +166,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -233,11 +176,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave1-age-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave1-age-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -247,7 +190,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -257,11 +200,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave1-age-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave1-age-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -271,7 +214,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave1-age-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave1-age-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SCom3"
 )
 
 result
@@ -289,11 +280,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave1-gender-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave1-gender-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -303,7 +294,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -313,11 +304,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave1-gender-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave1-gender-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -327,7 +318,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -337,11 +328,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave1-gender-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave1-gender-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -351,7 +342,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -361,11 +352,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave1-gender-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave1-gender-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -375,7 +366,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -385,11 +376,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave1-gender-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave1-gender-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -399,7 +390,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave1-gender-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave1-gender-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SCom3"
 )
 
 result
@@ -417,11 +456,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave1-edu-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave1-edu-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -431,7 +470,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -441,11 +480,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave1-edu-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave1-edu-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -455,7 +494,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -465,11 +504,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave1-edu-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave1-edu-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -479,7 +518,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -489,11 +528,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave1-edu-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave1-edu-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -503,7 +542,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -513,11 +552,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave1-edu-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave1-edu-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -527,7 +566,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave1-edu-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave1-edu-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SCom3"
 )
 
 result
@@ -545,11 +632,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave1-mig-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave1-mig-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -559,7 +646,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -569,11 +656,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave1-mig-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave1-mig-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -583,7 +670,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -593,11 +680,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave1-mig-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave1-mig-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -607,7 +694,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -617,11 +704,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave1-mig-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave1-mig-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -631,7 +718,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -641,11 +728,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave1-mig-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave1-mig-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -655,7 +742,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave1-mig-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave1-mig-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SCom3"
 )
 
 result
@@ -676,13 +811,13 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r trans-wave2-overall}
-# Transactionele Vaardigheden
-result <- create_stackedbars(
+```{r safety-wave2-overall}
+# Veiligheid en Controle van Informatie en Apparaten Vaardigheden
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Transactionele Vaardigheden",
-  questions = c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5"),
-  question_labels = c("Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)", "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)", "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)", "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken", "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)"),
+  title = "Veiligheid en Controle van Informatie en Apparaten Vaardigheden",
+  x_vars = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
+  x_var_labels = c("Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)", "Ik weet hoe ik apparaten kan beschermen tegen virussen", "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen", "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet", "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen", "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen", "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -706,11 +841,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave2-age-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave2-age-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -720,7 +855,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -730,11 +865,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave2-age-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave2-age-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -744,7 +879,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -754,11 +889,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave2-age-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave2-age-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -768,7 +903,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -778,11 +913,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave2-age-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave2-age-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -792,7 +927,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -802,11 +937,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave2-age-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave2-age-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -816,7 +951,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave2-age-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave2-age-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SCom3"
 )
 
 result
@@ -834,11 +1017,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave2-gender-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave2-gender-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -848,7 +1031,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -858,11 +1041,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave2-gender-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave2-gender-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -872,7 +1055,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -882,11 +1065,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave2-gender-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave2-gender-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -896,7 +1079,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -906,11 +1089,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave2-gender-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave2-gender-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -920,7 +1103,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -930,11 +1113,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave2-gender-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave2-gender-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -944,7 +1127,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave2-gender-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave2-gender-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SCom3"
 )
 
 result
@@ -962,11 +1193,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave2-edu-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave2-edu-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -976,7 +1207,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -986,11 +1217,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave2-edu-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave2-edu-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1000,7 +1231,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -1010,11 +1241,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave2-edu-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave2-edu-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1024,7 +1255,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -1034,11 +1265,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave2-edu-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave2-edu-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1048,7 +1279,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -1058,11 +1289,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave2-edu-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave2-edu-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1072,7 +1303,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave2-edu-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave2-edu-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SCom3"
 )
 
 result
@@ -1090,11 +1369,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-wave2-mig-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_stackedbar(
+```{r safety-wave2-mig-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1104,7 +1383,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans1"
+  stack_var = "SSafDev1"
 )
 
 result
@@ -1114,11 +1393,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-wave2-mig-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_stackedbar(
+```{r safety-wave2-mig-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1128,7 +1407,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans2"
+  stack_var = "SSafDev2"
 )
 
 result
@@ -1138,11 +1417,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-wave2-mig-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_stackedbar(
+```{r safety-wave2-mig-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1152,7 +1431,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans3"
+  stack_var = "SPriv1"
 )
 
 result
@@ -1162,11 +1441,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-wave2-mig-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_stackedbar(
+```{r safety-wave2-mig-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1176,7 +1455,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans4"
+  stack_var = "SPriv2"
 )
 
 result
@@ -1186,11 +1465,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-wave2-mig-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_stackedbar(
+```{r safety-wave2-mig-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1200,7 +1479,55 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "Strans5"
+  stack_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-wave2-mig-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-wave2-mig-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SCom3"
 )
 
 result
@@ -1226,23 +1553,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-overtime-overall-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_timeline(
+```{r safety-overtime-overall-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1"
+  y_var = "SSafDev1"
 )
 
 result
@@ -1252,23 +1579,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-overtime-overall-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_timeline(
+```{r safety-overtime-overall-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_timeline(
   data = data,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2"
+  y_var = "SSafDev2"
 )
 
 result
@@ -1278,23 +1605,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-overtime-overall-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_timeline(
+```{r safety-overtime-overall-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3"
+  y_var = "SPriv1"
 )
 
 result
@@ -1304,23 +1631,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-overtime-overall-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_timeline(
+```{r safety-overtime-overall-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4"
+  y_var = "SPriv2"
 )
 
 result
@@ -1330,23 +1657,75 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-overtime-overall-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_timeline(
+```{r safety-overtime-overall-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5"
+  y_var = "SPriv3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-overtime-overall-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SPriv4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-overtime-overall-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCom3"
 )
 
 result
@@ -1364,21 +1743,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-overtime-age-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_timeline(
+```{r safety-overtime-age-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "SSafDev1",
   group_var = "AgeGroup"
 )
 
@@ -1389,21 +1768,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-overtime-age-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_timeline(
+```{r safety-overtime-age-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_timeline(
   data = data,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "SSafDev2",
   group_var = "AgeGroup"
 )
 
@@ -1414,21 +1793,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-overtime-age-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_timeline(
+```{r safety-overtime-age-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "SPriv1",
   group_var = "AgeGroup"
 )
 
@@ -1439,21 +1818,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-overtime-age-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_timeline(
+```{r safety-overtime-age-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "SPriv2",
   group_var = "AgeGroup"
 )
 
@@ -1464,21 +1843,71 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-overtime-age-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_timeline(
+```{r safety-overtime-age-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "SPriv3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-overtime-age-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SPriv4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-overtime-age-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCom3",
   group_var = "AgeGroup"
 )
 
@@ -1497,21 +1926,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-overtime-gender-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_timeline(
+```{r safety-overtime-gender-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "SSafDev1",
   group_var = "geslacht"
 )
 
@@ -1522,21 +1951,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-overtime-gender-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_timeline(
+```{r safety-overtime-gender-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_timeline(
   data = data,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "SSafDev2",
   group_var = "geslacht"
 )
 
@@ -1547,21 +1976,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-overtime-gender-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_timeline(
+```{r safety-overtime-gender-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "SPriv1",
   group_var = "geslacht"
 )
 
@@ -1572,21 +2001,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-overtime-gender-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_timeline(
+```{r safety-overtime-gender-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "SPriv2",
   group_var = "geslacht"
 )
 
@@ -1597,21 +2026,71 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-overtime-gender-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_timeline(
+```{r safety-overtime-gender-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "SPriv3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-overtime-gender-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SPriv4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-overtime-gender-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCom3",
   group_var = "geslacht"
 )
 
@@ -1630,21 +2109,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-overtime-edu-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_timeline(
+```{r safety-overtime-edu-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "SSafDev1",
   group_var = "Education"
 )
 
@@ -1655,21 +2134,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-overtime-edu-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_timeline(
+```{r safety-overtime-edu-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_timeline(
   data = data,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "SSafDev2",
   group_var = "Education"
 )
 
@@ -1680,21 +2159,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-overtime-edu-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_timeline(
+```{r safety-overtime-edu-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "SPriv1",
   group_var = "Education"
 )
 
@@ -1705,21 +2184,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-overtime-edu-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_timeline(
+```{r safety-overtime-edu-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "SPriv2",
   group_var = "Education"
 )
 
@@ -1730,21 +2209,71 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-overtime-edu-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_timeline(
+```{r safety-overtime-edu-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "SPriv3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-overtime-edu-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SPriv4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-overtime-edu-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCom3",
   group_var = "Education"
 )
 
@@ -1763,21 +2292,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r trans-overtime-mig-item1}
-# Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)
-result <- create_timeline(
+```{r safety-overtime-mig-item1}
+# Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik online dingen kan regelen bij de belastingdienst (bijv. belasting aangifte doen of loonheffing voor bijbaan aanvragen)",
+  title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "SSafDev1",
   group_var = "MigrationBackground"
 )
 
@@ -1788,21 +2317,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r trans-overtime-mig-item2}
-# Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)
-result <- create_timeline(
+```{r safety-overtime-mig-item2}
+# Ik weet hoe ik apparaten kan beschermen tegen virussen
+result <- viz_timeline(
   data = data,
-  title = "Ik kan digitaal mijn betalingen doen met de computer of met mijn mobiel (bijvoorbeeld online bankieren, online winkelen, iDeal gebruiken)",
+  title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "SSafDev2",
   group_var = "MigrationBackground"
 )
 
@@ -1813,21 +2342,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r trans-overtime-mig-item3}
-# Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)
-result <- create_timeline(
+```{r safety-overtime-mig-item3}
+# Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik op de computer of mobiele telefoon online zorg moet regelen (bijv. zorgverzekering afsluiten of een online afspraak maken met de huisarts)",
+  title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "SPriv1",
   group_var = "MigrationBackground"
 )
 
@@ -1838,21 +2367,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r trans-overtime-mig-item4}
-# Ik weet hoe ik mijn DigID kan aanvragen en gebruiken
-result <- create_timeline(
+```{r safety-overtime-mig-item4}
+# Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik mijn DigID kan aanvragen en gebruiken",
+  title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "SPriv2",
   group_var = "MigrationBackground"
 )
 
@@ -1863,21 +2392,71 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r trans-overtime-mig-item5}
-# Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)
-result <- create_timeline(
+```{r safety-overtime-mig-item5}
+# Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik documenten en foto's kan uploaden wanneer dit nodig is om online zaken te regelen (bijv. bij het aanvragen van een OV chipkaart)",
+  title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "SPriv3",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r safety-overtime-mig-item6}
+# Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SPriv4",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r safety-overtime-mig-item7}
+# Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCom3",
   group_var = "MigrationBackground"
 )
 
@@ -1893,11 +2472,11 @@ result
 
 :::
 
-## {{< iconify ph robot-fill >}} AI
+## {{< iconify ph heart-fill >}} Digital Health
 
 
-**AI competentie** omvat het vermogen om te herkennen wanneer websites en apps artificiële intelligentie gebruiken om content en aanbevelingen te personaliseren.
-[{{< iconify ph cards >}} Bekijk alle AI resultaten](ai.html)
+**Digitale Gezondheid & Welzijn** vaardigheden hebben betrekking op het beheren van gezonde digitale gewoonten.
+[{{< iconify ph cards >}} Bekijk alle Digitale Gezondheid resultaten](digital_health.html)
 
 
 ::: {.panel-tabset}
@@ -1910,13 +2489,13 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r ai-wave1-overall}
-# AI Vaardigheden
-result <- create_stackedbars(
+```{r dhealth-wave1-overall}
+# Digitale Gezondheid en Welzijn Vaardigheden
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "AI Vaardigheden",
-  questions = c("SAI1", "SAI2"),
-  question_labels = c("Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen", "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI"),
+  title = "Digitale Gezondheid en Welzijn Vaardigheden",
+  x_vars = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
+  x_var_labels = c("Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben", "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt", "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1940,11 +2519,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave1-age-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave1-age-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1954,7 +2533,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -1964,11 +2543,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave1-age-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave1-age-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1978,7 +2557,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave1-age-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -1996,11 +2599,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave1-gender-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave1-gender-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2010,7 +2613,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -2020,11 +2623,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave1-gender-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave1-gender-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2034,7 +2637,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave1-gender-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -2052,11 +2679,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave1-edu-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave1-edu-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2066,7 +2693,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -2076,11 +2703,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave1-edu-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave1-edu-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2090,7 +2717,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave1-edu-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -2108,11 +2759,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave1-mig-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave1-mig-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2122,7 +2773,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -2132,11 +2783,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave1-mig-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave1-mig-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2146,7 +2797,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave1-mig-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -2167,13 +2842,13 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r ai-wave2-overall}
-# AI Vaardigheden
-result <- create_stackedbars(
+```{r dhealth-wave2-overall}
+# Digitale Gezondheid en Welzijn Vaardigheden
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "AI Vaardigheden",
-  questions = c("SAI1", "SAI2"),
-  question_labels = c("Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen", "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI"),
+  title = "Digitale Gezondheid en Welzijn Vaardigheden",
+  x_vars = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
+  x_var_labels = c("Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben", "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt", "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2197,11 +2872,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave2-age-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave2-age-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2211,7 +2886,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -2221,11 +2896,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave2-age-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave2-age-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2235,7 +2910,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave2-age-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -2253,11 +2952,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave2-gender-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave2-gender-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2267,7 +2966,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -2277,11 +2976,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave2-gender-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave2-gender-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2291,7 +2990,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave2-gender-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -2309,11 +3032,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave2-edu-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave2-edu-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2323,7 +3046,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -2333,11 +3056,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave2-edu-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave2-edu-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2347,7 +3070,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave2-edu-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -2365,11 +3112,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-wave2-mig-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+```{r dhealth-wave2-mig-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2379,7 +3126,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SAI1"
+  stack_var = "SHealth1"
 )
 
 result
@@ -2389,11 +3136,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-wave2-mig-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+```{r dhealth-wave2-mig-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2403,7 +3150,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "SAI2"
+  stack_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-wave2-mig-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SHealth3_V2"
 )
 
 result
@@ -2429,23 +3200,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-overtime-overall-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+```{r dhealth-overtime-overall-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_timeline(
   data = data,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1"
+  y_var = "SHealth1"
 )
 
 result
@@ -2455,23 +3226,49 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-overtime-overall-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+```{r dhealth-overtime-overall-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_timeline(
   data = data,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2"
+  y_var = "SHealth2_V2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-overtime-overall-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SHealth3_V2"
 )
 
 result
@@ -2489,21 +3286,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-overtime-age-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+```{r dhealth-overtime-age-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_timeline(
   data = data,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1",
+  y_var = "SHealth1",
   group_var = "AgeGroup"
 )
 
@@ -2514,21 +3311,46 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-overtime-age-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+```{r dhealth-overtime-age-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_timeline(
   data = data,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2",
+  y_var = "SHealth2_V2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dhealth-overtime-age-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_timeline(
+  data = data,
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SHealth3_V2",
   group_var = "AgeGroup"
 )
 
@@ -2547,21 +3369,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r ai-overtime-gender-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+```{r dhealth-overtime-gender-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_timeline(
   data = data,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1",
+  y_var = "SHealth1",
   group_var = "geslacht"
 )
 
@@ -2572,1281 +3394,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r ai-overtime-gender-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+```{r dhealth-overtime-gender-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_timeline(
   data = data,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r ai-overtime-edu-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
-  data = data,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SAI1",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r ai-overtime-edu-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
-  data = data,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SAI2",
-  group_var = "Education"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r ai-overtime-mig-item1}
-# Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
-  data = data,
-  title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SAI1",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r ai-overtime-mig-item2}
-# Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
-  data = data,
-  title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SAI2",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-:::
-
-## {{< iconify ph magic-wand-fill >}} Gen AI
-
-
-**Generatieve AI competentie** heeft betrekking op het omgaan met AI-tools zoals ChatGPT: weten hoe je AI-gegenereerde informatie te verifiëert, effectieve prompts schrijven, AI-gegenereerde content detecteren, en de mogelijkheden en beperkingen van GenAI begrijpen.
-[{{< iconify ph cards >}} Bekijk alle Gen AI resultaten](gen_ai.html)
-
-
-::: {.panel-tabset}
-
-### {{< iconify ph number-circle-one-fill >}} Ronde 1
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r genai-wave1-overall}
-# GenAI Skills
-result <- create_stackedbars(
-  data = data_filtered_984a0efe,
-  title = "GenAI Skills",
-  questions = c("SGAI1", "SGAI2", "SGAI3"),
-  question_labels = c("Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat", "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen", "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens"),
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave1-age-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave1-age-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave1-age-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave1-gender-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave1-gender-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave1-gender-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave1-edu-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave1-edu-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave1-edu-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave1-mig-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave1-mig-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave1-mig-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-### {{< iconify ph number-circle-two-fill >}} Ronde 2
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r genai-wave2-overall}
-# GenAI Skills
-result <- create_stackedbars(
-  data = data_filtered_4af682fd,
-  title = "GenAI Skills",
-  questions = c("SGAI1", "SGAI2", "SGAI3", "SGAI4", "SGAI5"),
-  question_labels = c("Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat", "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen", "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens", "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen", "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)"),
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave2-age-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave2-age-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave2-age-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
-
-
-```{r genai-wave2-age-item4}
-# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
-
-
-```{r genai-wave2-age-item5}
-# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "SGAI5"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave2-gender-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave2-gender-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave2-gender-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
-
-
-```{r genai-wave2-gender-item4}
-# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
-
-
-```{r genai-wave2-gender-item5}
-# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "SGAI5"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave2-edu-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave2-edu-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave2-edu-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
-
-
-```{r genai-wave2-edu-item4}
-# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
-
-
-```{r genai-wave2-edu-item5}
-# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "SGAI5"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-wave2-mig-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-wave2-mig-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-wave2-mig-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 4
-
-
-```{r genai-wave2-mig-item4}
-# Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet hoe ik ChatGPT kan gebruiken voor nieuwe ideeën of oplossingen",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 5
-
-
-```{r genai-wave2-mig-item5}
-# Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Ik weet wanneer het gebruik van ChatGPT voor morele problemen kan zorgen (bijvoorbeeld misleiding of privacy schending)",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
-  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "SGAI5"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-### {{< iconify ph chart-line-fill >}} Verloop over tijd
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-overtime-overall-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_timeline(
-  data = data,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-overtime-overall-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_timeline(
-  data = data,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-overtime-overall-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_timeline(
-  data = data,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-overtime-age-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_timeline(
-  data = data,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI1",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-overtime-age-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_timeline(
-  data = data,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI2",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 3
-
-
-```{r genai-overtime-age-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_timeline(
-  data = data,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI3",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 1
-
-
-```{r genai-overtime-gender-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_timeline(
-  data = data,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI1",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 2
-
-
-```{r genai-overtime-gender-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_timeline(
-  data = data,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SGAI2",
+  y_var = "SHealth2_V2",
   group_var = "geslacht"
 )
 
@@ -3857,21 +3419,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-gender-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_timeline(
+```{r dhealth-overtime-gender-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
+  y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3",
+  y_var = "SHealth3_V2",
   group_var = "geslacht"
 )
 
@@ -3890,21 +3452,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-overtime-edu-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_timeline(
+```{r dhealth-overtime-edu-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_timeline(
   data = data,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
+  y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI1",
+  y_var = "SHealth1",
   group_var = "Education"
 )
 
@@ -3915,21 +3477,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-overtime-edu-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_timeline(
+```{r dhealth-overtime-edu-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_timeline(
   data = data,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
+  y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI2",
+  y_var = "SHealth2_V2",
   group_var = "Education"
 )
 
@@ -3940,21 +3502,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-edu-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_timeline(
+```{r dhealth-overtime-edu-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
+  y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3",
+  y_var = "SHealth3_V2",
   group_var = "Education"
 )
 
@@ -3973,21 +3535,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r genai-overtime-mig-item1}
-# Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat
-result <- create_timeline(
+```{r dhealth-overtime-mig-item1}
+# Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
+result <- viz_timeline(
   data = data,
-  title = "Ik weet meestal wanneer de inhoud die GenAI, zoals ChatGPT, voor mij maakt juiste informatie bevat",
+  title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
+  y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI1",
+  y_var = "SHealth1",
   group_var = "MigrationBackground"
 )
 
@@ -3998,21 +3560,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r genai-overtime-mig-item2}
-# Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen
-result <- create_timeline(
+```{r dhealth-overtime-mig-item2}
+# Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
+result <- viz_timeline(
   data = data,
-  title = "Ik weet welke vragen (of 'prompts') ik aan GenAI, zoals ChatGPT, moet stellen om tot een bruikbaar resultaat te komen",
+  title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
+  y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI2",
+  y_var = "SHealth2_V2",
   group_var = "MigrationBackground"
 )
 
@@ -4023,21 +3585,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r genai-overtime-mig-item3}
-# Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens
-result <- create_timeline(
+```{r dhealth-overtime-mig-item3}
+# Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
+result <- viz_timeline(
   data = data,
-  title = "Ik weet hoe ik kan controleren of een tekst of een foto is gemaakt door GenAI, zoals ChatGPT, in plaats van door een mens",
+  title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
-  y_label = "Percentage who answered (Completely) True (4-5)",
+  y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3",
+  y_var = "SHealth3_V2",
   group_var = "MigrationBackground"
 )
 
@@ -4055,50 +3617,7 @@ result
 
 
 
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='skills_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='3' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["skills.html","skills_p2.html","skills_p3.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(3, 6, "skills", "bottom")
 ```
 

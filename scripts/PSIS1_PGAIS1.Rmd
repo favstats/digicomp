@@ -1,0 +1,81 @@
+---
+title: "Manually coded items"
+author: "Roos Korderijnk"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+This is the code to handle the manually coded items PSIS1 and PGAIS 1.
+
+# Round 1
+
+For round 1, we had no id's available and stitched the codings in the same default order as the original "df" object:
+
+```{r open items round 1}
+library(readxl)
+
+
+# Import manual coding
+df_opencodes <- read_excel("~/Library/CloudStorage/OneDrive-UvA/General/DigIQ2.0/Round 1/Analysis/Coding open performance items/Coding open items_COMBINED.xlsx", col_types = c("numeric", "text", "text","numeric", "text", "numeric", "skip"))
+
+## Extract the variables needed, avoiding overlap
+df_opencodes <- df_opencodes |> select(PSIS1R, PGAIS1R)
+
+## Pasting them with the general dataset
+df <- cbind(df, df_opencodes)
+
+```
+
+# Round 2
+
+For round 2 we could use the id's, but there was a duplicate so we had to create a workaround as you will see below:
+
+```{r open items round 2}
+
+# Import manual coding
+df_opencodes <- read_excel("/Users/r.korderijnkuva.nl/Library/CloudStorage/OneDrive-UvA/General/DigIQ2.0/Round 2/Open items/Open item codings COMBINED.xlsx", col_types = c("text", "text", "numeric","text", "numeric"))
+
+## Extract the variables needed, avoiding overlap
+df_opencodes <- df_opencodes |> select(id, PSIS1R, PGAIS1R)
+
+###
+
+# WARNING there are two observations with matching ID's, for some reason:
+df_opencodes %>%
+  semi_join(
+    df_opencodes %>% count(id) %>% filter(n > 1),
+    by = "id"
+  ) %>%
+  arrange(id)
+
+# Matching through inner join thus does wrong; so I added some code to manually tweak one of these duplicates (the same is done to the matching observation in the manual coding file:
+df <- df %>%
+  mutate(
+    id = if_else(
+      id == "ZHB3QJSWCD" & Device == "Smartphone",
+      "ZHB3QJSWCD1",
+      id
+    )
+  )
+
+###
+
+## Pasting them with the general dataset
+df <- inner_join(df_opencodes, df, by = "id")
+
+
+```
+
+# Recoding
+
+The recoding of the variables is exactly the same for round 1 and round 2. Note that the resulted variable names are *PSIS1RC* and *PGAIS1RC*.
+
+```{r recoding open items}
+
+df$PSIS1RC <- ifelse(df$PSIS1R == 0, 0, 1)
+
+df$PGAIS1RC <- ifelse(df$PGAIS1R == 0, 0, 1)
+
+
+```
+

@@ -3,9 +3,8 @@ title: "{{< iconify ph lightbulb-fill >}} Digital Problem Solving"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "digital_problem_solving")
 ```
 
 **Digital Problem Solving Competence** involves knowing where to find help with digital challenges and understanding how to improve digital competencies.
@@ -17,10 +16,8 @@ library(dashboardr)
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -33,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -42,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -69,11 +66,11 @@ create_blockquote("Think about the extent to which each sentence applies to you,
 
 ```{r dprob-wave1-overall-2}
 # Digital Problem Solving Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Digital Problem Solving Skills",
-  questions = c("SProbl1", "SProbl2"),
-  question_labels = c("I know where or from whom I can get help to improve my digital skills", "I know where or from whom I can get help if I'm unable to do something on the internet"),
+  x_vars = c("SProbl1", "SProbl2"),
+  x_var_labels = c("I know where or from whom I can get help to improve my digital skills", "I know where or from whom I can get help if I'm unable to do something on the internet"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -99,7 +96,7 @@ result
 
 ```{r dprob-wave1-age-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -123,7 +120,7 @@ result
 
 ```{r dprob-wave1-age-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -155,7 +152,7 @@ result
 
 ```{r dprob-wave1-gender-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -179,7 +176,7 @@ result
 
 ```{r dprob-wave1-gender-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -211,7 +208,7 @@ result
 
 ```{r dprob-wave1-edu-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -235,7 +232,7 @@ result
 
 ```{r dprob-wave1-edu-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -267,7 +264,7 @@ result
 
 ```{r dprob-wave1-mig-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -291,7 +288,7 @@ result
 
 ```{r dprob-wave1-mig-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -326,11 +323,11 @@ result
 
 ```{r dprob-wave2-overall-2}
 # Digital Problem Solving Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Digital Problem Solving Skills",
-  questions = c("SProbl1", "SProbl2"),
-  question_labels = c("I know where or from whom I can get help to improve my digital skills", "I know where or from whom I can get help if I'm unable to do something on the internet"),
+  x_vars = c("SProbl1", "SProbl2"),
+  x_var_labels = c("I know where or from whom I can get help to improve my digital skills", "I know where or from whom I can get help if I'm unable to do something on the internet"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -356,7 +353,7 @@ result
 
 ```{r dprob-wave2-age-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -380,7 +377,7 @@ result
 
 ```{r dprob-wave2-age-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -412,7 +409,7 @@ result
 
 ```{r dprob-wave2-gender-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -436,7 +433,7 @@ result
 
 ```{r dprob-wave2-gender-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -468,7 +465,7 @@ result
 
 ```{r dprob-wave2-edu-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -492,7 +489,7 @@ result
 
 ```{r dprob-wave2-edu-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -524,7 +521,7 @@ result
 
 ```{r dprob-wave2-mig-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help to improve my digital skills",
   stacked_type = "percent",
@@ -548,7 +545,7 @@ result
 
 ```{r dprob-wave2-mig-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   stacked_type = "percent",
@@ -588,21 +585,21 @@ result
 
 ```{r dprob-overtime-overall-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help to improve my digital skills",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1"
+  y_var = "SProbl1"
 )
 
 result
@@ -614,21 +611,21 @@ result
 
 ```{r dprob-overtime-overall-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2"
+  y_var = "SProbl2"
 )
 
 result
@@ -648,19 +645,19 @@ result
 
 ```{r dprob-overtime-age-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help to improve my digital skills",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  y_var = "SProbl1",
   group_var = "AgeGroup"
 )
 
@@ -673,19 +670,19 @@ result
 
 ```{r dprob-overtime-age-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  y_var = "SProbl2",
   group_var = "AgeGroup"
 )
 
@@ -706,19 +703,19 @@ result
 
 ```{r dprob-overtime-gender-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help to improve my digital skills",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  y_var = "SProbl1",
   group_var = "geslacht"
 )
 
@@ -731,19 +728,19 @@ result
 
 ```{r dprob-overtime-gender-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  y_var = "SProbl2",
   group_var = "geslacht"
 )
 
@@ -764,19 +761,19 @@ result
 
 ```{r dprob-overtime-edu-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help to improve my digital skills",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  y_var = "SProbl1",
   group_var = "Education"
 )
 
@@ -789,19 +786,19 @@ result
 
 ```{r dprob-overtime-edu-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  y_var = "SProbl2",
   group_var = "Education"
 )
 
@@ -822,19 +819,19 @@ result
 
 ```{r dprob-overtime-mig-item1-2}
 # I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help to improve my digital skills",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1",
+  y_var = "SProbl1",
   group_var = "MigrationBackground"
 )
 
@@ -847,19 +844,19 @@ result
 
 ```{r dprob-overtime-mig-item2-2}
 # I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know where or from whom I can get help if I'm unable to do something on the internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  y_var = "SProbl2",
   group_var = "MigrationBackground"
 )
 
@@ -897,11 +894,11 @@ create_blockquote("Who do you ask for help if you aren't able to do something wi
 
 ```{r perf-ps-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
-  question_labels = c("I don't need help", "I don't know anyone", "Family", "Friends", "Colleagues/classmates", "Neighbors/acquaintances", "Help desk", "Library", "Telecom/online helpdesk"),
+  x_vars = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
+  x_var_labels = c("I don't need help", "I don't know anyone", "Family", "Friends", "Colleagues/classmates", "Neighbors/acquaintances", "Help desk", "Library", "Telecom/online helpdesk"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -928,7 +925,7 @@ result
 
 ```{r perf-ps-wave1-age-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't need help",
   stacked_type = "percent",
@@ -953,7 +950,7 @@ result
 
 ```{r perf-ps-wave1-age-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -978,7 +975,7 @@ result
 
 ```{r perf-ps-wave1-age-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Family",
   stacked_type = "percent",
@@ -1003,7 +1000,7 @@ result
 
 ```{r perf-ps-wave1-age-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Friends",
   stacked_type = "percent",
@@ -1028,7 +1025,7 @@ result
 
 ```{r perf-ps-wave1-age-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -1053,7 +1050,7 @@ result
 
 ```{r perf-ps-wave1-age-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -1078,7 +1075,7 @@ result
 
 ```{r perf-ps-wave1-age-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Help desk",
   stacked_type = "percent",
@@ -1103,7 +1100,7 @@ result
 
 ```{r perf-ps-wave1-age-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Library",
   stacked_type = "percent",
@@ -1128,7 +1125,7 @@ result
 
 ```{r perf-ps-wave1-age-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -1161,7 +1158,7 @@ result
 
 ```{r perf-ps-wave1-gender-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't need help",
   stacked_type = "percent",
@@ -1186,7 +1183,7 @@ result
 
 ```{r perf-ps-wave1-gender-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -1211,7 +1208,7 @@ result
 
 ```{r perf-ps-wave1-gender-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Family",
   stacked_type = "percent",
@@ -1236,7 +1233,7 @@ result
 
 ```{r perf-ps-wave1-gender-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Friends",
   stacked_type = "percent",
@@ -1261,7 +1258,7 @@ result
 
 ```{r perf-ps-wave1-gender-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -1286,7 +1283,7 @@ result
 
 ```{r perf-ps-wave1-gender-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -1311,7 +1308,7 @@ result
 
 ```{r perf-ps-wave1-gender-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Help desk",
   stacked_type = "percent",
@@ -1336,7 +1333,7 @@ result
 
 ```{r perf-ps-wave1-gender-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Library",
   stacked_type = "percent",
@@ -1361,7 +1358,7 @@ result
 
 ```{r perf-ps-wave1-gender-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -1394,7 +1391,7 @@ result
 
 ```{r perf-ps-wave1-edu-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't need help",
   stacked_type = "percent",
@@ -1419,7 +1416,7 @@ result
 
 ```{r perf-ps-wave1-edu-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -1444,7 +1441,7 @@ result
 
 ```{r perf-ps-wave1-edu-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Family",
   stacked_type = "percent",
@@ -1469,7 +1466,7 @@ result
 
 ```{r perf-ps-wave1-edu-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Friends",
   stacked_type = "percent",
@@ -1494,7 +1491,7 @@ result
 
 ```{r perf-ps-wave1-edu-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -1519,7 +1516,7 @@ result
 
 ```{r perf-ps-wave1-edu-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -1544,7 +1541,7 @@ result
 
 ```{r perf-ps-wave1-edu-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Help desk",
   stacked_type = "percent",
@@ -1569,7 +1566,7 @@ result
 
 ```{r perf-ps-wave1-edu-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Library",
   stacked_type = "percent",
@@ -1594,7 +1591,7 @@ result
 
 ```{r perf-ps-wave1-edu-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -1627,7 +1624,7 @@ result
 
 ```{r perf-ps-wave1-mig-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't need help",
   stacked_type = "percent",
@@ -1652,7 +1649,7 @@ result
 
 ```{r perf-ps-wave1-mig-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -1677,7 +1674,7 @@ result
 
 ```{r perf-ps-wave1-mig-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Family",
   stacked_type = "percent",
@@ -1702,7 +1699,7 @@ result
 
 ```{r perf-ps-wave1-mig-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Friends",
   stacked_type = "percent",
@@ -1727,7 +1724,7 @@ result
 
 ```{r perf-ps-wave1-mig-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -1752,7 +1749,7 @@ result
 
 ```{r perf-ps-wave1-mig-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -1777,7 +1774,7 @@ result
 
 ```{r perf-ps-wave1-mig-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Help desk",
   stacked_type = "percent",
@@ -1802,7 +1799,7 @@ result
 
 ```{r perf-ps-wave1-mig-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Library",
   stacked_type = "percent",
@@ -1827,7 +1824,7 @@ result
 
 ```{r perf-ps-wave1-mig-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -1863,11 +1860,11 @@ result
 
 ```{r perf-ps-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
-  question_labels = c("I don't need help", "I don't know anyone", "Family", "Friends", "Colleagues/classmates", "Neighbors/acquaintances", "Help desk", "Library", "Telecom/online helpdesk"),
+  x_vars = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
+  x_var_labels = c("I don't need help", "I don't know anyone", "Family", "Friends", "Colleagues/classmates", "Neighbors/acquaintances", "Help desk", "Library", "Telecom/online helpdesk"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1894,7 +1891,7 @@ result
 
 ```{r perf-ps-wave2-age-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't need help",
   stacked_type = "percent",
@@ -1919,7 +1916,7 @@ result
 
 ```{r perf-ps-wave2-age-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -1944,7 +1941,7 @@ result
 
 ```{r perf-ps-wave2-age-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Family",
   stacked_type = "percent",
@@ -1969,7 +1966,7 @@ result
 
 ```{r perf-ps-wave2-age-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Friends",
   stacked_type = "percent",
@@ -1994,7 +1991,7 @@ result
 
 ```{r perf-ps-wave2-age-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -2019,7 +2016,7 @@ result
 
 ```{r perf-ps-wave2-age-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -2044,7 +2041,7 @@ result
 
 ```{r perf-ps-wave2-age-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Help desk",
   stacked_type = "percent",
@@ -2069,7 +2066,7 @@ result
 
 ```{r perf-ps-wave2-age-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Library",
   stacked_type = "percent",
@@ -2094,7 +2091,7 @@ result
 
 ```{r perf-ps-wave2-age-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -2127,7 +2124,7 @@ result
 
 ```{r perf-ps-wave2-gender-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't need help",
   stacked_type = "percent",
@@ -2152,7 +2149,7 @@ result
 
 ```{r perf-ps-wave2-gender-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -2177,7 +2174,7 @@ result
 
 ```{r perf-ps-wave2-gender-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Family",
   stacked_type = "percent",
@@ -2202,7 +2199,7 @@ result
 
 ```{r perf-ps-wave2-gender-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Friends",
   stacked_type = "percent",
@@ -2227,7 +2224,7 @@ result
 
 ```{r perf-ps-wave2-gender-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -2252,7 +2249,7 @@ result
 
 ```{r perf-ps-wave2-gender-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -2277,7 +2274,7 @@ result
 
 ```{r perf-ps-wave2-gender-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Help desk",
   stacked_type = "percent",
@@ -2302,7 +2299,7 @@ result
 
 ```{r perf-ps-wave2-gender-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Library",
   stacked_type = "percent",
@@ -2327,7 +2324,7 @@ result
 
 ```{r perf-ps-wave2-gender-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -2360,7 +2357,7 @@ result
 
 ```{r perf-ps-wave2-edu-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't need help",
   stacked_type = "percent",
@@ -2385,7 +2382,7 @@ result
 
 ```{r perf-ps-wave2-edu-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -2410,7 +2407,7 @@ result
 
 ```{r perf-ps-wave2-edu-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Family",
   stacked_type = "percent",
@@ -2435,7 +2432,7 @@ result
 
 ```{r perf-ps-wave2-edu-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Friends",
   stacked_type = "percent",
@@ -2460,7 +2457,7 @@ result
 
 ```{r perf-ps-wave2-edu-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -2485,7 +2482,7 @@ result
 
 ```{r perf-ps-wave2-edu-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -2510,7 +2507,7 @@ result
 
 ```{r perf-ps-wave2-edu-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Help desk",
   stacked_type = "percent",
@@ -2535,7 +2532,7 @@ result
 
 ```{r perf-ps-wave2-edu-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Library",
   stacked_type = "percent",
@@ -2560,7 +2557,7 @@ result
 
 ```{r perf-ps-wave2-edu-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -2593,7 +2590,7 @@ result
 
 ```{r perf-ps-wave2-mig-item1-2}
 # I don't need help
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't need help",
   stacked_type = "percent",
@@ -2618,7 +2615,7 @@ result
 
 ```{r perf-ps-wave2-mig-item2-2}
 # I don't know anyone
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I don't know anyone",
   stacked_type = "percent",
@@ -2643,7 +2640,7 @@ result
 
 ```{r perf-ps-wave2-mig-item3-2}
 # Family
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Family",
   stacked_type = "percent",
@@ -2668,7 +2665,7 @@ result
 
 ```{r perf-ps-wave2-mig-item4-2}
 # Friends
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Friends",
   stacked_type = "percent",
@@ -2693,7 +2690,7 @@ result
 
 ```{r perf-ps-wave2-mig-item5-2}
 # Colleagues/classmates
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Colleagues/classmates",
   stacked_type = "percent",
@@ -2718,7 +2715,7 @@ result
 
 ```{r perf-ps-wave2-mig-item6-2}
 # Neighbors/acquaintances
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Neighbors/acquaintances",
   stacked_type = "percent",
@@ -2743,7 +2740,7 @@ result
 
 ```{r perf-ps-wave2-mig-item7-2}
 # Help desk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Help desk",
   stacked_type = "percent",
@@ -2768,7 +2765,7 @@ result
 
 ```{r perf-ps-wave2-mig-item8-2}
 # Library
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Library",
   stacked_type = "percent",
@@ -2793,7 +2790,7 @@ result
 
 ```{r perf-ps-wave2-mig-item9-2}
 # Telecom/online helpdesk
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Telecom/online helpdesk",
   stacked_type = "percent",
@@ -2834,21 +2831,21 @@ result
 
 ```{r perf-ps-overtime-overall-item1-2}
 # I don't need help
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1"
+  y_var = "SourceHelp_1"
 )
 
 result
@@ -2860,21 +2857,21 @@ result
 
 ```{r perf-ps-overtime-overall-item2-2}
 # I don't know anyone
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2"
+  y_var = "SourceHelp_2"
 )
 
 result
@@ -2886,21 +2883,21 @@ result
 
 ```{r perf-ps-overtime-overall-item3-2}
 # Family
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3"
+  y_var = "SourceHelp_3"
 )
 
 result
@@ -2912,21 +2909,21 @@ result
 
 ```{r perf-ps-overtime-overall-item4-2}
 # Friends
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4"
+  y_var = "SourceHelp_4"
 )
 
 result
@@ -2938,21 +2935,21 @@ result
 
 ```{r perf-ps-overtime-overall-item5-2}
 # Colleagues/classmates
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5"
+  y_var = "SourceHelp_5"
 )
 
 result
@@ -2964,21 +2961,21 @@ result
 
 ```{r perf-ps-overtime-overall-item6-2}
 # Neighbors/acquaintances
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6"
+  y_var = "SourceHelp_6"
 )
 
 result
@@ -2990,21 +2987,21 @@ result
 
 ```{r perf-ps-overtime-overall-item7-2}
 # Help desk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7"
+  y_var = "SourceHelp_7"
 )
 
 result
@@ -3016,21 +3013,21 @@ result
 
 ```{r perf-ps-overtime-overall-item8-2}
 # Library
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8"
+  y_var = "SourceHelp_8"
 )
 
 result
@@ -3042,21 +3039,21 @@ result
 
 ```{r perf-ps-overtime-overall-item9-2}
 # Telecom/online helpdesk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9"
+  y_var = "SourceHelp_9"
 )
 
 result
@@ -3076,20 +3073,20 @@ result
 
 ```{r perf-ps-overtime-age-item1-2}
 # I don't need help
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  y_var = "SourceHelp_1",
   group_var = "AgeGroup"
 )
 
@@ -3102,20 +3099,20 @@ result
 
 ```{r perf-ps-overtime-age-item2-2}
 # I don't know anyone
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  y_var = "SourceHelp_2",
   group_var = "AgeGroup"
 )
 
@@ -3128,20 +3125,20 @@ result
 
 ```{r perf-ps-overtime-age-item3-2}
 # Family
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  y_var = "SourceHelp_3",
   group_var = "AgeGroup"
 )
 
@@ -3154,20 +3151,20 @@ result
 
 ```{r perf-ps-overtime-age-item4-2}
 # Friends
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  y_var = "SourceHelp_4",
   group_var = "AgeGroup"
 )
 
@@ -3180,20 +3177,20 @@ result
 
 ```{r perf-ps-overtime-age-item5-2}
 # Colleagues/classmates
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  y_var = "SourceHelp_5",
   group_var = "AgeGroup"
 )
 
@@ -3206,20 +3203,20 @@ result
 
 ```{r perf-ps-overtime-age-item6-2}
 # Neighbors/acquaintances
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  y_var = "SourceHelp_6",
   group_var = "AgeGroup"
 )
 
@@ -3232,20 +3229,20 @@ result
 
 ```{r perf-ps-overtime-age-item7-2}
 # Help desk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  y_var = "SourceHelp_7",
   group_var = "AgeGroup"
 )
 
@@ -3258,20 +3255,20 @@ result
 
 ```{r perf-ps-overtime-age-item8-2}
 # Library
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  y_var = "SourceHelp_8",
   group_var = "AgeGroup"
 )
 
@@ -3284,20 +3281,20 @@ result
 
 ```{r perf-ps-overtime-age-item9-2}
 # Telecom/online helpdesk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  y_var = "SourceHelp_9",
   group_var = "AgeGroup"
 )
 
@@ -3318,20 +3315,20 @@ result
 
 ```{r perf-ps-overtime-gender-item1-2}
 # I don't need help
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  y_var = "SourceHelp_1",
   group_var = "geslacht"
 )
 
@@ -3344,20 +3341,20 @@ result
 
 ```{r perf-ps-overtime-gender-item2-2}
 # I don't know anyone
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  y_var = "SourceHelp_2",
   group_var = "geslacht"
 )
 
@@ -3370,20 +3367,20 @@ result
 
 ```{r perf-ps-overtime-gender-item3-2}
 # Family
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  y_var = "SourceHelp_3",
   group_var = "geslacht"
 )
 
@@ -3396,20 +3393,20 @@ result
 
 ```{r perf-ps-overtime-gender-item4-2}
 # Friends
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  y_var = "SourceHelp_4",
   group_var = "geslacht"
 )
 
@@ -3422,20 +3419,20 @@ result
 
 ```{r perf-ps-overtime-gender-item5-2}
 # Colleagues/classmates
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  y_var = "SourceHelp_5",
   group_var = "geslacht"
 )
 
@@ -3448,20 +3445,20 @@ result
 
 ```{r perf-ps-overtime-gender-item6-2}
 # Neighbors/acquaintances
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  y_var = "SourceHelp_6",
   group_var = "geslacht"
 )
 
@@ -3474,20 +3471,20 @@ result
 
 ```{r perf-ps-overtime-gender-item7-2}
 # Help desk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  y_var = "SourceHelp_7",
   group_var = "geslacht"
 )
 
@@ -3500,20 +3497,20 @@ result
 
 ```{r perf-ps-overtime-gender-item8-2}
 # Library
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  y_var = "SourceHelp_8",
   group_var = "geslacht"
 )
 
@@ -3526,20 +3523,20 @@ result
 
 ```{r perf-ps-overtime-gender-item9-2}
 # Telecom/online helpdesk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  y_var = "SourceHelp_9",
   group_var = "geslacht"
 )
 
@@ -3560,20 +3557,20 @@ result
 
 ```{r perf-ps-overtime-edu-item1-2}
 # I don't need help
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  y_var = "SourceHelp_1",
   group_var = "Education"
 )
 
@@ -3586,20 +3583,20 @@ result
 
 ```{r perf-ps-overtime-edu-item2-2}
 # I don't know anyone
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  y_var = "SourceHelp_2",
   group_var = "Education"
 )
 
@@ -3612,20 +3609,20 @@ result
 
 ```{r perf-ps-overtime-edu-item3-2}
 # Family
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  y_var = "SourceHelp_3",
   group_var = "Education"
 )
 
@@ -3638,20 +3635,20 @@ result
 
 ```{r perf-ps-overtime-edu-item4-2}
 # Friends
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  y_var = "SourceHelp_4",
   group_var = "Education"
 )
 
@@ -3664,20 +3661,20 @@ result
 
 ```{r perf-ps-overtime-edu-item5-2}
 # Colleagues/classmates
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  y_var = "SourceHelp_5",
   group_var = "Education"
 )
 
@@ -3690,20 +3687,20 @@ result
 
 ```{r perf-ps-overtime-edu-item6-2}
 # Neighbors/acquaintances
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  y_var = "SourceHelp_6",
   group_var = "Education"
 )
 
@@ -3716,20 +3713,20 @@ result
 
 ```{r perf-ps-overtime-edu-item7-2}
 # Help desk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  y_var = "SourceHelp_7",
   group_var = "Education"
 )
 
@@ -3742,20 +3739,20 @@ result
 
 ```{r perf-ps-overtime-edu-item8-2}
 # Library
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  y_var = "SourceHelp_8",
   group_var = "Education"
 )
 
@@ -3768,20 +3765,20 @@ result
 
 ```{r perf-ps-overtime-edu-item9-2}
 # Telecom/online helpdesk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  y_var = "SourceHelp_9",
   group_var = "Education"
 )
 
@@ -3802,20 +3799,20 @@ result
 
 ```{r perf-ps-overtime-mig-item1-2}
 # I don't need help
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't need help",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_1",
+  y_var = "SourceHelp_1",
   group_var = "MigrationBackground"
 )
 
@@ -3828,20 +3825,20 @@ result
 
 ```{r perf-ps-overtime-mig-item2-2}
 # I don't know anyone
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I don't know anyone",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_2",
+  y_var = "SourceHelp_2",
   group_var = "MigrationBackground"
 )
 
@@ -3854,20 +3851,20 @@ result
 
 ```{r perf-ps-overtime-mig-item3-2}
 # Family
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Family",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_3",
+  y_var = "SourceHelp_3",
   group_var = "MigrationBackground"
 )
 
@@ -3880,20 +3877,20 @@ result
 
 ```{r perf-ps-overtime-mig-item4-2}
 # Friends
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Friends",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_4",
+  y_var = "SourceHelp_4",
   group_var = "MigrationBackground"
 )
 
@@ -3906,20 +3903,20 @@ result
 
 ```{r perf-ps-overtime-mig-item5-2}
 # Colleagues/classmates
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Colleagues/classmates",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_5",
+  y_var = "SourceHelp_5",
   group_var = "MigrationBackground"
 )
 
@@ -3932,20 +3929,20 @@ result
 
 ```{r perf-ps-overtime-mig-item6-2}
 # Neighbors/acquaintances
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Neighbors/acquaintances",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_6",
+  y_var = "SourceHelp_6",
   group_var = "MigrationBackground"
 )
 
@@ -3958,20 +3955,20 @@ result
 
 ```{r perf-ps-overtime-mig-item7-2}
 # Help desk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Help desk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_7",
+  y_var = "SourceHelp_7",
   group_var = "MigrationBackground"
 )
 
@@ -3984,20 +3981,20 @@ result
 
 ```{r perf-ps-overtime-mig-item8-2}
 # Library
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Library",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_8",
+  y_var = "SourceHelp_8",
   group_var = "MigrationBackground"
 )
 
@@ -4010,20 +4007,20 @@ result
 
 ```{r perf-ps-overtime-mig-item9-2}
 # Telecom/online helpdesk
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Telecom/online helpdesk",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "SourceHelp_9",
+  y_var = "SourceHelp_9",
   group_var = "MigrationBackground"
 )
 

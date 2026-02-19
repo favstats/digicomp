@@ -1,0 +1,3651 @@
+---
+title: "{{< iconify ph clipboard-text >}} Performance"
+format: html
+---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(5, 6, "performance", "top")
+```
+
+
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "performance")
+```
+
+The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover eleven areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment.
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# Use dashboardr's loading overlay function
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
+```
+
+## {{< iconify ph lightbulb-fill >}} Digital Problem Solving
+
+
+**Digital Problem Solving Competence** involves knowing where to find help with digital challenges and understanding how to improve digital competencies.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote("Who do you ask for help if you aren't able to do something with online media or digital technology?", preset = "question")
+```
+[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-ps-wave1-overall}
+# 
+result <- viz_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "",
+  x_vars = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
+  x_var_labels = c("I don't need help", "I don't know anyone", "Family", "Friends", "Colleagues/classmates", "Neighbors/acquaintances", "Help desk", "Library", "Telecom/online helpdesk"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave1-age-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave1-age-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave1-age-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave1-age-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave1-age-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave1-age-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave1-age-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave1-age-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave1-age-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave1-gender-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave1-gender-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave1-gender-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave1-gender-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave1-gender-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave1-gender-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave1-gender-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave1-gender-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave1-gender-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave1-edu-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave1-edu-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave1-edu-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave1-edu-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave1-edu-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave1-edu-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave1-edu-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave1-edu-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave1-edu-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave1-mig-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave1-mig-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave1-mig-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave1-mig-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave1-mig-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave1-mig-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave1-mig-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave1-mig-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave1-mig-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-ps-wave2-overall}
+# 
+result <- viz_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "",
+  x_vars = c("SourceHelp_1", "SourceHelp_2", "SourceHelp_3", "SourceHelp_4", "SourceHelp_5", "SourceHelp_6", "SourceHelp_7", "SourceHelp_8", "SourceHelp_9"),
+  x_var_labels = c("I don't need help", "I don't know anyone", "Family", "Friends", "Colleagues/classmates", "Neighbors/acquaintances", "Help desk", "Library", "Telecom/online helpdesk"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave2-age-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave2-age-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave2-age-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave2-age-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave2-age-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave2-age-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave2-age-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave2-age-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave2-age-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave2-gender-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave2-gender-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave2-gender-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave2-gender-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave2-gender-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave2-gender-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave2-gender-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave2-gender-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave2-gender-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave2-edu-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave2-edu-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave2-edu-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave2-edu-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave2-edu-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave2-edu-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave2-edu-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave2-edu-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave2-edu-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-wave2-mig-item1}
+# I don't need help
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't need help",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-wave2-mig-item2}
+# I don't know anyone
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I don't know anyone",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-wave2-mig-item3}
+# Family
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Family",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-wave2-mig-item4}
+# Friends
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Friends",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-wave2-mig-item5}
+# Colleagues/classmates
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Colleagues/classmates",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-wave2-mig-item6}
+# Neighbors/acquaintances
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Neighbors/acquaintances",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-wave2-mig-item7}
+# Help desk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Help desk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-wave2-mig-item8}
+# Library
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Library",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-wave2-mig-item9}
+# Telecom/online helpdesk
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Telecom/online helpdesk",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-overtime-overall-item1}
+# I don't need help
+result <- viz_timeline(
+  data = data,
+  title = "I don't need help",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-overtime-overall-item2}
+# I don't know anyone
+result <- viz_timeline(
+  data = data,
+  title = "I don't know anyone",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-overtime-overall-item3}
+# Family
+result <- viz_timeline(
+  data = data,
+  title = "Family",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-overtime-overall-item4}
+# Friends
+result <- viz_timeline(
+  data = data,
+  title = "Friends",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-overtime-overall-item5}
+# Colleagues/classmates
+result <- viz_timeline(
+  data = data,
+  title = "Colleagues/classmates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-overtime-overall-item6}
+# Neighbors/acquaintances
+result <- viz_timeline(
+  data = data,
+  title = "Neighbors/acquaintances",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-overtime-overall-item7}
+# Help desk
+result <- viz_timeline(
+  data = data,
+  title = "Help desk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-overtime-overall-item8}
+# Library
+result <- viz_timeline(
+  data = data,
+  title = "Library",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-overtime-overall-item9}
+# Telecom/online helpdesk
+result <- viz_timeline(
+  data = data,
+  title = "Telecom/online helpdesk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-overtime-age-item1}
+# I don't need help
+result <- viz_timeline(
+  data = data,
+  title = "I don't need help",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-overtime-age-item2}
+# I don't know anyone
+result <- viz_timeline(
+  data = data,
+  title = "I don't know anyone",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-overtime-age-item3}
+# Family
+result <- viz_timeline(
+  data = data,
+  title = "Family",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-overtime-age-item4}
+# Friends
+result <- viz_timeline(
+  data = data,
+  title = "Friends",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-overtime-age-item5}
+# Colleagues/classmates
+result <- viz_timeline(
+  data = data,
+  title = "Colleagues/classmates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-overtime-age-item6}
+# Neighbors/acquaintances
+result <- viz_timeline(
+  data = data,
+  title = "Neighbors/acquaintances",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_6",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-overtime-age-item7}
+# Help desk
+result <- viz_timeline(
+  data = data,
+  title = "Help desk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-overtime-age-item8}
+# Library
+result <- viz_timeline(
+  data = data,
+  title = "Library",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-overtime-age-item9}
+# Telecom/online helpdesk
+result <- viz_timeline(
+  data = data,
+  title = "Telecom/online helpdesk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-overtime-gender-item1}
+# I don't need help
+result <- viz_timeline(
+  data = data,
+  title = "I don't need help",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-overtime-gender-item2}
+# I don't know anyone
+result <- viz_timeline(
+  data = data,
+  title = "I don't know anyone",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-overtime-gender-item3}
+# Family
+result <- viz_timeline(
+  data = data,
+  title = "Family",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-overtime-gender-item4}
+# Friends
+result <- viz_timeline(
+  data = data,
+  title = "Friends",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-overtime-gender-item5}
+# Colleagues/classmates
+result <- viz_timeline(
+  data = data,
+  title = "Colleagues/classmates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-overtime-gender-item6}
+# Neighbors/acquaintances
+result <- viz_timeline(
+  data = data,
+  title = "Neighbors/acquaintances",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_6",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-overtime-gender-item7}
+# Help desk
+result <- viz_timeline(
+  data = data,
+  title = "Help desk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-overtime-gender-item8}
+# Library
+result <- viz_timeline(
+  data = data,
+  title = "Library",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-overtime-gender-item9}
+# Telecom/online helpdesk
+result <- viz_timeline(
+  data = data,
+  title = "Telecom/online helpdesk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-overtime-edu-item1}
+# I don't need help
+result <- viz_timeline(
+  data = data,
+  title = "I don't need help",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-overtime-edu-item2}
+# I don't know anyone
+result <- viz_timeline(
+  data = data,
+  title = "I don't know anyone",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-overtime-edu-item3}
+# Family
+result <- viz_timeline(
+  data = data,
+  title = "Family",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-overtime-edu-item4}
+# Friends
+result <- viz_timeline(
+  data = data,
+  title = "Friends",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-overtime-edu-item5}
+# Colleagues/classmates
+result <- viz_timeline(
+  data = data,
+  title = "Colleagues/classmates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-overtime-edu-item6}
+# Neighbors/acquaintances
+result <- viz_timeline(
+  data = data,
+  title = "Neighbors/acquaintances",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_6",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-overtime-edu-item7}
+# Help desk
+result <- viz_timeline(
+  data = data,
+  title = "Help desk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-overtime-edu-item8}
+# Library
+result <- viz_timeline(
+  data = data,
+  title = "Library",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-overtime-edu-item9}
+# Telecom/online helpdesk
+result <- viz_timeline(
+  data = data,
+  title = "Telecom/online helpdesk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_9",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ps-overtime-mig-item1}
+# I don't need help
+result <- viz_timeline(
+  data = data,
+  title = "I don't need help",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_1",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ps-overtime-mig-item2}
+# I don't know anyone
+result <- viz_timeline(
+  data = data,
+  title = "I don't know anyone",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ps-overtime-mig-item3}
+# Family
+result <- viz_timeline(
+  data = data,
+  title = "Family",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_3",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ps-overtime-mig-item4}
+# Friends
+result <- viz_timeline(
+  data = data,
+  title = "Friends",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_4",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ps-overtime-mig-item5}
+# Colleagues/classmates
+result <- viz_timeline(
+  data = data,
+  title = "Colleagues/classmates",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_5",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ps-overtime-mig-item6}
+# Neighbors/acquaintances
+result <- viz_timeline(
+  data = data,
+  title = "Neighbors/acquaintances",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_6",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ps-overtime-mig-item7}
+# Help desk
+result <- viz_timeline(
+  data = data,
+  title = "Help desk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_7",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ps-overtime-mig-item8}
+# Library
+result <- viz_timeline(
+  data = data,
+  title = "Library",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_8",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ps-overtime-mig-item9}
+# Telecom/online helpdesk
+result <- viz_timeline(
+  data = data,
+  title = "Telecom/online helpdesk",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "SourceHelp_9",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph wallet-fill >}} Transactional
+
+
+**Transactional Competence** covers the ability to handle official online matters: managing government services, digital payments, healthcare arrangements, and document uploads.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote('Below you see 4 icons that can appear on a website. Which of the <a href=\"#PTS1R\" class=\"modal-link\">icons</a> should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?', preset = 'question')
+```
+[{{< iconify ph cards >}} See all Transactional results](transactional.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-trans-wave1-overall}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  x_vars = "PTS1R",
+  x_var_labels = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-trans-wave1-age}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-trans-wave1-gender}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-trans-wave1-edu}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-trans-wave1-mig}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-trans-wave2-overall}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  x_vars = "PTS1R",
+  x_var_labels = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-trans-wave2-age}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-trans-wave2-gender}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-trans-wave2-edu}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-trans-wave2-mig}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PTS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-trans-overtime-overall}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_timeline(
+  data = data,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PTS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+```{r perf-trans-overtime-age}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_timeline(
+  data = data,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PTS1R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+```{r perf-trans-overtime-gender}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_timeline(
+  data = data,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PTS1R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+```{r perf-trans-overtime-edu}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_timeline(
+  data = data,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PTS1R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+```{r perf-trans-overtime-mig}
+# Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
+result <- viz_timeline(
+  data = data,
+  title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PTS1R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(5, 6, "performance", "bottom")
+```
+

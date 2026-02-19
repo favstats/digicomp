@@ -3,9 +3,8 @@ title: "{{< iconify ph heart-fill >}} Digitale Gezondheid"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "digital_health")
 ```
 
 **Digitale Gezondheid & Welzijn** vaardigheden hebben betrekking op het beheren van gezonde digitale gewoonten.
@@ -17,10 +16,8 @@ library(dashboardr)
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -33,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -42,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -69,11 +66,11 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 
 ```{r dhealth-wave1-overall-2}
 # Digitale Gezondheid en Welzijn Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Digitale Gezondheid en Welzijn Vaardigheden",
-  questions = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
-  question_labels = c("Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben", "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt", "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil"),
+  x_vars = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
+  x_var_labels = c("Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben", "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt", "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -99,7 +96,7 @@ result
 
 ```{r dhealth-wave1-age-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -123,7 +120,7 @@ result
 
 ```{r dhealth-wave1-age-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -147,7 +144,7 @@ result
 
 ```{r dhealth-wave1-age-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -179,7 +176,7 @@ result
 
 ```{r dhealth-wave1-gender-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -203,7 +200,7 @@ result
 
 ```{r dhealth-wave1-gender-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -227,7 +224,7 @@ result
 
 ```{r dhealth-wave1-gender-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -259,7 +256,7 @@ result
 
 ```{r dhealth-wave1-edu-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -283,7 +280,7 @@ result
 
 ```{r dhealth-wave1-edu-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -307,7 +304,7 @@ result
 
 ```{r dhealth-wave1-edu-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -339,7 +336,7 @@ result
 
 ```{r dhealth-wave1-mig-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -363,7 +360,7 @@ result
 
 ```{r dhealth-wave1-mig-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -387,7 +384,7 @@ result
 
 ```{r dhealth-wave1-mig-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -422,11 +419,11 @@ result
 
 ```{r dhealth-wave2-overall-2}
 # Digitale Gezondheid en Welzijn Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Digitale Gezondheid en Welzijn Vaardigheden",
-  questions = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
-  question_labels = c("Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben", "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt", "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil"),
+  x_vars = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
+  x_var_labels = c("Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben", "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt", "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -452,7 +449,7 @@ result
 
 ```{r dhealth-wave2-age-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -476,7 +473,7 @@ result
 
 ```{r dhealth-wave2-age-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -500,7 +497,7 @@ result
 
 ```{r dhealth-wave2-age-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -532,7 +529,7 @@ result
 
 ```{r dhealth-wave2-gender-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -556,7 +553,7 @@ result
 
 ```{r dhealth-wave2-gender-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -580,7 +577,7 @@ result
 
 ```{r dhealth-wave2-gender-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -612,7 +609,7 @@ result
 
 ```{r dhealth-wave2-edu-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -636,7 +633,7 @@ result
 
 ```{r dhealth-wave2-edu-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -660,7 +657,7 @@ result
 
 ```{r dhealth-wave2-edu-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -692,7 +689,7 @@ result
 
 ```{r dhealth-wave2-mig-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   stacked_type = "percent",
@@ -716,7 +713,7 @@ result
 
 ```{r dhealth-wave2-mig-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   stacked_type = "percent",
@@ -740,7 +737,7 @@ result
 
 ```{r dhealth-wave2-mig-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   stacked_type = "percent",
@@ -780,21 +777,21 @@ result
 
 ```{r dhealth-overtime-overall-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1"
+  y_var = "SHealth1"
 )
 
 result
@@ -806,21 +803,21 @@ result
 
 ```{r dhealth-overtime-overall-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2"
+  y_var = "SHealth2_V2"
 )
 
 result
@@ -832,21 +829,21 @@ result
 
 ```{r dhealth-overtime-overall-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2"
+  y_var = "SHealth3_V2"
 )
 
 result
@@ -866,19 +863,19 @@ result
 
 ```{r dhealth-overtime-age-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1",
+  y_var = "SHealth1",
   group_var = "AgeGroup"
 )
 
@@ -891,19 +888,19 @@ result
 
 ```{r dhealth-overtime-age-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
+  y_var = "SHealth2_V2",
   group_var = "AgeGroup"
 )
 
@@ -916,19 +913,19 @@ result
 
 ```{r dhealth-overtime-age-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
+  y_var = "SHealth3_V2",
   group_var = "AgeGroup"
 )
 
@@ -949,19 +946,19 @@ result
 
 ```{r dhealth-overtime-gender-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1",
+  y_var = "SHealth1",
   group_var = "geslacht"
 )
 
@@ -974,19 +971,19 @@ result
 
 ```{r dhealth-overtime-gender-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
+  y_var = "SHealth2_V2",
   group_var = "geslacht"
 )
 
@@ -999,19 +996,19 @@ result
 
 ```{r dhealth-overtime-gender-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
+  y_var = "SHealth3_V2",
   group_var = "geslacht"
 )
 
@@ -1032,19 +1029,19 @@ result
 
 ```{r dhealth-overtime-edu-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1",
+  y_var = "SHealth1",
   group_var = "Education"
 )
 
@@ -1057,19 +1054,19 @@ result
 
 ```{r dhealth-overtime-edu-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
+  y_var = "SHealth2_V2",
   group_var = "Education"
 )
 
@@ -1082,19 +1079,19 @@ result
 
 ```{r dhealth-overtime-edu-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
+  y_var = "SHealth3_V2",
   group_var = "Education"
 )
 
@@ -1115,19 +1112,19 @@ result
 
 ```{r dhealth-overtime-mig-item1-2}
 # Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik controle kan houden over hoeveel tijd ik op het internet bezig ben",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1",
+  y_var = "SHealth1",
   group_var = "MigrationBackground"
 )
 
@@ -1140,19 +1137,19 @@ result
 
 ```{r dhealth-overtime-mig-item2-2}
 # Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan zorgen dat mijn telefoon mij niet afleidt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
+  y_var = "SHealth2_V2",
   group_var = "MigrationBackground"
 )
 
@@ -1165,19 +1162,19 @@ result
 
 ```{r dhealth-overtime-mig-item3-2}
 # Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik mijn telefoon en computer een tijdje niet kan gebruiken, als ik dat wil",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
+  y_var = "SHealth3_V2",
   group_var = "MigrationBackground"
 )
 
@@ -1215,11 +1212,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r khealth-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KHealth2RC", "KHealth3RC"),
-  question_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
+  x_vars = c("KHealth2RC", "KHealth3RC"),
+  x_var_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1246,7 +1243,7 @@ result
 
 ```{r khealth-wave1-age-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1271,7 +1268,7 @@ result
 
 ```{r khealth-wave1-age-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1304,7 +1301,7 @@ result
 
 ```{r khealth-wave1-gender-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1329,7 +1326,7 @@ result
 
 ```{r khealth-wave1-gender-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1362,7 +1359,7 @@ result
 
 ```{r khealth-wave1-edu-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1387,7 +1384,7 @@ result
 
 ```{r khealth-wave1-edu-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1420,7 +1417,7 @@ result
 
 ```{r khealth-wave1-mig-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1445,7 +1442,7 @@ result
 
 ```{r khealth-wave1-mig-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1481,11 +1478,11 @@ result
 
 ```{r khealth-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KHealth2RC", "KHealth3RC"),
-  question_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
+  x_vars = c("KHealth2RC", "KHealth3RC"),
+  x_var_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1512,7 +1509,7 @@ result
 
 ```{r khealth-wave2-age-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1537,7 +1534,7 @@ result
 
 ```{r khealth-wave2-age-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1570,7 +1567,7 @@ result
 
 ```{r khealth-wave2-gender-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1595,7 +1592,7 @@ result
 
 ```{r khealth-wave2-gender-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1628,7 +1625,7 @@ result
 
 ```{r khealth-wave2-edu-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1653,7 +1650,7 @@ result
 
 ```{r khealth-wave2-edu-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1686,7 +1683,7 @@ result
 
 ```{r khealth-wave2-mig-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -1711,7 +1708,7 @@ result
 
 ```{r khealth-wave2-mig-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -1752,21 +1749,21 @@ result
 
 ```{r khealth-overtime-overall-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC"
+  y_var = "KHealth2RC"
 )
 
 result
@@ -1778,21 +1775,21 @@ result
 
 ```{r khealth-overtime-overall-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC"
+  y_var = "KHealth3RC"
 )
 
 result
@@ -1812,20 +1809,20 @@ result
 
 ```{r khealth-overtime-age-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "AgeGroup"
 )
 
@@ -1838,20 +1835,20 @@ result
 
 ```{r khealth-overtime-age-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "AgeGroup"
 )
 
@@ -1872,20 +1869,20 @@ result
 
 ```{r khealth-overtime-gender-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "geslacht"
 )
 
@@ -1898,20 +1895,20 @@ result
 
 ```{r khealth-overtime-gender-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "geslacht"
 )
 
@@ -1932,20 +1929,20 @@ result
 
 ```{r khealth-overtime-edu-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "Education"
 )
 
@@ -1958,20 +1955,20 @@ result
 
 ```{r khealth-overtime-edu-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "Education"
 )
 
@@ -1992,20 +1989,20 @@ result
 
 ```{r khealth-overtime-mig-item1-2}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2018,20 +2015,20 @@ result
 
 ```{r khealth-overtime-mig-item2-2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "MigrationBackground"
 )
 
@@ -2069,11 +2066,11 @@ create_blockquote("Probeert u soms de tijd die u besteedt aan het gebruik van di
 
 ```{r perf-health-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
-  question_labels = c("Digitale detox-momenten creëren", "Regels hebben om digitale media te beperken", "Schermtijdbegrenzer gebruiken", "Internet tijdelijk uitschakelen", "Apps/programma's verwijderen", "Meldingen uitschakelen", "Tijd verminderen zonder speciale aanpak", "Geen van deze acties"),
+  x_vars = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  x_var_labels = c("Digitale detox-momenten creëren", "Regels hebben om digitale media te beperken", "Schermtijdbegrenzer gebruiken", "Internet tijdelijk uitschakelen", "Apps/programma's verwijderen", "Meldingen uitschakelen", "Tijd verminderen zonder speciale aanpak", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2100,7 +2097,7 @@ result
 
 ```{r perf-health-wave1-age-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -2125,7 +2122,7 @@ result
 
 ```{r perf-health-wave1-age-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -2150,7 +2147,7 @@ result
 
 ```{r perf-health-wave1-age-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -2175,7 +2172,7 @@ result
 
 ```{r perf-health-wave1-age-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -2200,7 +2197,7 @@ result
 
 ```{r perf-health-wave1-age-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -2225,7 +2222,7 @@ result
 
 ```{r perf-health-wave1-age-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -2250,7 +2247,7 @@ result
 
 ```{r perf-health-wave1-age-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -2275,7 +2272,7 @@ result
 
 ```{r perf-health-wave1-age-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -2308,7 +2305,7 @@ result
 
 ```{r perf-health-wave1-gender-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -2333,7 +2330,7 @@ result
 
 ```{r perf-health-wave1-gender-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -2358,7 +2355,7 @@ result
 
 ```{r perf-health-wave1-gender-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -2383,7 +2380,7 @@ result
 
 ```{r perf-health-wave1-gender-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -2408,7 +2405,7 @@ result
 
 ```{r perf-health-wave1-gender-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -2433,7 +2430,7 @@ result
 
 ```{r perf-health-wave1-gender-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -2458,7 +2455,7 @@ result
 
 ```{r perf-health-wave1-gender-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -2483,7 +2480,7 @@ result
 
 ```{r perf-health-wave1-gender-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -2516,7 +2513,7 @@ result
 
 ```{r perf-health-wave1-edu-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -2541,7 +2538,7 @@ result
 
 ```{r perf-health-wave1-edu-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -2566,7 +2563,7 @@ result
 
 ```{r perf-health-wave1-edu-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -2591,7 +2588,7 @@ result
 
 ```{r perf-health-wave1-edu-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -2616,7 +2613,7 @@ result
 
 ```{r perf-health-wave1-edu-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -2641,7 +2638,7 @@ result
 
 ```{r perf-health-wave1-edu-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -2666,7 +2663,7 @@ result
 
 ```{r perf-health-wave1-edu-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -2691,7 +2688,7 @@ result
 
 ```{r perf-health-wave1-edu-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -2724,7 +2721,7 @@ result
 
 ```{r perf-health-wave1-mig-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -2749,7 +2746,7 @@ result
 
 ```{r perf-health-wave1-mig-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -2774,7 +2771,7 @@ result
 
 ```{r perf-health-wave1-mig-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -2799,7 +2796,7 @@ result
 
 ```{r perf-health-wave1-mig-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -2824,7 +2821,7 @@ result
 
 ```{r perf-health-wave1-mig-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -2849,7 +2846,7 @@ result
 
 ```{r perf-health-wave1-mig-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -2874,7 +2871,7 @@ result
 
 ```{r perf-health-wave1-mig-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -2899,7 +2896,7 @@ result
 
 ```{r perf-health-wave1-mig-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -2935,11 +2932,11 @@ result
 
 ```{r perf-health-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
-  question_labels = c("Digitale detox-momenten creëren", "Regels hebben om digitale media te beperken", "Schermtijdbegrenzer gebruiken", "Internet tijdelijk uitschakelen", "Apps/programma's verwijderen", "Meldingen uitschakelen", "Tijd verminderen zonder speciale aanpak", "Geen van deze acties"),
+  x_vars = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  x_var_labels = c("Digitale detox-momenten creëren", "Regels hebben om digitale media te beperken", "Schermtijdbegrenzer gebruiken", "Internet tijdelijk uitschakelen", "Apps/programma's verwijderen", "Meldingen uitschakelen", "Tijd verminderen zonder speciale aanpak", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2966,7 +2963,7 @@ result
 
 ```{r perf-health-wave2-age-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -2991,7 +2988,7 @@ result
 
 ```{r perf-health-wave2-age-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -3016,7 +3013,7 @@ result
 
 ```{r perf-health-wave2-age-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -3041,7 +3038,7 @@ result
 
 ```{r perf-health-wave2-age-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -3066,7 +3063,7 @@ result
 
 ```{r perf-health-wave2-age-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -3091,7 +3088,7 @@ result
 
 ```{r perf-health-wave2-age-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -3116,7 +3113,7 @@ result
 
 ```{r perf-health-wave2-age-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -3141,7 +3138,7 @@ result
 
 ```{r perf-health-wave2-age-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -3174,7 +3171,7 @@ result
 
 ```{r perf-health-wave2-gender-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -3199,7 +3196,7 @@ result
 
 ```{r perf-health-wave2-gender-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -3224,7 +3221,7 @@ result
 
 ```{r perf-health-wave2-gender-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -3249,7 +3246,7 @@ result
 
 ```{r perf-health-wave2-gender-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -3274,7 +3271,7 @@ result
 
 ```{r perf-health-wave2-gender-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -3299,7 +3296,7 @@ result
 
 ```{r perf-health-wave2-gender-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -3324,7 +3321,7 @@ result
 
 ```{r perf-health-wave2-gender-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -3349,7 +3346,7 @@ result
 
 ```{r perf-health-wave2-gender-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -3382,7 +3379,7 @@ result
 
 ```{r perf-health-wave2-edu-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -3407,7 +3404,7 @@ result
 
 ```{r perf-health-wave2-edu-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -3432,7 +3429,7 @@ result
 
 ```{r perf-health-wave2-edu-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -3457,7 +3454,7 @@ result
 
 ```{r perf-health-wave2-edu-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -3482,7 +3479,7 @@ result
 
 ```{r perf-health-wave2-edu-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -3507,7 +3504,7 @@ result
 
 ```{r perf-health-wave2-edu-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -3532,7 +3529,7 @@ result
 
 ```{r perf-health-wave2-edu-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -3557,7 +3554,7 @@ result
 
 ```{r perf-health-wave2-edu-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -3590,7 +3587,7 @@ result
 
 ```{r perf-health-wave2-mig-item1-2}
 # Digitale detox-momenten creëren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
@@ -3615,7 +3612,7 @@ result
 
 ```{r perf-health-wave2-mig-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
@@ -3640,7 +3637,7 @@ result
 
 ```{r perf-health-wave2-mig-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
@@ -3665,7 +3662,7 @@ result
 
 ```{r perf-health-wave2-mig-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
@@ -3690,7 +3687,7 @@ result
 
 ```{r perf-health-wave2-mig-item5-2}
 # Apps/programma's verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Apps/programma's verwijderen",
   stacked_type = "percent",
@@ -3715,7 +3712,7 @@ result
 
 ```{r perf-health-wave2-mig-item6-2}
 # Meldingen uitschakelen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Meldingen uitschakelen",
   stacked_type = "percent",
@@ -3740,7 +3737,7 @@ result
 
 ```{r perf-health-wave2-mig-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
@@ -3765,7 +3762,7 @@ result
 
 ```{r perf-health-wave2-mig-item8-2}
 # Geen van deze acties
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van deze acties",
   stacked_type = "percent",
@@ -3806,21 +3803,21 @@ result
 
 ```{r perf-health-overtime-overall-item1-2}
 # Digitale detox-momenten creëren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_1"
+  y_var = "PDHWS1_1"
 )
 
 result
@@ -3832,21 +3829,21 @@ result
 
 ```{r perf-health-overtime-overall-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_2"
+  y_var = "PDHWS1_2"
 )
 
 result
@@ -3858,21 +3855,21 @@ result
 
 ```{r perf-health-overtime-overall-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_3"
+  y_var = "PDHWS1_3"
 )
 
 result
@@ -3884,21 +3881,21 @@ result
 
 ```{r perf-health-overtime-overall-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_4"
+  y_var = "PDHWS1_4"
 )
 
 result
@@ -3910,21 +3907,21 @@ result
 
 ```{r perf-health-overtime-overall-item5-2}
 # Apps/programma's verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_5"
+  y_var = "PDHWS1_5"
 )
 
 result
@@ -3936,21 +3933,21 @@ result
 
 ```{r perf-health-overtime-overall-item6-2}
 # Meldingen uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_6"
+  y_var = "PDHWS1_6"
 )
 
 result
@@ -3962,21 +3959,21 @@ result
 
 ```{r perf-health-overtime-overall-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_7"
+  y_var = "PDHWS1_7"
 )
 
 result
@@ -3988,21 +3985,21 @@ result
 
 ```{r perf-health-overtime-overall-item8-2}
 # Geen van deze acties
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_8"
+  y_var = "PDHWS1_8"
 )
 
 result
@@ -4022,20 +4019,20 @@ result
 
 ```{r perf-health-overtime-age-item1-2}
 # Digitale detox-momenten creëren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_1",
+  y_var = "PDHWS1_1",
   group_var = "AgeGroup"
 )
 
@@ -4048,20 +4045,20 @@ result
 
 ```{r perf-health-overtime-age-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_2",
+  y_var = "PDHWS1_2",
   group_var = "AgeGroup"
 )
 
@@ -4074,20 +4071,20 @@ result
 
 ```{r perf-health-overtime-age-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_3",
+  y_var = "PDHWS1_3",
   group_var = "AgeGroup"
 )
 
@@ -4100,20 +4097,20 @@ result
 
 ```{r perf-health-overtime-age-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_4",
+  y_var = "PDHWS1_4",
   group_var = "AgeGroup"
 )
 
@@ -4126,20 +4123,20 @@ result
 
 ```{r perf-health-overtime-age-item5-2}
 # Apps/programma's verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_5",
+  y_var = "PDHWS1_5",
   group_var = "AgeGroup"
 )
 
@@ -4152,20 +4149,20 @@ result
 
 ```{r perf-health-overtime-age-item6-2}
 # Meldingen uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_6",
+  y_var = "PDHWS1_6",
   group_var = "AgeGroup"
 )
 
@@ -4178,20 +4175,20 @@ result
 
 ```{r perf-health-overtime-age-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_7",
+  y_var = "PDHWS1_7",
   group_var = "AgeGroup"
 )
 
@@ -4204,20 +4201,20 @@ result
 
 ```{r perf-health-overtime-age-item8-2}
 # Geen van deze acties
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_8",
+  y_var = "PDHWS1_8",
   group_var = "AgeGroup"
 )
 
@@ -4238,20 +4235,20 @@ result
 
 ```{r perf-health-overtime-gender-item1-2}
 # Digitale detox-momenten creëren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_1",
+  y_var = "PDHWS1_1",
   group_var = "geslacht"
 )
 
@@ -4264,20 +4261,20 @@ result
 
 ```{r perf-health-overtime-gender-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_2",
+  y_var = "PDHWS1_2",
   group_var = "geslacht"
 )
 
@@ -4290,20 +4287,20 @@ result
 
 ```{r perf-health-overtime-gender-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_3",
+  y_var = "PDHWS1_3",
   group_var = "geslacht"
 )
 
@@ -4316,20 +4313,20 @@ result
 
 ```{r perf-health-overtime-gender-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_4",
+  y_var = "PDHWS1_4",
   group_var = "geslacht"
 )
 
@@ -4342,20 +4339,20 @@ result
 
 ```{r perf-health-overtime-gender-item5-2}
 # Apps/programma's verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_5",
+  y_var = "PDHWS1_5",
   group_var = "geslacht"
 )
 
@@ -4368,20 +4365,20 @@ result
 
 ```{r perf-health-overtime-gender-item6-2}
 # Meldingen uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_6",
+  y_var = "PDHWS1_6",
   group_var = "geslacht"
 )
 
@@ -4394,20 +4391,20 @@ result
 
 ```{r perf-health-overtime-gender-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_7",
+  y_var = "PDHWS1_7",
   group_var = "geslacht"
 )
 
@@ -4420,20 +4417,20 @@ result
 
 ```{r perf-health-overtime-gender-item8-2}
 # Geen van deze acties
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_8",
+  y_var = "PDHWS1_8",
   group_var = "geslacht"
 )
 
@@ -4454,20 +4451,20 @@ result
 
 ```{r perf-health-overtime-edu-item1-2}
 # Digitale detox-momenten creëren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_1",
+  y_var = "PDHWS1_1",
   group_var = "Education"
 )
 
@@ -4480,20 +4477,20 @@ result
 
 ```{r perf-health-overtime-edu-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_2",
+  y_var = "PDHWS1_2",
   group_var = "Education"
 )
 
@@ -4506,20 +4503,20 @@ result
 
 ```{r perf-health-overtime-edu-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_3",
+  y_var = "PDHWS1_3",
   group_var = "Education"
 )
 
@@ -4532,20 +4529,20 @@ result
 
 ```{r perf-health-overtime-edu-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_4",
+  y_var = "PDHWS1_4",
   group_var = "Education"
 )
 
@@ -4558,20 +4555,20 @@ result
 
 ```{r perf-health-overtime-edu-item5-2}
 # Apps/programma's verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_5",
+  y_var = "PDHWS1_5",
   group_var = "Education"
 )
 
@@ -4584,20 +4581,20 @@ result
 
 ```{r perf-health-overtime-edu-item6-2}
 # Meldingen uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_6",
+  y_var = "PDHWS1_6",
   group_var = "Education"
 )
 
@@ -4610,20 +4607,20 @@ result
 
 ```{r perf-health-overtime-edu-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_7",
+  y_var = "PDHWS1_7",
   group_var = "Education"
 )
 
@@ -4636,20 +4633,20 @@ result
 
 ```{r perf-health-overtime-edu-item8-2}
 # Geen van deze acties
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_8",
+  y_var = "PDHWS1_8",
   group_var = "Education"
 )
 
@@ -4670,20 +4667,20 @@ result
 
 ```{r perf-health-overtime-mig-item1-2}
 # Digitale detox-momenten creëren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_1",
+  y_var = "PDHWS1_1",
   group_var = "MigrationBackground"
 )
 
@@ -4696,20 +4693,20 @@ result
 
 ```{r perf-health-overtime-mig-item2-2}
 # Regels hebben om digitale media te beperken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_2",
+  y_var = "PDHWS1_2",
   group_var = "MigrationBackground"
 )
 
@@ -4722,20 +4719,20 @@ result
 
 ```{r perf-health-overtime-mig-item3-2}
 # Schermtijdbegrenzer gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_3",
+  y_var = "PDHWS1_3",
   group_var = "MigrationBackground"
 )
 
@@ -4748,20 +4745,20 @@ result
 
 ```{r perf-health-overtime-mig-item4-2}
 # Internet tijdelijk uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_4",
+  y_var = "PDHWS1_4",
   group_var = "MigrationBackground"
 )
 
@@ -4774,20 +4771,20 @@ result
 
 ```{r perf-health-overtime-mig-item5-2}
 # Apps/programma's verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_5",
+  y_var = "PDHWS1_5",
   group_var = "MigrationBackground"
 )
 
@@ -4800,20 +4797,20 @@ result
 
 ```{r perf-health-overtime-mig-item6-2}
 # Meldingen uitschakelen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_6",
+  y_var = "PDHWS1_6",
   group_var = "MigrationBackground"
 )
 
@@ -4826,20 +4823,20 @@ result
 
 ```{r perf-health-overtime-mig-item7-2}
 # Tijd verminderen zonder speciale aanpak
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_7",
+  y_var = "PDHWS1_7",
   group_var = "MigrationBackground"
 )
 
@@ -4852,20 +4849,20 @@ result
 
 ```{r perf-health-overtime-mig-item8-2}
 # Geen van deze acties
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDHWS1_8",
+  y_var = "PDHWS1_8",
   group_var = "MigrationBackground"
 )
 

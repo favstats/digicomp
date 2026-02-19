@@ -4,59 +4,14 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='knowledge.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='2' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <a href='knowledge_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(2, 3, "knowledge", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "knowledge")
 ```
 
 De **Kennis**-sectie meet wat deelnemers weten over de digitale wereld: hoe die werkt, welke risico’s eraan verbonden zijn en hoe verschillende technologieën het dagelijks leven beïnvloeden. Deze items toetsen feitelijke kennis over onderwerpen zoals betrouwbaarheid van informatie, communicatie en privacy, online veiligheid, AI en generatieve AI. Respondenten voor elke stelling aan of deze waar of onwaar is (of dat ze het niet weten), zodat we hun niveau van digitale geletterdheid en bewustzijn kunnen inschatten, los van hun zelfingeschatte vaardigheden.
@@ -69,10 +24,8 @@ De **Kennis**-sectie meet wat deelnemers weten over de digitale wereld: hoe die 
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -85,7 +38,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -94,26 +47,16 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
-
-
-<details>
-<summary>Voor alle kennisvragen gebruikten we de volgende formulering</summary>
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Nu volgen een aantal uitspraken die gaan over het online media en digitale technologie. Geef aan of de zin volgens jou feitelijk wel waar of juist niet waar is (dus in het algemeen, niet voor jou persoonlijk). Als je het niet weet, kruis dan aan 'ik weet het niet'. Je hoeft dus niet te gokken.", preset = "question")
-```
-
-</details>
 
 ## {{< iconify ph palette-fill >}} Digital Content Creation
 
@@ -135,11 +78,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r kcrea-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KCrea2RC", "KCrea3RC"),
-  question_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
+  x_vars = c("KCrea2RC", "KCrea3RC"),
+  x_var_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -166,7 +109,7 @@ result
 
 ```{r kcrea-wave1-age-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -191,7 +134,7 @@ result
 
 ```{r kcrea-wave1-age-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -224,7 +167,7 @@ result
 
 ```{r kcrea-wave1-gender-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -249,7 +192,7 @@ result
 
 ```{r kcrea-wave1-gender-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -282,7 +225,7 @@ result
 
 ```{r kcrea-wave1-edu-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -307,7 +250,7 @@ result
 
 ```{r kcrea-wave1-edu-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -340,7 +283,7 @@ result
 
 ```{r kcrea-wave1-mig-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -365,7 +308,7 @@ result
 
 ```{r kcrea-wave1-mig-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -401,11 +344,11 @@ result
 
 ```{r kcrea-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KCrea2RC", "KCrea3RC"),
-  question_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
+  x_vars = c("KCrea2RC", "KCrea3RC"),
+  x_var_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -432,7 +375,7 @@ result
 
 ```{r kcrea-wave2-age-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -457,7 +400,7 @@ result
 
 ```{r kcrea-wave2-age-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -490,7 +433,7 @@ result
 
 ```{r kcrea-wave2-gender-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -515,7 +458,7 @@ result
 
 ```{r kcrea-wave2-gender-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -548,7 +491,7 @@ result
 
 ```{r kcrea-wave2-edu-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -573,7 +516,7 @@ result
 
 ```{r kcrea-wave2-edu-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -606,7 +549,7 @@ result
 
 ```{r kcrea-wave2-mig-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -631,7 +574,7 @@ result
 
 ```{r kcrea-wave2-mig-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -672,21 +615,21 @@ result
 
 ```{r kcrea-overtime-overall-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC"
+  y_var = "KCrea2RC"
 )
 
 result
@@ -698,21 +641,21 @@ result
 
 ```{r kcrea-overtime-overall-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC"
+  y_var = "KCrea3RC"
 )
 
 result
@@ -732,20 +675,20 @@ result
 
 ```{r kcrea-overtime-age-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "AgeGroup"
 )
 
@@ -758,20 +701,20 @@ result
 
 ```{r kcrea-overtime-age-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "AgeGroup"
 )
 
@@ -792,20 +735,20 @@ result
 
 ```{r kcrea-overtime-gender-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "geslacht"
 )
 
@@ -818,20 +761,20 @@ result
 
 ```{r kcrea-overtime-gender-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "geslacht"
 )
 
@@ -852,20 +795,20 @@ result
 
 ```{r kcrea-overtime-edu-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "Education"
 )
 
@@ -878,20 +821,20 @@ result
 
 ```{r kcrea-overtime-edu-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "Education"
 )
 
@@ -912,20 +855,20 @@ result
 
 ```{r kcrea-overtime-mig-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "MigrationBackground"
 )
 
@@ -938,20 +881,20 @@ result
 
 ```{r kcrea-overtime-mig-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "MigrationBackground"
 )
 
@@ -987,11 +930,11 @@ result
 
 ```{r ksafety-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
-  question_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
+  x_vars = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  x_var_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1018,7 +961,7 @@ result
 
 ```{r ksafety-wave1-age-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1043,7 +986,7 @@ result
 
 ```{r ksafety-wave1-age-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1068,7 +1011,7 @@ result
 
 ```{r ksafety-wave1-age-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1101,7 +1044,7 @@ result
 
 ```{r ksafety-wave1-gender-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1126,7 +1069,7 @@ result
 
 ```{r ksafety-wave1-gender-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1151,7 +1094,7 @@ result
 
 ```{r ksafety-wave1-gender-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1184,7 +1127,7 @@ result
 
 ```{r ksafety-wave1-edu-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1209,7 +1152,7 @@ result
 
 ```{r ksafety-wave1-edu-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1234,7 +1177,7 @@ result
 
 ```{r ksafety-wave1-edu-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1267,7 +1210,7 @@ result
 
 ```{r ksafety-wave1-mig-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1292,7 +1235,7 @@ result
 
 ```{r ksafety-wave1-mig-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1317,7 +1260,7 @@ result
 
 ```{r ksafety-wave1-mig-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1353,11 +1296,11 @@ result
 
 ```{r ksafety-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
-  question_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
+  x_vars = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  x_var_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1384,7 +1327,7 @@ result
 
 ```{r ksafety-wave2-age-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1409,7 +1352,7 @@ result
 
 ```{r ksafety-wave2-age-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1434,7 +1377,7 @@ result
 
 ```{r ksafety-wave2-age-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1467,7 +1410,7 @@ result
 
 ```{r ksafety-wave2-gender-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1492,7 +1435,7 @@ result
 
 ```{r ksafety-wave2-gender-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1517,7 +1460,7 @@ result
 
 ```{r ksafety-wave2-gender-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1550,7 +1493,7 @@ result
 
 ```{r ksafety-wave2-edu-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1575,7 +1518,7 @@ result
 
 ```{r ksafety-wave2-edu-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1600,7 +1543,7 @@ result
 
 ```{r ksafety-wave2-edu-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1633,7 +1576,7 @@ result
 
 ```{r ksafety-wave2-mig-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -1658,7 +1601,7 @@ result
 
 ```{r ksafety-wave2-mig-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -1683,7 +1626,7 @@ result
 
 ```{r ksafety-wave2-mig-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -1724,21 +1667,21 @@ result
 
 ```{r ksafety-overtime-overall-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC"
+  y_var = "KSafDev2RC"
 )
 
 result
@@ -1750,21 +1693,21 @@ result
 
 ```{r ksafety-overtime-overall-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC"
+  y_var = "KPriv1RC"
 )
 
 result
@@ -1776,21 +1719,21 @@ result
 
 ```{r ksafety-overtime-overall-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC"
+  y_var = "KPriv2RC"
 )
 
 result
@@ -1810,20 +1753,20 @@ result
 
 ```{r ksafety-overtime-age-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "AgeGroup"
 )
 
@@ -1836,20 +1779,20 @@ result
 
 ```{r ksafety-overtime-age-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "AgeGroup"
 )
 
@@ -1862,20 +1805,20 @@ result
 
 ```{r ksafety-overtime-age-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "AgeGroup"
 )
 
@@ -1896,20 +1839,20 @@ result
 
 ```{r ksafety-overtime-gender-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "geslacht"
 )
 
@@ -1922,20 +1865,20 @@ result
 
 ```{r ksafety-overtime-gender-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "geslacht"
 )
 
@@ -1948,20 +1891,20 @@ result
 
 ```{r ksafety-overtime-gender-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "geslacht"
 )
 
@@ -1982,20 +1925,20 @@ result
 
 ```{r ksafety-overtime-edu-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "Education"
 )
 
@@ -2008,20 +1951,20 @@ result
 
 ```{r ksafety-overtime-edu-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "Education"
 )
 
@@ -2034,20 +1977,20 @@ result
 
 ```{r ksafety-overtime-edu-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "Education"
 )
 
@@ -2068,20 +2011,20 @@ result
 
 ```{r ksafety-overtime-mig-item1}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2094,20 +2037,20 @@ result
 
 ```{r ksafety-overtime-mig-item2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "MigrationBackground"
 )
 
@@ -2120,20 +2063,20 @@ result
 
 ```{r ksafety-overtime-mig-item3}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2169,11 +2112,11 @@ result
 
 ```{r khealth-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KHealth2RC", "KHealth3RC"),
-  question_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
+  x_vars = c("KHealth2RC", "KHealth3RC"),
+  x_var_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2200,7 +2143,7 @@ result
 
 ```{r khealth-wave1-age-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2225,7 +2168,7 @@ result
 
 ```{r khealth-wave1-age-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2258,7 +2201,7 @@ result
 
 ```{r khealth-wave1-gender-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2283,7 +2226,7 @@ result
 
 ```{r khealth-wave1-gender-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2316,7 +2259,7 @@ result
 
 ```{r khealth-wave1-edu-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2341,7 +2284,7 @@ result
 
 ```{r khealth-wave1-edu-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2374,7 +2317,7 @@ result
 
 ```{r khealth-wave1-mig-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2399,7 +2342,7 @@ result
 
 ```{r khealth-wave1-mig-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2435,11 +2378,11 @@ result
 
 ```{r khealth-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KHealth2RC", "KHealth3RC"),
-  question_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
+  x_vars = c("KHealth2RC", "KHealth3RC"),
+  x_var_labels = c("Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken", "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2466,7 +2409,7 @@ result
 
 ```{r khealth-wave2-age-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2491,7 +2434,7 @@ result
 
 ```{r khealth-wave2-age-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2524,7 +2467,7 @@ result
 
 ```{r khealth-wave2-gender-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2549,7 +2492,7 @@ result
 
 ```{r khealth-wave2-gender-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2582,7 +2525,7 @@ result
 
 ```{r khealth-wave2-edu-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2607,7 +2550,7 @@ result
 
 ```{r khealth-wave2-edu-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2640,7 +2583,7 @@ result
 
 ```{r khealth-wave2-mig-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   stacked_type = "percent",
@@ -2665,7 +2608,7 @@ result
 
 ```{r khealth-wave2-mig-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   stacked_type = "percent",
@@ -2706,21 +2649,21 @@ result
 
 ```{r khealth-overtime-overall-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC"
+  y_var = "KHealth2RC"
 )
 
 result
@@ -2732,21 +2675,21 @@ result
 
 ```{r khealth-overtime-overall-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC"
+  y_var = "KHealth3RC"
 )
 
 result
@@ -2766,20 +2709,20 @@ result
 
 ```{r khealth-overtime-age-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "AgeGroup"
 )
 
@@ -2792,20 +2735,20 @@ result
 
 ```{r khealth-overtime-age-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "AgeGroup"
 )
 
@@ -2826,20 +2769,20 @@ result
 
 ```{r khealth-overtime-gender-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "geslacht"
 )
 
@@ -2852,20 +2795,20 @@ result
 
 ```{r khealth-overtime-gender-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "geslacht"
 )
 
@@ -2886,20 +2829,20 @@ result
 
 ```{r khealth-overtime-edu-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "Education"
 )
 
@@ -2912,20 +2855,20 @@ result
 
 ```{r khealth-overtime-edu-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "Education"
 )
 
@@ -2946,20 +2889,20 @@ result
 
 ```{r khealth-overtime-mig-item1}
 # Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms als YouTube of Netflix zijn ontworpen om mensen zo lang mogelijk te laten blijven kijken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2972,20 +2915,20 @@ result
 
 ```{r khealth-overtime-mig-item2}
 # Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je slaapt slechter als je een smartphone of computer gebruikt vlak voor je naar bed gaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "MigrationBackground"
 )
 
@@ -3021,11 +2964,11 @@ result
 
 ```{r kgreen-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KEnv2RC", "KEnv3RC"),
-  question_labels = c("In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden", "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat"),
+  x_vars = c("KEnv2RC", "KEnv3RC"),
+  x_var_labels = c("In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden", "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3052,7 +2995,7 @@ result
 
 ```{r kgreen-wave1-age-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3077,7 +3020,7 @@ result
 
 ```{r kgreen-wave1-age-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3110,7 +3053,7 @@ result
 
 ```{r kgreen-wave1-gender-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3135,7 +3078,7 @@ result
 
 ```{r kgreen-wave1-gender-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3168,7 +3111,7 @@ result
 
 ```{r kgreen-wave1-edu-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3193,7 +3136,7 @@ result
 
 ```{r kgreen-wave1-edu-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3226,7 +3169,7 @@ result
 
 ```{r kgreen-wave1-mig-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3251,7 +3194,7 @@ result
 
 ```{r kgreen-wave1-mig-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3287,11 +3230,11 @@ result
 
 ```{r kgreen-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KEnv2RC", "KEnv3RC"),
-  question_labels = c("In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden", "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat"),
+  x_vars = c("KEnv2RC", "KEnv3RC"),
+  x_var_labels = c("In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden", "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3318,7 +3261,7 @@ result
 
 ```{r kgreen-wave2-age-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3343,7 +3286,7 @@ result
 
 ```{r kgreen-wave2-age-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3376,7 +3319,7 @@ result
 
 ```{r kgreen-wave2-gender-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3401,7 +3344,7 @@ result
 
 ```{r kgreen-wave2-gender-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3434,7 +3377,7 @@ result
 
 ```{r kgreen-wave2-edu-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3459,7 +3402,7 @@ result
 
 ```{r kgreen-wave2-edu-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3492,7 +3435,7 @@ result
 
 ```{r kgreen-wave2-mig-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   stacked_type = "percent",
@@ -3517,7 +3460,7 @@ result
 
 ```{r kgreen-wave2-mig-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   stacked_type = "percent",
@@ -3558,21 +3501,21 @@ result
 
 ```{r kgreen-overtime-overall-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC"
+  y_var = "KEnv2RC"
 )
 
 result
@@ -3584,21 +3527,21 @@ result
 
 ```{r kgreen-overtime-overall-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC"
+  y_var = "KEnv3RC"
 )
 
 result
@@ -3618,20 +3561,20 @@ result
 
 ```{r kgreen-overtime-age-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "AgeGroup"
 )
 
@@ -3644,20 +3587,20 @@ result
 
 ```{r kgreen-overtime-age-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "AgeGroup"
 )
 
@@ -3678,20 +3621,20 @@ result
 
 ```{r kgreen-overtime-gender-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "geslacht"
 )
 
@@ -3704,20 +3647,20 @@ result
 
 ```{r kgreen-overtime-gender-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "geslacht"
 )
 
@@ -3738,20 +3681,20 @@ result
 
 ```{r kgreen-overtime-edu-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "Education"
 )
 
@@ -3764,20 +3707,20 @@ result
 
 ```{r kgreen-overtime-edu-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "Education"
 )
 
@@ -3798,20 +3741,20 @@ result
 
 ```{r kgreen-overtime-mig-item1}
 # In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In telefoons zitten stoffen die door mijnwerkers uit mijnen gehaald worden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "MigrationBackground"
 )
 
@@ -3824,20 +3767,20 @@ result
 
 ```{r kgreen-overtime-mig-item2}
 # De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "De hoeveelheid digitale gegevens en WiFi die je verbruikt, heeft geen invloed op CO2-uitstoot of het klimaat",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "MigrationBackground"
 )
 
@@ -3855,50 +3798,7 @@ result
 
 
 
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='knowledge.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='2' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <a href='knowledge_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(2, 3, "knowledge", "bottom")
 ```
 

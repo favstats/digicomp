@@ -3,16 +3,11 @@ title: "{{< iconify ph magnifying-glass >}} Strategische Informatie"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "strategic_information")
 ```
 
 **Strategische Informatie competentie** omvat het vermogen om effectief te zoeken naar, of het vinden van, online informatie. Dit omvat het kiezen van goede zoekwoorden, het gebruiken van zoekfuncties en het vinden van antwoorden op vragen op internet.
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -21,10 +16,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -37,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -46,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -73,11 +66,11 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 
 ```{r sis-wave1-overall-2}
 # Strategische Informatievaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Strategische Informatievaardigheden",
-  questions = c("SInfo1", "SInfo3_V2", "SInfo4"),
-  question_labels = c("Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)", "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden", "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)"),
+  x_vars = c("SInfo1", "SInfo3_V2", "SInfo4"),
+  x_var_labels = c("Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)", "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden", "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -103,7 +96,7 @@ result
 
 ```{r sis-wave1-age-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -127,7 +120,7 @@ result
 
 ```{r sis-wave1-age-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -151,7 +144,7 @@ result
 
 ```{r sis-wave1-age-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -183,7 +176,7 @@ result
 
 ```{r sis-wave1-gender-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -207,7 +200,7 @@ result
 
 ```{r sis-wave1-gender-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -231,7 +224,7 @@ result
 
 ```{r sis-wave1-gender-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -263,7 +256,7 @@ result
 
 ```{r sis-wave1-edu-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -287,7 +280,7 @@ result
 
 ```{r sis-wave1-edu-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -311,7 +304,7 @@ result
 
 ```{r sis-wave1-edu-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -343,7 +336,7 @@ result
 
 ```{r sis-wave1-mig-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -367,7 +360,7 @@ result
 
 ```{r sis-wave1-mig-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -391,7 +384,7 @@ result
 
 ```{r sis-wave1-mig-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -426,11 +419,11 @@ result
 
 ```{r sis-wave2-overall-2}
 # Strategische Informatievaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Strategische Informatievaardigheden",
-  questions = c("SInfo1", "SInfo3_V2", "SInfo4"),
-  question_labels = c("Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)", "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden", "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)"),
+  x_vars = c("SInfo1", "SInfo3_V2", "SInfo4"),
+  x_var_labels = c("Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)", "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden", "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -456,7 +449,7 @@ result
 
 ```{r sis-wave2-age-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -480,7 +473,7 @@ result
 
 ```{r sis-wave2-age-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -504,7 +497,7 @@ result
 
 ```{r sis-wave2-age-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -536,7 +529,7 @@ result
 
 ```{r sis-wave2-gender-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -560,7 +553,7 @@ result
 
 ```{r sis-wave2-gender-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -584,7 +577,7 @@ result
 
 ```{r sis-wave2-gender-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -616,7 +609,7 @@ result
 
 ```{r sis-wave2-edu-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -640,7 +633,7 @@ result
 
 ```{r sis-wave2-edu-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -664,7 +657,7 @@ result
 
 ```{r sis-wave2-edu-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -696,7 +689,7 @@ result
 
 ```{r sis-wave2-mig-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -720,7 +713,7 @@ result
 
 ```{r sis-wave2-mig-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   stacked_type = "percent",
@@ -744,7 +737,7 @@ result
 
 ```{r sis-wave2-mig-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   stacked_type = "percent",
@@ -784,21 +777,21 @@ result
 
 ```{r sis-overtime-overall-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1"
+  y_var = "SInfo1"
 )
 
 result
@@ -810,21 +803,21 @@ result
 
 ```{r sis-overtime-overall-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2"
+  y_var = "SInfo3_V2"
 )
 
 result
@@ -836,21 +829,21 @@ result
 
 ```{r sis-overtime-overall-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4"
+  y_var = "SInfo4"
 )
 
 result
@@ -870,19 +863,19 @@ result
 
 ```{r sis-overtime-age-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1",
+  y_var = "SInfo1",
   group_var = "AgeGroup"
 )
 
@@ -895,19 +888,19 @@ result
 
 ```{r sis-overtime-age-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2",
+  y_var = "SInfo3_V2",
   group_var = "AgeGroup"
 )
 
@@ -920,19 +913,19 @@ result
 
 ```{r sis-overtime-age-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4",
+  y_var = "SInfo4",
   group_var = "AgeGroup"
 )
 
@@ -953,19 +946,19 @@ result
 
 ```{r sis-overtime-gender-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1",
+  y_var = "SInfo1",
   group_var = "geslacht"
 )
 
@@ -978,19 +971,19 @@ result
 
 ```{r sis-overtime-gender-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2",
+  y_var = "SInfo3_V2",
   group_var = "geslacht"
 )
 
@@ -1003,19 +996,19 @@ result
 
 ```{r sis-overtime-gender-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4",
+  y_var = "SInfo4",
   group_var = "geslacht"
 )
 
@@ -1036,19 +1029,19 @@ result
 
 ```{r sis-overtime-edu-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1",
+  y_var = "SInfo1",
   group_var = "Education"
 )
 
@@ -1061,19 +1054,19 @@ result
 
 ```{r sis-overtime-edu-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2",
+  y_var = "SInfo3_V2",
   group_var = "Education"
 )
 
@@ -1086,19 +1079,19 @@ result
 
 ```{r sis-overtime-edu-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4",
+  y_var = "SInfo4",
   group_var = "Education"
 )
 
@@ -1119,19 +1112,19 @@ result
 
 ```{r sis-overtime-mig-item1-2}
 # Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik goede zoekwoorden kan kiezen voor zoekopdrachten op het internet (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo1",
+  y_var = "SInfo1",
   group_var = "MigrationBackground"
 )
 
@@ -1144,19 +1137,19 @@ result
 
 ```{r sis-overtime-mig-item2-2}
 # Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik op het internet antwoorden op mijn vragen kan vinden",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo3_V2",
+  y_var = "SInfo3_V2",
   group_var = "MigrationBackground"
 )
 
@@ -1169,19 +1162,19 @@ result
 
 ```{r sis-overtime-mig-item3-2}
 # Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik zoekfuncties in zoekmachines kan gebruiken (bijvoorbeeld met Google)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo4",
+  y_var = "SInfo4",
   group_var = "MigrationBackground"
 )
 
@@ -1219,11 +1212,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r kinfo-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KInfo1RC", "KInfo2RC"),
-  question_labels = c("Het eerste zoekresultaat is altijd de beste informatiebron", "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken"),
+  x_vars = c("KInfo1RC", "KInfo2RC"),
+  x_var_labels = c("Het eerste zoekresultaat is altijd de beste informatiebron", "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1250,7 +1243,7 @@ result
 
 ```{r kinfo-wave1-age-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1275,7 +1268,7 @@ result
 
 ```{r kinfo-wave1-age-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1308,7 +1301,7 @@ result
 
 ```{r kinfo-wave1-gender-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1333,7 +1326,7 @@ result
 
 ```{r kinfo-wave1-gender-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1366,7 +1359,7 @@ result
 
 ```{r kinfo-wave1-edu-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1391,7 +1384,7 @@ result
 
 ```{r kinfo-wave1-edu-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1424,7 +1417,7 @@ result
 
 ```{r kinfo-wave1-mig-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1449,7 +1442,7 @@ result
 
 ```{r kinfo-wave1-mig-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1485,11 +1478,11 @@ result
 
 ```{r kinfo-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KInfo1RC", "KInfo2RC"),
-  question_labels = c("Het eerste zoekresultaat is altijd de beste informatiebron", "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken"),
+  x_vars = c("KInfo1RC", "KInfo2RC"),
+  x_var_labels = c("Het eerste zoekresultaat is altijd de beste informatiebron", "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1516,7 +1509,7 @@ result
 
 ```{r kinfo-wave2-age-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1541,7 +1534,7 @@ result
 
 ```{r kinfo-wave2-age-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1574,7 +1567,7 @@ result
 
 ```{r kinfo-wave2-gender-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1599,7 +1592,7 @@ result
 
 ```{r kinfo-wave2-gender-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1632,7 +1625,7 @@ result
 
 ```{r kinfo-wave2-edu-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1657,7 +1650,7 @@ result
 
 ```{r kinfo-wave2-edu-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1690,7 +1683,7 @@ result
 
 ```{r kinfo-wave2-mig-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   stacked_type = "percent",
@@ -1715,7 +1708,7 @@ result
 
 ```{r kinfo-wave2-mig-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   stacked_type = "percent",
@@ -1756,21 +1749,21 @@ result
 
 ```{r kinfo-overtime-overall-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KInfo1RC"
+  y_var = "KInfo1RC"
 )
 
 result
@@ -1782,21 +1775,21 @@ result
 
 ```{r kinfo-overtime-overall-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KInfo2RC"
+  y_var = "KInfo2RC"
 )
 
 result
@@ -1816,20 +1809,20 @@ result
 
 ```{r kinfo-overtime-age-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo1RC",
+  y_var = "KInfo1RC",
   group_var = "AgeGroup"
 )
 
@@ -1842,20 +1835,20 @@ result
 
 ```{r kinfo-overtime-age-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo2RC",
+  y_var = "KInfo2RC",
   group_var = "AgeGroup"
 )
 
@@ -1876,20 +1869,20 @@ result
 
 ```{r kinfo-overtime-gender-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo1RC",
+  y_var = "KInfo1RC",
   group_var = "geslacht"
 )
 
@@ -1902,20 +1895,20 @@ result
 
 ```{r kinfo-overtime-gender-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo2RC",
+  y_var = "KInfo2RC",
   group_var = "geslacht"
 )
 
@@ -1936,20 +1929,20 @@ result
 
 ```{r kinfo-overtime-edu-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo1RC",
+  y_var = "KInfo1RC",
   group_var = "Education"
 )
 
@@ -1962,20 +1955,20 @@ result
 
 ```{r kinfo-overtime-edu-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo2RC",
+  y_var = "KInfo2RC",
   group_var = "Education"
 )
 
@@ -1996,20 +1989,20 @@ result
 
 ```{r kinfo-overtime-mig-item1-2}
 # Het eerste zoekresultaat is altijd de beste informatiebron
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Het eerste zoekresultaat is altijd de beste informatiebron",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo1RC",
+  y_var = "KInfo1RC",
   group_var = "MigrationBackground"
 )
 
@@ -2022,20 +2015,20 @@ result
 
 ```{r kinfo-overtime-mig-item2-2}
 # Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Iedereen krijgt dezelfde informatie als ze online naar dezelfde dingen zoeken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo2RC",
+  y_var = "KInfo2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2056,7 +2049,7 @@ result
 
 **Prestaties** meten de praktische digitale vaardigheden van deelnemers in een reeks taken uit het echte leven. In plaats van zelfrapportage testen deze items wat mensen *werkelijk kunnen*: bijvoorbeeld het zoeken naar betrouwbare informatie.
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op <a href=\"#PSIS2R\" class=\"modal-link\">de plaats in de afbeelding</a> op de plek waar je dit kunt aangeven.', preset = 'question')
+create_blockquote('Welke zoektermen zou je gebruiken om de geboorteplaats van Femke Bol op Google op te zoeken? (Q1) Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op <a href=\"#PSIS2R\" class=\"modal-link\">de plaats in de afbeelding</a> op de plek waar je dit kunt aangeven. (Q2)', preset = 'question')
 ```
 [{{< iconify ph cards >}} Bekijk alle Prestatieresultaten](performance.html)
 
@@ -2072,12 +2065,12 @@ create_blockquote('Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien 
 
 
 ```{r perf-sis-wave1-overall-2}
-# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbars(
+# 
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
-  questions = "PSIS2R",
-  question_labels = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  title = "",
+  x_vars = c("PSIS1RC", "PSIS2R"),
+  x_var_labels = c("Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:", "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven."),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2097,9 +2090,39 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-sis-wave1-age-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-age-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-age-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2119,12 +2142,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-sis-wave1-gender-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-gender-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-gender-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2144,12 +2200,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-sis-wave1-edu-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-edu-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-edu-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2169,12 +2258,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-sis-wave1-mig-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-mig-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-mig-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2192,6 +2314,9 @@ result <- create_stackedbar(
 
 result
 ```
+
+
+:::
 
 
 :::
@@ -2206,12 +2331,12 @@ result
 
 
 ```{r perf-sis-wave2-overall-2}
-# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbars(
+# 
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
-  questions = "PSIS2R",
-  question_labels = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  title = "",
+  x_vars = c("PSIS1RC", "PSIS2R"),
+  x_var_labels = c("Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:", "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven."),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2231,9 +2356,39 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-sis-wave2-age-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-age-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-age-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2253,12 +2408,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-sis-wave2-gender-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-gender-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-gender-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2278,12 +2466,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-sis-wave2-edu-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-edu-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-edu-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2303,12 +2524,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-sis-wave2-mig-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-mig-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-mig-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -2331,6 +2585,9 @@ result
 :::
 
 
+:::
+
+
 ### {{< iconify ph chart-line-fill >}} Verloop over tijd
 
 
@@ -2339,48 +2596,87 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-sis-overtime-overall-2}
-# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-overall-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
   data = data,
-  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R"
+  y_var = "PSIS1RC"
 )
 
 result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-age-2}
+```{r perf-sis-overtime-overall-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSIS2R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-age-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS1RC",
   group_var = "AgeGroup"
 )
 
@@ -2388,25 +2684,59 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-gender-2}
+```{r perf-sis-overtime-age-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS2R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-gender-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS1RC",
   group_var = "geslacht"
 )
 
@@ -2414,25 +2744,59 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-edu-2}
+```{r perf-sis-overtime-gender-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS2R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-edu-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS1RC",
   group_var = "Education"
 )
 
@@ -2440,30 +2804,93 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-mig-2}
+```{r perf-sis-overtime-edu-item2-2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS2R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-mig-item1-2}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS1RC",
   group_var = "MigrationBackground"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-overtime-mig-item2-2}
+# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
+result <- viz_timeline(
+  data = data,
+  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS2R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
 
 
 :::

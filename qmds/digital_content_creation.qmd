@@ -3,16 +3,11 @@ title: "{{< iconify ph palette-fill >}} Digitale Inhoudscreatie"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "digital_content_creation")
 ```
 
 **Digitale Contentcreatie competentie** omvat het vermogen om digitale content te maken en aan te passen: presentaties maken, verschillende media combineren, beelden/muziek/video bewerken, en auteursrechten begrijpen rond digitale content.
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -21,10 +16,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -37,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -46,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -73,11 +66,11 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 
 ```{r dccs-wave1-overall-2}
 # Digitale Contentcreatievaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Digitale Contentcreatievaardigheden",
-  questions = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
-  question_labels = c("Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)", "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)", "Ik kan bestaande digitale plaatjes, muziek en video veranderen", "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)"),
+  x_vars = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
+  x_var_labels = c("Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)", "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)", "Ik kan bestaande digitale plaatjes, muziek en video veranderen", "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -103,7 +96,7 @@ result
 
 ```{r dccs-wave1-age-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -127,7 +120,7 @@ result
 
 ```{r dccs-wave1-age-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -151,7 +144,7 @@ result
 
 ```{r dccs-wave1-age-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -175,7 +168,7 @@ result
 
 ```{r dccs-wave1-age-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -207,7 +200,7 @@ result
 
 ```{r dccs-wave1-gender-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -231,7 +224,7 @@ result
 
 ```{r dccs-wave1-gender-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -255,7 +248,7 @@ result
 
 ```{r dccs-wave1-gender-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -279,7 +272,7 @@ result
 
 ```{r dccs-wave1-gender-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -311,7 +304,7 @@ result
 
 ```{r dccs-wave1-edu-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -335,7 +328,7 @@ result
 
 ```{r dccs-wave1-edu-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -359,7 +352,7 @@ result
 
 ```{r dccs-wave1-edu-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -383,7 +376,7 @@ result
 
 ```{r dccs-wave1-edu-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -415,7 +408,7 @@ result
 
 ```{r dccs-wave1-mig-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -439,7 +432,7 @@ result
 
 ```{r dccs-wave1-mig-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -463,7 +456,7 @@ result
 
 ```{r dccs-wave1-mig-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -487,7 +480,7 @@ result
 
 ```{r dccs-wave1-mig-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -522,11 +515,11 @@ result
 
 ```{r dccs-wave2-overall-2}
 # Digitale Contentcreatievaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Digitale Contentcreatievaardigheden",
-  questions = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
-  question_labels = c("Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)", "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)", "Ik kan bestaande digitale plaatjes, muziek en video veranderen", "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)"),
+  x_vars = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
+  x_var_labels = c("Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)", "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)", "Ik kan bestaande digitale plaatjes, muziek en video veranderen", "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -552,7 +545,7 @@ result
 
 ```{r dccs-wave2-age-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -576,7 +569,7 @@ result
 
 ```{r dccs-wave2-age-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -600,7 +593,7 @@ result
 
 ```{r dccs-wave2-age-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -624,7 +617,7 @@ result
 
 ```{r dccs-wave2-age-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -656,7 +649,7 @@ result
 
 ```{r dccs-wave2-gender-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -680,7 +673,7 @@ result
 
 ```{r dccs-wave2-gender-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -704,7 +697,7 @@ result
 
 ```{r dccs-wave2-gender-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -728,7 +721,7 @@ result
 
 ```{r dccs-wave2-gender-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -760,7 +753,7 @@ result
 
 ```{r dccs-wave2-edu-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -784,7 +777,7 @@ result
 
 ```{r dccs-wave2-edu-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -808,7 +801,7 @@ result
 
 ```{r dccs-wave2-edu-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -832,7 +825,7 @@ result
 
 ```{r dccs-wave2-edu-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -864,7 +857,7 @@ result
 
 ```{r dccs-wave2-mig-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   stacked_type = "percent",
@@ -888,7 +881,7 @@ result
 
 ```{r dccs-wave2-mig-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   stacked_type = "percent",
@@ -912,7 +905,7 @@ result
 
 ```{r dccs-wave2-mig-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   stacked_type = "percent",
@@ -936,7 +929,7 @@ result
 
 ```{r dccs-wave2-mig-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
@@ -976,21 +969,21 @@ result
 
 ```{r dccs-overtime-overall-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2"
+  y_var = "SCrea2"
 )
 
 result
@@ -1002,21 +995,21 @@ result
 
 ```{r dccs-overtime-overall-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3"
+  y_var = "SCrea3"
 )
 
 result
@@ -1028,21 +1021,21 @@ result
 
 ```{r dccs-overtime-overall-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea4"
+  y_var = "SCrea4"
 )
 
 result
@@ -1054,21 +1047,21 @@ result
 
 ```{r dccs-overtime-overall-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea5"
+  y_var = "SCrea5"
 )
 
 result
@@ -1088,19 +1081,19 @@ result
 
 ```{r dccs-overtime-age-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2",
+  y_var = "SCrea2",
   group_var = "AgeGroup"
 )
 
@@ -1113,19 +1106,19 @@ result
 
 ```{r dccs-overtime-age-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3",
+  y_var = "SCrea3",
   group_var = "AgeGroup"
 )
 
@@ -1138,19 +1131,19 @@ result
 
 ```{r dccs-overtime-age-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea4",
+  y_var = "SCrea4",
   group_var = "AgeGroup"
 )
 
@@ -1163,19 +1156,19 @@ result
 
 ```{r dccs-overtime-age-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea5",
+  y_var = "SCrea5",
   group_var = "AgeGroup"
 )
 
@@ -1196,19 +1189,19 @@ result
 
 ```{r dccs-overtime-gender-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2",
+  y_var = "SCrea2",
   group_var = "geslacht"
 )
 
@@ -1221,19 +1214,19 @@ result
 
 ```{r dccs-overtime-gender-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3",
+  y_var = "SCrea3",
   group_var = "geslacht"
 )
 
@@ -1246,19 +1239,19 @@ result
 
 ```{r dccs-overtime-gender-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea4",
+  y_var = "SCrea4",
   group_var = "geslacht"
 )
 
@@ -1271,19 +1264,19 @@ result
 
 ```{r dccs-overtime-gender-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea5",
+  y_var = "SCrea5",
   group_var = "geslacht"
 )
 
@@ -1304,19 +1297,19 @@ result
 
 ```{r dccs-overtime-edu-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2",
+  y_var = "SCrea2",
   group_var = "Education"
 )
 
@@ -1329,19 +1322,19 @@ result
 
 ```{r dccs-overtime-edu-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3",
+  y_var = "SCrea3",
   group_var = "Education"
 )
 
@@ -1354,19 +1347,19 @@ result
 
 ```{r dccs-overtime-edu-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea4",
+  y_var = "SCrea4",
   group_var = "Education"
 )
 
@@ -1379,19 +1372,19 @@ result
 
 ```{r dccs-overtime-edu-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea5",
+  y_var = "SCrea5",
   group_var = "Education"
 )
 
@@ -1412,19 +1405,19 @@ result
 
 ```{r dccs-overtime-mig-item1-2}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea2",
+  y_var = "SCrea2",
   group_var = "MigrationBackground"
 )
 
@@ -1437,19 +1430,19 @@ result
 
 ```{r dccs-overtime-mig-item2-2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea3",
+  y_var = "SCrea3",
   group_var = "MigrationBackground"
 )
 
@@ -1462,19 +1455,19 @@ result
 
 ```{r dccs-overtime-mig-item3-2}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea4",
+  y_var = "SCrea4",
   group_var = "MigrationBackground"
 )
 
@@ -1487,19 +1480,19 @@ result
 
 ```{r dccs-overtime-mig-item4-2}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCrea5",
+  y_var = "SCrea5",
   group_var = "MigrationBackground"
 )
 
@@ -1537,11 +1530,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r kcrea-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KCrea2RC", "KCrea3RC"),
-  question_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
+  x_vars = c("KCrea2RC", "KCrea3RC"),
+  x_var_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1568,7 +1561,7 @@ result
 
 ```{r kcrea-wave1-age-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -1593,7 +1586,7 @@ result
 
 ```{r kcrea-wave1-age-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -1626,7 +1619,7 @@ result
 
 ```{r kcrea-wave1-gender-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -1651,7 +1644,7 @@ result
 
 ```{r kcrea-wave1-gender-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -1684,7 +1677,7 @@ result
 
 ```{r kcrea-wave1-edu-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -1709,7 +1702,7 @@ result
 
 ```{r kcrea-wave1-edu-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -1742,7 +1735,7 @@ result
 
 ```{r kcrea-wave1-mig-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -1767,7 +1760,7 @@ result
 
 ```{r kcrea-wave1-mig-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -1803,11 +1796,11 @@ result
 
 ```{r kcrea-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KCrea2RC", "KCrea3RC"),
-  question_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
+  x_vars = c("KCrea2RC", "KCrea3RC"),
+  x_var_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1834,7 +1827,7 @@ result
 
 ```{r kcrea-wave2-age-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -1859,7 +1852,7 @@ result
 
 ```{r kcrea-wave2-age-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -1892,7 +1885,7 @@ result
 
 ```{r kcrea-wave2-gender-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -1917,7 +1910,7 @@ result
 
 ```{r kcrea-wave2-gender-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -1950,7 +1943,7 @@ result
 
 ```{r kcrea-wave2-edu-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -1975,7 +1968,7 @@ result
 
 ```{r kcrea-wave2-edu-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -2008,7 +2001,7 @@ result
 
 ```{r kcrea-wave2-mig-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   stacked_type = "percent",
@@ -2033,7 +2026,7 @@ result
 
 ```{r kcrea-wave2-mig-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
@@ -2074,21 +2067,21 @@ result
 
 ```{r kcrea-overtime-overall-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC"
+  y_var = "KCrea2RC"
 )
 
 result
@@ -2100,21 +2093,21 @@ result
 
 ```{r kcrea-overtime-overall-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC"
+  y_var = "KCrea3RC"
 )
 
 result
@@ -2134,20 +2127,20 @@ result
 
 ```{r kcrea-overtime-age-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "AgeGroup"
 )
 
@@ -2160,20 +2153,20 @@ result
 
 ```{r kcrea-overtime-age-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "AgeGroup"
 )
 
@@ -2194,20 +2187,20 @@ result
 
 ```{r kcrea-overtime-gender-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "geslacht"
 )
 
@@ -2220,20 +2213,20 @@ result
 
 ```{r kcrea-overtime-gender-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "geslacht"
 )
 
@@ -2254,20 +2247,20 @@ result
 
 ```{r kcrea-overtime-edu-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "Education"
 )
 
@@ -2280,20 +2273,20 @@ result
 
 ```{r kcrea-overtime-edu-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "Education"
 )
 
@@ -2314,20 +2307,20 @@ result
 
 ```{r kcrea-overtime-mig-item1-2}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2340,20 +2333,20 @@ result
 
 ```{r kcrea-overtime-mig-item2-2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "MigrationBackground"
 )
 
@@ -2392,12 +2385,12 @@ create_blockquote('Welk van de <a href=\"#PDCCS1R\" class=\"modal-link\">onderst
 ```{r perf-dccs-wave1-overall-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
-  questions = "PDCCS1R",
-  question_labels = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
+  x_vars = "PDCCS1R",
+  x_var_labels = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
@@ -2421,7 +2414,7 @@ result
 ```{r perf-dccs-wave1-age-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2448,7 +2441,7 @@ result
 ```{r perf-dccs-wave1-gender-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2475,7 +2468,7 @@ result
 ```{r perf-dccs-wave1-edu-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2502,7 +2495,7 @@ result
 ```{r perf-dccs-wave1-mig-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2537,12 +2530,12 @@ result
 ```{r perf-dccs-wave2-overall-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
-  questions = "PDCCS1R",
-  question_labels = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
+  x_vars = "PDCCS1R",
+  x_var_labels = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
@@ -2566,7 +2559,7 @@ result
 ```{r perf-dccs-wave2-age-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2593,7 +2586,7 @@ result
 ```{r perf-dccs-wave2-gender-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2620,7 +2613,7 @@ result
 ```{r perf-dccs-wave2-edu-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2647,7 +2640,7 @@ result
 ```{r perf-dccs-wave2-mig-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
@@ -2682,22 +2675,22 @@ result
 ```{r perf-dccs-overtime-overall-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PDCCS1R"
+  y_var = "PDCCS1R"
 )
 
 result
@@ -2710,21 +2703,21 @@ result
 ```{r perf-dccs-overtime-age-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
+  y_var = "PDCCS1R",
   group_var = "AgeGroup"
 )
 
@@ -2738,21 +2731,21 @@ result
 ```{r perf-dccs-overtime-gender-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
+  y_var = "PDCCS1R",
   group_var = "geslacht"
 )
 
@@ -2766,21 +2759,21 @@ result
 ```{r perf-dccs-overtime-edu-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
+  y_var = "PDCCS1R",
   group_var = "Education"
 )
 
@@ -2794,21 +2787,21 @@ result
 ```{r perf-dccs-overtime-mig-2}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
+  y_var = "PDCCS1R",
   group_var = "MigrationBackground"
 )
 

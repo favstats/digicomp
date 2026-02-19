@@ -1,0 +1,1256 @@
+---
+title: "HI"
+format: html
+---
+
+```{r}
+#| include: false
+library(dashboardr)
+```
+
+```{=html}
+<style>
+/* Ensure chart containers expand to fit content - aggressive overrides */
+.cell-output-display,
+.cell-output,
+.panel-tabset-tabby > .tab-content,
+.panel-tabset > .tab-content,
+.tab-pane,
+.tab-pane.active,
+.card-body,
+.quarto-figure,
+section {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+/* Ensure highcharts containers respect their set height */
+.highcharts-container,
+.html-widget,
+.htmlwidget {
+  overflow: visible !important;
+}
+</style>
+<script>
+// Aggressive reflow for Highcharts - multiple attempts to catch widget initialization
+(function() {
+  function reflowCharts() {
+    if (typeof Highcharts !== 'undefined' && Highcharts.charts) {
+      Highcharts.charts.forEach(function(chart) {
+        if (chart) {
+          try { chart.reflow(); } catch(e) {}
+        }
+      });
+    }
+  }
+  
+  // Try multiple times at different intervals
+  [0, 100, 250, 500, 1000, 2000].forEach(function(delay) {
+    setTimeout(function() {
+      window.dispatchEvent(new Event('resize'));
+      requestAnimationFrame(reflowCharts);
+    }, delay);
+  });
+  
+  // Also reflow on any tab click
+  document.addEventListener('click', function(e) {
+    if (e.target.matches('.nav-link, [data-bs-toggle="tab"]')) {
+      setTimeout(reflowCharts, 50);
+    }
+  });
+})();
+</script>
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load required libraries
+library(dashboardr)
+library(dplyr)
+library(highcharter)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+# Helper: convert haven_labelled columns to factors for filtering
+.convert_haven <- function(df) {
+  if (requireNamespace('haven', quietly = TRUE)) {
+    for (col in names(df)) {
+      if (inherits(df[[col]], 'haven_labelled')) {
+        df[[col]] <- haven::as_factor(df[[col]])
+      }
+    }
+  }
+  df
+}
+
+data_filtered_984a0efe <- .convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- .convert_haven(data) %>% dplyr::filter(wave == 2)
+
+```
+
+## green
+
+
+**Sustainable/Green Digital Competence** focuses on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
+[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
+
+
+::: {.panel-tabset}
+
+### wave1
+
+
+::: {.panel-tabset}
+
+##### overall
+
+
+```{r green-wave1-overall}
+# Sustainable/Green Digital Skills
+result <- viz_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "Sustainable/Green Digital Skills",
+  x_vars = c("SEnv1", "SEnv2", "SEnv3"),
+  x_var_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### age
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave1-age-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave1-age-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave1-age-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+##### gender
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave1-gender-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave1-gender-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave1-gender-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+##### edu
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave1-edu-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave1-edu-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave1-edu-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+##### mig
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave1-mig-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave1-mig-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave1-mig-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### wave2
+
+
+::: {.panel-tabset}
+
+##### overall
+
+
+```{r green-wave2-overall}
+# Sustainable/Green Digital Skills
+result <- viz_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "Sustainable/Green Digital Skills",
+  x_vars = c("SEnv1", "SEnv2", "SEnv3"),
+  x_var_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### age
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave2-age-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave2-age-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave2-age-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+##### gender
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave2-gender-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave2-gender-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave2-gender-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+##### edu
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave2-edu-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave2-edu-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave2-edu-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+##### mig
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-wave2-mig-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to reduce the battery use of a phone or computer",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-wave2-mig-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-wave2-mig-item3}
+# I know how to have a phone or computer recycled
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to have a phone or computer recycled",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### overtime
+
+
+::: {.panel-tabset}
+
+##### overall
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-overtime-overall-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_timeline(
+  data = data,
+  title = "I know how to reduce the battery use of a phone or computer",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv1"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-overtime-overall-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_timeline(
+  data = data,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv2"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-overtime-overall-item3}
+# I know how to have a phone or computer recycled
+result <- viz_timeline(
+  data = data,
+  title = "I know how to have a phone or computer recycled",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv3"
+)
+
+result
+```
+
+
+:::
+
+
+##### age
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-overtime-age-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_timeline(
+  data = data,
+  title = "I know how to reduce the battery use of a phone or computer",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-overtime-age-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_timeline(
+  data = data,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-overtime-age-item3}
+# I know how to have a phone or computer recycled
+result <- viz_timeline(
+  data = data,
+  title = "I know how to have a phone or computer recycled",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### gender
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-overtime-gender-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_timeline(
+  data = data,
+  title = "I know how to reduce the battery use of a phone or computer",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-overtime-gender-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_timeline(
+  data = data,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-overtime-gender-item3}
+# I know how to have a phone or computer recycled
+result <- viz_timeline(
+  data = data,
+  title = "I know how to have a phone or computer recycled",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### edu
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-overtime-edu-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_timeline(
+  data = data,
+  title = "I know how to reduce the battery use of a phone or computer",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-overtime-edu-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_timeline(
+  data = data,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-overtime-edu-item3}
+# I know how to have a phone or computer recycled
+result <- viz_timeline(
+  data = data,
+  title = "I know how to have a phone or computer recycled",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### mig
+
+
+::: {.panel-tabset}
+
+###### item1
+
+
+```{r green-overtime-mig-item1}
+# I know how to reduce the battery use of a phone or computer
+result <- viz_timeline(
+  data = data,
+  title = "I know how to reduce the battery use of a phone or computer",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv1",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### item2
+
+
+```{r green-overtime-mig-item2}
+# I know how I can buy a phone or computer in a "green" or sustainable way
+result <- viz_timeline(
+  data = data,
+  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### item3
+
+
+```{r green-overtime-mig-item3}
+# I know how to have a phone or computer recycled
+result <- viz_timeline(
+  data = data,
+  title = "I know how to have a phone or computer recycled",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SEnv3",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+

@@ -1,0 +1,4085 @@
+---
+title: "{{< iconify ph clipboard-text >}} Performance"
+format: html
+---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(6, 6, "performance", "top")
+```
+
+
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "performance")
+```
+
+The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover eleven areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment.
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# Use dashboardr's loading overlay function
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
+```
+
+## {{< iconify ph robot-fill >}} AI
+
+
+**AI Competence** covers the ability to recognize when websites and apps use artificial intelligence to personalize content and recommendations.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote('Select all <a href=\"#PAIS2_1\" class=\"modal-link\">apps or websites</a> that use AI to personalize their content for you', preset = 'question')
+```
+[{{< iconify ph cards >}} See all AI results](ai.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-ai-wave1-overall}
+# 
+result <- viz_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "",
+  x_vars = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  x_var_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave1-age-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave1-age-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave1-age-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave1-age-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave1-age-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave1-age-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave1-age-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave1-age-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave1-age-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave1-gender-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave1-gender-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave1-gender-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave1-gender-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave1-gender-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave1-gender-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave1-gender-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave1-gender-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave1-gender-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave1-edu-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave1-edu-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave1-edu-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave1-edu-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave1-edu-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave1-edu-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave1-edu-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave1-edu-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave1-edu-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave1-mig-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave1-mig-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave1-mig-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave1-mig-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave1-mig-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave1-mig-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave1-mig-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave1-mig-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave1-mig-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-ai-wave2-overall}
+# 
+result <- viz_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "",
+  x_vars = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  x_var_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave2-age-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave2-age-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave2-age-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave2-age-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave2-age-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave2-age-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave2-age-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave2-age-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave2-age-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave2-gender-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave2-gender-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave2-gender-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave2-gender-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave2-gender-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave2-gender-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave2-gender-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave2-gender-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave2-gender-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave2-edu-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave2-edu-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave2-edu-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave2-edu-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave2-edu-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave2-edu-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave2-edu-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave2-edu-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave2-edu-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-wave2-mig-item1}
+# Google
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Google",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-wave2-mig-item2}
+# Netflix
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Netflix",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-wave2-mig-item3}
+# Whatsapp
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Whatsapp",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-wave2-mig-item4}
+# Facebook
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Facebook",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-wave2-mig-item5}
+# Bol.com
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Bol.com",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-wave2-mig-item6}
+# DigID
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "DigID",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-wave2-mig-item7}
+# NOS News
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "NOS News",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-wave2-mig-item8}
+# Albert Heijn
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Albert Heijn",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-wave2-mig-item9}
+# TikTok
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "TikTok",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-overall-item1}
+# Google
+result <- viz_timeline(
+  data = data,
+  title = "Google",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-overall-item2}
+# Netflix
+result <- viz_timeline(
+  data = data,
+  title = "Netflix",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-overall-item3}
+# Whatsapp
+result <- viz_timeline(
+  data = data,
+  title = "Whatsapp",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-overall-item4}
+# Facebook
+result <- viz_timeline(
+  data = data,
+  title = "Facebook",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-overall-item5}
+# Bol.com
+result <- viz_timeline(
+  data = data,
+  title = "Bol.com",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-overall-item6}
+# DigID
+result <- viz_timeline(
+  data = data,
+  title = "DigID",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-overall-item7}
+# NOS News
+result <- viz_timeline(
+  data = data,
+  title = "NOS News",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-overall-item8}
+# Albert Heijn
+result <- viz_timeline(
+  data = data,
+  title = "Albert Heijn",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-overall-item9}
+# TikTok
+result <- viz_timeline(
+  data = data,
+  title = "TikTok",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_9"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-age-item1}
+# Google
+result <- viz_timeline(
+  data = data,
+  title = "Google",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-age-item2}
+# Netflix
+result <- viz_timeline(
+  data = data,
+  title = "Netflix",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-age-item3}
+# Whatsapp
+result <- viz_timeline(
+  data = data,
+  title = "Whatsapp",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-age-item4}
+# Facebook
+result <- viz_timeline(
+  data = data,
+  title = "Facebook",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-age-item5}
+# Bol.com
+result <- viz_timeline(
+  data = data,
+  title = "Bol.com",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-age-item6}
+# DigID
+result <- viz_timeline(
+  data = data,
+  title = "DigID",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_6",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-age-item7}
+# NOS News
+result <- viz_timeline(
+  data = data,
+  title = "NOS News",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-age-item8}
+# Albert Heijn
+result <- viz_timeline(
+  data = data,
+  title = "Albert Heijn",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-age-item9}
+# TikTok
+result <- viz_timeline(
+  data = data,
+  title = "TikTok",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-gender-item1}
+# Google
+result <- viz_timeline(
+  data = data,
+  title = "Google",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-gender-item2}
+# Netflix
+result <- viz_timeline(
+  data = data,
+  title = "Netflix",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-gender-item3}
+# Whatsapp
+result <- viz_timeline(
+  data = data,
+  title = "Whatsapp",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-gender-item4}
+# Facebook
+result <- viz_timeline(
+  data = data,
+  title = "Facebook",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-gender-item5}
+# Bol.com
+result <- viz_timeline(
+  data = data,
+  title = "Bol.com",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-gender-item6}
+# DigID
+result <- viz_timeline(
+  data = data,
+  title = "DigID",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_6",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-gender-item7}
+# NOS News
+result <- viz_timeline(
+  data = data,
+  title = "NOS News",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-gender-item8}
+# Albert Heijn
+result <- viz_timeline(
+  data = data,
+  title = "Albert Heijn",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-gender-item9}
+# TikTok
+result <- viz_timeline(
+  data = data,
+  title = "TikTok",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-edu-item1}
+# Google
+result <- viz_timeline(
+  data = data,
+  title = "Google",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-edu-item2}
+# Netflix
+result <- viz_timeline(
+  data = data,
+  title = "Netflix",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-edu-item3}
+# Whatsapp
+result <- viz_timeline(
+  data = data,
+  title = "Whatsapp",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-edu-item4}
+# Facebook
+result <- viz_timeline(
+  data = data,
+  title = "Facebook",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-edu-item5}
+# Bol.com
+result <- viz_timeline(
+  data = data,
+  title = "Bol.com",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-edu-item6}
+# DigID
+result <- viz_timeline(
+  data = data,
+  title = "DigID",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_6",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-edu-item7}
+# NOS News
+result <- viz_timeline(
+  data = data,
+  title = "NOS News",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-edu-item8}
+# Albert Heijn
+result <- viz_timeline(
+  data = data,
+  title = "Albert Heijn",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-edu-item9}
+# TikTok
+result <- viz_timeline(
+  data = data,
+  title = "TikTok",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_9",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-ai-overtime-mig-item1}
+# Google
+result <- viz_timeline(
+  data = data,
+  title = "Google",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_1",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-ai-overtime-mig-item2}
+# Netflix
+result <- viz_timeline(
+  data = data,
+  title = "Netflix",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-ai-overtime-mig-item3}
+# Whatsapp
+result <- viz_timeline(
+  data = data,
+  title = "Whatsapp",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_3",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-ai-overtime-mig-item4}
+# Facebook
+result <- viz_timeline(
+  data = data,
+  title = "Facebook",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_4",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-ai-overtime-mig-item5}
+# Bol.com
+result <- viz_timeline(
+  data = data,
+  title = "Bol.com",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_5",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-ai-overtime-mig-item6}
+# DigID
+result <- viz_timeline(
+  data = data,
+  title = "DigID",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_6",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-ai-overtime-mig-item7}
+# NOS News
+result <- viz_timeline(
+  data = data,
+  title = "NOS News",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_7",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-ai-overtime-mig-item8}
+# Albert Heijn
+result <- viz_timeline(
+  data = data,
+  title = "Albert Heijn",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_8",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-ai-overtime-mig-item9}
+# TikTok
+result <- viz_timeline(
+  data = data,
+  title = "TikTok",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS2_9",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+## {{< iconify ph magic-wand-fill >}} Gen AI
+
+
+**Generative AI competence** covers the ability to engage with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote('What prompt should you ask ChatGPT to get the best recipe result? (Q1) Look closely at the <a href=\"#PAIS1R\" class=\"modal-link\">pictures below</a>. Which picture is not made with artificial intelligence (AI)? (Q2)', preset = 'question')
+```
+[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-genai-wave1-overall}
+# 
+result <- viz_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "",
+  x_vars = c("PGAIS1RC", "PAIS1R"),
+  x_var_labels = c("Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?", "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-age-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-age-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-gender-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-gender-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-edu-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-edu-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-mig-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-mig-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r perf-genai-wave2-overall}
+# 
+result <- viz_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "",
+  x_vars = c("PGAIS1RC", "PAIS1R"),
+  x_var_labels = c("Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?", "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-age-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-age-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-gender-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-gender-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-edu-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-edu-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-mig-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-mig-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-overall-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-overtime-overall-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_timeline(
+  data = data,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-age-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-overtime-age-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_timeline(
+  data = data,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS1R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-gender-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-overtime-gender-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_timeline(
+  data = data,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS1R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-edu-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-overtime-edu-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_timeline(
+  data = data,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS1R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-mig-item1}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-overtime-mig-item2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_timeline(
+  data = data,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS1R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(6, 6, "performance", "bottom")
+```
+

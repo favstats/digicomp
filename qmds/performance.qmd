@@ -4,67 +4,18 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <button class='pagination-btn pagination-prev pagination-disabled' disabled aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='4' value='1' aria-label='Current page'>
-      <span class='pagination-separator'> / 4</span>
-    </div>
-    <a href='performance_p2.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(1, 6, "performance", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "performance")
 ```
 
 De **Prestaties**-sectie meet de praktische digitale vaardigheden van deelnemers aan de hand van uiteenlopende alledaagse taken. In plaats van zelfrapportage testen deze items wat mensen daadwerkelijk kunnen: bijvoorbeeld betrouwbare informatie opzoeken, AI-gegenereerde beelden herkennen, hun apparaten beveiligen of AI-tools effectief gebruiken. De items bestrijken elf domeinen van digitale competentie, van strategische en kritische informatievaardigheden tot AI- en generatieve-AI-vaardigheden, en geven zo een totaalbeeld van hoe goed mensen zich in de digitale omgeving van vandaag kunnen bewegen.
 
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -73,10 +24,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -89,7 +38,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -98,15 +47,15 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
 
 ## {{< iconify ph magnifying-glass >}} Strategische Informatie
@@ -115,7 +64,7 @@ dashboardr::add_loading_overlay("Loading", 1, theme = "light")
 **Strategische Informatie competentie** omvat het vermogen om effectief te zoeken naar, of het vinden van, online informatie. Dit omvat het kiezen van goede zoekwoorden, het gebruiken van zoekfuncties en het vinden van antwoorden op vragen op internet.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op <a href=\"#PSIS2R\" class=\"modal-link\">de plaats in de afbeelding</a> op de plek waar je dit kunt aangeven.', preset = 'question')
+create_blockquote('Welke zoektermen zou je gebruiken om de geboorteplaats van Femke Bol op Google op te zoeken? (Q1) Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op <a href=\"#PSIS2R\" class=\"modal-link\">de plaats in de afbeelding</a> op de plek waar je dit kunt aangeven. (Q2)', preset = 'question')
 ```
 [{{< iconify ph cards >}} Bekijk alle Strategische Informatie resultaten](strategic_information.html)
 
@@ -131,12 +80,12 @@ create_blockquote('Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien 
 
 
 ```{r perf-sis-wave1-overall}
-# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbars(
+# 
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
-  questions = "PSIS2R",
-  question_labels = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  title = "",
+  x_vars = c("PSIS1RC", "PSIS2R"),
+  x_var_labels = c("Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:", "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven."),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -156,9 +105,39 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-sis-wave1-age}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-age-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-age-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -178,12 +157,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-sis-wave1-gender}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-gender-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-gender-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -203,12 +215,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-sis-wave1-edu}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-edu-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-edu-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -228,12 +273,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-sis-wave1-mig}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave1-mig-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave1-mig-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -251,6 +329,9 @@ result <- create_stackedbar(
 
 result
 ```
+
+
+:::
 
 
 :::
@@ -265,12 +346,12 @@ result
 
 
 ```{r perf-sis-wave2-overall}
-# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbars(
+# 
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
-  questions = "PSIS2R",
-  question_labels = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  title = "",
+  x_vars = c("PSIS1RC", "PSIS2R"),
+  x_var_labels = c("Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:", "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven."),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -290,9 +371,39 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-sis-wave2-age}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-age-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-age-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -312,12 +423,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-sis-wave2-gender}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-gender-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-gender-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -337,12 +481,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-sis-wave2-edu}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-edu-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-edu-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -362,12 +539,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-sis-wave2-mig}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-wave2-mig-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-wave2-mig-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   stacked_type = "percent",
@@ -390,6 +600,9 @@ result
 :::
 
 
+:::
+
+
 ### {{< iconify ph chart-line-fill >}} Verloop over tijd
 
 
@@ -398,48 +611,87 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-sis-overtime-overall}
-# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-overall-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
   data = data,
-  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R"
+  y_var = "PSIS1RC"
 )
 
 result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-age}
+```{r perf-sis-overtime-overall-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSIS2R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-age-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS1RC",
   group_var = "AgeGroup"
 )
 
@@ -447,25 +699,59 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-gender}
+```{r perf-sis-overtime-age-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS2R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-gender-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS1RC",
   group_var = "geslacht"
 )
 
@@ -473,25 +759,59 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-edu}
+```{r perf-sis-overtime-gender-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS2R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-edu-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS1RC",
   group_var = "Education"
 )
 
@@ -499,25 +819,85 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-sis-overtime-mig}
+```{r perf-sis-overtime-edu-item2}
 # Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSIS2R",
+  y_var = "PSIS2R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-sis-overtime-mig-item1}
+# Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:
+result <- viz_timeline(
+  data = data,
+  title = "Femke Bol is een Nederlandse atlete. Stel je wil op Google haar geboorteplaats opzoeken, welke zoekterm(en) gebruik je dan? Zoek op Google naar de geboorteplaats van Femke Bol, en vul deze hieronder in:",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS1RC",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-sis-overtime-mig-item2}
+# Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.
+result <- viz_timeline(
+  data = data,
+  title = "Hoe zorg je ervoor dat je alleen Nederlandse bronnen te zien krijgt? Klik op de plaats in de afbeelding op de plek waar je dit kunt aangeven.",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSIS2R",
   group_var = "MigrationBackground"
 )
 
@@ -531,13 +911,7 @@ result
 :::
 
 
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PSIS2R',
-  text = '<h2>Meer info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/strategic_info_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
+:::
 
 ## {{< iconify ph detective-fill >}} Kritische Informatie
 
@@ -562,11 +936,11 @@ create_blockquote('Bekijk ook dit bericht (<a href=\'#PCIS1R\' class=\'modal-lin
 
 ```{r perf-cis-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
-  question_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
+  x_vars = c("PCIS1R", "PCIS2R", "PCIS3R"),
+  x_var_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -593,7 +967,7 @@ result
 
 ```{r perf-cis-wave1-age-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -618,7 +992,7 @@ result
 
 ```{r perf-cis-wave1-age-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -643,7 +1017,7 @@ result
 
 ```{r perf-cis-wave1-age-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -676,7 +1050,7 @@ result
 
 ```{r perf-cis-wave1-gender-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -701,7 +1075,7 @@ result
 
 ```{r perf-cis-wave1-gender-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -726,7 +1100,7 @@ result
 
 ```{r perf-cis-wave1-gender-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -759,7 +1133,7 @@ result
 
 ```{r perf-cis-wave1-edu-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -784,7 +1158,7 @@ result
 
 ```{r perf-cis-wave1-edu-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -809,7 +1183,7 @@ result
 
 ```{r perf-cis-wave1-edu-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -842,7 +1216,7 @@ result
 
 ```{r perf-cis-wave1-mig-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -867,7 +1241,7 @@ result
 
 ```{r perf-cis-wave1-mig-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -892,7 +1266,7 @@ result
 
 ```{r perf-cis-wave1-mig-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -928,11 +1302,11 @@ result
 
 ```{r perf-cis-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
-  question_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
+  x_vars = c("PCIS1R", "PCIS2R", "PCIS3R"),
+  x_var_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -959,7 +1333,7 @@ result
 
 ```{r perf-cis-wave2-age-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -984,7 +1358,7 @@ result
 
 ```{r perf-cis-wave2-age-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1009,7 +1383,7 @@ result
 
 ```{r perf-cis-wave2-age-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -1042,7 +1416,7 @@ result
 
 ```{r perf-cis-wave2-gender-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -1067,7 +1441,7 @@ result
 
 ```{r perf-cis-wave2-gender-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1092,7 +1466,7 @@ result
 
 ```{r perf-cis-wave2-gender-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -1125,7 +1499,7 @@ result
 
 ```{r perf-cis-wave2-edu-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -1150,7 +1524,7 @@ result
 
 ```{r perf-cis-wave2-edu-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1175,7 +1549,7 @@ result
 
 ```{r perf-cis-wave2-edu-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -1208,7 +1582,7 @@ result
 
 ```{r perf-cis-wave2-mig-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -1233,7 +1607,7 @@ result
 
 ```{r perf-cis-wave2-mig-item2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1258,7 +1632,7 @@ result
 
 ```{r perf-cis-wave2-mig-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -1299,21 +1673,21 @@ result
 
 ```{r perf-cis-overtime-overall-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R"
+  y_var = "PCIS1R"
 )
 
 result
@@ -1325,21 +1699,21 @@ result
 
 ```{r perf-cis-overtime-overall-item2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R"
+  y_var = "PCIS2R"
 )
 
 result
@@ -1351,21 +1725,21 @@ result
 
 ```{r perf-cis-overtime-overall-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R"
+  y_var = "PCIS3R"
 )
 
 result
@@ -1385,20 +1759,20 @@ result
 
 ```{r perf-cis-overtime-age-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "AgeGroup"
 )
 
@@ -1411,20 +1785,20 @@ result
 
 ```{r perf-cis-overtime-age-item2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "AgeGroup"
 )
 
@@ -1437,20 +1811,20 @@ result
 
 ```{r perf-cis-overtime-age-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "AgeGroup"
 )
 
@@ -1471,20 +1845,20 @@ result
 
 ```{r perf-cis-overtime-gender-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "geslacht"
 )
 
@@ -1497,20 +1871,20 @@ result
 
 ```{r perf-cis-overtime-gender-item2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "geslacht"
 )
 
@@ -1523,20 +1897,20 @@ result
 
 ```{r perf-cis-overtime-gender-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "geslacht"
 )
 
@@ -1557,20 +1931,20 @@ result
 
 ```{r perf-cis-overtime-edu-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "Education"
 )
 
@@ -1583,20 +1957,20 @@ result
 
 ```{r perf-cis-overtime-edu-item2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "Education"
 )
 
@@ -1609,20 +1983,20 @@ result
 
 ```{r perf-cis-overtime-edu-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "Education"
 )
 
@@ -1643,20 +2017,20 @@ result
 
 ```{r perf-cis-overtime-mig-item1}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "MigrationBackground"
 )
 
@@ -1669,20 +2043,20 @@ result
 
 ```{r perf-cis-overtime-mig-item2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "MigrationBackground"
 )
 
@@ -1695,20 +2069,20 @@ result
 
 ```{r perf-cis-overtime-mig-item3}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "MigrationBackground"
 )
 
@@ -1725,540 +2099,8 @@ result
 :::
 
 
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PCIS1R',
-  text = '<h2>Meer info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/critical_info_competence_q1_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
 
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PCIS2R',
-  text = '<h2>Meer info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/critical_info_competence_q2_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
-
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PCIS3R',
-  text = '<h2>Meer info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/critical_info_competence_q3_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
-
-## {{< iconify ph palette-fill >}} Digitale Contentcreatie
-
-
-**Digitale Contentcreatie competentie** omvat het vermogen om digitale content te maken en aan te passen: presentaties maken, verschillende media combineren, beelden/muziek/video bewerken, en auteursrechten begrijpen rond digitale content.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Welk van de <a href=\"#PDCCS1R\" class=\"modal-link\">onderstaande icoontjes</a> is voor het bijsnijden of stukken weghalen van een foto?', preset = 'question')
-```
-[{{< iconify ph cards >}} Bekijk alle Digitale Contentcreatie resultaten](digital_content_creation.html)
-
-
-::: {.panel-tabset}
-
-### {{< iconify ph number-circle-one-fill >}} Ronde 1
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r perf-dccs-wave1-overall}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbars(
-  data = data_filtered_984a0efe,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  questions = "PDCCS1R",
-  question_labels = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-```{r perf-dccs-wave1-age}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-```{r perf-dccs-wave1-gender}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-```{r perf-dccs-wave1-edu}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-```{r perf-dccs-wave1-mig}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-:::
-
-
-### {{< iconify ph number-circle-two-fill >}} Ronde 2
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r perf-dccs-wave2-overall}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbars(
-  data = data_filtered_4af682fd,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  questions = "PDCCS1R",
-  question_labels = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-```{r perf-dccs-wave2-age}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-```{r perf-dccs-wave2-gender}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-```{r perf-dccs-wave2-edu}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-```{r perf-dccs-wave2-mig}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "PDCCS1R"
-)
-
-result
-```
-
-
-:::
-
-
-### {{< iconify ph chart-line-fill >}} Verloop over tijd
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Algemeen
-
-
-```{r perf-dccs-overtime-overall}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_timeline(
-  data = data,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  response_var = "PDCCS1R"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Leeftijd
-
-
-```{r perf-dccs-overtime-age}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_timeline(
-  data = data,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-##### {{< iconify mdi gender-transgender >}} Geslacht
-
-
-```{r perf-dccs-overtime-gender}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_timeline(
-  data = data,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
-
-
-```{r perf-dccs-overtime-edu}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_timeline(
-  data = data,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
-  group_var = "Education"
-)
-
-result
-```
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
-
-
-```{r perf-dccs-overtime-mig}
-# Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-
-result <- create_timeline(
-  data = data,
-  title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
-",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PDCCS1R",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PDCCS1R',
-  text = '<h2>Meer info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/digital_content_creation_competence_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
-
-
-
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <button class='pagination-btn pagination-prev pagination-disabled' disabled aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='4' value='1' aria-label='Current page'>
-      <span class='pagination-separator'> / 4</span>
-    </div>
-    <a href='performance_p2.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(1, 6, "performance", "bottom")
 ```
 

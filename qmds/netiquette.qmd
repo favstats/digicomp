@@ -3,9 +3,8 @@ title: "{{< iconify ph chats-fill >}} Netiquette"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "netiquette")
 ```
 
 **Netiquette competentie** verwijst naar correcte online communicatie-etiquette: weten wanneer je toestemming moet vragen voor delen, de juiste communicatietool kiezen, begrijpen wat je niet online moet delen, en emoticons op de juiste manier gebruiken.
@@ -17,10 +16,8 @@ library(dashboardr)
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -33,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -42,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -69,11 +66,11 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 
 ```{r nskills-wave1-overall-2}
 # Netiquette Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Netiquette Vaardigheden",
-  questions = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
-  question_labels = c("Ik weet wanneer ik toestemming moet vragen om iets online te delen", "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)", "Ik weet welke dingen ik niet hoor te delen online", "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)"),
+  x_vars = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
+  x_var_labels = c("Ik weet wanneer ik toestemming moet vragen om iets online te delen", "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)", "Ik weet welke dingen ik niet hoor te delen online", "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -99,7 +96,7 @@ result
 
 ```{r nskills-wave1-age-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -123,7 +120,7 @@ result
 
 ```{r nskills-wave1-age-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -147,7 +144,7 @@ result
 
 ```{r nskills-wave1-age-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -171,7 +168,7 @@ result
 
 ```{r nskills-wave1-age-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -203,7 +200,7 @@ result
 
 ```{r nskills-wave1-gender-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -227,7 +224,7 @@ result
 
 ```{r nskills-wave1-gender-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -251,7 +248,7 @@ result
 
 ```{r nskills-wave1-gender-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -275,7 +272,7 @@ result
 
 ```{r nskills-wave1-gender-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -307,7 +304,7 @@ result
 
 ```{r nskills-wave1-edu-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -331,7 +328,7 @@ result
 
 ```{r nskills-wave1-edu-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -355,7 +352,7 @@ result
 
 ```{r nskills-wave1-edu-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -379,7 +376,7 @@ result
 
 ```{r nskills-wave1-edu-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -411,7 +408,7 @@ result
 
 ```{r nskills-wave1-mig-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -435,7 +432,7 @@ result
 
 ```{r nskills-wave1-mig-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -459,7 +456,7 @@ result
 
 ```{r nskills-wave1-mig-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -483,7 +480,7 @@ result
 
 ```{r nskills-wave1-mig-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -518,11 +515,11 @@ result
 
 ```{r nskills-wave2-overall-2}
 # Netiquette Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Netiquette Vaardigheden",
-  questions = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
-  question_labels = c("Ik weet wanneer ik toestemming moet vragen om iets online te delen", "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)", "Ik weet welke dingen ik niet hoor te delen online", "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)"),
+  x_vars = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
+  x_var_labels = c("Ik weet wanneer ik toestemming moet vragen om iets online te delen", "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)", "Ik weet welke dingen ik niet hoor te delen online", "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -548,7 +545,7 @@ result
 
 ```{r nskills-wave2-age-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -572,7 +569,7 @@ result
 
 ```{r nskills-wave2-age-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -596,7 +593,7 @@ result
 
 ```{r nskills-wave2-age-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -620,7 +617,7 @@ result
 
 ```{r nskills-wave2-age-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -652,7 +649,7 @@ result
 
 ```{r nskills-wave2-gender-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -676,7 +673,7 @@ result
 
 ```{r nskills-wave2-gender-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -700,7 +697,7 @@ result
 
 ```{r nskills-wave2-gender-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -724,7 +721,7 @@ result
 
 ```{r nskills-wave2-gender-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -756,7 +753,7 @@ result
 
 ```{r nskills-wave2-edu-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -780,7 +777,7 @@ result
 
 ```{r nskills-wave2-edu-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -804,7 +801,7 @@ result
 
 ```{r nskills-wave2-edu-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -828,7 +825,7 @@ result
 
 ```{r nskills-wave2-edu-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -860,7 +857,7 @@ result
 
 ```{r nskills-wave2-mig-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   stacked_type = "percent",
@@ -884,7 +881,7 @@ result
 
 ```{r nskills-wave2-mig-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   stacked_type = "percent",
@@ -908,7 +905,7 @@ result
 
 ```{r nskills-wave2-mig-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   stacked_type = "percent",
@@ -932,7 +929,7 @@ result
 
 ```{r nskills-wave2-mig-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   stacked_type = "percent",
@@ -972,21 +969,21 @@ result
 
 ```{r nskills-overtime-overall-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2"
+  y_var = "SCom1_V2"
 )
 
 result
@@ -998,21 +995,21 @@ result
 
 ```{r nskills-overtime-overall-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom2"
+  y_var = "SCom2"
 )
 
 result
@@ -1024,21 +1021,21 @@ result
 
 ```{r nskills-overtime-overall-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2"
+  y_var = "SCom4_V2"
 )
 
 result
@@ -1050,21 +1047,21 @@ result
 
 ```{r nskills-overtime-overall-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom5"
+  y_var = "SCom5"
 )
 
 result
@@ -1084,19 +1081,19 @@ result
 
 ```{r nskills-overtime-age-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2",
+  y_var = "SCom1_V2",
   group_var = "AgeGroup"
 )
 
@@ -1109,19 +1106,19 @@ result
 
 ```{r nskills-overtime-age-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom2",
+  y_var = "SCom2",
   group_var = "AgeGroup"
 )
 
@@ -1134,19 +1131,19 @@ result
 
 ```{r nskills-overtime-age-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2",
+  y_var = "SCom4_V2",
   group_var = "AgeGroup"
 )
 
@@ -1159,19 +1156,19 @@ result
 
 ```{r nskills-overtime-age-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom5",
+  y_var = "SCom5",
   group_var = "AgeGroup"
 )
 
@@ -1192,19 +1189,19 @@ result
 
 ```{r nskills-overtime-gender-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2",
+  y_var = "SCom1_V2",
   group_var = "geslacht"
 )
 
@@ -1217,19 +1214,19 @@ result
 
 ```{r nskills-overtime-gender-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom2",
+  y_var = "SCom2",
   group_var = "geslacht"
 )
 
@@ -1242,19 +1239,19 @@ result
 
 ```{r nskills-overtime-gender-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2",
+  y_var = "SCom4_V2",
   group_var = "geslacht"
 )
 
@@ -1267,19 +1264,19 @@ result
 
 ```{r nskills-overtime-gender-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom5",
+  y_var = "SCom5",
   group_var = "geslacht"
 )
 
@@ -1300,19 +1297,19 @@ result
 
 ```{r nskills-overtime-edu-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2",
+  y_var = "SCom1_V2",
   group_var = "Education"
 )
 
@@ -1325,19 +1322,19 @@ result
 
 ```{r nskills-overtime-edu-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom2",
+  y_var = "SCom2",
   group_var = "Education"
 )
 
@@ -1350,19 +1347,19 @@ result
 
 ```{r nskills-overtime-edu-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2",
+  y_var = "SCom4_V2",
   group_var = "Education"
 )
 
@@ -1375,19 +1372,19 @@ result
 
 ```{r nskills-overtime-edu-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom5",
+  y_var = "SCom5",
   group_var = "Education"
 )
 
@@ -1408,19 +1405,19 @@ result
 
 ```{r nskills-overtime-mig-item1-2}
 # Ik weet wanneer ik toestemming moet vragen om iets online te delen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer ik toestemming moet vragen om iets online te delen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom1_V2",
+  y_var = "SCom1_V2",
   group_var = "MigrationBackground"
 )
 
@@ -1433,19 +1430,19 @@ result
 
 ```{r nskills-overtime-mig-item2-2}
 # Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welk communicatiemiddel het beste past bij welke situatie (bijvoorbeeld bellen, een WhatsApp-bericht sturen, een e-mail sturen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom2",
+  y_var = "SCom2",
   group_var = "MigrationBackground"
 )
 
@@ -1458,19 +1455,19 @@ result
 
 ```{r nskills-overtime-mig-item3-2}
 # Ik weet welke dingen ik niet hoor te delen online
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet welke dingen ik niet hoor te delen online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom4_V2",
+  y_var = "SCom4_V2",
   group_var = "MigrationBackground"
 )
 
@@ -1483,19 +1480,19 @@ result
 
 ```{r nskills-overtime-mig-item4-2}
 # Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer het wel of niet hoort om emoticons te gebruiken (bijvoorbeeld smileys ☺ of emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom5",
+  y_var = "SCom5",
   group_var = "MigrationBackground"
 )
 
@@ -1533,11 +1530,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r knet-wave1-overall-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
-  questions = "KCom3RC",
-  question_labels = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  x_vars = "KCom3RC",
+  x_var_labels = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1559,7 +1556,7 @@ result
 
 ```{r knet-wave1-age-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1584,7 +1581,7 @@ result
 
 ```{r knet-wave1-gender-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1609,7 +1606,7 @@ result
 
 ```{r knet-wave1-edu-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1634,7 +1631,7 @@ result
 
 ```{r knet-wave1-mig-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1667,11 +1664,11 @@ result
 
 ```{r knet-wave2-overall-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
-  questions = "KCom3RC",
-  question_labels = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
+  x_vars = "KCom3RC",
+  x_var_labels = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1693,7 +1690,7 @@ result
 
 ```{r knet-wave2-age-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1718,7 +1715,7 @@ result
 
 ```{r knet-wave2-gender-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1743,7 +1740,7 @@ result
 
 ```{r knet-wave2-edu-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1768,7 +1765,7 @@ result
 
 ```{r knet-wave2-mig-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   stacked_type = "percent",
@@ -1801,21 +1798,21 @@ result
 
 ```{r knet-overtime-overall-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KCom3RC"
+  y_var = "KCom3RC"
 )
 
 result
@@ -1827,20 +1824,20 @@ result
 
 ```{r knet-overtime-age-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCom3RC",
+  y_var = "KCom3RC",
   group_var = "AgeGroup"
 )
 
@@ -1853,20 +1850,20 @@ result
 
 ```{r knet-overtime-gender-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCom3RC",
+  y_var = "KCom3RC",
   group_var = "geslacht"
 )
 
@@ -1879,20 +1876,20 @@ result
 
 ```{r knet-overtime-edu-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCom3RC",
+  y_var = "KCom3RC",
   group_var = "Education"
 )
 
@@ -1905,20 +1902,20 @@ result
 
 ```{r knet-overtime-mig-2}
 # Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Nare opmerkingen doen mensen minder pijn als je ze online zegt, dan als je ze in hun gezicht zegt",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCom3RC",
+  y_var = "KCom3RC",
   group_var = "MigrationBackground"
 )
 

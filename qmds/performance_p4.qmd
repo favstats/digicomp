@@ -4,67 +4,18 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='performance_p3.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='4' value='4' aria-label='Current page'>
-      <span class='pagination-separator'> / 4</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(4, 6, "performance", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "performance")
 ```
 
 De **Prestaties**-sectie meet de praktische digitale vaardigheden van deelnemers aan de hand van uiteenlopende alledaagse taken. In plaats van zelfrapportage testen deze items wat mensen daadwerkelijk kunnen: bijvoorbeeld betrouwbare informatie opzoeken, AI-gegenereerde beelden herkennen, hun apparaten beveiligen of AI-tools effectief gebruiken. De items bestrijken elf domeinen van digitale competentie, van strategische en kritische informatievaardigheden tot AI- en generatieve-AI-vaardigheden, en geven zo een totaalbeeld van hoe goed mensen zich in de digitale omgeving van vandaag kunnen bewegen.
 
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -73,10 +24,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -89,7 +38,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -98,26 +47,26 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
 
-## {{< iconify ph robot-fill >}} AI
+## {{< iconify ph heart-fill >}} Digitale Gezondheid
 
 
-**AI competentie** omvat het vermogen om te herkennen wanneer websites en apps artificiële intelligentie gebruiken om content en aanbevelingen te personaliseren.
+**Digitale Gezondheid & Welzijn** vaardigheden hebben betrekking op het beheren van gezonde digitale gewoonten.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Selecteer alle <a href=\"#PAIS2_1\" class=\"modal-link\">apps of websites</a> die AI gebruiken om hun inhoud voor u te personaliseren', preset = 'question')
+create_blockquote("Probeert u soms de tijd die u besteedt aan het gebruik van digitale media op een van de volgende manieren te beperken? Selecteer elk antwoord dat van toepassing is.", preset = "question")
 ```
-[{{< iconify ph cards >}} Bekijk alle AI resultaten](ai.html)
+[{{< iconify ph cards >}} Bekijk alle Digitale Gezondheid resultaten](digital_health.html)
 
 
 ::: {.panel-tabset}
@@ -130,13 +79,13 @@ create_blockquote('Selecteer alle <a href=\"#PAIS2_1\" class=\"modal-link\">apps
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-ai-wave1-overall}
+```{r perf-health-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
+  x_vars = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  x_var_labels = c("Digitale detox-momenten creëren", "Regels hebben om digitale media te beperken", "Schermtijdbegrenzer gebruiken", "Internet tijdelijk uitschakelen", "Apps/programma's verwijderen", "Meldingen uitschakelen", "Tijd verminderen zonder speciale aanpak", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -161,11 +110,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave1-age-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -176,7 +125,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -186,11 +135,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave1-age-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -201,7 +150,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -211,11 +160,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave1-age-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -226,7 +175,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -236,11 +185,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave1-age-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -251,7 +200,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -261,11 +210,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave1-age-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -276,7 +225,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -286,11 +235,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave1-age-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -301,7 +250,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -311,11 +260,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave1-age-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -326,7 +275,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -336,11 +285,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave1-age-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -351,32 +300,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave1-age-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -394,11 +318,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave1-gender-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -409,7 +333,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -419,11 +343,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave1-gender-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -434,7 +358,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -444,11 +368,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave1-gender-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -459,7 +383,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -469,11 +393,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave1-gender-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -484,7 +408,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -494,11 +418,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave1-gender-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -509,7 +433,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -519,11 +443,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave1-gender-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -534,7 +458,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -544,11 +468,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave1-gender-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -559,7 +483,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -569,11 +493,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave1-gender-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -584,32 +508,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave1-gender-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -627,11 +526,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave1-edu-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -642,7 +541,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -652,11 +551,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave1-edu-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -667,7 +566,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -677,11 +576,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave1-edu-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -692,7 +591,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -702,11 +601,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave1-edu-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -717,7 +616,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -727,11 +626,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave1-edu-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -742,7 +641,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -752,11 +651,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave1-edu-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -767,7 +666,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -777,11 +676,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave1-edu-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -792,7 +691,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -802,11 +701,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave1-edu-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -817,32 +716,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave1-edu-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -860,11 +734,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave1-mig-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -875,7 +749,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -885,11 +759,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave1-mig-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -900,7 +774,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -910,11 +784,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave1-mig-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -925,7 +799,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -935,11 +809,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave1-mig-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -950,7 +824,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -960,11 +834,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave1-mig-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -975,7 +849,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -985,11 +859,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave1-mig-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1000,7 +874,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1010,11 +884,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave1-mig-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1025,7 +899,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1035,11 +909,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave1-mig-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1050,32 +924,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave1-mig-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1096,13 +945,13 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-ai-wave2-overall}
+```{r perf-health-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
+  x_vars = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  x_var_labels = c("Digitale detox-momenten creëren", "Regels hebben om digitale media te beperken", "Schermtijdbegrenzer gebruiken", "Internet tijdelijk uitschakelen", "Apps/programma's verwijderen", "Meldingen uitschakelen", "Tijd verminderen zonder speciale aanpak", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1127,11 +976,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave2-age-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1142,7 +991,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1152,11 +1001,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave2-age-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1167,7 +1016,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1177,11 +1026,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave2-age-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1192,7 +1041,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1202,11 +1051,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave2-age-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1217,7 +1066,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1227,11 +1076,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave2-age-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1242,7 +1091,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1252,11 +1101,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave2-age-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1267,7 +1116,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1277,11 +1126,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave2-age-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1292,7 +1141,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1302,11 +1151,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave2-age-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1317,32 +1166,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave2-age-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Leeftijd",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1360,11 +1184,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave2-gender-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1375,7 +1199,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1385,11 +1209,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave2-gender-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1400,7 +1224,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1410,11 +1234,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave2-gender-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1425,7 +1249,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1435,11 +1259,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave2-gender-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1450,7 +1274,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1460,11 +1284,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave2-gender-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1475,7 +1299,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1485,11 +1309,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave2-gender-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1500,7 +1324,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1510,11 +1334,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave2-gender-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1525,7 +1349,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1535,11 +1359,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave2-gender-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1550,32 +1374,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave2-gender-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Geslacht",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1593,11 +1392,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave2-edu-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1608,7 +1407,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1618,11 +1417,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave2-edu-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1633,7 +1432,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1643,11 +1442,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave2-edu-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1658,7 +1457,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1668,11 +1467,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave2-edu-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1683,7 +1482,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1693,11 +1492,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave2-edu-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1708,7 +1507,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1718,11 +1517,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave2-edu-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1733,7 +1532,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1743,11 +1542,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave2-edu-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1758,7 +1557,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1768,11 +1567,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave2-edu-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1783,32 +1582,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave2-edu-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Opleidingsniveau",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1826,11 +1600,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-wave2-mig-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item1}
+# Digitale detox-momenten creëren
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1841,7 +1615,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1851,11 +1625,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-wave2-mig-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1866,7 +1640,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1876,11 +1650,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-wave2-mig-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1891,7 +1665,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1901,11 +1675,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-wave2-mig-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1916,7 +1690,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1926,11 +1700,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-wave2-mig-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item5}
+# Apps/programma's verwijderen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1941,7 +1715,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1951,11 +1725,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-wave2-mig-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item6}
+# Meldingen uitschakelen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1966,7 +1740,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1976,11 +1750,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-wave2-mig-item7}
-# NOS Nieuws
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1991,7 +1765,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -2001,11 +1775,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-wave2-mig-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item8}
+# Geen van deze acties
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2016,32 +1790,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-wave2-mig-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
-  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
-  stack_order = c("Geselecteerd", "Niet geselecteerd"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migratieachtergrond",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -2067,23 +1816,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-overtime-overall-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-overall-item1}
+# Digitale detox-momenten creëren
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1"
+  y_var = "PDHWS1_1"
 )
 
 result
@@ -2093,23 +1842,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-overtime-overall-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-overall-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2"
+  y_var = "PDHWS1_2"
 )
 
 result
@@ -2119,23 +1868,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-overtime-overall-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-overall-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3"
+  y_var = "PDHWS1_3"
 )
 
 result
@@ -2145,23 +1894,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-overtime-overall-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-overall-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4"
+  y_var = "PDHWS1_4"
 )
 
 result
@@ -2171,23 +1920,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-overtime-overall-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-overall-item5}
+# Apps/programma's verwijderen
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5"
+  y_var = "PDHWS1_5"
 )
 
 result
@@ -2197,23 +1946,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-overtime-overall-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-overall-item6}
+# Meldingen uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6"
+  y_var = "PDHWS1_6"
 )
 
 result
@@ -2223,23 +1972,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-overtime-overall-item7}
-# NOS Nieuws
-result <- create_timeline(
+```{r perf-health-overtime-overall-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7"
+  y_var = "PDHWS1_7"
 )
 
 result
@@ -2249,49 +1998,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-overtime-overall-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-overall-item8}
+# Geen van deze acties
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-overtime-overall-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9"
+  y_var = "PDHWS1_8"
 )
 
 result
@@ -2309,22 +2032,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-overtime-age-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-age-item1}
+# Digitale detox-momenten creëren
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "AgeGroup"
 )
 
@@ -2335,22 +2058,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-overtime-age-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-age-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "AgeGroup"
 )
 
@@ -2361,22 +2084,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-overtime-age-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-age-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "AgeGroup"
 )
 
@@ -2387,22 +2110,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-overtime-age-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-age-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "AgeGroup"
 )
 
@@ -2413,22 +2136,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-overtime-age-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-age-item5}
+# Apps/programma's verwijderen
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "AgeGroup"
 )
 
@@ -2439,22 +2162,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-overtime-age-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-age-item6}
+# Meldingen uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "AgeGroup"
 )
 
@@ -2465,22 +2188,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-overtime-age-item7}
-# NOS Nieuws
-result <- create_timeline(
+```{r perf-health-overtime-age-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "AgeGroup"
 )
 
@@ -2491,48 +2214,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-overtime-age-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-age-item8}
+# Geen van deze acties
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-overtime-age-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "AgeGroup"
 )
 
@@ -2551,22 +2248,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-overtime-gender-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-gender-item1}
+# Digitale detox-momenten creëren
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "geslacht"
 )
 
@@ -2577,22 +2274,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-overtime-gender-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-gender-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "geslacht"
 )
 
@@ -2603,22 +2300,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-overtime-gender-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-gender-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "geslacht"
 )
 
@@ -2629,22 +2326,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-overtime-gender-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-gender-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "geslacht"
 )
 
@@ -2655,22 +2352,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-overtime-gender-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-gender-item5}
+# Apps/programma's verwijderen
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "geslacht"
 )
 
@@ -2681,22 +2378,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-overtime-gender-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-gender-item6}
+# Meldingen uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "geslacht"
 )
 
@@ -2707,22 +2404,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-overtime-gender-item7}
-# NOS Nieuws
-result <- create_timeline(
+```{r perf-health-overtime-gender-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "geslacht"
 )
 
@@ -2733,48 +2430,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-overtime-gender-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-gender-item8}
+# Geen van deze acties
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-overtime-gender-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "geslacht"
 )
 
@@ -2793,22 +2464,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-overtime-edu-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-edu-item1}
+# Digitale detox-momenten creëren
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "Education"
 )
 
@@ -2819,22 +2490,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-overtime-edu-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-edu-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "Education"
 )
 
@@ -2845,22 +2516,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-overtime-edu-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-edu-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "Education"
 )
 
@@ -2871,22 +2542,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-overtime-edu-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-edu-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "Education"
 )
 
@@ -2897,22 +2568,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-overtime-edu-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-edu-item5}
+# Apps/programma's verwijderen
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "Education"
 )
 
@@ -2923,22 +2594,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-overtime-edu-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-edu-item6}
+# Meldingen uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "Education"
 )
 
@@ -2949,22 +2620,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-overtime-edu-item7}
-# NOS Nieuws
-result <- create_timeline(
+```{r perf-health-overtime-edu-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "Education"
 )
 
@@ -2975,48 +2646,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-overtime-edu-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-edu-item8}
+# Geen van deze acties
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-overtime-edu-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "Education"
 )
 
@@ -3035,22 +2680,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r perf-ai-overtime-mig-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-mig-item1}
+# Digitale detox-momenten creëren
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Digitale detox-momenten creëren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "MigrationBackground"
 )
 
@@ -3061,22 +2706,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-ai-overtime-mig-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-mig-item2}
+# Regels hebben om digitale media te beperken
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Regels hebben om digitale media te beperken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "MigrationBackground"
 )
 
@@ -3087,22 +2732,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r perf-ai-overtime-mig-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-mig-item3}
+# Schermtijdbegrenzer gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Schermtijdbegrenzer gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "MigrationBackground"
 )
 
@@ -3113,22 +2758,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r perf-ai-overtime-mig-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-mig-item4}
+# Internet tijdelijk uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Internet tijdelijk uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "MigrationBackground"
 )
 
@@ -3139,22 +2784,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 5
 
 
-```{r perf-ai-overtime-mig-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-mig-item5}
+# Apps/programma's verwijderen
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Apps/programma's verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "MigrationBackground"
 )
 
@@ -3165,22 +2810,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 6
 
 
-```{r perf-ai-overtime-mig-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-mig-item6}
+# Meldingen uitschakelen
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Meldingen uitschakelen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "MigrationBackground"
 )
 
@@ -3191,22 +2836,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 7
 
 
-```{r perf-ai-overtime-mig-item7}
-# NOS Nieuws
-result <- create_timeline(
+```{r perf-health-overtime-mig-item7}
+# Tijd verminderen zonder speciale aanpak
+result <- viz_timeline(
   data = data,
-  title = "NOS Nieuws",
+  title = "Tijd verminderen zonder speciale aanpak",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "MigrationBackground"
 )
 
@@ -3217,48 +2862,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 8
 
 
-```{r perf-ai-overtime-mig-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-mig-item8}
+# Geen van deze acties
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "Geen van deze acties",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Vraag 9
-
-
-```{r perf-ai-overtime-mig-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage dat correct heeft geantwoord",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "MigrationBackground"
 )
 
@@ -3274,24 +2893,15 @@ result
 
 :::
 
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PAIS2_1',
-  text = '<h2>Meer info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/AI_competence_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
-
-## {{< iconify ph magic-wand-fill >}} Gen AI
+## {{< iconify ph recycle-fill >}} Groen Digitaal
 
 
-**Generatieve AI competentie** heeft betrekking op het omgaan met AI-tools zoals ChatGPT: weten hoe je AI-gegenereerde informatie te verifiëert, effectieve prompts schrijven, AI-gegenereerde content detecteren, en de mogelijkheden en beperkingen van GenAI begrijpen.
+**Duurzame/Groene Digitale competentie** richt zich op milieubewust technologiegebruik: energieverbruik verminderen, duurzame apparaten kopen, elektronica recyclen, en de milieu-impact van digitale activiteiten begrijpen.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Kijk goed naar de <a href=\"#PAIS1R\" class=\"modal-link\">foto\'s hieronder</a>. Welke foto is niet gemaakt met artificiële intelligentie (AI)?', preset = 'question')
+create_blockquote("Welke van de volgende activiteiten doet u soms?", preset = "question")
 ```
-[{{< iconify ph cards >}} Bekijk alle Gen AI resultaten](gen_ai.html)
+[{{< iconify ph cards >}} Bekijk alle Groen Digitaal resultaten](green_digital.html)
 
 
 ::: {.panel-tabset}
@@ -3304,21 +2914,21 @@ create_blockquote('Kijk goed naar de <a href=\"#PAIS1R\" class=\"modal-link\">fo
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-genai-wave1-overall}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbars(
+```{r perf-green-wave1-overall}
+# 
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
-  questions = "PAIS1R",
-  question_labels = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "",
+  x_vars = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  x_var_labels = c("Mailbox opschonen", "Duurzame zoekmachines gebruiken", "Onnodige Cloud-opslag vermijden", "Schermhelderheid verlagen", "Slaapstand gebruiken", "Ongebruikte telefoon-apps sluiten", "Apparaten recyclen", "Repareren voor vervangen", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -3330,101 +2940,933 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-genai-wave1-age}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave1-age-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave1-age-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave1-age-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave1-age-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave1-age-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave1-age-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave1-age-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave1-age-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave1-age-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-genai-wave1-gender}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave1-gender-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave1-gender-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave1-gender-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave1-gender-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave1-gender-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave1-gender-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave1-gender-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave1-gender-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave1-gender-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-genai-wave1-edu}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave1-edu-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave1-edu-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave1-edu-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave1-edu-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave1-edu-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave1-edu-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave1-edu-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave1-edu-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave1-edu-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-genai-wave1-mig}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave1-mig-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave1-mig-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave1-mig-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave1-mig-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave1-mig-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave1-mig-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave1-mig-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave1-mig-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave1-mig-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 :::
@@ -3438,21 +3880,21 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-genai-wave2-overall}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbars(
+```{r perf-green-wave2-overall}
+# 
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
-  questions = "PAIS1R",
-  question_labels = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "",
+  x_vars = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  x_var_labels = c("Mailbox opschonen", "Duurzame zoekmachines gebruiken", "Onnodige Cloud-opslag vermijden", "Schermhelderheid verlagen", "Slaapstand gebruiken", "Ongebruikte telefoon-apps sluiten", "Apparaten recyclen", "Repareren voor vervangen", "Geen van deze acties"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -3464,101 +3906,933 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-genai-wave2-age}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave2-age-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Leeftijd",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave2-age-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave2-age-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave2-age-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave2-age-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave2-age-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave2-age-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave2-age-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave2-age-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-genai-wave2-gender}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave2-gender-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Geslacht",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave2-gender-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave2-gender-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave2-gender-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave2-gender-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave2-gender-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave2-gender-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave2-gender-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave2-gender-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-genai-wave2-edu}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave2-edu-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Opleidingsniveau",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave2-edu-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave2-edu-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave2-edu-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave2-edu-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave2-edu-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave2-edu-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave2-edu-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave2-edu-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-genai-wave2-mig}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-wave2-mig-item1}
+# Mailbox opschonen
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migratieachtergrond",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-wave2-mig-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Duurzame zoekmachines gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-wave2-mig-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Onnodige Cloud-opslag vermijden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-wave2-mig-item4}
+# Schermhelderheid verlagen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Schermhelderheid verlagen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-wave2-mig-item5}
+# Slaapstand gebruiken
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Slaapstand gebruiken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-wave2-mig-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Ongebruikte telefoon-apps sluiten",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-wave2-mig-item7}
+# Apparaten recyclen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Apparaten recyclen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-wave2-mig-item8}
+# Repareren voor vervangen
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repareren voor vervangen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-wave2-mig-item9}
+# Geen van deze acties
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Geen van deze acties",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Niet geselecteerd", "Geselecteerd"),
+  stack_map_values = list("1" = "Geselecteerd", "0" = "Niet geselecteerd"),
+  stack_order = c("Geselecteerd", "Niet geselecteerd"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 :::
@@ -3572,48 +4846,269 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-genai-overtime-overall}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_timeline(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-overtime-overall-item1}
+# Mailbox opschonen
+result <- viz_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R"
+  y_var = "PSGDS1_1"
 )
 
 result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-overtime-overall-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_timeline(
+  data = data,
+  title = "Duurzame zoekmachines gebruiken",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-overtime-overall-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_timeline(
+  data = data,
+  title = "Onnodige Cloud-opslag vermijden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-overtime-overall-item4}
+# Schermhelderheid verlagen
+result <- viz_timeline(
+  data = data,
+  title = "Schermhelderheid verlagen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-overtime-overall-item5}
+# Slaapstand gebruiken
+result <- viz_timeline(
+  data = data,
+  title = "Slaapstand gebruiken",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-overtime-overall-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_timeline(
+  data = data,
+  title = "Ongebruikte telefoon-apps sluiten",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-overtime-overall-item7}
+# Apparaten recyclen
+result <- viz_timeline(
+  data = data,
+  title = "Apparaten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-overtime-overall-item8}
+# Repareren voor vervangen
+result <- viz_timeline(
+  data = data,
+  title = "Repareren voor vervangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-overtime-overall-item9}
+# Geen van deze acties
+result <- viz_timeline(
+  data = data,
+  title = "Geen van deze acties",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
+
+
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-genai-overtime-age}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_timeline(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-overtime-age-item1}
+# Mailbox opschonen
+result <- viz_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Mailbox opschonen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_1",
   group_var = "AgeGroup"
 )
 
@@ -3621,25 +5116,241 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Geslacht
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-genai-overtime-gender}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_timeline(
+```{r perf-green-overtime-age-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-overtime-age-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_timeline(
+  data = data,
+  title = "Onnodige Cloud-opslag vermijden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-overtime-age-item4}
+# Schermhelderheid verlagen
+result <- viz_timeline(
+  data = data,
+  title = "Schermhelderheid verlagen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-overtime-age-item5}
+# Slaapstand gebruiken
+result <- viz_timeline(
+  data = data,
+  title = "Slaapstand gebruiken",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-overtime-age-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_timeline(
+  data = data,
+  title = "Ongebruikte telefoon-apps sluiten",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-overtime-age-item7}
+# Apparaten recyclen
+result <- viz_timeline(
+  data = data,
+  title = "Apparaten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-overtime-age-item8}
+# Repareren voor vervangen
+result <- viz_timeline(
+  data = data,
+  title = "Repareren voor vervangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-overtime-age-item9}
+# Geen van deze acties
+result <- viz_timeline(
+  data = data,
+  title = "Geen van deze acties",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-overtime-gender-item1}
+# Mailbox opschonen
+result <- viz_timeline(
+  data = data,
+  title = "Mailbox opschonen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_1",
   group_var = "geslacht"
 )
 
@@ -3647,25 +5358,241 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-genai-overtime-edu}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_timeline(
+```{r perf-green-overtime-gender-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-overtime-gender-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_timeline(
+  data = data,
+  title = "Onnodige Cloud-opslag vermijden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-overtime-gender-item4}
+# Schermhelderheid verlagen
+result <- viz_timeline(
+  data = data,
+  title = "Schermhelderheid verlagen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-overtime-gender-item5}
+# Slaapstand gebruiken
+result <- viz_timeline(
+  data = data,
+  title = "Slaapstand gebruiken",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-overtime-gender-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_timeline(
+  data = data,
+  title = "Ongebruikte telefoon-apps sluiten",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-overtime-gender-item7}
+# Apparaten recyclen
+result <- viz_timeline(
+  data = data,
+  title = "Apparaten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-overtime-gender-item8}
+# Repareren voor vervangen
+result <- viz_timeline(
+  data = data,
+  title = "Repareren voor vervangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-overtime-gender-item9}
+# Geen van deze acties
+result <- viz_timeline(
+  data = data,
+  title = "Geen van deze acties",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-overtime-edu-item1}
+# Mailbox opschonen
+result <- viz_timeline(
+  data = data,
+  title = "Mailbox opschonen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_1",
   group_var = "Education"
 )
 
@@ -3673,25 +5600,449 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r perf-genai-overtime-mig}
-# Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?
-result <- create_timeline(
+```{r perf-green-overtime-edu-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_timeline(
   data = data,
-  title = "Kijk goed naar de foto's hieronder. Welke foto is niet gemaakt met artificiële intelligentie (AI)?",
+  title = "Duurzame zoekmachines gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-overtime-edu-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_timeline(
+  data = data,
+  title = "Onnodige Cloud-opslag vermijden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-overtime-edu-item4}
+# Schermhelderheid verlagen
+result <- viz_timeline(
+  data = data,
+  title = "Schermhelderheid verlagen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-overtime-edu-item5}
+# Slaapstand gebruiken
+result <- viz_timeline(
+  data = data,
+  title = "Slaapstand gebruiken",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-overtime-edu-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_timeline(
+  data = data,
+  title = "Ongebruikte telefoon-apps sluiten",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-overtime-edu-item7}
+# Apparaten recyclen
+result <- viz_timeline(
+  data = data,
+  title = "Apparaten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-overtime-edu-item8}
+# Repareren voor vervangen
+result <- viz_timeline(
+  data = data,
+  title = "Repareren voor vervangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-overtime-edu-item9}
+# Geen van deze acties
+result <- viz_timeline(
+  data = data,
+  title = "Geen van deze acties",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r perf-green-overtime-mig-item1}
+# Mailbox opschonen
+result <- viz_timeline(
+  data = data,
+  title = "Mailbox opschonen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_1",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r perf-green-overtime-mig-item2}
+# Duurzame zoekmachines gebruiken
+result <- viz_timeline(
+  data = data,
+  title = "Duurzame zoekmachines gebruiken",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r perf-green-overtime-mig-item3}
+# Onnodige Cloud-opslag vermijden
+result <- viz_timeline(
+  data = data,
+  title = "Onnodige Cloud-opslag vermijden",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r perf-green-overtime-mig-item4}
+# Schermhelderheid verlagen
+result <- viz_timeline(
+  data = data,
+  title = "Schermhelderheid verlagen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 5
+
+
+```{r perf-green-overtime-mig-item5}
+# Slaapstand gebruiken
+result <- viz_timeline(
+  data = data,
+  title = "Slaapstand gebruiken",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 6
+
+
+```{r perf-green-overtime-mig-item6}
+# Ongebruikte telefoon-apps sluiten
+result <- viz_timeline(
+  data = data,
+  title = "Ongebruikte telefoon-apps sluiten",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 7
+
+
+```{r perf-green-overtime-mig-item7}
+# Apparaten recyclen
+result <- viz_timeline(
+  data = data,
+  title = "Apparaten recyclen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 8
+
+
+```{r perf-green-overtime-mig-item8}
+# Repareren voor vervangen
+result <- viz_timeline(
+  data = data,
+  title = "Repareren voor vervangen",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 9
+
+
+```{r perf-green-overtime-mig-item9}
+# Geen van deze acties
+result <- viz_timeline(
+  data = data,
+  title = "Geen van deze acties",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
   group_var = "MigrationBackground"
 )
 
@@ -3705,60 +6056,11 @@ result
 :::
 
 
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PAIS1R',
-  text = '<h2>Meer info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/GenAI_competence_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
+:::
 
 
 
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='performance_p3.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='4' value='4' aria-label='Current page'>
-      <span class='pagination-separator'> / 4</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(4, 6, "performance", "bottom")
 ```
 

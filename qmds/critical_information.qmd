@@ -3,16 +3,11 @@ title: "{{< iconify ph detective-fill >}} Kritische Informatie"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "critical_information")
 ```
 
 **Kritische Informatie competentie** omvat het vermogen om online informatie te evalueren: controleren of informatie waar is, betrouwbaarheid van websites beoordelen, en begrijpen wat het doel is van online content (informeren, beïnvloeden, vermaken, of verkopen).
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -21,10 +16,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -37,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -46,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -73,11 +66,11 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 
 ```{r cis-wave1-overall-2}
 # Kritische Informatievaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Kritische Informatievaardigheden",
-  questions = c("SInfo5", "SInfo6", "SInfo7"),
-  question_labels = c("Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind", "Ik weet hoe ik kan controleren of een website betrouwbaar is", "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)"),
+  x_vars = c("SInfo5", "SInfo6", "SInfo7"),
+  x_var_labels = c("Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind", "Ik weet hoe ik kan controleren of een website betrouwbaar is", "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -103,7 +96,7 @@ result
 
 ```{r cis-wave1-age-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -127,7 +120,7 @@ result
 
 ```{r cis-wave1-age-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -151,7 +144,7 @@ result
 
 ```{r cis-wave1-age-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -183,7 +176,7 @@ result
 
 ```{r cis-wave1-gender-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -207,7 +200,7 @@ result
 
 ```{r cis-wave1-gender-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -231,7 +224,7 @@ result
 
 ```{r cis-wave1-gender-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -263,7 +256,7 @@ result
 
 ```{r cis-wave1-edu-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -287,7 +280,7 @@ result
 
 ```{r cis-wave1-edu-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -311,7 +304,7 @@ result
 
 ```{r cis-wave1-edu-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -343,7 +336,7 @@ result
 
 ```{r cis-wave1-mig-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -367,7 +360,7 @@ result
 
 ```{r cis-wave1-mig-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -391,7 +384,7 @@ result
 
 ```{r cis-wave1-mig-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -426,11 +419,11 @@ result
 
 ```{r cis-wave2-overall-2}
 # Kritische Informatievaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Kritische Informatievaardigheden",
-  questions = c("SInfo5", "SInfo6", "SInfo7"),
-  question_labels = c("Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind", "Ik weet hoe ik kan controleren of een website betrouwbaar is", "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)"),
+  x_vars = c("SInfo5", "SInfo6", "SInfo7"),
+  x_var_labels = c("Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind", "Ik weet hoe ik kan controleren of een website betrouwbaar is", "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -456,7 +449,7 @@ result
 
 ```{r cis-wave2-age-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -480,7 +473,7 @@ result
 
 ```{r cis-wave2-age-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -504,7 +497,7 @@ result
 
 ```{r cis-wave2-age-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -536,7 +529,7 @@ result
 
 ```{r cis-wave2-gender-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -560,7 +553,7 @@ result
 
 ```{r cis-wave2-gender-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -584,7 +577,7 @@ result
 
 ```{r cis-wave2-gender-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -616,7 +609,7 @@ result
 
 ```{r cis-wave2-edu-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -640,7 +633,7 @@ result
 
 ```{r cis-wave2-edu-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -664,7 +657,7 @@ result
 
 ```{r cis-wave2-edu-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -696,7 +689,7 @@ result
 
 ```{r cis-wave2-mig-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   stacked_type = "percent",
@@ -720,7 +713,7 @@ result
 
 ```{r cis-wave2-mig-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   stacked_type = "percent",
@@ -744,7 +737,7 @@ result
 
 ```{r cis-wave2-mig-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   stacked_type = "percent",
@@ -784,21 +777,21 @@ result
 
 ```{r cis-overtime-overall-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5"
+  y_var = "SInfo5"
 )
 
 result
@@ -810,21 +803,21 @@ result
 
 ```{r cis-overtime-overall-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6"
+  y_var = "SInfo6"
 )
 
 result
@@ -836,21 +829,21 @@ result
 
 ```{r cis-overtime-overall-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7"
+  y_var = "SInfo7"
 )
 
 result
@@ -870,19 +863,19 @@ result
 
 ```{r cis-overtime-age-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5",
+  y_var = "SInfo5",
   group_var = "AgeGroup"
 )
 
@@ -895,19 +888,19 @@ result
 
 ```{r cis-overtime-age-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6",
+  y_var = "SInfo6",
   group_var = "AgeGroup"
 )
 
@@ -920,19 +913,19 @@ result
 
 ```{r cis-overtime-age-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7",
+  y_var = "SInfo7",
   group_var = "AgeGroup"
 )
 
@@ -953,19 +946,19 @@ result
 
 ```{r cis-overtime-gender-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5",
+  y_var = "SInfo5",
   group_var = "geslacht"
 )
 
@@ -978,19 +971,19 @@ result
 
 ```{r cis-overtime-gender-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6",
+  y_var = "SInfo6",
   group_var = "geslacht"
 )
 
@@ -1003,19 +996,19 @@ result
 
 ```{r cis-overtime-gender-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7",
+  y_var = "SInfo7",
   group_var = "geslacht"
 )
 
@@ -1036,19 +1029,19 @@ result
 
 ```{r cis-overtime-edu-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5",
+  y_var = "SInfo5",
   group_var = "Education"
 )
 
@@ -1061,19 +1054,19 @@ result
 
 ```{r cis-overtime-edu-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6",
+  y_var = "SInfo6",
   group_var = "Education"
 )
 
@@ -1086,19 +1079,19 @@ result
 
 ```{r cis-overtime-edu-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7",
+  y_var = "SInfo7",
   group_var = "Education"
 )
 
@@ -1119,19 +1112,19 @@ result
 
 ```{r cis-overtime-mig-item1-2}
 # Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of de informatie waar is die ik op internet vind",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo5",
+  y_var = "SInfo5",
   group_var = "MigrationBackground"
 )
 
@@ -1144,19 +1137,19 @@ result
 
 ```{r cis-overtime-mig-item2-2}
 # Ik weet hoe ik kan controleren of een website betrouwbaar is
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik kan controleren of een website betrouwbaar is",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo6",
+  y_var = "SInfo6",
   group_var = "MigrationBackground"
 )
 
@@ -1169,19 +1162,19 @@ result
 
 ```{r cis-overtime-mig-item3-2}
 # Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan inschatten wat het doel van online informatie is (bijv. om te informeren, beïnvloeden, vermaken of verkopen)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SInfo7",
+  y_var = "SInfo7",
   group_var = "MigrationBackground"
 )
 
@@ -1219,11 +1212,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r critinfo-wave1-overall-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
-  questions = "KInfo3RC",
-  question_labels = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
+  x_vars = "KInfo3RC",
+  x_var_labels = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1245,7 +1238,7 @@ result
 
 ```{r critinfo-wave1-age-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1270,7 +1263,7 @@ result
 
 ```{r critinfo-wave1-gender-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1295,7 +1288,7 @@ result
 
 ```{r critinfo-wave1-edu-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1320,7 +1313,7 @@ result
 
 ```{r critinfo-wave1-mig-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1353,11 +1346,11 @@ result
 
 ```{r critinfo-wave2-overall-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
-  questions = "KInfo3RC",
-  question_labels = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
+  x_vars = "KInfo3RC",
+  x_var_labels = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1379,7 +1372,7 @@ result
 
 ```{r critinfo-wave2-age-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1404,7 +1397,7 @@ result
 
 ```{r critinfo-wave2-gender-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1429,7 +1422,7 @@ result
 
 ```{r critinfo-wave2-edu-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1454,7 +1447,7 @@ result
 
 ```{r critinfo-wave2-mig-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   stacked_type = "percent",
@@ -1487,21 +1480,21 @@ result
 
 ```{r critinfo-overtime-overall-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KInfo3RC"
+  y_var = "KInfo3RC"
 )
 
 result
@@ -1513,20 +1506,20 @@ result
 
 ```{r critinfo-overtime-age-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo3RC",
+  y_var = "KInfo3RC",
   group_var = "AgeGroup"
 )
 
@@ -1539,20 +1532,20 @@ result
 
 ```{r critinfo-overtime-gender-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo3RC",
+  y_var = "KInfo3RC",
   group_var = "geslacht"
 )
 
@@ -1565,20 +1558,20 @@ result
 
 ```{r critinfo-overtime-edu-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo3RC",
+  y_var = "KInfo3RC",
   group_var = "Education"
 )
 
@@ -1591,20 +1584,20 @@ result
 
 ```{r critinfo-overtime-mig-2}
 # Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige mensen verdienen geld aan het verspreiden van nepnieuws op het internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KInfo3RC",
+  y_var = "KInfo3RC",
   group_var = "MigrationBackground"
 )
 
@@ -1639,11 +1632,11 @@ create_blockquote('Bekijk ook dit bericht (<a href=\'#PCIS1R\' class=\'modal-lin
 
 ```{r perf-cis-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
-  question_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
+  x_vars = c("PCIS1R", "PCIS2R", "PCIS3R"),
+  x_var_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1670,7 +1663,7 @@ result
 
 ```{r perf-cis-wave1-age-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -1695,7 +1688,7 @@ result
 
 ```{r perf-cis-wave1-age-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1720,7 +1713,7 @@ result
 
 ```{r perf-cis-wave1-age-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -1753,7 +1746,7 @@ result
 
 ```{r perf-cis-wave1-gender-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -1778,7 +1771,7 @@ result
 
 ```{r perf-cis-wave1-gender-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1803,7 +1796,7 @@ result
 
 ```{r perf-cis-wave1-gender-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -1836,7 +1829,7 @@ result
 
 ```{r perf-cis-wave1-edu-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -1861,7 +1854,7 @@ result
 
 ```{r perf-cis-wave1-edu-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1886,7 +1879,7 @@ result
 
 ```{r perf-cis-wave1-edu-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -1919,7 +1912,7 @@ result
 
 ```{r perf-cis-wave1-mig-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -1944,7 +1937,7 @@ result
 
 ```{r perf-cis-wave1-mig-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -1969,7 +1962,7 @@ result
 
 ```{r perf-cis-wave1-mig-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -2005,11 +1998,11 @@ result
 
 ```{r perf-cis-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PCIS1R", "PCIS2R", "PCIS3R"),
-  question_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
+  x_vars = c("PCIS1R", "PCIS2R", "PCIS3R"),
+  x_var_labels = c("Herkennen nepnieuws op sociale media", "Herkennen reclame op sociale media", "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2036,7 +2029,7 @@ result
 
 ```{r perf-cis-wave2-age-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -2061,7 +2054,7 @@ result
 
 ```{r perf-cis-wave2-age-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -2086,7 +2079,7 @@ result
 
 ```{r perf-cis-wave2-age-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -2119,7 +2112,7 @@ result
 
 ```{r perf-cis-wave2-gender-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -2144,7 +2137,7 @@ result
 
 ```{r perf-cis-wave2-gender-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -2169,7 +2162,7 @@ result
 
 ```{r perf-cis-wave2-gender-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -2202,7 +2195,7 @@ result
 
 ```{r perf-cis-wave2-edu-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -2227,7 +2220,7 @@ result
 
 ```{r perf-cis-wave2-edu-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -2252,7 +2245,7 @@ result
 
 ```{r perf-cis-wave2-edu-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -2285,7 +2278,7 @@ result
 
 ```{r perf-cis-wave2-mig-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen nepnieuws op sociale media",
   stacked_type = "percent",
@@ -2310,7 +2303,7 @@ result
 
 ```{r perf-cis-wave2-mig-item2-2}
 # Herkennen reclame op sociale media
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Herkennen reclame op sociale media",
   stacked_type = "percent",
@@ -2335,7 +2328,7 @@ result
 
 ```{r perf-cis-wave2-mig-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   stacked_type = "percent",
@@ -2376,21 +2369,21 @@ result
 
 ```{r perf-cis-overtime-overall-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R"
+  y_var = "PCIS1R"
 )
 
 result
@@ -2402,21 +2395,21 @@ result
 
 ```{r perf-cis-overtime-overall-item2-2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R"
+  y_var = "PCIS2R"
 )
 
 result
@@ -2428,21 +2421,21 @@ result
 
 ```{r perf-cis-overtime-overall-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R"
+  y_var = "PCIS3R"
 )
 
 result
@@ -2462,20 +2455,20 @@ result
 
 ```{r perf-cis-overtime-age-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "AgeGroup"
 )
 
@@ -2488,20 +2481,20 @@ result
 
 ```{r perf-cis-overtime-age-item2-2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "AgeGroup"
 )
 
@@ -2514,20 +2507,20 @@ result
 
 ```{r perf-cis-overtime-age-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "AgeGroup"
 )
 
@@ -2548,20 +2541,20 @@ result
 
 ```{r perf-cis-overtime-gender-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "geslacht"
 )
 
@@ -2574,20 +2567,20 @@ result
 
 ```{r perf-cis-overtime-gender-item2-2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "geslacht"
 )
 
@@ -2600,20 +2593,20 @@ result
 
 ```{r perf-cis-overtime-gender-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "geslacht"
 )
 
@@ -2634,20 +2627,20 @@ result
 
 ```{r perf-cis-overtime-edu-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "Education"
 )
 
@@ -2660,20 +2653,20 @@ result
 
 ```{r perf-cis-overtime-edu-item2-2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "Education"
 )
 
@@ -2686,20 +2679,20 @@ result
 
 ```{r perf-cis-overtime-edu-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "Education"
 )
 
@@ -2720,20 +2713,20 @@ result
 
 ```{r perf-cis-overtime-mig-item1-2}
 # Herkennen nepnieuws op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen nepnieuws op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS1R",
+  y_var = "PCIS1R",
   group_var = "MigrationBackground"
 )
 
@@ -2746,20 +2739,20 @@ result
 
 ```{r perf-cis-overtime-mig-item2-2}
 # Herkennen reclame op sociale media
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Herkennen reclame op sociale media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS2R",
+  y_var = "PCIS2R",
   group_var = "MigrationBackground"
 )
 
@@ -2772,20 +2765,20 @@ result
 
 ```{r perf-cis-overtime-mig-item3-2}
 # Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Waar moet je naar kijken om te controleren of een bericht op sociale media geen nepnieuws is?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PCIS3R",
+  y_var = "PCIS3R",
   group_var = "MigrationBackground"
 )
 

@@ -3,16 +3,11 @@ title: "{{< iconify ph robot-fill >}} AI"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "ai")
 ```
 
 **AI competentie** omvat het vermogen om te herkennen wanneer websites en apps artificiële intelligentie gebruiken om content en aanbevelingen te personaliseren.
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -21,10 +16,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -37,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -46,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -73,11 +66,11 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 
 ```{r ai-wave1-overall-2}
 # AI Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "AI Vaardigheden",
-  questions = c("SAI1", "SAI2"),
-  question_labels = c("Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen", "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI"),
+  x_vars = c("SAI1", "SAI2"),
+  x_var_labels = c("Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen", "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -103,7 +96,7 @@ result
 
 ```{r ai-wave1-age-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -127,7 +120,7 @@ result
 
 ```{r ai-wave1-age-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -159,7 +152,7 @@ result
 
 ```{r ai-wave1-gender-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -183,7 +176,7 @@ result
 
 ```{r ai-wave1-gender-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -215,7 +208,7 @@ result
 
 ```{r ai-wave1-edu-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -239,7 +232,7 @@ result
 
 ```{r ai-wave1-edu-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -271,7 +264,7 @@ result
 
 ```{r ai-wave1-mig-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -295,7 +288,7 @@ result
 
 ```{r ai-wave1-mig-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -330,11 +323,11 @@ result
 
 ```{r ai-wave2-overall-2}
 # AI Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "AI Vaardigheden",
-  questions = c("SAI1", "SAI2"),
-  question_labels = c("Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen", "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI"),
+  x_vars = c("SAI1", "SAI2"),
+  x_var_labels = c("Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen", "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -360,7 +353,7 @@ result
 
 ```{r ai-wave2-age-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -384,7 +377,7 @@ result
 
 ```{r ai-wave2-age-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -416,7 +409,7 @@ result
 
 ```{r ai-wave2-gender-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -440,7 +433,7 @@ result
 
 ```{r ai-wave2-gender-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -472,7 +465,7 @@ result
 
 ```{r ai-wave2-edu-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -496,7 +489,7 @@ result
 
 ```{r ai-wave2-edu-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -528,7 +521,7 @@ result
 
 ```{r ai-wave2-mig-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   stacked_type = "percent",
@@ -552,7 +545,7 @@ result
 
 ```{r ai-wave2-mig-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   stacked_type = "percent",
@@ -592,21 +585,21 @@ result
 
 ```{r ai-overtime-overall-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1"
+  y_var = "SAI1"
 )
 
 result
@@ -618,21 +611,21 @@ result
 
 ```{r ai-overtime-overall-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2"
+  y_var = "SAI2"
 )
 
 result
@@ -652,19 +645,19 @@ result
 
 ```{r ai-overtime-age-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1",
+  y_var = "SAI1",
   group_var = "AgeGroup"
 )
 
@@ -677,19 +670,19 @@ result
 
 ```{r ai-overtime-age-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2",
+  y_var = "SAI2",
   group_var = "AgeGroup"
 )
 
@@ -710,19 +703,19 @@ result
 
 ```{r ai-overtime-gender-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1",
+  y_var = "SAI1",
   group_var = "geslacht"
 )
 
@@ -735,19 +728,19 @@ result
 
 ```{r ai-overtime-gender-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2",
+  y_var = "SAI2",
   group_var = "geslacht"
 )
 
@@ -768,19 +761,19 @@ result
 
 ```{r ai-overtime-edu-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1",
+  y_var = "SAI1",
   group_var = "Education"
 )
 
@@ -793,19 +786,19 @@ result
 
 ```{r ai-overtime-edu-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2",
+  y_var = "SAI2",
   group_var = "Education"
 )
 
@@ -826,19 +819,19 @@ result
 
 ```{r ai-overtime-mig-item1-2}
 # Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer een website of app AI gebruikt om de inhoud aan mij aan te passen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI1",
+  y_var = "SAI1",
   group_var = "MigrationBackground"
 )
 
@@ -851,19 +844,19 @@ result
 
 ```{r ai-overtime-mig-item2-2}
 # Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet wanneer bepaalde inhoud mij wordt aanbevolen door AI",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SAI2",
+  y_var = "SAI2",
   group_var = "MigrationBackground"
 )
 
@@ -901,11 +894,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r kai-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
-  question_labels = c("Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)", "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien", "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet", "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment"),
+  x_vars = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  x_var_labels = c("Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)", "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien", "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet", "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -932,7 +925,7 @@ result
 
 ```{r kai-wave1-age-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -957,7 +950,7 @@ result
 
 ```{r kai-wave1-age-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -982,7 +975,7 @@ result
 
 ```{r kai-wave1-age-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1007,7 +1000,7 @@ result
 
 ```{r kai-wave1-age-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1040,7 +1033,7 @@ result
 
 ```{r kai-wave1-gender-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -1065,7 +1058,7 @@ result
 
 ```{r kai-wave1-gender-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -1090,7 +1083,7 @@ result
 
 ```{r kai-wave1-gender-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1115,7 +1108,7 @@ result
 
 ```{r kai-wave1-gender-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1148,7 +1141,7 @@ result
 
 ```{r kai-wave1-edu-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -1173,7 +1166,7 @@ result
 
 ```{r kai-wave1-edu-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -1198,7 +1191,7 @@ result
 
 ```{r kai-wave1-edu-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1223,7 +1216,7 @@ result
 
 ```{r kai-wave1-edu-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1256,7 +1249,7 @@ result
 
 ```{r kai-wave1-mig-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -1281,7 +1274,7 @@ result
 
 ```{r kai-wave1-mig-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -1306,7 +1299,7 @@ result
 
 ```{r kai-wave1-mig-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1331,7 +1324,7 @@ result
 
 ```{r kai-wave1-mig-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1367,11 +1360,11 @@ result
 
 ```{r kai-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
-  question_labels = c("Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)", "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien", "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet", "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment"),
+  x_vars = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  x_var_labels = c("Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)", "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien", "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet", "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1398,7 +1391,7 @@ result
 
 ```{r kai-wave2-age-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -1423,7 +1416,7 @@ result
 
 ```{r kai-wave2-age-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -1448,7 +1441,7 @@ result
 
 ```{r kai-wave2-age-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1473,7 +1466,7 @@ result
 
 ```{r kai-wave2-age-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1506,7 +1499,7 @@ result
 
 ```{r kai-wave2-gender-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -1531,7 +1524,7 @@ result
 
 ```{r kai-wave2-gender-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -1556,7 +1549,7 @@ result
 
 ```{r kai-wave2-gender-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1581,7 +1574,7 @@ result
 
 ```{r kai-wave2-gender-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1614,7 +1607,7 @@ result
 
 ```{r kai-wave2-edu-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -1639,7 +1632,7 @@ result
 
 ```{r kai-wave2-edu-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -1664,7 +1657,7 @@ result
 
 ```{r kai-wave2-edu-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1689,7 +1682,7 @@ result
 
 ```{r kai-wave2-edu-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1722,7 +1715,7 @@ result
 
 ```{r kai-wave2-mig-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   stacked_type = "percent",
@@ -1747,7 +1740,7 @@ result
 
 ```{r kai-wave2-mig-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   stacked_type = "percent",
@@ -1772,7 +1765,7 @@ result
 
 ```{r kai-wave2-mig-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   stacked_type = "percent",
@@ -1797,7 +1790,7 @@ result
 
 ```{r kai-wave2-mig-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   stacked_type = "percent",
@@ -1838,21 +1831,21 @@ result
 
 ```{r kai-overtime-overall-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC"
+  y_var = "KAI1RC"
 )
 
 result
@@ -1864,21 +1857,21 @@ result
 
 ```{r kai-overtime-overall-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC"
+  y_var = "KAI2RC"
 )
 
 result
@@ -1890,21 +1883,21 @@ result
 
 ```{r kai-overtime-overall-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC"
+  y_var = "KAI3RC"
 )
 
 result
@@ -1916,21 +1909,21 @@ result
 
 ```{r kai-overtime-overall-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC"
+  y_var = "KAI4RC"
 )
 
 result
@@ -1950,20 +1943,20 @@ result
 
 ```{r kai-overtime-age-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "AgeGroup"
 )
 
@@ -1976,20 +1969,20 @@ result
 
 ```{r kai-overtime-age-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "AgeGroup"
 )
 
@@ -2002,20 +1995,20 @@ result
 
 ```{r kai-overtime-age-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "AgeGroup"
 )
 
@@ -2028,20 +2021,20 @@ result
 
 ```{r kai-overtime-age-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "AgeGroup"
 )
 
@@ -2062,20 +2055,20 @@ result
 
 ```{r kai-overtime-gender-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "geslacht"
 )
 
@@ -2088,20 +2081,20 @@ result
 
 ```{r kai-overtime-gender-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "geslacht"
 )
 
@@ -2114,20 +2107,20 @@ result
 
 ```{r kai-overtime-gender-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "geslacht"
 )
 
@@ -2140,20 +2133,20 @@ result
 
 ```{r kai-overtime-gender-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "geslacht"
 )
 
@@ -2174,20 +2167,20 @@ result
 
 ```{r kai-overtime-edu-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "Education"
 )
 
@@ -2200,20 +2193,20 @@ result
 
 ```{r kai-overtime-edu-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "Education"
 )
 
@@ -2226,20 +2219,20 @@ result
 
 ```{r kai-overtime-edu-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "Education"
 )
 
@@ -2252,20 +2245,20 @@ result
 
 ```{r kai-overtime-edu-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "Education"
 )
 
@@ -2286,20 +2279,20 @@ result
 
 ```{r kai-overtime-mig-item1-2}
 # Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige websites en apps voor nieuws en entertainment gebruiken artificiële intelligentie (AI)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "MigrationBackground"
 )
 
@@ -2312,20 +2305,20 @@ result
 
 ```{r kai-overtime-mig-item2-2}
 # Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites en apps voor nieuws en entertainment laten aan iedereen hetzelfde zien",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2338,20 +2331,20 @@ result
 
 ```{r kai-overtime-mig-item3-2}
 # Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Sommige beslissingen over de inhoud van websites en apps voor nieuws en entertainment gaan automatisch, zonder dat een mens iets doet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "MigrationBackground"
 )
 
@@ -2364,20 +2357,20 @@ result
 
 ```{r kai-overtime-mig-item4-2}
 # Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je online gedrag bepaalt wat je te zien krijgt op websites en apps voor nieuws en entertainment",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "MigrationBackground"
 )
 
@@ -2415,11 +2408,11 @@ create_blockquote('Selecteer alle <a href=\"#PAIS2_1\" class=\"modal-link\">apps
 
 ```{r perf-ai-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
+  x_vars = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  x_var_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2446,7 +2439,7 @@ result
 
 ```{r perf-ai-wave1-age-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Google",
   stacked_type = "percent",
@@ -2471,7 +2464,7 @@ result
 
 ```{r perf-ai-wave1-age-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Netflix",
   stacked_type = "percent",
@@ -2496,7 +2489,7 @@ result
 
 ```{r perf-ai-wave1-age-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -2521,7 +2514,7 @@ result
 
 ```{r perf-ai-wave1-age-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Facebook",
   stacked_type = "percent",
@@ -2546,7 +2539,7 @@ result
 
 ```{r perf-ai-wave1-age-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Bol.com",
   stacked_type = "percent",
@@ -2571,7 +2564,7 @@ result
 
 ```{r perf-ai-wave1-age-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "DigID",
   stacked_type = "percent",
@@ -2596,7 +2589,7 @@ result
 
 ```{r perf-ai-wave1-age-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -2621,7 +2614,7 @@ result
 
 ```{r perf-ai-wave1-age-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -2646,7 +2639,7 @@ result
 
 ```{r perf-ai-wave1-age-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "TikTok",
   stacked_type = "percent",
@@ -2679,7 +2672,7 @@ result
 
 ```{r perf-ai-wave1-gender-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Google",
   stacked_type = "percent",
@@ -2704,7 +2697,7 @@ result
 
 ```{r perf-ai-wave1-gender-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Netflix",
   stacked_type = "percent",
@@ -2729,7 +2722,7 @@ result
 
 ```{r perf-ai-wave1-gender-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -2754,7 +2747,7 @@ result
 
 ```{r perf-ai-wave1-gender-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Facebook",
   stacked_type = "percent",
@@ -2779,7 +2772,7 @@ result
 
 ```{r perf-ai-wave1-gender-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Bol.com",
   stacked_type = "percent",
@@ -2804,7 +2797,7 @@ result
 
 ```{r perf-ai-wave1-gender-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "DigID",
   stacked_type = "percent",
@@ -2829,7 +2822,7 @@ result
 
 ```{r perf-ai-wave1-gender-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -2854,7 +2847,7 @@ result
 
 ```{r perf-ai-wave1-gender-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -2879,7 +2872,7 @@ result
 
 ```{r perf-ai-wave1-gender-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "TikTok",
   stacked_type = "percent",
@@ -2912,7 +2905,7 @@ result
 
 ```{r perf-ai-wave1-edu-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Google",
   stacked_type = "percent",
@@ -2937,7 +2930,7 @@ result
 
 ```{r perf-ai-wave1-edu-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Netflix",
   stacked_type = "percent",
@@ -2962,7 +2955,7 @@ result
 
 ```{r perf-ai-wave1-edu-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -2987,7 +2980,7 @@ result
 
 ```{r perf-ai-wave1-edu-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Facebook",
   stacked_type = "percent",
@@ -3012,7 +3005,7 @@ result
 
 ```{r perf-ai-wave1-edu-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Bol.com",
   stacked_type = "percent",
@@ -3037,7 +3030,7 @@ result
 
 ```{r perf-ai-wave1-edu-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "DigID",
   stacked_type = "percent",
@@ -3062,7 +3055,7 @@ result
 
 ```{r perf-ai-wave1-edu-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -3087,7 +3080,7 @@ result
 
 ```{r perf-ai-wave1-edu-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -3112,7 +3105,7 @@ result
 
 ```{r perf-ai-wave1-edu-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "TikTok",
   stacked_type = "percent",
@@ -3145,7 +3138,7 @@ result
 
 ```{r perf-ai-wave1-mig-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Google",
   stacked_type = "percent",
@@ -3170,7 +3163,7 @@ result
 
 ```{r perf-ai-wave1-mig-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Netflix",
   stacked_type = "percent",
@@ -3195,7 +3188,7 @@ result
 
 ```{r perf-ai-wave1-mig-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -3220,7 +3213,7 @@ result
 
 ```{r perf-ai-wave1-mig-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Facebook",
   stacked_type = "percent",
@@ -3245,7 +3238,7 @@ result
 
 ```{r perf-ai-wave1-mig-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Bol.com",
   stacked_type = "percent",
@@ -3270,7 +3263,7 @@ result
 
 ```{r perf-ai-wave1-mig-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "DigID",
   stacked_type = "percent",
@@ -3295,7 +3288,7 @@ result
 
 ```{r perf-ai-wave1-mig-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -3320,7 +3313,7 @@ result
 
 ```{r perf-ai-wave1-mig-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -3345,7 +3338,7 @@ result
 
 ```{r perf-ai-wave1-mig-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "TikTok",
   stacked_type = "percent",
@@ -3381,11 +3374,11 @@ result
 
 ```{r perf-ai-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
+  x_vars = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
+  x_var_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS Nieuws", "Albert Heijn", "TikTok"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3412,7 +3405,7 @@ result
 
 ```{r perf-ai-wave2-age-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Google",
   stacked_type = "percent",
@@ -3437,7 +3430,7 @@ result
 
 ```{r perf-ai-wave2-age-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Netflix",
   stacked_type = "percent",
@@ -3462,7 +3455,7 @@ result
 
 ```{r perf-ai-wave2-age-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -3487,7 +3480,7 @@ result
 
 ```{r perf-ai-wave2-age-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Facebook",
   stacked_type = "percent",
@@ -3512,7 +3505,7 @@ result
 
 ```{r perf-ai-wave2-age-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Bol.com",
   stacked_type = "percent",
@@ -3537,7 +3530,7 @@ result
 
 ```{r perf-ai-wave2-age-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "DigID",
   stacked_type = "percent",
@@ -3562,7 +3555,7 @@ result
 
 ```{r perf-ai-wave2-age-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -3587,7 +3580,7 @@ result
 
 ```{r perf-ai-wave2-age-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -3612,7 +3605,7 @@ result
 
 ```{r perf-ai-wave2-age-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "TikTok",
   stacked_type = "percent",
@@ -3645,7 +3638,7 @@ result
 
 ```{r perf-ai-wave2-gender-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Google",
   stacked_type = "percent",
@@ -3670,7 +3663,7 @@ result
 
 ```{r perf-ai-wave2-gender-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Netflix",
   stacked_type = "percent",
@@ -3695,7 +3688,7 @@ result
 
 ```{r perf-ai-wave2-gender-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -3720,7 +3713,7 @@ result
 
 ```{r perf-ai-wave2-gender-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Facebook",
   stacked_type = "percent",
@@ -3745,7 +3738,7 @@ result
 
 ```{r perf-ai-wave2-gender-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Bol.com",
   stacked_type = "percent",
@@ -3770,7 +3763,7 @@ result
 
 ```{r perf-ai-wave2-gender-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "DigID",
   stacked_type = "percent",
@@ -3795,7 +3788,7 @@ result
 
 ```{r perf-ai-wave2-gender-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -3820,7 +3813,7 @@ result
 
 ```{r perf-ai-wave2-gender-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -3845,7 +3838,7 @@ result
 
 ```{r perf-ai-wave2-gender-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "TikTok",
   stacked_type = "percent",
@@ -3878,7 +3871,7 @@ result
 
 ```{r perf-ai-wave2-edu-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Google",
   stacked_type = "percent",
@@ -3903,7 +3896,7 @@ result
 
 ```{r perf-ai-wave2-edu-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Netflix",
   stacked_type = "percent",
@@ -3928,7 +3921,7 @@ result
 
 ```{r perf-ai-wave2-edu-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -3953,7 +3946,7 @@ result
 
 ```{r perf-ai-wave2-edu-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Facebook",
   stacked_type = "percent",
@@ -3978,7 +3971,7 @@ result
 
 ```{r perf-ai-wave2-edu-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Bol.com",
   stacked_type = "percent",
@@ -4003,7 +3996,7 @@ result
 
 ```{r perf-ai-wave2-edu-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "DigID",
   stacked_type = "percent",
@@ -4028,7 +4021,7 @@ result
 
 ```{r perf-ai-wave2-edu-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -4053,7 +4046,7 @@ result
 
 ```{r perf-ai-wave2-edu-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -4078,7 +4071,7 @@ result
 
 ```{r perf-ai-wave2-edu-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "TikTok",
   stacked_type = "percent",
@@ -4111,7 +4104,7 @@ result
 
 ```{r perf-ai-wave2-mig-item1-2}
 # Google
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Google",
   stacked_type = "percent",
@@ -4136,7 +4129,7 @@ result
 
 ```{r perf-ai-wave2-mig-item2-2}
 # Netflix
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Netflix",
   stacked_type = "percent",
@@ -4161,7 +4154,7 @@ result
 
 ```{r perf-ai-wave2-mig-item3-2}
 # Whatsapp
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Whatsapp",
   stacked_type = "percent",
@@ -4186,7 +4179,7 @@ result
 
 ```{r perf-ai-wave2-mig-item4-2}
 # Facebook
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Facebook",
   stacked_type = "percent",
@@ -4211,7 +4204,7 @@ result
 
 ```{r perf-ai-wave2-mig-item5-2}
 # Bol.com
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Bol.com",
   stacked_type = "percent",
@@ -4236,7 +4229,7 @@ result
 
 ```{r perf-ai-wave2-mig-item6-2}
 # DigID
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "DigID",
   stacked_type = "percent",
@@ -4261,7 +4254,7 @@ result
 
 ```{r perf-ai-wave2-mig-item7-2}
 # NOS Nieuws
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "NOS Nieuws",
   stacked_type = "percent",
@@ -4286,7 +4279,7 @@ result
 
 ```{r perf-ai-wave2-mig-item8-2}
 # Albert Heijn
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Albert Heijn",
   stacked_type = "percent",
@@ -4311,7 +4304,7 @@ result
 
 ```{r perf-ai-wave2-mig-item9-2}
 # TikTok
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "TikTok",
   stacked_type = "percent",
@@ -4352,21 +4345,21 @@ result
 
 ```{r perf-ai-overtime-overall-item1-2}
 # Google
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Google",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1"
+  y_var = "PAIS2_1"
 )
 
 result
@@ -4378,21 +4371,21 @@ result
 
 ```{r perf-ai-overtime-overall-item2-2}
 # Netflix
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Netflix",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2"
+  y_var = "PAIS2_2"
 )
 
 result
@@ -4404,21 +4397,21 @@ result
 
 ```{r perf-ai-overtime-overall-item3-2}
 # Whatsapp
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Whatsapp",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3"
+  y_var = "PAIS2_3"
 )
 
 result
@@ -4430,21 +4423,21 @@ result
 
 ```{r perf-ai-overtime-overall-item4-2}
 # Facebook
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Facebook",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4"
+  y_var = "PAIS2_4"
 )
 
 result
@@ -4456,21 +4449,21 @@ result
 
 ```{r perf-ai-overtime-overall-item5-2}
 # Bol.com
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Bol.com",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5"
+  y_var = "PAIS2_5"
 )
 
 result
@@ -4482,21 +4475,21 @@ result
 
 ```{r perf-ai-overtime-overall-item6-2}
 # DigID
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "DigID",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6"
+  y_var = "PAIS2_6"
 )
 
 result
@@ -4508,21 +4501,21 @@ result
 
 ```{r perf-ai-overtime-overall-item7-2}
 # NOS Nieuws
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "NOS Nieuws",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7"
+  y_var = "PAIS2_7"
 )
 
 result
@@ -4534,21 +4527,21 @@ result
 
 ```{r perf-ai-overtime-overall-item8-2}
 # Albert Heijn
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Albert Heijn",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8"
+  y_var = "PAIS2_8"
 )
 
 result
@@ -4560,21 +4553,21 @@ result
 
 ```{r perf-ai-overtime-overall-item9-2}
 # TikTok
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "TikTok",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_9"
+  y_var = "PAIS2_9"
 )
 
 result
@@ -4594,20 +4587,20 @@ result
 
 ```{r perf-ai-overtime-age-item1-2}
 # Google
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Google",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PAIS2_1",
   group_var = "AgeGroup"
 )
 
@@ -4620,20 +4613,20 @@ result
 
 ```{r perf-ai-overtime-age-item2-2}
 # Netflix
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Netflix",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PAIS2_2",
   group_var = "AgeGroup"
 )
 
@@ -4646,20 +4639,20 @@ result
 
 ```{r perf-ai-overtime-age-item3-2}
 # Whatsapp
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Whatsapp",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PAIS2_3",
   group_var = "AgeGroup"
 )
 
@@ -4672,20 +4665,20 @@ result
 
 ```{r perf-ai-overtime-age-item4-2}
 # Facebook
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Facebook",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PAIS2_4",
   group_var = "AgeGroup"
 )
 
@@ -4698,20 +4691,20 @@ result
 
 ```{r perf-ai-overtime-age-item5-2}
 # Bol.com
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Bol.com",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PAIS2_5",
   group_var = "AgeGroup"
 )
 
@@ -4724,20 +4717,20 @@ result
 
 ```{r perf-ai-overtime-age-item6-2}
 # DigID
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "DigID",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PAIS2_6",
   group_var = "AgeGroup"
 )
 
@@ -4750,20 +4743,20 @@ result
 
 ```{r perf-ai-overtime-age-item7-2}
 # NOS Nieuws
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "NOS Nieuws",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PAIS2_7",
   group_var = "AgeGroup"
 )
 
@@ -4776,20 +4769,20 @@ result
 
 ```{r perf-ai-overtime-age-item8-2}
 # Albert Heijn
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Albert Heijn",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
+  y_var = "PAIS2_8",
   group_var = "AgeGroup"
 )
 
@@ -4802,20 +4795,20 @@ result
 
 ```{r perf-ai-overtime-age-item9-2}
 # TikTok
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "TikTok",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PAIS2_9",
   group_var = "AgeGroup"
 )
 
@@ -4836,20 +4829,20 @@ result
 
 ```{r perf-ai-overtime-gender-item1-2}
 # Google
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Google",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PAIS2_1",
   group_var = "geslacht"
 )
 
@@ -4862,20 +4855,20 @@ result
 
 ```{r perf-ai-overtime-gender-item2-2}
 # Netflix
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Netflix",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PAIS2_2",
   group_var = "geslacht"
 )
 
@@ -4888,20 +4881,20 @@ result
 
 ```{r perf-ai-overtime-gender-item3-2}
 # Whatsapp
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Whatsapp",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PAIS2_3",
   group_var = "geslacht"
 )
 
@@ -4914,20 +4907,20 @@ result
 
 ```{r perf-ai-overtime-gender-item4-2}
 # Facebook
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Facebook",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PAIS2_4",
   group_var = "geslacht"
 )
 
@@ -4940,20 +4933,20 @@ result
 
 ```{r perf-ai-overtime-gender-item5-2}
 # Bol.com
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Bol.com",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PAIS2_5",
   group_var = "geslacht"
 )
 
@@ -4966,20 +4959,20 @@ result
 
 ```{r perf-ai-overtime-gender-item6-2}
 # DigID
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "DigID",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PAIS2_6",
   group_var = "geslacht"
 )
 
@@ -4992,20 +4985,20 @@ result
 
 ```{r perf-ai-overtime-gender-item7-2}
 # NOS Nieuws
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "NOS Nieuws",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PAIS2_7",
   group_var = "geslacht"
 )
 
@@ -5018,20 +5011,20 @@ result
 
 ```{r perf-ai-overtime-gender-item8-2}
 # Albert Heijn
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Albert Heijn",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
+  y_var = "PAIS2_8",
   group_var = "geslacht"
 )
 
@@ -5044,20 +5037,20 @@ result
 
 ```{r perf-ai-overtime-gender-item9-2}
 # TikTok
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "TikTok",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PAIS2_9",
   group_var = "geslacht"
 )
 
@@ -5078,20 +5071,20 @@ result
 
 ```{r perf-ai-overtime-edu-item1-2}
 # Google
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Google",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PAIS2_1",
   group_var = "Education"
 )
 
@@ -5104,20 +5097,20 @@ result
 
 ```{r perf-ai-overtime-edu-item2-2}
 # Netflix
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Netflix",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PAIS2_2",
   group_var = "Education"
 )
 
@@ -5130,20 +5123,20 @@ result
 
 ```{r perf-ai-overtime-edu-item3-2}
 # Whatsapp
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Whatsapp",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PAIS2_3",
   group_var = "Education"
 )
 
@@ -5156,20 +5149,20 @@ result
 
 ```{r perf-ai-overtime-edu-item4-2}
 # Facebook
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Facebook",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PAIS2_4",
   group_var = "Education"
 )
 
@@ -5182,20 +5175,20 @@ result
 
 ```{r perf-ai-overtime-edu-item5-2}
 # Bol.com
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Bol.com",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PAIS2_5",
   group_var = "Education"
 )
 
@@ -5208,20 +5201,20 @@ result
 
 ```{r perf-ai-overtime-edu-item6-2}
 # DigID
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "DigID",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PAIS2_6",
   group_var = "Education"
 )
 
@@ -5234,20 +5227,20 @@ result
 
 ```{r perf-ai-overtime-edu-item7-2}
 # NOS Nieuws
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "NOS Nieuws",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PAIS2_7",
   group_var = "Education"
 )
 
@@ -5260,20 +5253,20 @@ result
 
 ```{r perf-ai-overtime-edu-item8-2}
 # Albert Heijn
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Albert Heijn",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
+  y_var = "PAIS2_8",
   group_var = "Education"
 )
 
@@ -5286,20 +5279,20 @@ result
 
 ```{r perf-ai-overtime-edu-item9-2}
 # TikTok
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "TikTok",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PAIS2_9",
   group_var = "Education"
 )
 
@@ -5320,20 +5313,20 @@ result
 
 ```{r perf-ai-overtime-mig-item1-2}
 # Google
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Google",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PAIS2_1",
   group_var = "MigrationBackground"
 )
 
@@ -5346,20 +5339,20 @@ result
 
 ```{r perf-ai-overtime-mig-item2-2}
 # Netflix
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Netflix",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PAIS2_2",
   group_var = "MigrationBackground"
 )
 
@@ -5372,20 +5365,20 @@ result
 
 ```{r perf-ai-overtime-mig-item3-2}
 # Whatsapp
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Whatsapp",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PAIS2_3",
   group_var = "MigrationBackground"
 )
 
@@ -5398,20 +5391,20 @@ result
 
 ```{r perf-ai-overtime-mig-item4-2}
 # Facebook
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Facebook",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PAIS2_4",
   group_var = "MigrationBackground"
 )
 
@@ -5424,20 +5417,20 @@ result
 
 ```{r perf-ai-overtime-mig-item5-2}
 # Bol.com
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Bol.com",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PAIS2_5",
   group_var = "MigrationBackground"
 )
 
@@ -5450,20 +5443,20 @@ result
 
 ```{r perf-ai-overtime-mig-item6-2}
 # DigID
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "DigID",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PAIS2_6",
   group_var = "MigrationBackground"
 )
 
@@ -5476,20 +5469,20 @@ result
 
 ```{r perf-ai-overtime-mig-item7-2}
 # NOS Nieuws
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "NOS Nieuws",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PAIS2_7",
   group_var = "MigrationBackground"
 )
 
@@ -5502,20 +5495,20 @@ result
 
 ```{r perf-ai-overtime-mig-item8-2}
 # Albert Heijn
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Albert Heijn",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
+  y_var = "PAIS2_8",
   group_var = "MigrationBackground"
 )
 
@@ -5528,20 +5521,20 @@ result
 
 ```{r perf-ai-overtime-mig-item9-2}
 # TikTok
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "TikTok",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PAIS2_9",
   group_var = "MigrationBackground"
 )
 

@@ -3,16 +3,11 @@ title: "{{< iconify ph wallet-fill >}} Transactional"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "transactional")
 ```
 
 **Transactional Competence** covers the ability to handle official online matters: managing government services, digital payments, healthcare arrangements, and document uploads.
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -21,10 +16,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -37,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -46,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -73,11 +66,11 @@ create_blockquote("Think about the extent to which each sentence applies to you,
 
 ```{r trans-wave1-overall-2}
 # Transactional Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Transactional Skills",
-  questions = c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5"),
-  question_labels = c("I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)", "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)", "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)", "I know how to apply for a DigID and how to use it", "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)"),
+  x_vars = c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5"),
+  x_var_labels = c("I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)", "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)", "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)", "I know how to apply for a DigID and how to use it", "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -103,7 +96,7 @@ result
 
 ```{r trans-wave1-age-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -127,7 +120,7 @@ result
 
 ```{r trans-wave1-age-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -151,7 +144,7 @@ result
 
 ```{r trans-wave1-age-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -175,7 +168,7 @@ result
 
 ```{r trans-wave1-age-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -199,7 +192,7 @@ result
 
 ```{r trans-wave1-age-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -231,7 +224,7 @@ result
 
 ```{r trans-wave1-gender-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -255,7 +248,7 @@ result
 
 ```{r trans-wave1-gender-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -279,7 +272,7 @@ result
 
 ```{r trans-wave1-gender-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -303,7 +296,7 @@ result
 
 ```{r trans-wave1-gender-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -327,7 +320,7 @@ result
 
 ```{r trans-wave1-gender-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -359,7 +352,7 @@ result
 
 ```{r trans-wave1-edu-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -383,7 +376,7 @@ result
 
 ```{r trans-wave1-edu-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -407,7 +400,7 @@ result
 
 ```{r trans-wave1-edu-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -431,7 +424,7 @@ result
 
 ```{r trans-wave1-edu-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -455,7 +448,7 @@ result
 
 ```{r trans-wave1-edu-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -487,7 +480,7 @@ result
 
 ```{r trans-wave1-mig-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -511,7 +504,7 @@ result
 
 ```{r trans-wave1-mig-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -535,7 +528,7 @@ result
 
 ```{r trans-wave1-mig-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -559,7 +552,7 @@ result
 
 ```{r trans-wave1-mig-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -583,7 +576,7 @@ result
 
 ```{r trans-wave1-mig-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -618,11 +611,11 @@ result
 
 ```{r trans-wave2-overall-2}
 # Transactional Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Transactional Skills",
-  questions = c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5"),
-  question_labels = c("I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)", "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)", "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)", "I know how to apply for a DigID and how to use it", "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)"),
+  x_vars = c("Strans1", "Strans2", "Strans3", "Strans4", "Strans5"),
+  x_var_labels = c("I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)", "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)", "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)", "I know how to apply for a DigID and how to use it", "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -648,7 +641,7 @@ result
 
 ```{r trans-wave2-age-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -672,7 +665,7 @@ result
 
 ```{r trans-wave2-age-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -696,7 +689,7 @@ result
 
 ```{r trans-wave2-age-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -720,7 +713,7 @@ result
 
 ```{r trans-wave2-age-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -744,7 +737,7 @@ result
 
 ```{r trans-wave2-age-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -776,7 +769,7 @@ result
 
 ```{r trans-wave2-gender-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -800,7 +793,7 @@ result
 
 ```{r trans-wave2-gender-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -824,7 +817,7 @@ result
 
 ```{r trans-wave2-gender-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -848,7 +841,7 @@ result
 
 ```{r trans-wave2-gender-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -872,7 +865,7 @@ result
 
 ```{r trans-wave2-gender-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -904,7 +897,7 @@ result
 
 ```{r trans-wave2-edu-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -928,7 +921,7 @@ result
 
 ```{r trans-wave2-edu-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -952,7 +945,7 @@ result
 
 ```{r trans-wave2-edu-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -976,7 +969,7 @@ result
 
 ```{r trans-wave2-edu-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -1000,7 +993,7 @@ result
 
 ```{r trans-wave2-edu-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -1032,7 +1025,7 @@ result
 
 ```{r trans-wave2-mig-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   stacked_type = "percent",
@@ -1056,7 +1049,7 @@ result
 
 ```{r trans-wave2-mig-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   stacked_type = "percent",
@@ -1080,7 +1073,7 @@ result
 
 ```{r trans-wave2-mig-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   stacked_type = "percent",
@@ -1104,7 +1097,7 @@ result
 
 ```{r trans-wave2-mig-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to apply for a DigID and how to use it",
   stacked_type = "percent",
@@ -1128,7 +1121,7 @@ result
 
 ```{r trans-wave2-mig-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   stacked_type = "percent",
@@ -1168,21 +1161,21 @@ result
 
 ```{r trans-overtime-overall-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1"
+  y_var = "Strans1"
 )
 
 result
@@ -1194,21 +1187,21 @@ result
 
 ```{r trans-overtime-overall-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2"
+  y_var = "Strans2"
 )
 
 result
@@ -1220,21 +1213,21 @@ result
 
 ```{r trans-overtime-overall-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3"
+  y_var = "Strans3"
 )
 
 result
@@ -1246,21 +1239,21 @@ result
 
 ```{r trans-overtime-overall-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to apply for a DigID and how to use it",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4"
+  y_var = "Strans4"
 )
 
 result
@@ -1272,21 +1265,21 @@ result
 
 ```{r trans-overtime-overall-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5"
+  y_var = "Strans5"
 )
 
 result
@@ -1306,19 +1299,19 @@ result
 
 ```{r trans-overtime-age-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "Strans1",
   group_var = "AgeGroup"
 )
 
@@ -1331,19 +1324,19 @@ result
 
 ```{r trans-overtime-age-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "Strans2",
   group_var = "AgeGroup"
 )
 
@@ -1356,19 +1349,19 @@ result
 
 ```{r trans-overtime-age-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "Strans3",
   group_var = "AgeGroup"
 )
 
@@ -1381,19 +1374,19 @@ result
 
 ```{r trans-overtime-age-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to apply for a DigID and how to use it",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "Strans4",
   group_var = "AgeGroup"
 )
 
@@ -1406,19 +1399,19 @@ result
 
 ```{r trans-overtime-age-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "Strans5",
   group_var = "AgeGroup"
 )
 
@@ -1439,19 +1432,19 @@ result
 
 ```{r trans-overtime-gender-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "Strans1",
   group_var = "geslacht"
 )
 
@@ -1464,19 +1457,19 @@ result
 
 ```{r trans-overtime-gender-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "Strans2",
   group_var = "geslacht"
 )
 
@@ -1489,19 +1482,19 @@ result
 
 ```{r trans-overtime-gender-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "Strans3",
   group_var = "geslacht"
 )
 
@@ -1514,19 +1507,19 @@ result
 
 ```{r trans-overtime-gender-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to apply for a DigID and how to use it",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "Strans4",
   group_var = "geslacht"
 )
 
@@ -1539,19 +1532,19 @@ result
 
 ```{r trans-overtime-gender-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "Strans5",
   group_var = "geslacht"
 )
 
@@ -1572,19 +1565,19 @@ result
 
 ```{r trans-overtime-edu-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "Strans1",
   group_var = "Education"
 )
 
@@ -1597,19 +1590,19 @@ result
 
 ```{r trans-overtime-edu-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "Strans2",
   group_var = "Education"
 )
 
@@ -1622,19 +1615,19 @@ result
 
 ```{r trans-overtime-edu-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "Strans3",
   group_var = "Education"
 )
 
@@ -1647,19 +1640,19 @@ result
 
 ```{r trans-overtime-edu-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to apply for a DigID and how to use it",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "Strans4",
   group_var = "Education"
 )
 
@@ -1672,19 +1665,19 @@ result
 
 ```{r trans-overtime-edu-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "Strans5",
   group_var = "Education"
 )
 
@@ -1705,19 +1698,19 @@ result
 
 ```{r trans-overtime-mig-item1-2}
 # I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to handle things online for the tax authority ('belastingdienst') (for example file my tax returns or apply for a wage tax for my (part-time) job)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans1",
+  y_var = "Strans1",
   group_var = "MigrationBackground"
 )
 
@@ -1730,19 +1723,19 @@ result
 
 ```{r trans-overtime-mig-item2-2}
 # I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to do digital payments on the computer or smartphone (for example online banking, online shopping, using iDeal)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans2",
+  y_var = "Strans2",
   group_var = "MigrationBackground"
 )
 
@@ -1755,19 +1748,19 @@ result
 
 ```{r trans-overtime-mig-item3-2}
 # I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to arrange my healthcare online (for example take out a health insurance or make an online appointment with the general practitioner)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans3",
+  y_var = "Strans3",
   group_var = "MigrationBackground"
 )
 
@@ -1780,19 +1773,19 @@ result
 
 ```{r trans-overtime-mig-item4-2}
 # I know how to apply for a DigID and how to use it
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to apply for a DigID and how to use it",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans4",
+  y_var = "Strans4",
   group_var = "MigrationBackground"
 )
 
@@ -1805,19 +1798,19 @@ result
 
 ```{r trans-overtime-mig-item5-2}
 # I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to upload documents and images when needed to arrange things online (for example when requesting an OV chip card)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "Strans5",
+  y_var = "Strans5",
   group_var = "MigrationBackground"
 )
 
@@ -1855,11 +1848,11 @@ create_blockquote("The following statements are about the internet. Please indic
 
 ```{r ktrans-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("Ktrans2RC", "Ktrans3RC"),
-  question_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
+  x_vars = c("Ktrans2RC", "Ktrans3RC"),
+  x_var_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1886,7 +1879,7 @@ result
 
 ```{r ktrans-wave1-age-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -1911,7 +1904,7 @@ result
 
 ```{r ktrans-wave1-age-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -1944,7 +1937,7 @@ result
 
 ```{r ktrans-wave1-gender-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -1969,7 +1962,7 @@ result
 
 ```{r ktrans-wave1-gender-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -2002,7 +1995,7 @@ result
 
 ```{r ktrans-wave1-edu-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -2027,7 +2020,7 @@ result
 
 ```{r ktrans-wave1-edu-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -2060,7 +2053,7 @@ result
 
 ```{r ktrans-wave1-mig-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -2085,7 +2078,7 @@ result
 
 ```{r ktrans-wave1-mig-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -2121,11 +2114,11 @@ result
 
 ```{r ktrans-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("Ktrans2RC", "Ktrans3RC"),
-  question_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
+  x_vars = c("Ktrans2RC", "Ktrans3RC"),
+  x_var_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2152,7 +2145,7 @@ result
 
 ```{r ktrans-wave2-age-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -2177,7 +2170,7 @@ result
 
 ```{r ktrans-wave2-age-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -2210,7 +2203,7 @@ result
 
 ```{r ktrans-wave2-gender-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -2235,7 +2228,7 @@ result
 
 ```{r ktrans-wave2-gender-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -2268,7 +2261,7 @@ result
 
 ```{r ktrans-wave2-edu-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -2293,7 +2286,7 @@ result
 
 ```{r ktrans-wave2-edu-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -2326,7 +2319,7 @@ result
 
 ```{r ktrans-wave2-mig-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -2351,7 +2344,7 @@ result
 
 ```{r ktrans-wave2-mig-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -2392,21 +2385,21 @@ result
 
 ```{r ktrans-overtime-overall-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC"
+  y_var = "Ktrans2RC"
 )
 
 result
@@ -2418,21 +2411,21 @@ result
 
 ```{r ktrans-overtime-overall-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC"
+  y_var = "Ktrans3RC"
 )
 
 result
@@ -2452,20 +2445,20 @@ result
 
 ```{r ktrans-overtime-age-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "AgeGroup"
 )
 
@@ -2478,20 +2471,20 @@ result
 
 ```{r ktrans-overtime-age-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "AgeGroup"
 )
 
@@ -2512,20 +2505,20 @@ result
 
 ```{r ktrans-overtime-gender-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "geslacht"
 )
 
@@ -2538,20 +2531,20 @@ result
 
 ```{r ktrans-overtime-gender-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "geslacht"
 )
 
@@ -2572,20 +2565,20 @@ result
 
 ```{r ktrans-overtime-edu-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "Education"
 )
 
@@ -2598,20 +2591,20 @@ result
 
 ```{r ktrans-overtime-edu-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "Education"
 )
 
@@ -2632,20 +2625,20 @@ result
 
 ```{r ktrans-overtime-mig-item1-2}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2658,20 +2651,20 @@ result
 
 ```{r ktrans-overtime-mig-item2-2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "MigrationBackground"
 )
 
@@ -2709,11 +2702,11 @@ create_blockquote('Below you see 4 icons that can appear on a website. Which of 
 
 ```{r perf-trans-wave1-overall-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
-  questions = "PTS1R",
-  question_labels = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  x_vars = "PTS1R",
+  x_var_labels = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2735,7 +2728,7 @@ result
 
 ```{r perf-trans-wave1-age-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2760,7 +2753,7 @@ result
 
 ```{r perf-trans-wave1-gender-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2785,7 +2778,7 @@ result
 
 ```{r perf-trans-wave1-edu-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2810,7 +2803,7 @@ result
 
 ```{r perf-trans-wave1-mig-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2843,11 +2836,11 @@ result
 
 ```{r perf-trans-wave2-overall-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
-  questions = "PTS1R",
-  question_labels = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
+  x_vars = "PTS1R",
+  x_var_labels = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2869,7 +2862,7 @@ result
 
 ```{r perf-trans-wave2-age-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2894,7 +2887,7 @@ result
 
 ```{r perf-trans-wave2-gender-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2919,7 +2912,7 @@ result
 
 ```{r perf-trans-wave2-edu-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2944,7 +2937,7 @@ result
 
 ```{r perf-trans-wave2-mig-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   stacked_type = "percent",
@@ -2977,21 +2970,21 @@ result
 
 ```{r perf-trans-overtime-overall-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PTS1R"
+  y_var = "PTS1R"
 )
 
 result
@@ -3003,20 +2996,20 @@ result
 
 ```{r perf-trans-overtime-age-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PTS1R",
+  y_var = "PTS1R",
   group_var = "AgeGroup"
 )
 
@@ -3029,20 +3022,20 @@ result
 
 ```{r perf-trans-overtime-gender-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PTS1R",
+  y_var = "PTS1R",
   group_var = "geslacht"
 )
 
@@ -3055,20 +3048,20 @@ result
 
 ```{r perf-trans-overtime-edu-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PTS1R",
+  y_var = "PTS1R",
   group_var = "Education"
 )
 
@@ -3081,20 +3074,20 @@ result
 
 ```{r perf-trans-overtime-mig-2}
 # Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Below you see 4 icons that can appear on a website. Which of the icons should you click on to know whether you can shop safely on an online webshop (for example with safe storage of personal data and a safe payment environment)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PTS1R",
+  y_var = "PTS1R",
   group_var = "MigrationBackground"
 )
 

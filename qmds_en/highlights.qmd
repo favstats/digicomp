@@ -3,9 +3,9 @@ title: "{{< iconify ph star-fill >}} Highlights"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, include=FALSE}
+# Initialize dashboardr page configuration (CSS/JS for charts)
+dashboardr:::.page_config()
 ```
 
 <div style='text-align: justify;'>
@@ -31,10 +31,8 @@ Here are the key findings from Wave 1 of the Digital Competence study.
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -47,7 +45,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary

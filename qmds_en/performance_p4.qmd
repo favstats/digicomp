@@ -4,66 +4,17 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='performance_p3.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='4' value='4' aria-label='Current page'>
-      <span class='pagination-separator'> / 4</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(4, 6, "performance", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "performance")
 ```
 
 The **Performance** section measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information, recognizing AI-generated images, protecting their devices, or using AI tools effectively. The items cover eleven areas of digital competence, from strategic and critical information skills to AI and generative AI skills, providing an overall picture of how well individuals can navigate today's digital environment.
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -72,10 +23,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -88,7 +37,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -97,26 +46,26 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
 
-## {{< iconify ph robot-fill >}} AI
+## {{< iconify ph heart-fill >}} Digital Health
 
 
-**AI Competence** covers the ability to recognize when websites and apps use artificial intelligence to personalize content and recommendations.
+**Digital Health & Wellbeing** skills relate to managing healthy digital habits.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Select all <a href=\"#PAIS2_1\" class=\"modal-link\">apps or websites</a> that use AI to personalize their content for you', preset = 'question')
+create_blockquote("Do you sometimes try to limit the time you spend using digital media in one of the following ways? Select every answer that applies.", preset = "question")
 ```
-[{{< iconify ph cards >}} See all AI results](ai.html)
+[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
 
 
 ::: {.panel-tabset}
@@ -129,13 +78,13 @@ create_blockquote('Select all <a href=\"#PAIS2_1\" class=\"modal-link\">apps or 
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r perf-ai-wave1-overall}
+```{r perf-health-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  x_vars = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  x_var_labels = c("Create digital detox moments", "Have rules limiting digital media", "Use screen-time limiter", "Temporarily switch off Internet", "Delete apps/programs", "Turn off notifications", "Reduce time without special approach", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -160,11 +109,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave1-age-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -175,7 +124,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -185,11 +134,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave1-age-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -200,7 +149,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -210,11 +159,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave1-age-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -225,7 +174,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -235,11 +184,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave1-age-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -250,7 +199,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -260,11 +209,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave1-age-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -275,7 +224,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -285,11 +234,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave1-age-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -300,7 +249,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -310,11 +259,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave1-age-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -325,7 +274,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -335,11 +284,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave1-age-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-age-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -350,32 +299,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave1-age-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -393,11 +317,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave1-gender-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -408,7 +332,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -418,11 +342,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave1-gender-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -433,7 +357,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -443,11 +367,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave1-gender-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -458,7 +382,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -468,11 +392,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave1-gender-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -483,7 +407,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -493,11 +417,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave1-gender-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -508,7 +432,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -518,11 +442,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave1-gender-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -533,7 +457,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -543,11 +467,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave1-gender-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -558,7 +482,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -568,11 +492,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave1-gender-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-gender-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -583,32 +507,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave1-gender-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -626,11 +525,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave1-edu-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -641,7 +540,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -651,11 +550,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave1-edu-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -666,7 +565,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -676,11 +575,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave1-edu-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -691,7 +590,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -701,11 +600,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave1-edu-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -716,7 +615,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -726,11 +625,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave1-edu-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -741,7 +640,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -751,11 +650,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave1-edu-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -766,7 +665,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -776,11 +675,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave1-edu-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -791,7 +690,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -801,11 +700,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave1-edu-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-edu-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -816,32 +715,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave1-edu-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -859,11 +733,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave1-mig-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -874,7 +748,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -884,11 +758,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave1-mig-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -899,7 +773,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -909,11 +783,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave1-mig-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -924,7 +798,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -934,11 +808,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave1-mig-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -949,7 +823,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -959,11 +833,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave1-mig-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -974,7 +848,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -984,11 +858,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave1-mig-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -999,7 +873,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1009,11 +883,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave1-mig-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1024,7 +898,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1034,11 +908,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave1-mig-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave1-mig-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1049,32 +923,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave1-mig-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1095,13 +944,13 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r perf-ai-wave2-overall}
+```{r perf-health-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PAIS2_1", "PAIS2_2", "PAIS2_3", "PAIS2_4", "PAIS2_5", "PAIS2_6", "PAIS2_7", "PAIS2_8", "PAIS2_9"),
-  question_labels = c("Google", "Netflix", "Whatsapp", "Facebook", "Bol.com", "DigID", "NOS News", "Albert Heijn", "TikTok"),
+  x_vars = c("PDHWS1_1", "PDHWS1_2", "PDHWS1_3", "PDHWS1_4", "PDHWS1_5", "PDHWS1_6", "PDHWS1_7", "PDHWS1_8"),
+  x_var_labels = c("Create digital detox moments", "Have rules limiting digital media", "Use screen-time limiter", "Temporarily switch off Internet", "Delete apps/programs", "Turn off notifications", "Reduce time without special approach", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1126,11 +975,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave2-age-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1141,7 +990,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1151,11 +1000,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave2-age-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1166,7 +1015,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1176,11 +1025,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave2-age-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1191,7 +1040,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1201,11 +1050,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave2-age-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1216,7 +1065,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1226,11 +1075,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave2-age-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1241,7 +1090,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1251,11 +1100,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave2-age-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1266,7 +1115,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1276,11 +1125,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave2-age-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1291,7 +1140,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1301,11 +1150,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave2-age-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-age-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1316,32 +1165,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave2-age-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1359,11 +1183,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave2-gender-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1374,7 +1198,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1384,11 +1208,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave2-gender-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1399,7 +1223,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1409,11 +1233,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave2-gender-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1424,7 +1248,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1434,11 +1258,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave2-gender-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1449,7 +1273,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1459,11 +1283,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave2-gender-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1474,7 +1298,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1484,11 +1308,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave2-gender-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1499,7 +1323,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1509,11 +1333,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave2-gender-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1524,7 +1348,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1534,11 +1358,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave2-gender-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-gender-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1549,32 +1373,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave2-gender-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1592,11 +1391,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave2-edu-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1607,7 +1406,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1617,11 +1416,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave2-edu-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1632,7 +1431,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1642,11 +1441,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave2-edu-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1657,7 +1456,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1667,11 +1466,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave2-edu-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1682,7 +1481,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1692,11 +1491,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave2-edu-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1707,7 +1506,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1717,11 +1516,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave2-edu-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1732,7 +1531,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1742,11 +1541,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave2-edu-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1757,7 +1556,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -1767,11 +1566,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave2-edu-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-edu-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1782,32 +1581,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave2-edu-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -1825,11 +1599,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-wave2-mig-item1}
-# Google
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item1}
+# Create digital detox moments
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Google",
+  title = "Create digital detox moments",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1840,7 +1614,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_1"
+  stack_var = "PDHWS1_1"
 )
 
 result
@@ -1850,11 +1624,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-wave2-mig-item2}
-# Netflix
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item2}
+# Have rules limiting digital media
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1865,7 +1639,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_2"
+  stack_var = "PDHWS1_2"
 )
 
 result
@@ -1875,11 +1649,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-wave2-mig-item3}
-# Whatsapp
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item3}
+# Use screen-time limiter
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1890,7 +1664,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_3"
+  stack_var = "PDHWS1_3"
 )
 
 result
@@ -1900,11 +1674,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-wave2-mig-item4}
-# Facebook
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item4}
+# Temporarily switch off Internet
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1915,7 +1689,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_4"
+  stack_var = "PDHWS1_4"
 )
 
 result
@@ -1925,11 +1699,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-wave2-mig-item5}
-# Bol.com
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item5}
+# Delete apps/programs
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1940,7 +1714,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_5"
+  stack_var = "PDHWS1_5"
 )
 
 result
@@ -1950,11 +1724,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-wave2-mig-item6}
-# DigID
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item6}
+# Turn off notifications
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "DigID",
+  title = "Turn off notifications",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1965,7 +1739,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_6"
+  stack_var = "PDHWS1_6"
 )
 
 result
@@ -1975,11 +1749,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-wave2-mig-item7}
-# NOS News
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item7}
+# Reduce time without special approach
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -1990,7 +1764,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_7"
+  stack_var = "PDHWS1_7"
 )
 
 result
@@ -2000,11 +1774,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-wave2-mig-item8}
-# Albert Heijn
-result <- create_stackedbar(
+```{r perf-health-wave2-mig-item8}
+# None of these actions
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Albert Heijn",
+  title = "None of these actions",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
@@ -2015,32 +1789,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-wave2-mig-item9}
-# TikTok
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "TikTok",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Not selected", "Selected"),
-  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
-  stack_order = c("Selected", "Not selected"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "PAIS2_9"
+  stack_var = "PDHWS1_8"
 )
 
 result
@@ -2066,23 +1815,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-overtime-overall-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-overall-item1}
+# Create digital detox moments
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1"
+  y_var = "PDHWS1_1"
 )
 
 result
@@ -2092,23 +1841,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-overtime-overall-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-overall-item2}
+# Have rules limiting digital media
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2"
+  y_var = "PDHWS1_2"
 )
 
 result
@@ -2118,23 +1867,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-overtime-overall-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-overall-item3}
+# Use screen-time limiter
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3"
+  y_var = "PDHWS1_3"
 )
 
 result
@@ -2144,23 +1893,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-overtime-overall-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-overall-item4}
+# Temporarily switch off Internet
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4"
+  y_var = "PDHWS1_4"
 )
 
 result
@@ -2170,23 +1919,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-overtime-overall-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-overall-item5}
+# Delete apps/programs
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5"
+  y_var = "PDHWS1_5"
 )
 
 result
@@ -2196,23 +1945,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-overtime-overall-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-overall-item6}
+# Turn off notifications
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6"
+  y_var = "PDHWS1_6"
 )
 
 result
@@ -2222,23 +1971,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-overtime-overall-item7}
-# NOS News
-result <- create_timeline(
+```{r perf-health-overtime-overall-item7}
+# Reduce time without special approach
+result <- viz_timeline(
   data = data,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7"
+  y_var = "PDHWS1_7"
 )
 
 result
@@ -2248,49 +1997,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-overtime-overall-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-overall-item8}
+# None of these actions
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-overtime-overall-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage who selected/answered correctly",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9"
+  y_var = "PDHWS1_8"
 )
 
 result
@@ -2308,22 +2031,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-overtime-age-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-age-item1}
+# Create digital detox moments
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "AgeGroup"
 )
 
@@ -2334,22 +2057,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-overtime-age-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-age-item2}
+# Have rules limiting digital media
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "AgeGroup"
 )
 
@@ -2360,22 +2083,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-overtime-age-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-age-item3}
+# Use screen-time limiter
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "AgeGroup"
 )
 
@@ -2386,22 +2109,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-overtime-age-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-age-item4}
+# Temporarily switch off Internet
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "AgeGroup"
 )
 
@@ -2412,22 +2135,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-overtime-age-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-age-item5}
+# Delete apps/programs
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "AgeGroup"
 )
 
@@ -2438,22 +2161,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-overtime-age-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-age-item6}
+# Turn off notifications
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "AgeGroup"
 )
 
@@ -2464,22 +2187,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-overtime-age-item7}
-# NOS News
-result <- create_timeline(
+```{r perf-health-overtime-age-item7}
+# Reduce time without special approach
+result <- viz_timeline(
   data = data,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "AgeGroup"
 )
 
@@ -2490,48 +2213,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-overtime-age-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-age-item8}
+# None of these actions
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-overtime-age-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage who selected/answered correctly",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "AgeGroup"
 )
 
@@ -2550,22 +2247,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-overtime-gender-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-gender-item1}
+# Create digital detox moments
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "geslacht"
 )
 
@@ -2576,22 +2273,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-overtime-gender-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-gender-item2}
+# Have rules limiting digital media
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "geslacht"
 )
 
@@ -2602,22 +2299,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-overtime-gender-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-gender-item3}
+# Use screen-time limiter
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "geslacht"
 )
 
@@ -2628,22 +2325,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-overtime-gender-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-gender-item4}
+# Temporarily switch off Internet
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "geslacht"
 )
 
@@ -2654,22 +2351,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-overtime-gender-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-gender-item5}
+# Delete apps/programs
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "geslacht"
 )
 
@@ -2680,22 +2377,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-overtime-gender-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-gender-item6}
+# Turn off notifications
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "geslacht"
 )
 
@@ -2706,22 +2403,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-overtime-gender-item7}
-# NOS News
-result <- create_timeline(
+```{r perf-health-overtime-gender-item7}
+# Reduce time without special approach
+result <- viz_timeline(
   data = data,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "geslacht"
 )
 
@@ -2732,48 +2429,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-overtime-gender-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-gender-item8}
+# None of these actions
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-overtime-gender-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage who selected/answered correctly",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "geslacht"
 )
 
@@ -2792,22 +2463,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-overtime-edu-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-edu-item1}
+# Create digital detox moments
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "Education"
 )
 
@@ -2818,22 +2489,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-overtime-edu-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-edu-item2}
+# Have rules limiting digital media
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "Education"
 )
 
@@ -2844,22 +2515,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-overtime-edu-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-edu-item3}
+# Use screen-time limiter
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "Education"
 )
 
@@ -2870,22 +2541,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-overtime-edu-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-edu-item4}
+# Temporarily switch off Internet
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "Education"
 )
 
@@ -2896,22 +2567,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-overtime-edu-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-edu-item5}
+# Delete apps/programs
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "Education"
 )
 
@@ -2922,22 +2593,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-overtime-edu-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-edu-item6}
+# Turn off notifications
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "Education"
 )
 
@@ -2948,22 +2619,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-overtime-edu-item7}
-# NOS News
-result <- create_timeline(
+```{r perf-health-overtime-edu-item7}
+# Reduce time without special approach
+result <- viz_timeline(
   data = data,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "Education"
 )
 
@@ -2974,48 +2645,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-overtime-edu-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-edu-item8}
+# None of these actions
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-overtime-edu-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage who selected/answered correctly",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "Education"
 )
 
@@ -3034,22 +2679,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r perf-ai-overtime-mig-item1}
-# Google
-result <- create_timeline(
+```{r perf-health-overtime-mig-item1}
+# Create digital detox moments
+result <- viz_timeline(
   data = data,
-  title = "Google",
+  title = "Create digital detox moments",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_1",
+  y_var = "PDHWS1_1",
   group_var = "MigrationBackground"
 )
 
@@ -3060,22 +2705,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-ai-overtime-mig-item2}
-# Netflix
-result <- create_timeline(
+```{r perf-health-overtime-mig-item2}
+# Have rules limiting digital media
+result <- viz_timeline(
   data = data,
-  title = "Netflix",
+  title = "Have rules limiting digital media",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_2",
+  y_var = "PDHWS1_2",
   group_var = "MigrationBackground"
 )
 
@@ -3086,22 +2731,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r perf-ai-overtime-mig-item3}
-# Whatsapp
-result <- create_timeline(
+```{r perf-health-overtime-mig-item3}
+# Use screen-time limiter
+result <- viz_timeline(
   data = data,
-  title = "Whatsapp",
+  title = "Use screen-time limiter",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_3",
+  y_var = "PDHWS1_3",
   group_var = "MigrationBackground"
 )
 
@@ -3112,22 +2757,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r perf-ai-overtime-mig-item4}
-# Facebook
-result <- create_timeline(
+```{r perf-health-overtime-mig-item4}
+# Temporarily switch off Internet
+result <- viz_timeline(
   data = data,
-  title = "Facebook",
+  title = "Temporarily switch off Internet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_4",
+  y_var = "PDHWS1_4",
   group_var = "MigrationBackground"
 )
 
@@ -3138,22 +2783,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 5
 
 
-```{r perf-ai-overtime-mig-item5}
-# Bol.com
-result <- create_timeline(
+```{r perf-health-overtime-mig-item5}
+# Delete apps/programs
+result <- viz_timeline(
   data = data,
-  title = "Bol.com",
+  title = "Delete apps/programs",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_5",
+  y_var = "PDHWS1_5",
   group_var = "MigrationBackground"
 )
 
@@ -3164,22 +2809,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 6
 
 
-```{r perf-ai-overtime-mig-item6}
-# DigID
-result <- create_timeline(
+```{r perf-health-overtime-mig-item6}
+# Turn off notifications
+result <- viz_timeline(
   data = data,
-  title = "DigID",
+  title = "Turn off notifications",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_6",
+  y_var = "PDHWS1_6",
   group_var = "MigrationBackground"
 )
 
@@ -3190,22 +2835,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 7
 
 
-```{r perf-ai-overtime-mig-item7}
-# NOS News
-result <- create_timeline(
+```{r perf-health-overtime-mig-item7}
+# Reduce time without special approach
+result <- viz_timeline(
   data = data,
-  title = "NOS News",
+  title = "Reduce time without special approach",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_7",
+  y_var = "PDHWS1_7",
   group_var = "MigrationBackground"
 )
 
@@ -3216,48 +2861,22 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 8
 
 
-```{r perf-ai-overtime-mig-item8}
-# Albert Heijn
-result <- create_timeline(
+```{r perf-health-overtime-mig-item8}
+# None of these actions
+result <- viz_timeline(
   data = data,
-  title = "Albert Heijn",
+  title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS2_8",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 9
-
-
-```{r perf-ai-overtime-mig-item9}
-# TikTok
-result <- create_timeline(
-  data = data,
-  title = "TikTok",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = 1,
-  y_min = 0,
-  y_max = 100,
-  x_label = "",
-  y_label = "Percentage who selected/answered correctly",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
-  weight_var = "weging_GAMO",
-  response_var = "PAIS2_9",
+  y_var = "PDHWS1_8",
   group_var = "MigrationBackground"
 )
 
@@ -3273,24 +2892,15 @@ result
 
 :::
 
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PAIS2_1',
-  text = '<h2>More info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/AI_competence_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
-
-## {{< iconify ph magic-wand-fill >}} Gen AI
+## {{< iconify ph recycle-fill >}} Green Digital
 
 
-**Generative AI competence** covers the ability to engage with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
+**Sustainable/Green Digital Competence** focuses on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Look closely at the <a href=\"#PAIS1R\" class=\"modal-link\">pictures below</a>. Which picture is not made with artificial intelligence (AI)?', preset = 'question')
+create_blockquote("Which of the following activities do you sometimes do?", preset = "question")
 ```
-[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
+[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
 
 
 ::: {.panel-tabset}
@@ -3303,21 +2913,21 @@ create_blockquote('Look closely at the <a href=\"#PAIS1R\" class=\"modal-link\">
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r perf-genai-wave1-overall}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbars(
+```{r perf-green-wave1-overall}
+# 
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
-  questions = "PAIS1R",
-  question_labels = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "",
+  x_vars = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  x_var_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -3329,101 +2939,933 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Age
 
 
-```{r perf-genai-wave1-age}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave1-age-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave1-age-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave1-age-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave1-age-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave1-age-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave1-age-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave1-age-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave1-age-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave1-age-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify mdi gender-transgender >}} Gender
 
 
-```{r perf-genai-wave1-gender}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave1-gender-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave1-gender-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave1-gender-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave1-gender-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave1-gender-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave1-gender-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave1-gender-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave1-gender-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave1-gender-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph graduation-cap-fill >}} Education
 
 
-```{r perf-genai-wave1-edu}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave1-edu-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave1-edu-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave1-edu-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave1-edu-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave1-edu-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave1-edu-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave1-edu-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave1-edu-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave1-edu-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
-```{r perf-genai-wave1-mig}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave1-mig-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave1-mig-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave1-mig-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave1-mig-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave1-mig-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave1-mig-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave1-mig-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave1-mig-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave1-mig-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 :::
@@ -3437,21 +3879,21 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r perf-genai-wave2-overall}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbars(
+```{r perf-green-wave2-overall}
+# 
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
-  questions = "PAIS1R",
-  question_labels = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "",
+  x_vars = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  x_var_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
   x_label = "",
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   stack_label = NULL,
   weight_var = "weging_GAMO"
 )
@@ -3463,101 +3905,933 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Age
 
 
-```{r perf-genai-wave2-age}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave2-age-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave2-age-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave2-age-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave2-age-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave2-age-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave2-age-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave2-age-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave2-age-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave2-age-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify mdi gender-transgender >}} Gender
 
 
-```{r perf-genai-wave2-gender}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave2-gender-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave2-gender-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave2-gender-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave2-gender-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave2-gender-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave2-gender-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave2-gender-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave2-gender-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave2-gender-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph graduation-cap-fill >}} Education
 
 
-```{r perf-genai-wave2-edu}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave2-edu-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave2-edu-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave2-edu-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave2-edu-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave2-edu-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave2-edu-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave2-edu-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave2-edu-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave2-edu-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 ##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
-```{r perf-genai-wave2-mig}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-wave2-mig-item1}
+# Clean mailbox
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0, 10, 20, 30),
-  stack_bin_labels = c("Incorrect", "Correct"),
-  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
-  stack_order = c("Correct", "Incorrect"),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "PAIS1R"
+  stack_var = "PSGDS1_1"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-wave2-mig-item2}
+# Use sustainable search engines
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sustainable search engines",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-wave2-mig-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Avoid unnecessary Cloud storage",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-wave2-mig-item4}
+# Turn down screen brightness
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Turn down screen brightness",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-wave2-mig-item5}
+# Use sleep mode
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Use sleep mode",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-wave2-mig-item6}
+# Close unused phone apps
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Close unused phone apps",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-wave2-mig-item7}
+# Recycle devices
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Recycle devices",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-wave2-mig-item8}
+# Repair before replacing
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Repair before replacing",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-wave2-mig-item9}
+# None of these actions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "None of these actions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Not selected", "Selected"),
+  stack_map_values = list("1" = "Selected", "0" = "Not selected"),
+  stack_order = c("Selected", "Not selected"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
 
 
 :::
@@ -3571,48 +4845,269 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r perf-genai-overtime-overall}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-overtime-overall-item1}
+# Clean mailbox
+result <- viz_timeline(
   data = data,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R"
+  y_var = "PSGDS1_1"
 )
 
 result
 ```
 
 
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-overtime-overall-item2}
+# Use sustainable search engines
+result <- viz_timeline(
+  data = data,
+  title = "Use sustainable search engines",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-overtime-overall-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_timeline(
+  data = data,
+  title = "Avoid unnecessary Cloud storage",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-overtime-overall-item4}
+# Turn down screen brightness
+result <- viz_timeline(
+  data = data,
+  title = "Turn down screen brightness",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-overtime-overall-item5}
+# Use sleep mode
+result <- viz_timeline(
+  data = data,
+  title = "Use sleep mode",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-overtime-overall-item6}
+# Close unused phone apps
+result <- viz_timeline(
+  data = data,
+  title = "Close unused phone apps",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-overtime-overall-item7}
+# Recycle devices
+result <- viz_timeline(
+  data = data,
+  title = "Recycle devices",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-overtime-overall-item8}
+# Repair before replacing
+result <- viz_timeline(
+  data = data,
+  title = "Repair before replacing",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-overtime-overall-item9}
+# None of these actions
+result <- viz_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9"
+)
+
+result
+```
+
+
+:::
+
+
 ##### {{< iconify mdi:human-male-male-child >}} Age
 
 
-```{r perf-genai-overtime-age}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-overtime-age-item1}
+# Clean mailbox
+result <- viz_timeline(
   data = data,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_1",
   group_var = "AgeGroup"
 )
 
@@ -3620,25 +5115,241 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-genai-overtime-gender}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+```{r perf-green-overtime-age-item2}
+# Use sustainable search engines
+result <- viz_timeline(
   data = data,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-overtime-age-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_timeline(
+  data = data,
+  title = "Avoid unnecessary Cloud storage",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-overtime-age-item4}
+# Turn down screen brightness
+result <- viz_timeline(
+  data = data,
+  title = "Turn down screen brightness",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-overtime-age-item5}
+# Use sleep mode
+result <- viz_timeline(
+  data = data,
+  title = "Use sleep mode",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-overtime-age-item6}
+# Close unused phone apps
+result <- viz_timeline(
+  data = data,
+  title = "Close unused phone apps",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-overtime-age-item7}
+# Recycle devices
+result <- viz_timeline(
+  data = data,
+  title = "Recycle devices",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-overtime-age-item8}
+# Repair before replacing
+result <- viz_timeline(
+  data = data,
+  title = "Repair before replacing",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-overtime-age-item9}
+# None of these actions
+result <- viz_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-overtime-gender-item1}
+# Clean mailbox
+result <- viz_timeline(
+  data = data,
+  title = "Clean mailbox",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_1",
   group_var = "geslacht"
 )
 
@@ -3646,25 +5357,241 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-genai-overtime-edu}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+```{r perf-green-overtime-gender-item2}
+# Use sustainable search engines
+result <- viz_timeline(
   data = data,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-overtime-gender-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_timeline(
+  data = data,
+  title = "Avoid unnecessary Cloud storage",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-overtime-gender-item4}
+# Turn down screen brightness
+result <- viz_timeline(
+  data = data,
+  title = "Turn down screen brightness",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-overtime-gender-item5}
+# Use sleep mode
+result <- viz_timeline(
+  data = data,
+  title = "Use sleep mode",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-overtime-gender-item6}
+# Close unused phone apps
+result <- viz_timeline(
+  data = data,
+  title = "Close unused phone apps",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-overtime-gender-item7}
+# Recycle devices
+result <- viz_timeline(
+  data = data,
+  title = "Recycle devices",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-overtime-gender-item8}
+# Repair before replacing
+result <- viz_timeline(
+  data = data,
+  title = "Repair before replacing",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-overtime-gender-item9}
+# None of these actions
+result <- viz_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-overtime-edu-item1}
+# Clean mailbox
+result <- viz_timeline(
+  data = data,
+  title = "Clean mailbox",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_1",
   group_var = "Education"
 )
 
@@ -3672,25 +5599,449 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-genai-overtime-mig}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+```{r perf-green-overtime-edu-item2}
+# Use sustainable search engines
+result <- viz_timeline(
   data = data,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PSGDS1_2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-overtime-edu-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_timeline(
+  data = data,
+  title = "Avoid unnecessary Cloud storage",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-overtime-edu-item4}
+# Turn down screen brightness
+result <- viz_timeline(
+  data = data,
+  title = "Turn down screen brightness",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-overtime-edu-item5}
+# Use sleep mode
+result <- viz_timeline(
+  data = data,
+  title = "Use sleep mode",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-overtime-edu-item6}
+# Close unused phone apps
+result <- viz_timeline(
+  data = data,
+  title = "Close unused phone apps",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-overtime-edu-item7}
+# Recycle devices
+result <- viz_timeline(
+  data = data,
+  title = "Recycle devices",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-overtime-edu-item8}
+# Repair before replacing
+result <- viz_timeline(
+  data = data,
+  title = "Repair before replacing",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-overtime-edu-item9}
+# None of these actions
+result <- viz_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-green-overtime-mig-item1}
+# Clean mailbox
+result <- viz_timeline(
+  data = data,
+  title = "Clean mailbox",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_1",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-green-overtime-mig-item2}
+# Use sustainable search engines
+result <- viz_timeline(
+  data = data,
+  title = "Use sustainable search engines",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r perf-green-overtime-mig-item3}
+# Avoid unnecessary Cloud storage
+result <- viz_timeline(
+  data = data,
+  title = "Avoid unnecessary Cloud storage",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_3",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r perf-green-overtime-mig-item4}
+# Turn down screen brightness
+result <- viz_timeline(
+  data = data,
+  title = "Turn down screen brightness",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_4",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r perf-green-overtime-mig-item5}
+# Use sleep mode
+result <- viz_timeline(
+  data = data,
+  title = "Use sleep mode",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_5",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 6
+
+
+```{r perf-green-overtime-mig-item6}
+# Close unused phone apps
+result <- viz_timeline(
+  data = data,
+  title = "Close unused phone apps",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_6",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 7
+
+
+```{r perf-green-overtime-mig-item7}
+# Recycle devices
+result <- viz_timeline(
+  data = data,
+  title = "Recycle devices",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_7",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 8
+
+
+```{r perf-green-overtime-mig-item8}
+# Repair before replacing
+result <- viz_timeline(
+  data = data,
+  title = "Repair before replacing",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_8",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 9
+
+
+```{r perf-green-overtime-mig-item9}
+# None of these actions
+result <- viz_timeline(
+  data = data,
+  title = "None of these actions",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSGDS1_9",
   group_var = "MigrationBackground"
 )
 
@@ -3704,60 +6055,11 @@ result
 :::
 
 
-```{r, echo=FALSE, results='asis'}
-dashboardr::modal_content(
-  modal_id = 'PAIS1R',
-  text = '<h2>More info</h2>
-<img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/GenAI_competence_infobox_image.png" style="max-width:50%; height:auto;">'
-)
-```
+:::
 
 
 
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='performance_p3.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='4' value='4' aria-label='Current page'>
-      <span class='pagination-separator'> / 4</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["performance.html","performance_p2.html","performance_p3.html","performance_p4.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(4, 6, "performance", "bottom")
 ```
 

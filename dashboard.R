@@ -5,9 +5,11 @@ library(dashboardr)
 
 
 
-translation <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRHn6F7oL_0WCNdlwvV5WvT8JtT-XRKO2YQ8zX1zJbbPkznXGEVbXC80F4fC0NUjWK87kdirUXn6eLh/pub?gid=1284654467&single=true&output=csv")
+# Original online source (commented out for local editing - can be re-enabled later):
+# translation <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRHn6F7oL_0WCNdlwvV5WvT8JtT-XRKO2YQ8zX1zJbbPkznXGEVbXC80F4fC0NUjWK87kdirUXn6eLh/pub?gid=1284654467&single=true&output=csv")
 
-# translation <- read_csv("../dashboardr/translations.xlsx")
+# Local translation file (download from Google Sheet, edit locally, re-upload when done):
+translation <- read_csv("translations.csv")
 
 
 transl <- function(x, lang) {
@@ -15,6 +17,7 @@ transl <- function(x, lang) {
     pull(lang)
 }
 
+# transl("SInfo1", "en")
 
 if(!exists("lang")){
   lang <- "en"
@@ -29,15 +32,6 @@ lang_change <- function(lang) {
 }
 
 # 1. SETUP & CONFIGURATION =====================================================
-
-## TODO check if the recoding is actually correct please
-## TODO in dimension Skills, Performance, and Knowledge aggegration?
-## TODO in Dimsension also over time?
-## TODO add by survey type?? 
-## TODO create timeline and stackedbar dont create the same value!
-## TODO pimp the graphs??
-## TODO mix between text and graphs needs to be possible!
-## TODO: Knowledge question seem perhaps incorrect and are missing sometimes across waves
 
 # the_colors <- c("#F5D76E", "#E28D50", "#3D7271", "#C7E6D5", "#0F6B5A", "#BABACD")
 the_colors <- c("#3D7271",  "#E28D50",  "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD")
@@ -143,7 +137,38 @@ recode_survey <- function(df) {
     df$MeanKnowledge <- NA_real_
   }
   
-  
+  # 5) PSCS1 Performance: Online Safety - Phishing recognition
+  # Correct answer is 4 (Phishing mail), 5/6 (don't know/understand) become NA
+  if ("PSCS1N" %in% names(df)) {
+    df <- df |> mutate(PSCS1R = ifelse(PSCS1N == 4, 1, ifelse(PSCS1N == 5 | PSCS1N == 6, NA, 0)))
+  }
+
+  # 6) PSIS1RC: Strategic Info - manually coded from open-ended search task
+  # PSIS1R: 0=incorrect/missing, 1=correct(basic), 2=correct(elaborate), 55=don't understand -> NA
+  if ("PSIS1R" %in% names(df)) {
+    df <- df |> mutate(PSIS1R = suppressWarnings(as.numeric(PSIS1R))) |>
+      mutate(PSIS1RC = case_when(
+        is.na(PSIS1R) | PSIS1R == 55 ~ NA_real_,
+        PSIS1R == 0 ~ 0,
+        TRUE ~ 1
+      ))
+  } else if ("PSIS1_codes" %in% names(df)) {
+    df <- df |> mutate(PSIS1RC = ifelse(PSIS1_codes == 66, NA, ifelse(PSIS1_codes == 1, 1, 0)))
+  }
+
+  # 7) PGAIS1RC: GenAI - manually coded from open-ended task
+  # PGAIS1R: 0=incorrect/missing, 1=correct(basic), 2=correct(elaborate), 55=don't understand -> NA
+  if ("PGAIS1R" %in% names(df)) {
+    df <- df |> mutate(PGAIS1R = suppressWarnings(as.numeric(PGAIS1R))) |>
+      mutate(PGAIS1RC = case_when(
+        is.na(PGAIS1R) | PGAIS1R == 55 ~ NA_real_,
+        PGAIS1R == 0 ~ 0,
+        TRUE ~ 1
+      ))
+  } else if ("PGAIS1_codes" %in% names(df)) {
+    df <- df |> mutate(PGAIS1RC = ifelse(PGAIS1_codes == 66, NA, ifelse(PGAIS1_codes == 1, 1, 0)))
+  }
+
   df %>% 
     mutate(
       across(
@@ -165,48 +190,51 @@ recode_survey <- function(df) {
 #   Age %in% 55:64 ~ "55-64",
 #   Age %in% 65:150 ~ "65+",
 # )) %>%
+# Load manually coded open items (PSIS1 and PGAIS1) from Roos's coded files
+df_opencodes_r1 <- read_csv("data/coding_open_items_r1.csv") %>%
+  select(PSIS1R, PGAIS1R)
+df_opencodes_r2 <- read_csv("data/coding_open_items_r2.csv") %>%
+  select(id, PSIS1R, PGAIS1R)
+
 data_w1 <- read_csv("data/wave1.csv") %>% #table()
-  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
+  # Merge manually coded open items by row order (Round 1 has no id's)
+  bind_cols(df_opencodes_r1) %>%
+  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>%
   mutate(geslacht = case_when(
     geslacht == 1 ~ transl("label_male", lang),
     geslacht == 2 ~ transl("label_female", lang),
     T ~ NA_character_
-  )) %>% 
-  mutate(Education = EducationR) %>% 
+  )) %>%
+  mutate(Education = EducationR) %>%
   mutate(Education = case_when(
     Education == "Low" ~ transl("label_low_education", lang),
     Education == "Middle" ~ transl("label_middle_education", lang),
     Education == "High" ~ transl("label_high_education", lang),
     T ~ Education
-  )) %>% 
-  mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>% 
+  )) %>%
+  mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>%
   recode_survey()
 # getwd()
 # data <- read_csv2("data/DigCom25CompleteWithWeights.csv") %>% #table()
-data <- read_csv("data/wave2.csv") %>% 
-  # mutate(AgeGroup = case_when(
-  #   Age %in% 16:17 ~ "16-17",
-  #   Age %in% 18:24 ~ "18-24",
-  #   Age %in% 25:34 ~ "25-34",
-  #   Age %in% 35:44 ~ "35-44",
-  #   Age %in% 45:54 ~ "45-54",
-  #   Age %in% 55:64 ~ "55-64",
-  #   Age %in% 65:150 ~ "65+",
-  # )) %>%
-  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>% 
+data <- read_csv("data/wave2.csv") %>%
+  # Fix duplicate id for Round 2 merge (one respondent has same id on Smartphone and Paper)
+  mutate(id = if_else(id == "ZHB3QJSWCD" & Device == "Smartphone", "ZHB3QJSWCD1", id)) %>%
+  # Merge manually coded open items by id (Round 2)
+  left_join(df_opencodes_r2, by = "id") %>%
+  mutate(weging_GAMO = str_replace(weging_GAMO, ",", ".") %>% as.numeric) %>%
   mutate(geslacht = case_when(
     Gender == 1 | Gender == "Male" ~ transl("label_male", lang),
     Gender == 2 | Gender == "Female" ~ transl("label_female", lang),
     T ~ NA_character_
-  )) %>% 
-  mutate(Education = EducationR)  %>% 
+  )) %>%
+  mutate(Education = EducationR)  %>%
   mutate(Education = case_when(
     Education == "Low" ~ transl("label_low_education", lang),
     Education == "Middle" ~ transl("label_middle_education", lang),
     Education == "High" ~ transl("label_high_education", lang),
     T ~ Education
-  )) %>% 
-  mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>% 
+  )) %>%
+  mutate(Education = fct_relevel(Education, c(transl("label_low_education", lang), transl("label_middle_education", lang), transl("label_high_education", lang)))) %>%
   recode_survey()
 
 smart_bind_rows <- function(...) {
@@ -265,7 +293,7 @@ digicom_data <- data %>%
   )) %>% 
   mutate(AgeGroup = case_when(
     Age %in% 10:15 ~ "10-15",
-    Age %in% 15:30 ~ "16-30",
+    Age %in% 16:30 ~ "16-30",
     Age %in% 31:64 ~ "31-64",
     Age %in% 65:150 ~ "65+",
   ))
@@ -325,7 +353,7 @@ education_levels <- c("Primary (basisonderwijs)",
 
 
 # Helper functions for creating multiple visualizations
-add_all_viz_timeline <- function(viz, vars, group_var, tbgrp, demographic, wave_label, questions) {
+add_all_viz_timeline <- function(viz, vars, grp_var, tbgrp, demographic, wave_label, questions) {
   wave_path <- tolower(gsub(" ", "", wave_label))
   
   for (i in seq_along(vars)) {
@@ -336,11 +364,12 @@ add_all_viz_timeline <- function(viz, vars, group_var, tbgrp, demographic, wave_
       glue::glue("{tbgrp}/{wave_path}/{demographic}/item{i}")
     }
     
+    # Use identity() to prevent NSE from converting symbols to strings
     viz <- viz |>
       add_viz(
-        title = questions[[i]],
-        response_var = vars[[i]],
-        group_var    = group_var,
+        title        = questions[[i]],
+        y_var = identity(vars[[i]]),
+        group_var    = identity(grp_var),
         tabgroup     = tabgroup_path
       )
   }
@@ -358,17 +387,18 @@ add_all_viz_timeline_single <- function(viz, vars, tbgrp, demographic, wave_labe
       glue::glue("{tbgrp}/{wave_path}/{demographic}/item{i}")
     }
     
+    # Use identity() to prevent NSE from converting symbols to strings
     viz <- viz |>
       add_viz(
-        title = questions[[i]],
-        response_var = vars[[i]],
+        title        = questions[[i]],
+        y_var = identity(vars[[i]]),
         tabgroup     = tabgroup_path
       )
   }
   viz
 }
 
-add_all_viz_stackedbar <- function(viz, vars, questions, stack_var,
+add_all_viz_stackedbar <- function(viz, vars, questions, grp_var,
                                    tbgrp, demographic, wave_label) {
   
   wave_path <- tolower(gsub(" ", "", wave_label))
@@ -390,12 +420,13 @@ add_all_viz_stackedbar <- function(viz, vars, questions, stack_var,
       glue::glue("{tbgrp}/{wave_path}/{demographic}/item{i}")
     }
     
+    # Use identity() to prevent NSE from converting symbols to strings
     viz <- viz |>
       add_viz(
-        title    = questions[[i]],
-        x_var    = stack_var,
-        x_label  = transl(label_key, lang),   # <- changes with demographic
-        stack_var = vars[[i]],
+        title     = questions[[i]],
+        x_var     = identity(grp_var),
+        x_label   = transl(label_key, lang),
+        stack_var = identity(vars[[i]]),
         tabgroup  = tabgroup_path
       )
   }
@@ -414,8 +445,8 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
     type = "stackedbars",
-    questions = vs,
-    question_labels = qs,
+    x_vars = vs,
+    x_var_labels = qs,
     stacked_type = "percent",
     color_palette = colors,
     horizontal = TRUE,
@@ -449,15 +480,15 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     time_var = "wave_time_label",
     chart_type = "line",
     text_before_tabset = text_b_tabset,
-    response_filter = high_values, 
-    response_filter_label = aggr_lab,
-    response_filter_combine = T,
+    y_filter = high_values, 
+    y_filter_label = aggr_lab,
+    y_filter_combine = T,
     x_label = "", 
     y_label = aggr_lab,
     color_palette = the_colors,
     y_min = 0,
     y_max = 100,
-    response_filter_label = NULL,
+    y_filter_label = NULL,
     weight_var = "weging_GAMO"
   ) |>
     add_all_viz_timeline_single(vs, tbgrp, "overall", wave_label = "Over Time", questions = qs)  # Pass tbgrp!
@@ -506,7 +537,7 @@ create_vizzes <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     type = "timeline",
     time_var = "wave_time_label",
     chart_type = "line",
-    response_filter = high_values, 
+    y_filter = high_values, 
     text_before_tabset = text_b_tabset,
     x_label = "", 
     y_label = aggr_lab,
@@ -535,11 +566,16 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
                            aggr_lab = transl("label_percentage_correct", lang),
                            lang = "en") {
   
+  # Force all parameters to avoid NSE issues with dashboardr
+  force(qs); force(vs); force(lbs); force(breaks); force(colors)
+  force(map_values); force(tbgrp); force(graph_title); force(high_values)
+  force(text_b_tabset); force(aggr_lab)
+  
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
     type = "stackedbars",
-    questions = vs,
-    question_labels = qs,
+    x_vars = vs,
+    x_var_labels = qs,
     stacked_type = "percent",
     color_palette = colors,
     horizontal = TRUE,
@@ -574,17 +610,17 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     type = "timeline",
     time_var = "wave_time_label",
     chart_type = "line",
-    response_filter = high_values, 
+    y_filter = high_values, 
     y_min = 0,
     y_max = 100,
-    response_filter_label = aggr_lab,
-    response_filter_combine = T,
+    y_filter_label = aggr_lab,
+    y_filter_combine = T,
     x_label = "", 
     y_label = aggr_lab,
     color_palette = the_colors,
     weight_var = "weging_GAMO"
   ) |>
-    add_all_viz_timeline_single(vs, tbgrp, "overall", wave_label = "Over Time", questions = qs)  # Pass tbgrp!
+    add_all_viz_timeline_single(vs, tbgrp, "overall", wave_label = "Over Time", questions = qs)
   
   # Wave 1 by Age/Gender/Education
   sis_subvizzes <- create_viz(
@@ -600,10 +636,10 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     color_palette = colors,
     weight_var = "weging_GAMO"
   ) |>
-    add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 1") |>       # Pass tbgrp AND "age"
+    add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 1") |>
     add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 1") |>
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1")  |>
-    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")         # Pass tbgrp AND "edu"
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 1") |>
+    add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 1")
   
   # Wave 2 by Age/Gender/Education
   sis_subvizzes2 <- create_viz(
@@ -621,7 +657,7 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   ) |>
     add_all_viz_stackedbar(vs, qs, "AgeGroup", tbgrp, "age", wave_label = "Wave 2") |>
     add_all_viz_stackedbar(vs, qs, "geslacht", tbgrp, "gender", wave_label = "Wave 2") |>
-    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 2")|>
+    add_all_viz_stackedbar(vs, qs, "Education", tbgrp, "edu", wave_label = "Wave 2") |>
     add_all_viz_stackedbar(vs, qs, "MigrationBackground", tbgrp, "mig", wave_label = "Wave 2")
   
   # Over Time by Age/Gender/Education
@@ -629,18 +665,18 @@ create_vizzes2 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     type = "timeline",
     time_var = "wave_time_label",
     chart_type = "line",
-    response_filter = high_values, 
+    y_filter = high_values, 
     y_min = 0,
     y_max = 100,
     x_label = "", 
     y_label = aggr_lab,
     color_palette = the_colors,
-    response_filter_label = NULL,
+    y_filter_label = NULL,
     weight_var = "weging_GAMO"
   ) |>
     add_all_viz_timeline(vs, "AgeGroup", tbgrp, "age", wave_label = "Over Time", questions = qs) |>
     add_all_viz_timeline(vs, "geslacht", tbgrp, "gender", wave_label = "Over Time", questions = qs) |>
-    add_all_viz_timeline(vs, "Education", tbgrp, "edu", wave_label = "Over Time", questions = qs)|>
+    add_all_viz_timeline(vs, "Education", tbgrp, "edu", wave_label = "Over Time", questions = qs) |>
     add_all_viz_timeline(vs, "MigrationBackground", tbgrp, "mig", wave_label = "Over Time", questions = qs)
   
   # Combine all
@@ -663,8 +699,8 @@ create_vizzes3 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
   # Wave 1 & 2 Overall (stackedbars)
   sis_viz <- create_viz(
     type = "stackedbars",
-    questions = vs,
-    question_labels = qs,
+    x_vars = vs,
+    x_var_labels = qs,
     stacked_type = "percent",
     color_palette = colors,
     horizontal = TRUE,
@@ -699,11 +735,11 @@ create_vizzes3 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     type = "timeline",
     time_var = "wave_time_label",
     chart_type = "line",
-    response_filter = high_values, 
+    y_filter = high_values, 
     y_min = 0,
     y_max = 100,
-    response_filter_label = aggr_lab,
-    response_filter_combine = T,
+    y_filter_label = aggr_lab,
+    y_filter_combine = T,
     x_label = "", 
     y_label = aggr_lab,
     color_palette = the_colors,
@@ -754,13 +790,13 @@ create_vizzes3 <- function(qs, vs, lbs, tex, breaks = c(0.5, 2.5, 3.5, 5.5),
     type = "timeline",
     time_var = "wave_time_label",
     chart_type = "line",
-    response_filter = high_values, 
+    y_filter = high_values, 
     y_min = 0,
     y_max = 100,
     x_label = "", 
     y_label = aggr_lab,
     color_palette = the_colors,
-    response_filter_label = NULL,
+    y_filter_label = NULL,
     weight_var = "weging_GAMO"
   ) |>
     add_all_viz_timeline(vs, "AgeGroup", tbgrp, "age", wave_label = "Over Time", questions = qs) |>
@@ -911,7 +947,7 @@ knowledge_overtime_overall <- create_viz(
   type = "timeline",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_var = "MeanKnowledge",
+  y_var = "MeanKnowledge",
   response_breaks = knowledge_breaks,  # Bin the knowledge scores
   response_bin_labels = knowledge_labs,
   y_min = 0,
@@ -929,7 +965,7 @@ knowledge_overtime_demographics <- create_viz(
   type = "timeline",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_var = "MeanKnowledge",
+  y_var = "MeanKnowledge",
   response_breaks = knowledge_breaks,
   y_min = 0,
   y_max = 100,
@@ -1795,8 +1831,8 @@ genai_tex_complete <- paste0(
 # Wave 1 visualizations (only SGAI1-3)
 genai_viz_w1 <- create_viz(
   type = "stackedbars",
-  questions = genai_vars_w1,
-  question_labels = genai_questions_w1,
+  x_vars = genai_vars_w1,
+  x_var_labels = genai_questions_w1,
   stacked_type = "percent",
   color_palette = the_colors,
   horizontal = TRUE,
@@ -1820,8 +1856,8 @@ genai_viz_w1 <- create_viz(
 # Wave 2 visualizations (all SGAI1-5)
 genai_viz_w2 <- create_viz(
   type = "stackedbars",
-  questions = genai_vars_w2,
-  question_labels = genai_questions_w2,
+  x_vars = genai_vars_w2,
+  x_var_labels = genai_questions_w2,
   stacked_type = "percent",
   color_palette = the_colors,
   horizontal = TRUE,
@@ -1848,15 +1884,15 @@ genai_overtime_overall <- create_viz(
   time_var = "wave_time_label",
   chart_type = "line",
   text_before_tabset = genai_tex_complete,
-  response_filter = 4:5, 
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = T,
+  y_filter = 4:5, 
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = T,
   x_label = "", 
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = the_colors,
   y_min = 0,
   y_max = 100,
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO"
 ) |>
   add_all_viz_timeline_single(genai_vars_w1, "genai", "overall", wave_label = "Over Time", questions = genai_questions_w1)
@@ -1904,7 +1940,7 @@ genai_overtime_demo <- create_viz(
   type = "timeline",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 4:5, 
+  y_filter = 4:5, 
   text_before_tabset = genai_tex_complete,
   x_label = "", 
   y_label = "Percentage who answered (Completely) True (4-5)",
@@ -1938,6 +1974,12 @@ skills_viz <- create_content() %>%
                   "```")) %>% 
   combine_viz(sis_viz) %>% 
   combine_viz(cis_viz) %>% 
+  add_pagination()  %>% 
+  add_accordion(title = transl("intro_text_skills", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_skills", lang), "\", preset = \"question\")"), 
+                  "```")) %>%
   combine_viz(nskills_viz) %>%
   combine_viz(dccs_viz)  %>%
   add_pagination()  %>% 
@@ -1949,6 +1991,12 @@ skills_viz <- create_content() %>%
   # new ones
   combine_viz(safety_viz) %>%
   combine_viz(dhealth_viz) %>%
+  add_pagination()  %>% 
+  add_accordion(title = transl("intro_text_skills", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_skills", lang), "\", preset = \"question\")"), 
+                  "```")) %>%
   combine_viz(green_viz) %>%
   combine_viz(dprob_viz)  %>%
   add_pagination()  %>% 
@@ -1959,6 +2007,12 @@ skills_viz <- create_content() %>%
                   "```")) %>%
   combine_viz(trans_viz) %>%
   combine_viz(ai_viz) %>%
+  add_pagination()  %>% 
+  add_accordion(title = transl("intro_text_skills", lang), 
+                text = md_text(
+                  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+                  paste0("create_blockquote(\"", transl("blockquote_skills", lang), "\", preset = \"question\")"), 
+                  "```")) %>%
   combine_viz(genai_viz) %>%
   # labels for ALL tabgroups - using dimension-specific icons
   set_tabgroup_labels(
@@ -2009,12 +2063,11 @@ performance_tex <- md_text(
 
 ## 5.1 Performance: Strategic Information (perf_sis_viz) -----
 perf_sis_questions <- c(
+  transl("PSIS1", lang),
   transl("PSIS2", lang)
 )
-## TODO: its missing PSIS1RC??
-# digicom_data %>% count(PSIS1)
-# digicom_data$PCIS1R <- ifelse(digicom_data$PCIS1N == 2, 1, ifelse (digicom_data$PCIS1N == 5 | digicom_data$PCIS1N == 6, NA, 0))
-perf_sis_vars <- c("PSIS2R")
+
+perf_sis_vars <- c("PSIS1RC", "PSIS2R")
 
 perf_sis_info_text <- transl("strategic_info_description", lang)
 
@@ -2034,17 +2087,23 @@ perf_sis_viz <- create_vizzes3(
   perf_correct_labs,
   "",
   tbgrp        = "perf_sis",
-  graph_title  = perf_sis_questions,
+  graph_title  = "",
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   text_b_tabset = perf_sis_tex_link,
   lang = lang
 ) %>%
   add_modal(
+    modal_id = "PSIS1RC",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("strategic_info_perf_q1_infobox_image", lang)),
+    image_width = "50%"
+  ) %>%
+  add_modal(
     modal_id = "PSIS2R",
     title = transl("more_info", lang),
     image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("strategic_info_infobox_image", lang)),
     image_width = "50%"
-  ) 
+  )
 
 
 
@@ -2234,6 +2293,41 @@ perf_safety_viz <- create_vizzes3(
   )
 
 
+## 5.5b Performance: Online Safety - Phishing Recognition (perf_pscs1_viz) ----
+perf_pscs1_questions <- c(
+  transl("PSCS1", lang)
+)
+
+perf_pscs1_vars <- c("PSCS1R")
+
+perf_pscs1_tex_link <- md_text(
+  transl("safety_description", lang),
+  "",
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_pscs1", lang))), "', preset = 'question')"),
+  "```",
+  paste0("[{{< iconify ph cards >}} ", transl("link_see_all_safety", lang), "](safety.html)")
+)
+
+perf_pscs1_viz <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_pscs1_questions,
+  perf_pscs1_vars,
+  perf_correct_labs,
+  "",
+  tbgrp        = "perf_pscs1",
+  graph_title  = perf_pscs1_questions,
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  text_b_tabset = perf_pscs1_tex_link,
+  lang = lang
+) %>%
+  add_modal(
+    modal_id = "PSCS1R",
+    title = transl("more_info", lang),
+    image = "PSCS1.jpg",
+    image_width = "80%"
+  )
+
 
 ## 5.6 Performance: Health & Wellbeing (perf_health_viz) ----
 perf_health_questions <- c(
@@ -2399,7 +2493,7 @@ perf_trans_viz <- create_vizzes3(
   add_modal(
     modal_id = "PTS1R",
     title = transl("more_info", lang),
-    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("transcational_competence_infobox_image", lang)),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("transactional_competence_infobox_image", lang)),
     image_width = "50%"
   )
 
@@ -2457,10 +2551,11 @@ perf_ai_viz <- create_vizzes3(
 
 ## 5.11 Performance: GenAI (perf_genai_viz) ----
 perf_genai_questions <- c(
+  transl("PGAIS1", lang),
   transl("PAIS1", lang)
 )
 
-perf_genai_vars <- c("PAIS1R")
+perf_genai_vars <- c("PGAIS1RC", "PAIS1R")
 
 perf_genai_info_text <- transl("genai_description", lang)
 
@@ -2480,12 +2575,17 @@ perf_genai_viz <- create_vizzes3(
   perf_correct_labs,
   "",
   tbgrp        = "perf_genai",
-  graph_title  = perf_genai_questions,
-  # in original you reversed categories_dat; here we can still map 1=Correct
+  graph_title  = "",
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   text_b_tabset = perf_genai_tex_link,
   lang = lang
 ) %>%
+  add_modal(
+    modal_id = "PGAIS1RC",
+    title = transl("more_info", lang),
+    image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("genai_perf_q1_infobox_image", lang)),
+    image_width = "50%"
+  ) %>%
   add_modal(
     modal_id = "PAIS1R",
     title = transl("more_info", lang),
@@ -2500,13 +2600,16 @@ perf_genai_viz <- create_vizzes3(
 ## 6.1 Performance Collection ----
 performance_collection <- perf_sis_viz %>%
   combine_viz(perf_cis_viz) %>%
-  combine_viz(perf_dccs_viz) %>%
   add_pagination() %>% 
+  combine_viz(perf_dccs_viz) %>%
   combine_viz(perf_netiquette_viz) %>%
+  add_pagination() %>% 
   combine_viz(perf_safety_viz) %>%
+  combine_viz(perf_pscs1_viz) %>%
+  add_pagination() %>% 
   combine_viz(perf_health_viz) %>%
-  add_pagination() %>%
   combine_viz(perf_green_viz) %>%
+  add_pagination() %>%
   combine_viz(perf_ps_viz)  %>%
   combine_viz(perf_trans_viz) %>%
   add_pagination() %>%
@@ -2518,6 +2621,7 @@ performance_collection <- perf_sis_viz %>%
     perf_netiquette = paste0("{{< iconify ph chats-fill >}} ", transl("dimension_netiquette", lang)),
     perf_dccs   = paste0("{{< iconify ph palette-fill >}} ", transl("dimension_content_creation", lang)),
     perf_safety = paste0("{{< iconify ph shield-check-fill >}} ", transl("dimension_safety", lang)),
+    perf_pscs1  = paste0("{{< iconify ph warning-fill >}} ", transl("dimension_phishing", lang)),
     perf_health = paste0("{{< iconify ph heart-fill >}} ", transl("dimension_digital_health", lang)),
     perf_green  = paste0("{{< iconify ph recycle-fill >}} ", transl("dimension_green", lang)),
     perf_ps     = paste0("{{< iconify ph lightbulb-fill >}} ", transl("dimension_problem_solving", lang)),
@@ -2546,7 +2650,7 @@ performance_collection <- perf_sis_viz %>%
 
 # 7. DIMENSION-SPECIFIC COMBINED VISUALIZATIONS ================================
 
-library(htmltools)
+suppressWarnings(library(htmltools))
 
 ## 7.0 Setup: Icon System ----
 # Create combined visualizations for dimension pages with proper labels
@@ -2917,8 +3021,8 @@ genai_tex_wo_complete <- paste0(
 # Wave 1 visualizations (only SGAI1-3)
 genai_viz_wo_link_w1 <- create_viz(
   type = "stackedbars",
-  questions = genai_vars_w1,
-  question_labels = genai_questions_w1,
+  x_vars = genai_vars_w1,
+  x_var_labels = genai_questions_w1,
   stacked_type = "percent",
   color_palette = the_colors,
   horizontal = TRUE,
@@ -2942,8 +3046,8 @@ genai_viz_wo_link_w1 <- create_viz(
 # Wave 2 visualizations (all SGAI1-5)
 genai_viz_wo_link_w2 <- create_viz(
   type = "stackedbars",
-  questions = genai_vars_w2,
-  question_labels = genai_questions_w2,
+  x_vars = genai_vars_w2,
+  x_var_labels = genai_questions_w2,
   stacked_type = "percent",
   color_palette = the_colors,
   horizontal = TRUE,
@@ -2970,15 +3074,15 @@ genai_overtime_overall_wo_link <- create_viz(
   time_var = "wave_time_label",
   chart_type = "line",
   text_before_tabset = genai_tex_wo_complete,
-  response_filter = 4:5, 
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = T,
+  y_filter = 4:5, 
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = T,
   x_label = "", 
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = the_colors,
   y_min = 0,
   y_max = 100,
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO"
 ) |>
   add_all_viz_timeline_single(genai_vars_w1, "genai", "overall", wave_label = "Over Time", questions = genai_questions_w1)
@@ -3026,7 +3130,7 @@ genai_overtime_demo_wo_link <- create_viz(
   type = "timeline",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 4:5, 
+  y_filter = 4:5, 
   text_before_tabset = genai_tex_wo_complete,
   x_label = "", 
   y_label = "Percentage who answered (Completely) True (4-5)",
@@ -3069,7 +3173,7 @@ perf_sis_viz_wo_link <- create_vizzes3(
   perf_correct_labs,
   text_b_tabset = perf_sis_tex_wo_complete,
   tbgrp        = "perf_sis",
-  graph_title  = perf_sis_questions,
+  graph_title  = "",  # TODO: restore perf_sis_questions once dashboardr allows vector titles
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   lang = lang
 ) %>%
@@ -3210,6 +3314,37 @@ perf_safety_viz_wo_link <- create_vizzes3(
     title = transl("more_info", lang),
     image = paste0("https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/", transl("safety_competence_infobox_image", lang)),
     image_width = "50%"
+  )
+
+# PSCS1 Phishing Recognition (without link for dimension page)
+perf_pscs1_blockquote <- md_text(
+  "```{r, echo=FALSE, message=FALSE, warning=FALSE}",
+  paste0("create_blockquote('", gsub('"', '\\\\"', gsub("'", "\\\\'", transl("blockquote_performance_pscs1", lang))), "', preset = 'question')"),
+  "```"
+)
+
+perf_pscs1_tex_wo_complete <- paste0(
+  performance_short, "\n",
+  perf_pscs1_blockquote, "\n",
+  performance_tex_more_link
+)
+
+perf_pscs1_viz_wo_link <- create_vizzes3(
+  breaks       = knowledge_breaks,
+  perf_pscs1_questions,
+  perf_pscs1_vars,
+  perf_correct_labs,
+  text_b_tabset = perf_pscs1_tex_wo_complete,
+  tbgrp        = "perf_pscs1",
+  graph_title  = perf_pscs1_questions,
+  map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
+  lang = lang
+) %>%
+  add_modal(
+    modal_id = "PSCS1R",
+    title = transl("more_info", lang),
+    image = "PSCS1.jpg",
+    image_width = "80%"
   )
 
 perf_health_blockquote <- md_text(
@@ -3363,7 +3498,7 @@ perf_genai_viz_wo_link <- create_vizzes3(
   perf_correct_labs,
   text_b_tabset = perf_genai_tex_wo_complete,
   tbgrp        = "perf_genai",
-  graph_title  = perf_genai_questions,
+  graph_title  = "",  # TODO: restore perf_genai_questions once dashboardr allows vector titles
   map_values   = list("1" = transl("label_correct", lang), "0" = transl("label_incorrect", lang)),
   lang = lang
 ) %>%
@@ -3452,11 +3587,12 @@ content_creation_visualizations <- (dccs_viz_wo_link + kcrea_viz_wo_link + perf_
   )
 
 ## 7.5 Safety & Control Dimension ----
-safety_visualizations <- (safety_viz_wo_link + ksafety_viz_wo_link + perf_safety_viz_wo_link) %>%
+safety_visualizations <- (safety_viz_wo_link + ksafety_viz_wo_link + perf_safety_viz_wo_link + perf_pscs1_viz_wo_link) %>%
   set_tabgroup_labels(
     safety = paste0("{{< iconify ph lightning-fill >}} ", transl("tab_safety_skills", lang)),
     ksafety = paste0("{{< iconify ph book-open-fill >}} ", transl("tab_safety_knowledge", lang)),
     perf_safety = paste0("{{< iconify ph clipboard-text >}} ", transl("tab_safety_performance", lang)),
+    perf_pscs1 = paste0("{{< iconify ph warning-fill >}} ", transl("tab_phishing_recognition", lang)),
     wave1 = paste0("{{< iconify ph number-circle-one-fill >}} ", transl("tab_wave1", lang)), 
     wave2 = paste0("{{< iconify ph number-circle-two-fill >}} ", transl("tab_wave2", lang)),
     age = paste0("{{< iconify mdi:human-male-male-child >}} ", transl("tab_age", lang)), 
@@ -3652,6 +3788,18 @@ dimensions_menu <- navbar_menu(
   icon = "ph:books-fill"
 )
 
+# More Info dropdown menu with About and Wave pages (aligned right)
+more_info_menu <- navbar_menu(
+  text = transl("menu_more_info", lang),
+  pages = c(
+    transl("page_name_about", lang),
+    transl("page_name_ronde1", lang)
+    # Future: transl("page_name_ronde2", lang)
+  ),
+  icon = "ph:info-fill",
+  align = "right"
+)
+
 
 
 
@@ -3679,7 +3827,7 @@ dashboard <- create_dashboard(
   code_overflow = "wrap",        # ← From your original
   html_math_method = "mathjax",  # ← From your original
   #### Navbar settings
-  navbar_sections = list(dimensions_menu),  # Just pass the menus!
+  navbar_sections = list(dimensions_menu, more_info_menu),  # Dimensions + More Info menus
   navbar_style = "dark",
   navbar_brand = "Digital Competence Insights Dashboard",
   navbar_toggle = "collapse",
@@ -3705,7 +3853,8 @@ dashboard <- create_dashboard(
   code_tools = FALSE,  # ← Add this to explicitly disable the Code button
   code_folding = NULL, # ← Make sure this is NULL or FALSE too
   plausible = "pa-UnPiJwxFi8TS-XAvCdgQx",
-  metrics_style = "bootstrap"
+  metrics_style = "bootstrap",
+  backend = "echarts4r"
 ) %>%
   # Landing page with icon
   add_page(
@@ -3763,25 +3912,25 @@ dashboard <- create_dashboard(
       transl("page_text_knowledge", lang)
     )
   ) %>%
-  # Analysis page with data and visualizations
-  add_page(
-    name = transl("page_name_highlights", lang),
-    data = digicom_data,
-    icon = "ph:star-fill",
-    # visualizations = genai_viz,
-    text = md_text(
-      "<div style='text-align: justify;'>",
-      paste0("### ", transl("highlights_wave1_title", lang)),
-      transl("highlights_intro", lang),
-      "",
-      transl("key_finding_1", lang),
-      "",
-      transl("key_finding_2", lang),
-      "",
-      transl("key_finding_3", lang),
-      "</div>"
-    )
-  )%>%
+  # COMMENTED OUT: Hoogtepunten/Highlights page
+#   add_page(
+#     name = transl("page_name_highlights", lang),
+#     data = digicom_data,
+#     icon = "ph:star-fill",
+#     # visualizations = genai_viz,
+#     text = md_text(
+#       "<div style='text-align: justify;'>",
+#       paste0("### ", transl("highlights_wave1_title", lang)),
+#       transl("highlights_intro", lang),
+#       "",
+#       transl("key_finding_1", lang),
+#       "",
+#       transl("key_finding_2", lang),
+#       "",
+#       transl("key_finding_3", lang),
+#       "</div>"
+#     )
+#   )%>%
   # Analysis page with data and visualizations
   add_page(
     name = transl("page_name_strategic_info", lang),
@@ -3794,7 +3943,7 @@ dashboard <- create_dashboard(
       transl("strategic_info_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_critical_info", lang),
     icon = "ph:detective-fill",
@@ -3806,7 +3955,7 @@ dashboard <- create_dashboard(
       transl("critical_info_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_netiquette", lang),
     icon = "ph:chats-fill",
@@ -3818,7 +3967,7 @@ dashboard <- create_dashboard(
       transl("netiquette_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_content_creation", lang),
     icon = "ph:palette-fill",
@@ -3830,7 +3979,7 @@ dashboard <- create_dashboard(
       transl("content_creation_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_safety", lang),
     icon = "ph:shield-check-fill",
@@ -3842,7 +3991,7 @@ dashboard <- create_dashboard(
       transl("safety_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_digital_health", lang),
     icon = "ph:heart-fill",
@@ -3854,7 +4003,7 @@ dashboard <- create_dashboard(
       transl("digital_health_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_green", lang),
     icon = "ph:recycle-fill",
@@ -3866,7 +4015,7 @@ dashboard <- create_dashboard(
       transl("green_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_problem_solving", lang),
     icon = "ph:lightbulb-fill",
@@ -3878,7 +4027,7 @@ dashboard <- create_dashboard(
       transl("problem_solving_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_transactional", lang),
     icon = "ph:wallet-fill",
@@ -3890,7 +4039,7 @@ dashboard <- create_dashboard(
       transl("transactional_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_ai", lang),
     icon = "ph:robot-fill",
@@ -3902,7 +4051,7 @@ dashboard <- create_dashboard(
       transl("ai_description", lang)
     )
   ) %>%
-  
+
   add_page(
     name = transl("page_name_genai", lang),
     icon = "ph:magic-wand-fill",
@@ -3914,20 +4063,385 @@ dashboard <- create_dashboard(
       transl("genai_description", lang)
     )
   ) %>%
-  # Text-only page with icon showcasing card function
+  # About page (now in More Info dropdown)
   add_page(
     name = transl("page_name_about", lang),
     icon = "ph:info-fill",
-    navbar_align = "right",
     text = md_text(
       "<div style='text-align: justify;'>",
-      transl("about_page_text", lang),
+      transl("about_page_text_v2", lang),
+      "",
+      "::: {.panel-tabset}",
+      "",
+      "#### Fabio Votta",
+      "",
+      "```{r, echo=FALSE}",
+      "suppressWarnings(library(htmltools))",
+      "",
+      "card <- div(",
+      "  class = 'card',",
+      "  div(",
+      "    class = 'row no-gutters align-items-center',",
+      "    div(",
+      "      class = 'col-md-2',",
+      "      div(",
+      "        style = 'display: flex; justify-content: center;',",
+      "        img(",
+      "          class = 'card-img',",
+      "          src = 'https://algosoc.org/uploads/_card/fabio-votta-1.jpg',",
+      "          style = 'max-width: 500px;'",
+      "        )",
+      "      )",
+      "    ),",
+      "    div(",
+      "      class = 'col-md-2',",
+      "      div(",
+      "        class = 'card-body',",
+      "        p(",
+      "          class = 'card-text',",
+      "          'Fabio Votta is a Postdoc at the University of Amsterdam who studies digital political campaigns and the role of ad delivery algorithms. He is particularly interested in how political actors use targeted campaign messages to reach specific voters and how social media platforms enable these practices.'",
+      "        ),",
+      "        div(",
+      "          style = 'display: flex; justify-content: flex-end',",
+      "          a(href = 'https://www.favstats.eu/', 'Website: favstats.eu')",
+      "        )",
+      "      )",
+      "    )",
+      "  )",
+      ")",
+      "",
+      "card",
+      "```",
+      "",
+      "#### Ernesto de León",
+      "",
+      "```{r, echo=FALSE}",
+      "card <- shiny::fluidPage(",
+      "  tags$head(",
+      "    tags$link(rel = 'stylesheet', href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css')",
+      "  ),",
+      "  div(",
+      "    class = 'card',",
+      "    div(",
+      "      class = 'row no-gutters align-items-center',",
+      "      div(",
+      "        class = 'col-md-2',",
+      "        div(",
+      "          style = 'display: flex; justify-content: center;',",
+      "          img(",
+      "            class = 'card-img',",
+      "            src = 'https://algosoc.org/uploads/_card/Ernesto-de-Leon.jpeg',",
+      "            style = 'max-width: 500px;'",
+      "          )",
+      "        )",
+      "      ),",
+      "      div(",
+      "        class = 'col-md-2',",
+      "        div(",
+      "          class = 'card-body',",
+      "          p(",
+      "            class = 'card-text',",
+      "            'Ernesto de León focuses on political information flows in a digital age and its effects on political attitudes. In these projects, he makes use of computational methodologies to explore web behaviour, use of algorithmic intermediaries to news (such as social media and search engines), and to conduct large-scale automated content analyses through text-as-data approaches.'",
+      "          ),",
+      "          div(",
+      "            style = 'display: flex; justify-content: flex-end',",
+      "            a(href = 'https://www.ernesto-deleon.com/', 'Website: ernesto-deleon.com')",
+      "          )",
+      "        )",
+      "      )",
+      "    )",
+      "  )",
+      ")",
+      "",
+      "card",
+      "```",
+      "",
+      ":::",
       "",
       "<br>",
       "<br>",
       "<center><img src='bzk.jpg' width='360'></center>",
       "</div>"
     )
+  )
+
+# 7. WAVE 1 PAGE: Pre-compute demographics & correlations =====================
+
+wave1_data_page <- digicom_data %>% filter(wave == 1)
+w1_n_total <- nrow(wave1_data_page)
+
+# Helper: create a frequency table for a variable
+w1_make_freq <- function(data, var_name, labels_map = NULL, exclude_vals = NULL) {
+  vals <- data[[var_name]]
+  if (!is.null(exclude_vals)) {
+    vals[as.character(vals) %in% as.character(exclude_vals)] <- NA
+  }
+  if (!is.null(labels_map)) {
+    vals <- as.character(vals)
+    for (k in names(labels_map)) vals[vals == k] <- labels_map[[k]]
+  }
+  tbl <- table(vals, useNA = "no")
+  df <- data.frame(Category = names(tbl), N = as.integer(tbl), stringsAsFactors = FALSE)
+  df$Pct <- round(100 * df$N / sum(df$N), 1)
+  if (!is.null(labels_map)) {
+    df$Category <- factor(df$Category, levels = unname(labels_map))
+    df <- df[order(df$Category), ]
+  }
+  df
+}
+
+# Helper: create a styled reactable from a freq table
+w1_styled_reactable <- function(df) {
+  max_pct <- max(df$Pct, na.rm = TRUE)
+  reactable::reactable(df,
+    compact = TRUE, borderless = TRUE, striped = TRUE,
+    defaultPageSize = nrow(df), pagination = FALSE,
+    theme = reactable::reactableTheme(
+      headerStyle = list(background = "#3D7271", color = "white", fontWeight = "bold", fontSize = "13px"),
+      cellStyle = list(fontSize = "13px")
+    ),
+    columns = list(
+      Category = reactable::colDef(name = "Category", minWidth = 180),
+      N = reactable::colDef(name = "N", align = "right", minWidth = 60),
+      Pct = reactable::colDef(name = "%", align = "left", minWidth = 200,
+        cell = function(value) {
+          if (is.na(value)) return(htmltools::span("—"))
+          bar_width <- paste0(round(value / max_pct * 100), "%")
+          htmltools::div(style = "display: flex; align-items: center;",
+            htmltools::div(style = paste0("background: #E28D50; height: 16px; width: ", bar_width, "; border-radius: 3px; margin-right: 8px;")),
+            htmltools::span(paste0(value, "%"))
+          )
+        }
+      )
+    )
+  )
+}
+
+# 1. Age group (PDF spec: 10-15, 16-30, 31-60, 61-110)
+wave1_data_page$AgeGroupW1 <- cut(wave1_data_page$Age, breaks = c(10, 16, 31, 61, 110),
+  right = FALSE, labels = c("10-15", "16-30", "31-60", "61-110"))
+w1_age_df <- w1_make_freq(wave1_data_page, "AgeGroupW1")
+
+# 2. Gender (values are text in digicom_data: "Female", "Male", etc.)
+w1_gender_df <- w1_make_freq(wave1_data_page, "Gender",
+  labels_map = c("Male" = transl("label_male", lang),
+                 "Female" = transl("label_female", lang),
+                 "X" = "X",
+                 "I'd rather not say" = transl("scale_prefer_not_answer", lang)))
+
+# 3. Education level (Education column is already translated & factored)
+w1_edu_df <- w1_make_freq(wave1_data_page, "Education")
+
+# 4. Migration background
+w1_mig_df <- w1_make_freq(wave1_data_page, "MigrationBackground")
+
+# 5. Panel type
+wave1_data_page$SampleRW1 <- ifelse(wave1_data_page$Sample %in% c(1, 2, "Panel adults", "Panel children"),
+  transl("w1_panel", lang),
+  ifelse(wave1_data_page$Sample %in% c(3, 4, "Address sample"),
+    transl("w1_address", lang), NA))
+w1_sample_df <- w1_make_freq(wave1_data_page, "SampleRW1")
+
+# 6. Use of Devices
+w1_device_labels <- setNames(
+  c(transl("w1_device_never", lang), transl("w1_device_almost_never", lang),
+    transl("w1_device_sometimes", lang), transl("w1_device_often", lang),
+    transl("w1_device_very_often", lang)),
+  c("1", "2", "3", "4", "5"))
+w1_comp_df <- w1_make_freq(wave1_data_page, "UseComp", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+w1_tablet_df <- w1_make_freq(wave1_data_page, "UseTablet", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+w1_phone_df <- w1_make_freq(wave1_data_page, "UsePhone", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+
+# 7. General Literacy
+w1_lit_labels <- setNames(
+  c(transl("w1_lit_never", lang), transl("w1_lit_almost_never", lang),
+    transl("w1_lit_sometimes", lang), transl("w1_lit_often", lang),
+    transl("w1_lit_very_often", lang)),
+  c("1", "2", "3", "4", "5"))
+w1_lit_df <- w1_make_freq(wave1_data_page, "Literacy", labels_map = w1_lit_labels, exclude_vals = c("66", "99"))
+
+# 8. Work status
+w1_work_labels <- setNames(
+  c(transl("w1_work_student", lang), transl("w1_work_employed", lang),
+    transl("w1_work_housekeeper", lang), transl("w1_work_unemployed", lang),
+    transl("w1_work_retired", lang), transl("w1_work_volunteer", lang),
+    transl("w1_work_other", lang)),
+  c("1", "2", "3", "4", "5", "6", "7"))
+w1_work_df <- w1_make_freq(wave1_data_page, "Work", labels_map = w1_work_labels, exclude_vals = c("99"))
+
+# 9. Hours of work with computer (employed only)
+w1_employed <- wave1_data_page %>% filter(Work == 2 | Work == "2" | Work == "Employed")
+w1_work2_df <- NULL
+if (nrow(w1_employed) > 0 && "Work_2" %in% names(w1_employed)) {
+  w1_work2_hours <- as.numeric(w1_employed$Work_2)
+  w1_work2_hours <- w1_work2_hours[!is.na(w1_work2_hours)]
+  w1_work2_df <- data.frame(
+    Statistic = c(transl("w1_work2_n", lang), transl("w1_work2_mean", lang),
+                  transl("w1_work2_median", lang)),
+    Value = c(length(w1_work2_hours),
+              round(mean(w1_work2_hours, na.rm = TRUE), 1),
+              round(median(w1_work2_hours, na.rm = TRUE), 1)),
+    stringsAsFactors = FALSE
+  )
+}
+
+# 10. Financial insecurity
+w1_fin_labels <- setNames(
+  c(transl("w1_fin_completely_untrue", lang), transl("w1_fin_slightly_untrue", lang),
+    transl("w1_fin_neither", lang), transl("w1_fin_slightly_true", lang),
+    transl("w1_fin_completely_true", lang)),
+  c("1", "2", "3", "4", "5"))
+w1_fin_df <- w1_make_freq(wave1_data_page, "FinancialInsecurity", labels_map = w1_fin_labels, exclude_vals = c("66", "99"))
+
+# -- Correlation heatmap (Spearman, 19 variables per PDF spec) --
+
+# Compute TotalPerformance
+w1_perf_items <- c("PSIS1RC", "PSIS2R", "PCIS1R", "PCIS2R", "PCIS3R", "PNS1R",
+  "PDCCS1R", "PSCS1R", "PSCS3R", "PDHWS1R", "PSGDS1R", "SourceHelpR",
+  "PAIS2R", "PAIS1R", "PGAIS1RC", "PTS1R")
+w1_avail_perf <- intersect(w1_perf_items, names(wave1_data_page))
+if (length(w1_avail_perf) > 0) {
+  wave1_data_page$TotalPerformance <- rowSums(wave1_data_page[, w1_avail_perf], na.rm = FALSE)
+}
+
+# Compute demographic dummies per PDF spec
+wave1_data_page$GenderN <- ifelse(wave1_data_page$Gender == 1 | wave1_data_page$Gender == "Male", 1,
+  ifelse(wave1_data_page$Gender == 2 | wave1_data_page$Gender == "Female", 0, NA))
+wave1_data_page$EducationN <- ifelse(wave1_data_page$EducationR == "Low" | wave1_data_page$EducationR == 1, 1,
+  ifelse(wave1_data_page$EducationR == "Middle" | wave1_data_page$EducationR == 2, 2,
+  ifelse(wave1_data_page$EducationR == "High" | wave1_data_page$EducationR == 3, 3, NA)))
+wave1_data_page$MigrationBackgroundN <- ifelse(wave1_data_page$MigrationBackground == transl("label_no", lang), 0,
+  ifelse(wave1_data_page$MigrationBackground == transl("label_yes", lang), 1, NA))
+wave1_data_page$SampleN <- ifelse(wave1_data_page$Sample %in% c(1, 2, "Panel adults", "Panel children"), 1,
+  ifelse(wave1_data_page$Sample %in% c(3, 4, "Address sample"), 0, NA))
+wave1_data_page$Work_Werk <- ifelse(wave1_data_page$Work == 2 | wave1_data_page$Work == "2", 1, 0)
+wave1_data_page$Work_Stud <- ifelse(wave1_data_page$Work == 1 | wave1_data_page$Work == "1", 1, 0)
+wave1_data_page$LiteracyN <- as.numeric(wave1_data_page$Literacy)
+wave1_data_page$LiteracyN[wave1_data_page$LiteracyN %in% c(66, 99)] <- NA
+wave1_data_page$FinancialInsecurityN <- as.numeric(wave1_data_page$FinancialInsecurity)
+wave1_data_page$FinancialInsecurityN[wave1_data_page$FinancialInsecurityN %in% c(66, 99)] <- NA
+if ("MeanKnowledge" %in% names(wave1_data_page)) {
+  wave1_data_page$TotalKnowledge <- wave1_data_page$MeanKnowledge
+}
+
+# Full variable set (19 variables per PDF spec)
+w1_cor_vars <- c("MeanStratInfo", "MeanCritInfo", "MeanNet", "MeanCrea",
+  "MeanSaf", "MeanHealth", "MeanTrans", "MeanGreen", "MeanProbl",
+  "MeanAI", "MeangenAI", "TotalKnowledge", "TotalPerformance",
+  "GenderN", "Work_Werk", "Work_Stud", "Work_2", "LiteracyN", "FinancialInsecurityN")
+w1_avail_vars <- intersect(w1_cor_vars, names(wave1_data_page))
+
+w1_cor_plot <- NULL
+if (length(w1_avail_vars) >= 2) {
+  if ("Work_2" %in% w1_avail_vars) {
+    wave1_data_page$Work_2 <- as.numeric(wave1_data_page$Work_2)
+  }
+  w1_cor_data <- wave1_data_page[, w1_avail_vars]
+  w1_cor_matrix <- cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs")
+
+  w1_display_names <- c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
+    "MeanNet" = "Netiquette", "MeanCrea" = "Creativity", "MeanSaf" = "Safety",
+    "MeanHealth" = "Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green",
+    "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
+    "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
+    "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
+    "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
+  rownames(w1_cor_matrix) <- w1_display_names[rownames(w1_cor_matrix)]
+  colnames(w1_cor_matrix) <- w1_display_names[colnames(w1_cor_matrix)]
+
+  w1_cor_melted <- reshape2::melt(w1_cor_matrix)
+  names(w1_cor_melted) <- c("Var1", "Var2", "Correlation")
+  w1_cor_melted$Var1 <- factor(w1_cor_melted$Var1, levels = w1_display_names[w1_avail_vars])
+  w1_cor_melted$Var2 <- factor(w1_cor_melted$Var2, levels = rev(w1_display_names[w1_avail_vars]))
+  w1_cor_melted$Correlation[as.numeric(w1_cor_melted$Var1) < as.numeric(factor(w1_cor_melted$Var2, levels = levels(w1_cor_melted$Var1)))] <- NA
+
+  w1_cor_plot <- ggplot(w1_cor_melted, aes(x = Var1, y = Var2, fill = Correlation)) +
+    geom_tile(color = "white") +
+    geom_text(aes(label = ifelse(is.na(Correlation), "", sprintf("%.2f", Correlation))),
+      color = "black", size = 2.5) +
+    scale_fill_gradient2(low = "#E28D50", mid = "white", high = "#3D7271",
+      midpoint = 0, limits = c(-1, 1), na.value = "white") +
+    theme_minimal(base_size = 12) +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+      axis.text.y = element_text(size = 10),
+      plot.title = element_text(size = 14, face = "bold", color = "#3D7271"),
+      legend.position = "right"
+    ) +
+    labs(title = transl("w1_cor_title", lang),
+      x = "", y = "", fill = "Correlation")
+}
+
+# Build Wave 1 content collection using dashboardr functions
+wave1_content <- create_content() %>%
+  add_text(paste0("**N = ", format(w1_n_total, big.mark = ","),
+    " | ", transl("w1_label_mean_age", lang), ": ",
+    round(mean(wave1_data_page$Age, na.rm = TRUE), 1), "**")) %>%
+  add_text(paste0("### ", transl("w1_header_age_group", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_age_df)) %>%
+  add_text(paste0("### ", transl("w1_header_gender", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_gender_df)) %>%
+  add_text(paste0("### ", transl("w1_header_education", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_edu_df)) %>%
+  add_text(paste0("### ", transl("w1_header_migration", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_mig_df)) %>%
+  add_text(paste0("### ", transl("w1_header_panel", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_sample_df)) %>%
+  add_text(paste0("### ", transl("w1_header_device_computer", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_comp_df)) %>%
+  add_text(paste0("### ", transl("w1_header_device_tablet", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_tablet_df)) %>%
+  add_text(paste0("### ", transl("w1_header_device_phone", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_phone_df)) %>%
+  add_text(paste0("### ", transl("w1_header_literacy", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_lit_df)) %>%
+  add_text(paste0("### ", transl("w1_header_work", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_work_df))
+
+if (!is.null(w1_work2_df)) {
+  w1_work2_rt <- reactable::reactable(w1_work2_df,
+    compact = TRUE, borderless = TRUE, striped = TRUE,
+    defaultPageSize = nrow(w1_work2_df), pagination = FALSE,
+    theme = reactable::reactableTheme(
+      headerStyle = list(background = "#3D7271", color = "white", fontWeight = "bold", fontSize = "13px"),
+      cellStyle = list(fontSize = "13px")
+    ),
+    columns = list(
+      Statistic = reactable::colDef(minWidth = 180),
+      Value = reactable::colDef(align = "right", minWidth = 80)
+    )
+  )
+  wave1_content <- wave1_content %>%
+    add_text(paste0("### ", transl("w1_header_work_hours", lang))) %>%
+    add_reactable(w1_work2_rt)
+}
+
+wave1_content <- wave1_content %>%
+  add_text(paste0("### ", transl("w1_header_financial", lang))) %>%
+  add_reactable(w1_styled_reactable(w1_fin_df))
+
+if (!is.null(w1_cor_plot)) {
+  wave1_content <- wave1_content %>%
+    add_text(paste0("## ", transl("w1_header_correlations", lang))) %>%
+    add_ggplot(w1_cor_plot, width = 14, height = 12)
+}
+
+# Resume dashboard pipeline
+dashboard <- dashboard %>%
+
+  # Ronde 1 / Wave 1 page (in More Info dropdown)
+  add_page(
+    name = transl("page_name_ronde1", lang),
+    icon = "ph:number-circle-one-fill",
+    data = digicom_data,
+    text = md_text(
+      "<div style='text-align: justify;'>",
+      transl("ronde1_page_text", lang),
+      "</div>",
+      "",
+      paste0("## ", transl("w1_header_demographics", lang))
+    ),
+    visualizations = wave1_content
   ) %>%
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text
@@ -3956,6 +4470,15 @@ files_to_delete <- dir("qmds", pattern = "\\.markdown$", full.names = TRUE)
 file.remove(files_to_delete)
 # generate_dashboard(dashboard, render = F,  open = "browser")
 
+
+# Create minimal dashboard with just this page
+# test_dashboard <- create_dashboard(
+#   title = "Test - Green Digital Page",
+#   output_dir = "test_output"
+# ) %>% 
+#   add_page(name = "HI", visualizations = green_viz, data = digicom_data)
+# 
+# generate_dashboard(test_dashboard)
 ## 8.3 Generate Dashboard ----
 # Generate the dashboard
 cat("\n=== Generating Dashboard ===\n")

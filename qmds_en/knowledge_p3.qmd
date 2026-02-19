@@ -4,59 +4,14 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='knowledge_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='3' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(3, 3, "knowledge", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "knowledge")
 ```
 
 The **Knowledge** section measures what participants *know* about the digital world: how it works, what risks it involves, and how different technologies affect everyday life. These items test factual understanding across topics such as information reliability, communication and privacy, online safety, AI, and generative AI. Respondents indicate whether each statement is true or false (or if they don’t know), allowing us to assess their level of digital literacy and awareness beyond self-perceived skills.
@@ -68,10 +23,8 @@ The **Knowledge** section measures what participants *know* about the digital wo
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -84,7 +37,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -93,26 +46,16 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
-
-
-<details>
-<summary>For all knowledge questions, we used the following wording</summary>
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-
-</details>
 
 ## {{< iconify ph wallet-fill >}} Transactional
 
@@ -134,11 +77,11 @@ create_blockquote("The following statements are about the internet. Please indic
 
 ```{r ktrans-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("Ktrans2RC", "Ktrans3RC"),
-  question_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
+  x_vars = c("Ktrans2RC", "Ktrans3RC"),
+  x_var_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -165,7 +108,7 @@ result
 
 ```{r ktrans-wave1-age-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -190,7 +133,7 @@ result
 
 ```{r ktrans-wave1-age-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -223,7 +166,7 @@ result
 
 ```{r ktrans-wave1-gender-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -248,7 +191,7 @@ result
 
 ```{r ktrans-wave1-gender-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -281,7 +224,7 @@ result
 
 ```{r ktrans-wave1-edu-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -306,7 +249,7 @@ result
 
 ```{r ktrans-wave1-edu-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -339,7 +282,7 @@ result
 
 ```{r ktrans-wave1-mig-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -364,7 +307,7 @@ result
 
 ```{r ktrans-wave1-mig-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -400,11 +343,11 @@ result
 
 ```{r ktrans-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("Ktrans2RC", "Ktrans3RC"),
-  question_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
+  x_vars = c("Ktrans2RC", "Ktrans3RC"),
+  x_var_labels = c("In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)", "A webshop is trustworthy when you can pay with iDeal. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -431,7 +374,7 @@ result
 
 ```{r ktrans-wave2-age-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -456,7 +399,7 @@ result
 
 ```{r ktrans-wave2-age-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -489,7 +432,7 @@ result
 
 ```{r ktrans-wave2-gender-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -514,7 +457,7 @@ result
 
 ```{r ktrans-wave2-gender-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -547,7 +490,7 @@ result
 
 ```{r ktrans-wave2-edu-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -572,7 +515,7 @@ result
 
 ```{r ktrans-wave2-edu-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -605,7 +548,7 @@ result
 
 ```{r ktrans-wave2-mig-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   stacked_type = "percent",
@@ -630,7 +573,7 @@ result
 
 ```{r ktrans-wave2-mig-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   stacked_type = "percent",
@@ -671,21 +614,21 @@ result
 
 ```{r ktrans-overtime-overall-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC"
+  y_var = "Ktrans2RC"
 )
 
 result
@@ -697,21 +640,21 @@ result
 
 ```{r ktrans-overtime-overall-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC"
+  y_var = "Ktrans3RC"
 )
 
 result
@@ -731,20 +674,20 @@ result
 
 ```{r ktrans-overtime-age-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "AgeGroup"
 )
 
@@ -757,20 +700,20 @@ result
 
 ```{r ktrans-overtime-age-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "AgeGroup"
 )
 
@@ -791,20 +734,20 @@ result
 
 ```{r ktrans-overtime-gender-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "geslacht"
 )
 
@@ -817,20 +760,20 @@ result
 
 ```{r ktrans-overtime-gender-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "geslacht"
 )
 
@@ -851,20 +794,20 @@ result
 
 ```{r ktrans-overtime-edu-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "Education"
 )
 
@@ -877,20 +820,20 @@ result
 
 ```{r ktrans-overtime-edu-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "Education"
 )
 
@@ -911,20 +854,20 @@ result
 
 ```{r ktrans-overtime-mig-item1}
 # In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "In case of a medical emergency, you make an online appointment with your healthcare provider. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans2RC",
+  y_var = "Ktrans2RC",
   group_var = "MigrationBackground"
 )
 
@@ -937,20 +880,20 @@ result
 
 ```{r ktrans-overtime-mig-item2}
 # A webshop is trustworthy when you can pay with iDeal. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "A webshop is trustworthy when you can pay with iDeal. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "Ktrans3RC",
+  y_var = "Ktrans3RC",
   group_var = "MigrationBackground"
 )
 
@@ -986,11 +929,11 @@ result
 
 ```{r kai-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
-  question_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)", "Websites and apps for news and entertainment show the same content to everyone. (False Statement)", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)", "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)"),
+  x_vars = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  x_var_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)", "Websites and apps for news and entertainment show the same content to everyone. (False Statement)", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)", "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1017,7 +960,7 @@ result
 
 ```{r kai-wave1-age-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1042,7 +985,7 @@ result
 
 ```{r kai-wave1-age-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1067,7 +1010,7 @@ result
 
 ```{r kai-wave1-age-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1092,7 +1035,7 @@ result
 
 ```{r kai-wave1-age-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1125,7 +1068,7 @@ result
 
 ```{r kai-wave1-gender-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1150,7 +1093,7 @@ result
 
 ```{r kai-wave1-gender-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1175,7 +1118,7 @@ result
 
 ```{r kai-wave1-gender-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1200,7 +1143,7 @@ result
 
 ```{r kai-wave1-gender-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1233,7 +1176,7 @@ result
 
 ```{r kai-wave1-edu-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1258,7 +1201,7 @@ result
 
 ```{r kai-wave1-edu-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1283,7 +1226,7 @@ result
 
 ```{r kai-wave1-edu-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1308,7 +1251,7 @@ result
 
 ```{r kai-wave1-edu-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1341,7 +1284,7 @@ result
 
 ```{r kai-wave1-mig-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1366,7 +1309,7 @@ result
 
 ```{r kai-wave1-mig-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1391,7 +1334,7 @@ result
 
 ```{r kai-wave1-mig-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1416,7 +1359,7 @@ result
 
 ```{r kai-wave1-mig-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1452,11 +1395,11 @@ result
 
 ```{r kai-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
-  question_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)", "Websites and apps for news and entertainment show the same content to everyone. (False Statement)", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)", "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)"),
+  x_vars = c("KAI1RC", "KAI2RC", "KAI3RC", "KAI4RC"),
+  x_var_labels = c("Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)", "Websites and apps for news and entertainment show the same content to everyone. (False Statement)", "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)", "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1483,7 +1426,7 @@ result
 
 ```{r kai-wave2-age-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1508,7 +1451,7 @@ result
 
 ```{r kai-wave2-age-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1533,7 +1476,7 @@ result
 
 ```{r kai-wave2-age-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1558,7 +1501,7 @@ result
 
 ```{r kai-wave2-age-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1591,7 +1534,7 @@ result
 
 ```{r kai-wave2-gender-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1616,7 +1559,7 @@ result
 
 ```{r kai-wave2-gender-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1641,7 +1584,7 @@ result
 
 ```{r kai-wave2-gender-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1666,7 +1609,7 @@ result
 
 ```{r kai-wave2-gender-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1699,7 +1642,7 @@ result
 
 ```{r kai-wave2-edu-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1724,7 +1667,7 @@ result
 
 ```{r kai-wave2-edu-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1749,7 +1692,7 @@ result
 
 ```{r kai-wave2-edu-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1774,7 +1717,7 @@ result
 
 ```{r kai-wave2-edu-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1807,7 +1750,7 @@ result
 
 ```{r kai-wave2-mig-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   stacked_type = "percent",
@@ -1832,7 +1775,7 @@ result
 
 ```{r kai-wave2-mig-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   stacked_type = "percent",
@@ -1857,7 +1800,7 @@ result
 
 ```{r kai-wave2-mig-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   stacked_type = "percent",
@@ -1882,7 +1825,7 @@ result
 
 ```{r kai-wave2-mig-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   stacked_type = "percent",
@@ -1923,21 +1866,21 @@ result
 
 ```{r kai-overtime-overall-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC"
+  y_var = "KAI1RC"
 )
 
 result
@@ -1949,21 +1892,21 @@ result
 
 ```{r kai-overtime-overall-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC"
+  y_var = "KAI2RC"
 )
 
 result
@@ -1975,21 +1918,21 @@ result
 
 ```{r kai-overtime-overall-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC"
+  y_var = "KAI3RC"
 )
 
 result
@@ -2001,21 +1944,21 @@ result
 
 ```{r kai-overtime-overall-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC"
+  y_var = "KAI4RC"
 )
 
 result
@@ -2035,20 +1978,20 @@ result
 
 ```{r kai-overtime-age-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "AgeGroup"
 )
 
@@ -2061,20 +2004,20 @@ result
 
 ```{r kai-overtime-age-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "AgeGroup"
 )
 
@@ -2087,20 +2030,20 @@ result
 
 ```{r kai-overtime-age-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "AgeGroup"
 )
 
@@ -2113,20 +2056,20 @@ result
 
 ```{r kai-overtime-age-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "AgeGroup"
 )
 
@@ -2147,20 +2090,20 @@ result
 
 ```{r kai-overtime-gender-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "geslacht"
 )
 
@@ -2173,20 +2116,20 @@ result
 
 ```{r kai-overtime-gender-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "geslacht"
 )
 
@@ -2199,20 +2142,20 @@ result
 
 ```{r kai-overtime-gender-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "geslacht"
 )
 
@@ -2225,20 +2168,20 @@ result
 
 ```{r kai-overtime-gender-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "geslacht"
 )
 
@@ -2259,20 +2202,20 @@ result
 
 ```{r kai-overtime-edu-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "Education"
 )
 
@@ -2285,20 +2228,20 @@ result
 
 ```{r kai-overtime-edu-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "Education"
 )
 
@@ -2311,20 +2254,20 @@ result
 
 ```{r kai-overtime-edu-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "Education"
 )
 
@@ -2337,20 +2280,20 @@ result
 
 ```{r kai-overtime-edu-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "Education"
 )
 
@@ -2371,20 +2314,20 @@ result
 
 ```{r kai-overtime-mig-item1}
 # Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some websites and apps for news and entertainment use artificial intelligence (AI). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI1RC",
+  y_var = "KAI1RC",
   group_var = "MigrationBackground"
 )
 
@@ -2397,20 +2340,20 @@ result
 
 ```{r kai-overtime-mig-item2}
 # Websites and apps for news and entertainment show the same content to everyone. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Websites and apps for news and entertainment show the same content to everyone. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI2RC",
+  y_var = "KAI2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2423,20 +2366,20 @@ result
 
 ```{r kai-overtime-mig-item3}
 # Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some decisions about the content of websites and apps for news and entertainment are automatic, without a human doing something. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI3RC",
+  y_var = "KAI3RC",
   group_var = "MigrationBackground"
 )
 
@@ -2449,20 +2392,20 @@ result
 
 ```{r kai-overtime-mig-item4}
 # Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Your online behavior determines what is shown to you on websites and apps for news and entertainment. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KAI4RC",
+  y_var = "KAI4RC",
   group_var = "MigrationBackground"
 )
 
@@ -2498,11 +2441,11 @@ result
 
 ```{r kgai-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
+  x_vars = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
+  x_var_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2529,7 +2472,7 @@ result
 
 ```{r kgai-wave1-age-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2554,7 +2497,7 @@ result
 
 ```{r kgai-wave1-age-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2579,7 +2522,7 @@ result
 
 ```{r kgai-wave1-age-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -2604,7 +2547,7 @@ result
 
 ```{r kgai-wave1-age-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -2629,7 +2572,7 @@ result
 
 ```{r kgai-wave1-age-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -2662,7 +2605,7 @@ result
 
 ```{r kgai-wave1-gender-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2687,7 +2630,7 @@ result
 
 ```{r kgai-wave1-gender-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2712,7 +2655,7 @@ result
 
 ```{r kgai-wave1-gender-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -2737,7 +2680,7 @@ result
 
 ```{r kgai-wave1-gender-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -2762,7 +2705,7 @@ result
 
 ```{r kgai-wave1-gender-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -2795,7 +2738,7 @@ result
 
 ```{r kgai-wave1-edu-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2820,7 +2763,7 @@ result
 
 ```{r kgai-wave1-edu-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2845,7 +2788,7 @@ result
 
 ```{r kgai-wave1-edu-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -2870,7 +2813,7 @@ result
 
 ```{r kgai-wave1-edu-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -2895,7 +2838,7 @@ result
 
 ```{r kgai-wave1-edu-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -2928,7 +2871,7 @@ result
 
 ```{r kgai-wave1-mig-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2953,7 +2896,7 @@ result
 
 ```{r kgai-wave1-mig-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2978,7 +2921,7 @@ result
 
 ```{r kgai-wave1-mig-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -3003,7 +2946,7 @@ result
 
 ```{r kgai-wave1-mig-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -3028,7 +2971,7 @@ result
 
 ```{r kgai-wave1-mig-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -3064,11 +3007,11 @@ result
 
 ```{r kgai-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
+  x_vars = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
+  x_var_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3095,7 +3038,7 @@ result
 
 ```{r kgai-wave2-age-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -3120,7 +3063,7 @@ result
 
 ```{r kgai-wave2-age-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -3145,7 +3088,7 @@ result
 
 ```{r kgai-wave2-age-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -3170,7 +3113,7 @@ result
 
 ```{r kgai-wave2-age-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -3195,7 +3138,7 @@ result
 
 ```{r kgai-wave2-age-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -3228,7 +3171,7 @@ result
 
 ```{r kgai-wave2-gender-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -3253,7 +3196,7 @@ result
 
 ```{r kgai-wave2-gender-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -3278,7 +3221,7 @@ result
 
 ```{r kgai-wave2-gender-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -3303,7 +3246,7 @@ result
 
 ```{r kgai-wave2-gender-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -3328,7 +3271,7 @@ result
 
 ```{r kgai-wave2-gender-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -3361,7 +3304,7 @@ result
 
 ```{r kgai-wave2-edu-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -3386,7 +3329,7 @@ result
 
 ```{r kgai-wave2-edu-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -3411,7 +3354,7 @@ result
 
 ```{r kgai-wave2-edu-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -3436,7 +3379,7 @@ result
 
 ```{r kgai-wave2-edu-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -3461,7 +3404,7 @@ result
 
 ```{r kgai-wave2-edu-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -3494,7 +3437,7 @@ result
 
 ```{r kgai-wave2-mig-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -3519,7 +3462,7 @@ result
 
 ```{r kgai-wave2-mig-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -3544,7 +3487,7 @@ result
 
 ```{r kgai-wave2-mig-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -3569,7 +3512,7 @@ result
 
 ```{r kgai-wave2-mig-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -3594,7 +3537,7 @@ result
 
 ```{r kgai-wave2-mig-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -3635,21 +3578,21 @@ result
 
 ```{r kgai-overtime-overall-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC"
+  y_var = "KGAI1RC"
 )
 
 result
@@ -3661,21 +3604,21 @@ result
 
 ```{r kgai-overtime-overall-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC"
+  y_var = "KGAI2RC"
 )
 
 result
@@ -3687,21 +3630,21 @@ result
 
 ```{r kgai-overtime-overall-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC"
+  y_var = "KGAI3RC"
 )
 
 result
@@ -3713,21 +3656,21 @@ result
 
 ```{r kgai-overtime-overall-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC"
+  y_var = "KGAI4RC"
 )
 
 result
@@ -3739,21 +3682,21 @@ result
 
 ```{r kgai-overtime-overall-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC"
+  y_var = "KGAI5RC"
 )
 
 result
@@ -3773,20 +3716,20 @@ result
 
 ```{r kgai-overtime-age-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "AgeGroup"
 )
 
@@ -3799,20 +3742,20 @@ result
 
 ```{r kgai-overtime-age-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "AgeGroup"
 )
 
@@ -3825,20 +3768,20 @@ result
 
 ```{r kgai-overtime-age-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "AgeGroup"
 )
 
@@ -3851,20 +3794,20 @@ result
 
 ```{r kgai-overtime-age-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "AgeGroup"
 )
 
@@ -3877,20 +3820,20 @@ result
 
 ```{r kgai-overtime-age-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "AgeGroup"
 )
 
@@ -3911,20 +3854,20 @@ result
 
 ```{r kgai-overtime-gender-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "geslacht"
 )
 
@@ -3937,20 +3880,20 @@ result
 
 ```{r kgai-overtime-gender-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "geslacht"
 )
 
@@ -3963,20 +3906,20 @@ result
 
 ```{r kgai-overtime-gender-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "geslacht"
 )
 
@@ -3989,20 +3932,20 @@ result
 
 ```{r kgai-overtime-gender-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "geslacht"
 )
 
@@ -4015,20 +3958,20 @@ result
 
 ```{r kgai-overtime-gender-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "geslacht"
 )
 
@@ -4049,20 +3992,20 @@ result
 
 ```{r kgai-overtime-edu-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "Education"
 )
 
@@ -4075,20 +4018,20 @@ result
 
 ```{r kgai-overtime-edu-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "Education"
 )
 
@@ -4101,20 +4044,20 @@ result
 
 ```{r kgai-overtime-edu-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "Education"
 )
 
@@ -4127,20 +4070,20 @@ result
 
 ```{r kgai-overtime-edu-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "Education"
 )
 
@@ -4153,20 +4096,20 @@ result
 
 ```{r kgai-overtime-edu-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "Education"
 )
 
@@ -4187,20 +4130,20 @@ result
 
 ```{r kgai-overtime-mig-item1}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "MigrationBackground"
 )
 
@@ -4213,20 +4156,20 @@ result
 
 ```{r kgai-overtime-mig-item2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "MigrationBackground"
 )
 
@@ -4239,20 +4182,20 @@ result
 
 ```{r kgai-overtime-mig-item3}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "MigrationBackground"
 )
 
@@ -4265,20 +4208,20 @@ result
 
 ```{r kgai-overtime-mig-item4}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "MigrationBackground"
 )
 
@@ -4291,20 +4234,20 @@ result
 
 ```{r kgai-overtime-mig-item5}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "MigrationBackground"
 )
 
@@ -4322,50 +4265,7 @@ result
 
 
 
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='knowledge_p2.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='3' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <button class='pagination-btn pagination-next pagination-disabled' disabled aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(3, 3, "knowledge", "bottom")
 ```
 

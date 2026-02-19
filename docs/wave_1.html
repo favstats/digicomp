@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title> Ronde 1 – DigIQ Monitor</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/iconify-3.0.0/iconify-icon.min.js"></script>
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/core-js-2.5.3/shim.min.js"></script>
+<script src="site_libs/react-18.2.0/react.min.js"></script>
+<script src="site_libs/react-18.2.0/react-dom.min.js"></script>
+<script src="site_libs/reactwidget-2.0.0/react-tools.js"></script>
+<link href="site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/reactable-0.4.4/reactable.css" rel="stylesheet">
+<script src="site_libs/reactable-binding-0.4.4/reactable.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&amp;family=Fira+Code:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="assets/tab-scroll-fix.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="assets/modal.css">
+<link rel="stylesheet" href="assets/pagination.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">DigIQ Monitor</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-iconify-ph-books-fill--dimensies" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text"><iconify-icon role="img" inline="" icon="ph:books-fill" aria-label="Icon books-fill from ph Iconify.design set." title="Icon books-fill from ph Iconify.design set."></iconify-icon> Dimensies</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-iconify-ph-books-fill--dimensies">    
+        <li>
+    <a class="dropdown-item" href="./strategic_information.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:magnifying-glass" aria-label="Icon magnifying-glass from ph Iconify.design set." title="Icon magnifying-glass from ph Iconify.design set."></iconify-icon> Strategische Informatie</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./critical_information.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:detective-fill" aria-label="Icon detective-fill from ph Iconify.design set." title="Icon detective-fill from ph Iconify.design set."></iconify-icon> Kritische Informatie</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./netiquette.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:chats-fill" aria-label="Icon chats-fill from ph Iconify.design set." title="Icon chats-fill from ph Iconify.design set."></iconify-icon> Netiquette</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./digital_content_creation.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:palette-fill" aria-label="Icon palette-fill from ph Iconify.design set." title="Icon palette-fill from ph Iconify.design set."></iconify-icon> Digitale Inhoudscreatie</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./safety.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:shield-check-fill" aria-label="Icon shield-check-fill from ph Iconify.design set." title="Icon shield-check-fill from ph Iconify.design set."></iconify-icon> Veiligheid</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./digital_health.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:heart-fill" aria-label="Icon heart-fill from ph Iconify.design set." title="Icon heart-fill from ph Iconify.design set."></iconify-icon> Digitale Gezondheid</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./green_digital.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:recycle-fill" aria-label="Icon recycle-fill from ph Iconify.design set." title="Icon recycle-fill from ph Iconify.design set."></iconify-icon> Groen Digitaal</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./digital_problem_solving.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:lightbulb-fill" aria-label="Icon lightbulb-fill from ph Iconify.design set." title="Icon lightbulb-fill from ph Iconify.design set."></iconify-icon> Digitale Problemen Oplossen</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./transactional.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:wallet-fill" aria-label="Icon wallet-fill from ph Iconify.design set." title="Icon wallet-fill from ph Iconify.design set."></iconify-icon> Transactioneel</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./ai.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:robot-fill" aria-label="Icon robot-fill from ph Iconify.design set." title="Icon robot-fill from ph Iconify.design set."></iconify-icon> AI</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./gen_ai.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:magic-wand-fill" aria-label="Icon magic-wand-fill from ph Iconify.design set." title="Icon magic-wand-fill from ph Iconify.design set."></iconify-icon> Gen AI</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./skills.html"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="ph:lightning-fill" aria-label="Icon lightning-fill from ph Iconify.design set." title="Icon lightning-fill from ph Iconify.design set."></iconify-icon> Vaardigheden</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./performance.html"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="ph:clipboard-text" aria-label="Icon clipboard-text from ph Iconify.design set." title="Icon clipboard-text from ph Iconify.design set."></iconify-icon> Prestatie</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./knowledge.html"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="ph:book-open-fill" aria-label="Icon book-open-fill from ph Iconify.design set." title="Icon book-open-fill from ph Iconify.design set."></iconify-icon> Kennis</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-iconify-ph-info-fill--meer-informatie" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text"><iconify-icon role="img" inline="" icon="ph:info-fill" aria-label="Icon info-fill from ph Iconify.design set." title="Icon info-fill from ph Iconify.design set."></iconify-icon> Meer informatie</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-iconify-ph-info-fill--meer-informatie">    
+        <li>
+    <a class="dropdown-item" href="./about.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:info-fill" aria-label="Icon info-fill from ph Iconify.design set." title="Icon info-fill from ph Iconify.design set."></iconify-icon> Over</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./wave_1.html">
+ <span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:number-circle-one-fill" aria-label="Icon number-circle-one-fill from ph Iconify.design set." title="Icon number-circle-one-fill from ph Iconify.design set."></iconify-icon> Ronde 1</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://favstats.github.io/digicomp/en"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="circle-flags:uk" aria-label="Icon uk from circle-flags Iconify.design set." title="Icon uk from circle-flags Iconify.design set."></iconify-icon> en</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content column-page" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><iconify-icon role="img" inline="" icon="ph:number-circle-one-fill" aria-label="Icon number-circle-one-fill from ph Iconify.design set." title="Icon number-circle-one-fill from ph Iconify.design set."></iconify-icon> Ronde 1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+
+<style>
+/* Ensure chart containers expand to fit content */
+.cell-output-display,
+.cell-output,
+.panel-tabset-tabby > .tab-content,
+.panel-tabset > .tab-content,
+.tab-pane,
+.tab-pane.active,
+.card-body,
+.quarto-figure,
+section {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+.highcharts-container,
+.html-widget,
+.htmlwidget {
+  overflow: visible !important;
+}
+</style>
+<script>
+(function() {
+  function reflowCharts() {
+    if (typeof Highcharts !== 'undefined' && Highcharts.charts) {
+      Highcharts.charts.forEach(function(c) { if (c) try { c.reflow(); } catch(e) {} });
+    }
+  }
+  [0, 100, 250, 500, 1000, 2000].forEach(function(d) {
+    setTimeout(function() { window.dispatchEvent(new Event('resize')); requestAnimationFrame(reflowCharts); }, d);
+  });
+  document.addEventListener('click', function(e) {
+    if (e.target.matches('.nav-link, [data-bs-toggle="tab"]')) setTimeout(reflowCharts, 50);
+  });
+})();
+</script>
+
+<link rel="stylesheet" href="assets/accessibility.css?v=20260219112833">
+<script src="assets/accessibility.js?v=20260219112833"></script>
+<section id="ronde-1" class="level1" style="text-align: justify;">
+<h1>Ronde 1</h1>
+<section id="steekproef" class="level2">
+<h2 class="anchored" data-anchor-id="steekproef">Steekproef</h2>
+<p>De data uit ronde 1 in dit dashboard zijn gebaseerd op de ingevulde vragenlijsten van <strong>2.417 deelnemers</strong>, waarvan 2.156 via een online panel en 261 via een adressteekproef (papieren vragenlijst). De dataverzameling vond plaats in <strong>december 2024</strong>.</p>
+</section>
+<section id="belangrijkste-bevindingen" class="level2">
+<h2 class="anchored" data-anchor-id="belangrijkste-bevindingen">Belangrijkste Bevindingen</h2>
+<p>Data uit deze eerste ronde laten zien dat Nederlanders zich over het algemeen digitaal vaardig voelen, en dit komt vaak overeen met hun kennis, maar niet altijd met hun daadwerkelijke gedrag en prestaties—vooral op gebieden zoals online gezondheid en welzijn en netiquette, waar belangrijke “blinde vlekken” naar voren komen.</p>
+<p>Vaardigheden en kennis gerelateerd aan (gen)AI zijn bijzonder laag: kinderen, ouderen en lager opgeleiden scoren slecht op het begrijpen van AI-gedreven personalisatie, privacyrisico’s en de betrouwbaarheid van AI-gegenereerde informatie.</p>
+</section>
+<section id="waarvoor-kunt-u-deze-data-gebruiken" class="level2">
+<h2 class="anchored" data-anchor-id="waarvoor-kunt-u-deze-data-gebruiken">Waarvoor kunt u deze data gebruiken?</h2>
+<p>Deze bevindingen onderstrepen de behoefte aan gerichte workshops, toegankelijke training voor kwetsbare groepen en bewustwordingscampagnes, vooral rond genAI. Met het dashboard kunnen beleidsmakers en praktijkmensen inzoomen op specifieke vaardigheden en zien hoe verschillende groepen scoren op hun zelfvertrouwen, kennis en prestaties.</p>
+</section>
+</section>
+<section id="demografie" class="level2">
+<h2 class="anchored" data-anchor-id="demografie">Demografie</h2>
+<p><strong>N = 2,417 | Gemiddelde leeftijd: 45.2</strong></p>
+<section id="leeftijdsgroep" class="level3">
+<h3 class="anchored" data-anchor-id="leeftijdsgroep">Leeftijdsgroep</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-4a3fecfce5af88d6d836" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-4a3fecfce5af88d6d836">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["10-15","16-30","31-60","61-110"],"N":[226,503,949,739],"Pct":[9.4,20.8,39.3,30.6]},"columns":[{"id":"Category","name":"Category","type":"character","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"24%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["9.4%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"53%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["20.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["39.3%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"78%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["30.6%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":4,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"76a6abec40a0cd7cdcf49f464612f03a","static":false},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="geslacht" class="level3">
+<h3 class="anchored" data-anchor-id="geslacht">Geslacht</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-c01345d0e2991cc4edfe" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c01345d0e2991cc4edfe">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Man","Vrouw","X","Zeg ik liever niet"],"N":[1029,1374,12,2],"Pct":[42.6,56.8,0.5,0.1]},"columns":[{"id":"Category","name":"Category","type":"factor","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"75%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["42.6%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["56.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"1%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["0.5%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"0%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["0.1%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":4,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"a98c907d22f21ac2918c99a71af2f50a"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="opleidingsniveau" class="level3">
+<h3 class="anchored" data-anchor-id="opleidingsniveau">Opleidingsniveau</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-8862854185497e9c9ffc" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-8862854185497e9c9ffc">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Laag","Midden","Hoog","Other"],"N":[321,705,1268,110],"Pct":[13.4,29.3,52.7,4.6]},"columns":[{"id":"Category","name":"Category","type":"character","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"25%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["13.4%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"56%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["29.3%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["52.7%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"9%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["4.6%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":4,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"25f27d9a4d30d80609ccc7dcef241ebb"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="migratieachtergrond" class="level3">
+<h3 class="anchored" data-anchor-id="migratieachtergrond">Migratieachtergrond</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-c0068b1b2278f95f97b0" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c0068b1b2278f95f97b0">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Geen migratieachtergrond","Migratieachtergrond"],"N":[2131,271],"Pct":[88.7,11.3]},"columns":[{"id":"Category","name":"Category","type":"character","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["88.7%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"13%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["11.3%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":2,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"b6a19bcf2b55affe883e6dd4df1e31cf"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="paneltype" class="level3">
+<h3 class="anchored" data-anchor-id="paneltype">Paneltype</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-f1cde135c65f05e23994" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f1cde135c65f05e23994">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Adres","Panel"],"N":[261,2156],"Pct":[10.8,89.2]},"columns":[{"id":"Category","name":"Category","type":"character","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"12%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["10.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["89.2%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":2,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"dcf8865a9b554611ee009a116b4a34fe"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="gebruik-van-apparaten-computer" class="level3">
+<h3 class="anchored" data-anchor-id="gebruik-van-apparaten-computer">Gebruik van apparaten: Computer</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-5f609eccfc52cda8fd4e" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-5f609eccfc52cda8fd4e">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Nooit","Bijna nooit","Soms","Vaak","Heel vaak"],"N":[49,87,251,646,1376],"Pct":[2,3.6,10.4,26.8,57.1]},"columns":[{"id":"Category","name":"Category","type":"factor","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"4%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["2%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"6%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["3.6%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"18%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["10.4%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"47%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["26.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["57.1%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":5,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"0f679071d70220b026ef4a554125511f"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="gebruik-van-apparaten-tablet" class="level3">
+<h3 class="anchored" data-anchor-id="gebruik-van-apparaten-tablet">Gebruik van apparaten: Tablet</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-f7454073881ac3903fee" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f7454073881ac3903fee">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Nooit","Bijna nooit","Soms","Vaak","Heel vaak"],"N":[695,441,417,385,468],"Pct":[28.9,18.3,17.3,16,19.5]},"columns":[{"id":"Category","name":"Category","type":"factor","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["28.9%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"63%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["18.3%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"60%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["17.3%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"55%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["16%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"67%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["19.5%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":5,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"3e52237e8f35d7bcff822099379b7124"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="gebruik-van-apparaten-telefoon" class="level3">
+<h3 class="anchored" data-anchor-id="gebruik-van-apparaten-telefoon">Gebruik van apparaten: Telefoon</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-9805c29f99c5d070028c" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9805c29f99c5d070028c">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Nooit","Bijna nooit","Soms","Vaak","Heel vaak"],"N":[28,33,123,454,1776],"Pct":[1.2,1.4,5.1,18.8,73.6]},"columns":[{"id":"Category","name":"Category","type":"factor","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"2%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["1.2%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"2%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["1.4%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"7%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["5.1%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"26%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["18.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["73.6%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":5,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"a4061a15b43b0dd6f45590361ceef5af"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="algemene-geletterdheid" class="level3">
+<h3 class="anchored" data-anchor-id="algemene-geletterdheid">Algemene geletterdheid</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-7c7cd79dfd72618db889" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-7c7cd79dfd72618db889">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Heb nooit hulp nodig","Heb bijna nooit hulp nodig","Heb soms hulp nodig","Heb vaak hulp nodig","Heb heel vaak hulp nodig"],"N":[1660,583,141,19,5],"Pct":[68.9,24.2,5.9,0.8,0.2]},"columns":[{"id":"Category","name":"Category","type":"factor","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["68.9%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"35%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["24.2%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"9%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["5.9%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"1%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["0.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"0%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["0.2%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":5,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"3cb312c15ec67d3366246c0f282048ff"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="werkstatus" class="level3">
+<h3 class="anchored" data-anchor-id="werkstatus">Werkstatus</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-6afaf34622869192d97d" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6afaf34622869192d97d">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Student","Werkzaam","Huisvrouw/-man","Werkloos","Gepensioneerd","Vrijwilliger","Anders"],"N":[404,1211,63,169,509,23,23],"Pct":[16.8,50.4,2.6,7,21.2,1,1]},"columns":[{"id":"Category","name":"Category","type":"factor","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"33%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["16.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["50.4%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"5%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["2.6%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"14%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["7%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"42%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["21.2%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"2%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["1%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"2%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["1%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":7,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"09436b4c8cfc7b41be0c9fd995a4017e"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="uren-werken-met-computer-alleen-werkenden" class="level3">
+<h3 class="anchored" data-anchor-id="uren-werken-met-computer-alleen-werkenden">Uren werken met computer (alleen werkenden)</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-75bf644ffe14af7a46a6" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-75bf644ffe14af7a46a6">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Statistic":["N (werkzaam)","Gemiddeld uren","Mediaan uren"],"Value":[1211,5,6]},"columns":[{"id":"Statistic","name":"Statistic","type":"character","minWidth":180},{"id":"Value","name":"Value","type":"numeric","minWidth":80,"align":"right"}],"pagination":false,"defaultPageSize":3,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"f9d9db3c7af1bb02af2b9d93669adaf3"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="financiële-onzekerheid" class="level3">
+<h3 class="anchored" data-anchor-id="financiële-onzekerheid">Financiële onzekerheid</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-2f6504e3aaf6d75868fe" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-2f6504e3aaf6d75868fe">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Category":["Helemaal onwaar","Een beetje onwaar","Niet onwaar en niet waar","Een beetje waar","Helemaal waar"],"N":[748,443,297,496,161],"Pct":[34.9,20.7,13.8,23.1,7.5]},"columns":[{"id":"Category","name":"Category","type":"factor","minWidth":180},{"id":"N","name":"N","type":"numeric","minWidth":60,"align":"right"},{"id":"Pct","name":"%","type":"numeric","cell":[{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"100%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["34.9%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"59%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["20.7%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"40%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["13.8%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"66%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["23.1%"]}]},{"name":"div","attribs":{"style":{"display":"flex","align-items":"center"}},"children":[{"name":"div","attribs":{"style":{"background":"#E28D50","height":"16px","width":"21%","border-radius":"3px","margin-right":"8px"}},"children":[]},{"name":"span","attribs":{},"children":["7.5%"]}]}],"minWidth":200,"align":"left"}],"pagination":false,"defaultPageSize":5,"borderless":true,"striped":true,"compact":true,"theme":{"headerStyle":{"background":"#3D7271","color":"white","fontWeight":"bold","fontSize":"13px"},"cellStyle":{"fontSize":"13px"}},"dataKey":"eba1b9d690c0a680a8b92ba75a062dd7"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+</section>
+<section id="correlaties-met-vaardigheden-kennis-en-prestaties" class="level2">
+<h2 class="anchored" data-anchor-id="correlaties-met-vaardigheden-kennis-en-prestaties">Correlaties met vaardigheden kennis en prestaties</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wave_1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="4200"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2025 DigIQ Monitor - All Rights Reserved</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://favstats.github.io/dashboardr/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: 4px; font-size: 1rem; color: inherit; text-decoration: none; opacity: 0.8; transition: opacity 0.2s ease, background 0.2s ease;" onmouseover="this.style.opacity='1'; this.style.background='rgba(0, 0, 0, 0.08)';" onmouseout="this.style.opacity='0.8'; this.style.background='rgba(0, 0, 0, 0.05)';"><img src="https://raw.githubusercontent.com/favstats/dashboardr/refs/heads/main/man/figures/logo.svg" alt="dashboardr logo" style="width: 24px; height: 24px; object-fit: contain;"><span style="font-weight: 500;">Powered by dashboardr</span></a></p>
+</div>
+  </div>
+</footer>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var toc = document.createElement("div");
+      toc.id = "custom-toc";
+      toc.style.position = "fixed";
+      toc.style.top = "0";
+      toc.style.right = "-300px";
+      toc.style.width = "260px";
+      toc.style.height = "100%";
+      toc.style.background = "white";
+      toc.style.padding = "10px";
+      toc.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.2)";
+      toc.style.transition = "right 0.3s ease-in-out";
+      toc.style.overflowY = "auto";
+      toc.style.zIndex = "999";
+  
+      var tocTitle = document.createElement("h3");
+      tocTitle.innerText = "Navigation";
+      toc.appendChild(tocTitle);
+  
+      var headers = document.querySelectorAll("h2, h3, h4");
+      headers.forEach(function (header, index) {
+          if (!header.id) {
+              header.id = "section-" + index;
+          }
+  
+          var link = document.createElement("a");
+          link.innerText = header.innerText;
+          link.href = "#" + header.id;
+          link.style.display = "block";
+          link.style.padding = "5px 0";
+          link.style.color = "#007bff";
+          link.style.textDecoration = "none";
+  
+          toc.appendChild(link);
+      });
+  
+      document.body.appendChild(toc);
+  
+      var button = document.createElement("button");
+      button.id = "toggle-toc";
+      button.innerHTML = "📑";
+      button.style.position = "fixed";
+      button.style.top = "15px";
+      button.style.right = "15px";
+      button.style.backgroundColor = "white";
+      button.style.color = "#333";
+      button.style.border = "2px solid #ccc";
+      button.style.padding = "10px 12px";
+      button.style.cursor = "pointer";
+      button.style.borderRadius = "8px";
+      button.style.fontSize = "22px";
+      button.style.zIndex = "1000";
+      button.style.boxShadow = "0px 3px 6px rgba(0, 0, 0, 0.2)";
+      button.style.width = "50px";
+      button.style.height = "50px";
+  
+      document.body.appendChild(button);
+  
+      button.addEventListener("click", function () {
+          if (toc.style.right === "0px") {
+              toc.style.right = "-300px";
+          } else {
+              toc.style.right = "0px";
+          }
+      });
+  });
+</script>
+
+
+
+
+</body></html>

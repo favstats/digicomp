@@ -37,13 +37,17 @@ read_lines("qmds/_quarto.yml") %>%
   str_replace_all("veiligheid.qmd", "safety.qmd") %>%
   str_replace_all("digitale_gezondheid.qmd", "digital_health.qmd") %>%
   str_replace_all("groene_digitaal.qmd", "green_digital.qmd") %>%
-  str_replace_all("digitaal_probleemoplossen.qmd", "digital_problem_solving.qmd") %>%
+  str_replace_all("groen_digitaal.qmd", "green_digital.qmd") %>%
+  str_replace_all("digitale_problemen_oplossen.qmd", "digital_problem_solving.qmd") %>%
   str_replace_all("transactioneel.qmd", "transactional.qmd") %>%
   str_replace_all("vaardigheden.qmd", "skills.qmd") %>%
   str_replace_all("prestatie.qmd", "performance.qmd") %>%
   str_replace_all("kennis.qmd", "knowledge.qmd") %>%
   str_replace_all("hoogtepunten.qmd", "highlights.qmd") %>%
   str_replace_all("over.qmd", "about.qmd") %>%
+  str_replace_all("ronde_1.qmd", "wave_1.qmd") %>%
+  str_replace_all("ronde_2.qmd", "wave_2.qmd") %>%
+  str_replace_all("meer_informatie.qmd", "more_info.qmd") %>%
   
   write_lines("qmds/_quarto.yml")
 
@@ -60,12 +64,17 @@ name_map <- c(
   "veiligheid"                = "safety",
   "digitale_gezondheid"       = "digital_health",
   "groene_digitaal"           = "green_digital",
+  "groen_digitaal"           = "green_digital",
   "digitaal_probleemoplossen" = "digital_problem_solving",
+  "digitale_problemen_oplossen" = "digital_problem_solving",
   "transactioneel"            = "transactional",
   "vaardigheden"             = "skills",
   "prestatie"                 = "performance",
   "hoogtepunten"              = "highlights",
   "over"                      = "about",
+  "ronde_1"                   = "wave_1",
+  "ronde_2"                   = "wave_2",
+  "meer_informatie"           = "more_info",
   "ai"                        = "ai",        # stays the same
   "index"                     = "index"      # stays the same
 )
@@ -136,6 +145,31 @@ for (f in files) {
       lines,
       fixed = TRUE
     )
+    
+    # Also replace .qmd references
+    lines <- gsub(
+      paste0(dutch, ".qmd"),
+      paste0(eng,   ".qmd"),
+      lines,
+      fixed = TRUE
+    )
+    
+    # Replace quoted bare names (e.g. in create_pagination_nav calls)
+    # "prestatie" -> "performance", "kennis" -> "knowledge", etc.
+    lines <- gsub(
+      paste0('"', dutch, '"'),
+      paste0('"', eng, '"'),
+      lines,
+      fixed = TRUE
+    )
+    
+    # Also handle single-quoted bare names
+    lines <- gsub(
+      paste0("'", dutch, "'"),
+      paste0("'", eng, "'"),
+      lines,
+      fixed = TRUE
+    )
   }
   
   writeLines(lines, f)
@@ -164,10 +198,10 @@ source("dashboard_en.R", local = en_env)
 
 
 
-gert::git_add(".")
-gert::git_commit("update")
-gert::git_push()
-
-print(Sys.time())
-
-beepr::beep(20)
+# gert::git_add(".")
+# gert::git_commit("update")
+# gert::git_push()
+# 
+# print(Sys.time())
+# 
+# beepr::beep(20)

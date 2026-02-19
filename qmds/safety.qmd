@@ -3,16 +3,11 @@ title: "{{< iconify ph shield-check-fill >}} Veiligheid"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "safety")
 ```
 
 **Veiligheid & Controle van Informatie en Apparaten competentie** omvat het beschermen van apparaten en persoonlijke informatie: beveiligingsmaatregelen gebruiken, privacy-instellingen beheren, phishing herkennen, en controleren welke informatie online gedeeld wordt.
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -21,10 +16,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -37,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -46,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -73,11 +66,11 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 
 ```{r safety-wave1-overall-2}
 # Veiligheid en Controle van Informatie en Apparaten Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Veiligheid en Controle van Informatie en Apparaten Vaardigheden",
-  questions = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
-  question_labels = c("Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)", "Ik weet hoe ik apparaten kan beschermen tegen virussen", "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen", "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet", "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen", "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen", "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen"),
+  x_vars = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
+  x_var_labels = c("Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)", "Ik weet hoe ik apparaten kan beschermen tegen virussen", "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen", "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet", "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen", "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen", "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -103,7 +96,7 @@ result
 
 ```{r safety-wave1-age-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -127,7 +120,7 @@ result
 
 ```{r safety-wave1-age-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -151,7 +144,7 @@ result
 
 ```{r safety-wave1-age-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -175,7 +168,7 @@ result
 
 ```{r safety-wave1-age-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -199,7 +192,7 @@ result
 
 ```{r safety-wave1-age-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -223,7 +216,7 @@ result
 
 ```{r safety-wave1-age-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -247,7 +240,7 @@ result
 
 ```{r safety-wave1-age-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -279,7 +272,7 @@ result
 
 ```{r safety-wave1-gender-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -303,7 +296,7 @@ result
 
 ```{r safety-wave1-gender-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -327,7 +320,7 @@ result
 
 ```{r safety-wave1-gender-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -351,7 +344,7 @@ result
 
 ```{r safety-wave1-gender-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -375,7 +368,7 @@ result
 
 ```{r safety-wave1-gender-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -399,7 +392,7 @@ result
 
 ```{r safety-wave1-gender-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -423,7 +416,7 @@ result
 
 ```{r safety-wave1-gender-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -455,7 +448,7 @@ result
 
 ```{r safety-wave1-edu-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -479,7 +472,7 @@ result
 
 ```{r safety-wave1-edu-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -503,7 +496,7 @@ result
 
 ```{r safety-wave1-edu-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -527,7 +520,7 @@ result
 
 ```{r safety-wave1-edu-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -551,7 +544,7 @@ result
 
 ```{r safety-wave1-edu-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -575,7 +568,7 @@ result
 
 ```{r safety-wave1-edu-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -599,7 +592,7 @@ result
 
 ```{r safety-wave1-edu-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -631,7 +624,7 @@ result
 
 ```{r safety-wave1-mig-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -655,7 +648,7 @@ result
 
 ```{r safety-wave1-mig-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -679,7 +672,7 @@ result
 
 ```{r safety-wave1-mig-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -703,7 +696,7 @@ result
 
 ```{r safety-wave1-mig-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -727,7 +720,7 @@ result
 
 ```{r safety-wave1-mig-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -751,7 +744,7 @@ result
 
 ```{r safety-wave1-mig-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -775,7 +768,7 @@ result
 
 ```{r safety-wave1-mig-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -810,11 +803,11 @@ result
 
 ```{r safety-wave2-overall-2}
 # Veiligheid en Controle van Informatie en Apparaten Vaardigheden
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Veiligheid en Controle van Informatie en Apparaten Vaardigheden",
-  questions = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
-  question_labels = c("Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)", "Ik weet hoe ik apparaten kan beschermen tegen virussen", "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen", "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet", "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen", "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen", "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen"),
+  x_vars = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
+  x_var_labels = c("Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)", "Ik weet hoe ik apparaten kan beschermen tegen virussen", "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen", "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet", "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen", "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen", "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -840,7 +833,7 @@ result
 
 ```{r safety-wave2-age-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -864,7 +857,7 @@ result
 
 ```{r safety-wave2-age-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -888,7 +881,7 @@ result
 
 ```{r safety-wave2-age-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -912,7 +905,7 @@ result
 
 ```{r safety-wave2-age-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -936,7 +929,7 @@ result
 
 ```{r safety-wave2-age-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -960,7 +953,7 @@ result
 
 ```{r safety-wave2-age-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -984,7 +977,7 @@ result
 
 ```{r safety-wave2-age-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -1016,7 +1009,7 @@ result
 
 ```{r safety-wave2-gender-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -1040,7 +1033,7 @@ result
 
 ```{r safety-wave2-gender-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -1064,7 +1057,7 @@ result
 
 ```{r safety-wave2-gender-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -1088,7 +1081,7 @@ result
 
 ```{r safety-wave2-gender-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -1112,7 +1105,7 @@ result
 
 ```{r safety-wave2-gender-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -1136,7 +1129,7 @@ result
 
 ```{r safety-wave2-gender-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -1160,7 +1153,7 @@ result
 
 ```{r safety-wave2-gender-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -1192,7 +1185,7 @@ result
 
 ```{r safety-wave2-edu-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -1216,7 +1209,7 @@ result
 
 ```{r safety-wave2-edu-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -1240,7 +1233,7 @@ result
 
 ```{r safety-wave2-edu-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -1264,7 +1257,7 @@ result
 
 ```{r safety-wave2-edu-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -1288,7 +1281,7 @@ result
 
 ```{r safety-wave2-edu-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -1312,7 +1305,7 @@ result
 
 ```{r safety-wave2-edu-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -1336,7 +1329,7 @@ result
 
 ```{r safety-wave2-edu-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -1368,7 +1361,7 @@ result
 
 ```{r safety-wave2-mig-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   stacked_type = "percent",
@@ -1392,7 +1385,7 @@ result
 
 ```{r safety-wave2-mig-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   stacked_type = "percent",
@@ -1416,7 +1409,7 @@ result
 
 ```{r safety-wave2-mig-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   stacked_type = "percent",
@@ -1440,7 +1433,7 @@ result
 
 ```{r safety-wave2-mig-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   stacked_type = "percent",
@@ -1464,7 +1457,7 @@ result
 
 ```{r safety-wave2-mig-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   stacked_type = "percent",
@@ -1488,7 +1481,7 @@ result
 
 ```{r safety-wave2-mig-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   stacked_type = "percent",
@@ -1512,7 +1505,7 @@ result
 
 ```{r safety-wave2-mig-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   stacked_type = "percent",
@@ -1552,21 +1545,21 @@ result
 
 ```{r safety-overtime-overall-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1"
+  y_var = "SSafDev1"
 )
 
 result
@@ -1578,21 +1571,21 @@ result
 
 ```{r safety-overtime-overall-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2"
+  y_var = "SSafDev2"
 )
 
 result
@@ -1604,21 +1597,21 @@ result
 
 ```{r safety-overtime-overall-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1"
+  y_var = "SPriv1"
 )
 
 result
@@ -1630,21 +1623,21 @@ result
 
 ```{r safety-overtime-overall-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2"
+  y_var = "SPriv2"
 )
 
 result
@@ -1656,21 +1649,21 @@ result
 
 ```{r safety-overtime-overall-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv3"
+  y_var = "SPriv3"
 )
 
 result
@@ -1682,21 +1675,21 @@ result
 
 ```{r safety-overtime-overall-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv4"
+  y_var = "SPriv4"
 )
 
 result
@@ -1708,21 +1701,21 @@ result
 
 ```{r safety-overtime-overall-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom3"
+  y_var = "SCom3"
 )
 
 result
@@ -1742,19 +1735,19 @@ result
 
 ```{r safety-overtime-age-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SSafDev1",
   group_var = "AgeGroup"
 )
 
@@ -1767,19 +1760,19 @@ result
 
 ```{r safety-overtime-age-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SSafDev2",
   group_var = "AgeGroup"
 )
 
@@ -1792,19 +1785,19 @@ result
 
 ```{r safety-overtime-age-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SPriv1",
   group_var = "AgeGroup"
 )
 
@@ -1817,19 +1810,19 @@ result
 
 ```{r safety-overtime-age-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
+  y_var = "SPriv2",
   group_var = "AgeGroup"
 )
 
@@ -1842,19 +1835,19 @@ result
 
 ```{r safety-overtime-age-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv3",
+  y_var = "SPriv3",
   group_var = "AgeGroup"
 )
 
@@ -1867,19 +1860,19 @@ result
 
 ```{r safety-overtime-age-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv4",
+  y_var = "SPriv4",
   group_var = "AgeGroup"
 )
 
@@ -1892,19 +1885,19 @@ result
 
 ```{r safety-overtime-age-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom3",
   group_var = "AgeGroup"
 )
 
@@ -1925,19 +1918,19 @@ result
 
 ```{r safety-overtime-gender-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SSafDev1",
   group_var = "geslacht"
 )
 
@@ -1950,19 +1943,19 @@ result
 
 ```{r safety-overtime-gender-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SSafDev2",
   group_var = "geslacht"
 )
 
@@ -1975,19 +1968,19 @@ result
 
 ```{r safety-overtime-gender-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SPriv1",
   group_var = "geslacht"
 )
 
@@ -2000,19 +1993,19 @@ result
 
 ```{r safety-overtime-gender-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
+  y_var = "SPriv2",
   group_var = "geslacht"
 )
 
@@ -2025,19 +2018,19 @@ result
 
 ```{r safety-overtime-gender-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv3",
+  y_var = "SPriv3",
   group_var = "geslacht"
 )
 
@@ -2050,19 +2043,19 @@ result
 
 ```{r safety-overtime-gender-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv4",
+  y_var = "SPriv4",
   group_var = "geslacht"
 )
 
@@ -2075,19 +2068,19 @@ result
 
 ```{r safety-overtime-gender-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom3",
   group_var = "geslacht"
 )
 
@@ -2108,19 +2101,19 @@ result
 
 ```{r safety-overtime-edu-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SSafDev1",
   group_var = "Education"
 )
 
@@ -2133,19 +2126,19 @@ result
 
 ```{r safety-overtime-edu-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SSafDev2",
   group_var = "Education"
 )
 
@@ -2158,19 +2151,19 @@ result
 
 ```{r safety-overtime-edu-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SPriv1",
   group_var = "Education"
 )
 
@@ -2183,19 +2176,19 @@ result
 
 ```{r safety-overtime-edu-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
+  y_var = "SPriv2",
   group_var = "Education"
 )
 
@@ -2208,19 +2201,19 @@ result
 
 ```{r safety-overtime-edu-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv3",
+  y_var = "SPriv3",
   group_var = "Education"
 )
 
@@ -2233,19 +2226,19 @@ result
 
 ```{r safety-overtime-edu-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv4",
+  y_var = "SPriv4",
   group_var = "Education"
 )
 
@@ -2258,19 +2251,19 @@ result
 
 ```{r safety-overtime-edu-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom3",
   group_var = "Education"
 )
 
@@ -2291,19 +2284,19 @@ result
 
 ```{r safety-overtime-mig-item1-2}
 # Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik kan toegang tot een apparaat afschermen (bijvoorbeeld met een pincode of vingerafdruk)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SSafDev1",
   group_var = "MigrationBackground"
 )
 
@@ -2316,19 +2309,19 @@ result
 
 ```{r safety-overtime-mig-item2-2}
 # Ik weet hoe ik apparaten kan beschermen tegen virussen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik apparaten kan beschermen tegen virussen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SSafDev2",
   group_var = "MigrationBackground"
 )
 
@@ -2341,19 +2334,19 @@ result
 
 ```{r safety-overtime-mig-item3-2}
 # Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de privacy-instellingen op een mobiele telefoon of tablet kan aanpassen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SPriv1",
   group_var = "MigrationBackground"
 )
 
@@ -2366,19 +2359,19 @@ result
 
 ```{r safety-overtime-mig-item4-2}
 # Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de locatie-instellingen kan aanpassen op een mobiele telefoon of tablet",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
+  y_var = "SPriv2",
   group_var = "MigrationBackground"
 )
 
@@ -2391,19 +2384,19 @@ result
 
 ```{r safety-overtime-mig-item5-2}
 # Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik verdachte e-mails kan herkennen die mijn persoonlijke gegevens proberen te krijgen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv3",
+  y_var = "SPriv3",
   group_var = "MigrationBackground"
 )
 
@@ -2416,19 +2409,19 @@ result
 
 ```{r safety-overtime-mig-item6-2}
 # Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik de geschiedenis van websites die ik eerder bezocht kan verwijderen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv4",
+  y_var = "SPriv4",
   group_var = "MigrationBackground"
 )
 
@@ -2441,19 +2434,19 @@ result
 
 ```{r safety-overtime-mig-item7-2}
 # Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Ik weet hoe ik berichten kan blokkeren van iemand van wie ik niets meer wil ontvangen",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom3",
   group_var = "MigrationBackground"
 )
 
@@ -2491,11 +2484,11 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 
 ```{r ksafety-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
-  question_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
+  x_vars = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  x_var_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2522,7 +2515,7 @@ result
 
 ```{r ksafety-wave1-age-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -2547,7 +2540,7 @@ result
 
 ```{r ksafety-wave1-age-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -2572,7 +2565,7 @@ result
 
 ```{r ksafety-wave1-age-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -2605,7 +2598,7 @@ result
 
 ```{r ksafety-wave1-gender-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -2630,7 +2623,7 @@ result
 
 ```{r ksafety-wave1-gender-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -2655,7 +2648,7 @@ result
 
 ```{r ksafety-wave1-gender-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -2688,7 +2681,7 @@ result
 
 ```{r ksafety-wave1-edu-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -2713,7 +2706,7 @@ result
 
 ```{r ksafety-wave1-edu-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -2738,7 +2731,7 @@ result
 
 ```{r ksafety-wave1-edu-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -2771,7 +2764,7 @@ result
 
 ```{r ksafety-wave1-mig-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -2796,7 +2789,7 @@ result
 
 ```{r ksafety-wave1-mig-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -2821,7 +2814,7 @@ result
 
 ```{r ksafety-wave1-mig-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -2857,11 +2850,11 @@ result
 
 ```{r ksafety-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
-  question_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
+  x_vars = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  x_var_labels = c("Om je apparaten veiliger te houden, moet je updates altijd meteen installeren", "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken", "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2888,7 +2881,7 @@ result
 
 ```{r ksafety-wave2-age-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -2913,7 +2906,7 @@ result
 
 ```{r ksafety-wave2-age-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -2938,7 +2931,7 @@ result
 
 ```{r ksafety-wave2-age-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -2971,7 +2964,7 @@ result
 
 ```{r ksafety-wave2-gender-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -2996,7 +2989,7 @@ result
 
 ```{r ksafety-wave2-gender-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -3021,7 +3014,7 @@ result
 
 ```{r ksafety-wave2-gender-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -3054,7 +3047,7 @@ result
 
 ```{r ksafety-wave2-edu-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -3079,7 +3072,7 @@ result
 
 ```{r ksafety-wave2-edu-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -3104,7 +3097,7 @@ result
 
 ```{r ksafety-wave2-edu-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -3137,7 +3130,7 @@ result
 
 ```{r ksafety-wave2-mig-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   stacked_type = "percent",
@@ -3162,7 +3155,7 @@ result
 
 ```{r ksafety-wave2-mig-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   stacked_type = "percent",
@@ -3187,7 +3180,7 @@ result
 
 ```{r ksafety-wave2-mig-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   stacked_type = "percent",
@@ -3228,21 +3221,21 @@ result
 
 ```{r ksafety-overtime-overall-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC"
+  y_var = "KSafDev2RC"
 )
 
 result
@@ -3254,21 +3247,21 @@ result
 
 ```{r ksafety-overtime-overall-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC"
+  y_var = "KPriv1RC"
 )
 
 result
@@ -3280,21 +3273,21 @@ result
 
 ```{r ksafety-overtime-overall-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC"
+  y_var = "KPriv2RC"
 )
 
 result
@@ -3314,20 +3307,20 @@ result
 
 ```{r ksafety-overtime-age-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "AgeGroup"
 )
 
@@ -3340,20 +3333,20 @@ result
 
 ```{r ksafety-overtime-age-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "AgeGroup"
 )
 
@@ -3366,20 +3359,20 @@ result
 
 ```{r ksafety-overtime-age-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "AgeGroup"
 )
 
@@ -3400,20 +3393,20 @@ result
 
 ```{r ksafety-overtime-gender-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "geslacht"
 )
 
@@ -3426,20 +3419,20 @@ result
 
 ```{r ksafety-overtime-gender-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "geslacht"
 )
 
@@ -3452,20 +3445,20 @@ result
 
 ```{r ksafety-overtime-gender-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "geslacht"
 )
 
@@ -3486,20 +3479,20 @@ result
 
 ```{r ksafety-overtime-edu-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "Education"
 )
 
@@ -3512,20 +3505,20 @@ result
 
 ```{r ksafety-overtime-edu-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "Education"
 )
 
@@ -3538,20 +3531,20 @@ result
 
 ```{r ksafety-overtime-edu-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "Education"
 )
 
@@ -3572,20 +3565,20 @@ result
 
 ```{r ksafety-overtime-mig-item1-2}
 # Om je apparaten veiliger te houden, moet je updates altijd meteen installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Om je apparaten veiliger te houden, moet je updates altijd meteen installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "MigrationBackground"
 )
 
@@ -3598,20 +3591,20 @@ result
 
 ```{r ksafety-overtime-mig-item2-2}
 # Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Je kunt het beste voor elk account hetzelfde wachtwoord gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "MigrationBackground"
 )
 
@@ -3624,20 +3617,20 @@ result
 
 ```{r ksafety-overtime-mig-item3-2}
 # Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wat jij online doet gebruiken bedrijven om hun producten en diensten te adverteren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "MigrationBackground"
 )
 
@@ -3675,11 +3668,11 @@ create_blockquote('Welke van de volgende veiligheidsmaatregelen neemt u soms voo
 
 ```{r perf-safety-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
-  question_labels = c("Wachtwoorden bewaren in een wachtwoordenkluis", "Wachtwoorden bewaren op papier", "Wachtwoorden van ≥14 tekens", "Verschillende wachtwoorden per account", "Passkey gebruiken (vinger/gezicht)", "Twee-staps-verificatie", "Software-updates installeren", "Adblocker gebruiken", "Back-ups maken", "Geen van bovenstaande"),
+  x_vars = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
+  x_var_labels = c("Wachtwoorden bewaren in een wachtwoordenkluis", "Wachtwoorden bewaren op papier", "Wachtwoorden van ≥14 tekens", "Verschillende wachtwoorden per account", "Passkey gebruiken (vinger/gezicht)", "Twee-staps-verificatie", "Software-updates installeren", "Adblocker gebruiken", "Back-ups maken", "Geen van bovenstaande"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3706,7 +3699,7 @@ result
 
 ```{r perf-safety-wave1-age-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -3731,7 +3724,7 @@ result
 
 ```{r perf-safety-wave1-age-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -3756,7 +3749,7 @@ result
 
 ```{r perf-safety-wave1-age-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -3781,7 +3774,7 @@ result
 
 ```{r perf-safety-wave1-age-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -3806,7 +3799,7 @@ result
 
 ```{r perf-safety-wave1-age-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -3831,7 +3824,7 @@ result
 
 ```{r perf-safety-wave1-age-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -3856,7 +3849,7 @@ result
 
 ```{r perf-safety-wave1-age-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -3881,7 +3874,7 @@ result
 
 ```{r perf-safety-wave1-age-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -3906,7 +3899,7 @@ result
 
 ```{r perf-safety-wave1-age-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -3931,7 +3924,7 @@ result
 
 ```{r perf-safety-wave1-age-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -3964,7 +3957,7 @@ result
 
 ```{r perf-safety-wave1-gender-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -3989,7 +3982,7 @@ result
 
 ```{r perf-safety-wave1-gender-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -4014,7 +4007,7 @@ result
 
 ```{r perf-safety-wave1-gender-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -4039,7 +4032,7 @@ result
 
 ```{r perf-safety-wave1-gender-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -4064,7 +4057,7 @@ result
 
 ```{r perf-safety-wave1-gender-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -4089,7 +4082,7 @@ result
 
 ```{r perf-safety-wave1-gender-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -4114,7 +4107,7 @@ result
 
 ```{r perf-safety-wave1-gender-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -4139,7 +4132,7 @@ result
 
 ```{r perf-safety-wave1-gender-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -4164,7 +4157,7 @@ result
 
 ```{r perf-safety-wave1-gender-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -4189,7 +4182,7 @@ result
 
 ```{r perf-safety-wave1-gender-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -4222,7 +4215,7 @@ result
 
 ```{r perf-safety-wave1-edu-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -4247,7 +4240,7 @@ result
 
 ```{r perf-safety-wave1-edu-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -4272,7 +4265,7 @@ result
 
 ```{r perf-safety-wave1-edu-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -4297,7 +4290,7 @@ result
 
 ```{r perf-safety-wave1-edu-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -4322,7 +4315,7 @@ result
 
 ```{r perf-safety-wave1-edu-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -4347,7 +4340,7 @@ result
 
 ```{r perf-safety-wave1-edu-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -4372,7 +4365,7 @@ result
 
 ```{r perf-safety-wave1-edu-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -4397,7 +4390,7 @@ result
 
 ```{r perf-safety-wave1-edu-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -4422,7 +4415,7 @@ result
 
 ```{r perf-safety-wave1-edu-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -4447,7 +4440,7 @@ result
 
 ```{r perf-safety-wave1-edu-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -4480,7 +4473,7 @@ result
 
 ```{r perf-safety-wave1-mig-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -4505,7 +4498,7 @@ result
 
 ```{r perf-safety-wave1-mig-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -4530,7 +4523,7 @@ result
 
 ```{r perf-safety-wave1-mig-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -4555,7 +4548,7 @@ result
 
 ```{r perf-safety-wave1-mig-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -4580,7 +4573,7 @@ result
 
 ```{r perf-safety-wave1-mig-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -4605,7 +4598,7 @@ result
 
 ```{r perf-safety-wave1-mig-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -4630,7 +4623,7 @@ result
 
 ```{r perf-safety-wave1-mig-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -4655,7 +4648,7 @@ result
 
 ```{r perf-safety-wave1-mig-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -4680,7 +4673,7 @@ result
 
 ```{r perf-safety-wave1-mig-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -4705,7 +4698,7 @@ result
 
 ```{r perf-safety-wave1-mig-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -4741,11 +4734,11 @@ result
 
 ```{r perf-safety-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
-  question_labels = c("Wachtwoorden bewaren in een wachtwoordenkluis", "Wachtwoorden bewaren op papier", "Wachtwoorden van ≥14 tekens", "Verschillende wachtwoorden per account", "Passkey gebruiken (vinger/gezicht)", "Twee-staps-verificatie", "Software-updates installeren", "Adblocker gebruiken", "Back-ups maken", "Geen van bovenstaande"),
+  x_vars = c("PSCS3_1", "PSCS3_2", "PSCS3_3", "PSCS3_4", "PSCS3_5", "PSCS3_6", "PSCS3_7", "PSCS3_8", "PSCS3_9", "PSCS3_10"),
+  x_var_labels = c("Wachtwoorden bewaren in een wachtwoordenkluis", "Wachtwoorden bewaren op papier", "Wachtwoorden van ≥14 tekens", "Verschillende wachtwoorden per account", "Passkey gebruiken (vinger/gezicht)", "Twee-staps-verificatie", "Software-updates installeren", "Adblocker gebruiken", "Back-ups maken", "Geen van bovenstaande"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -4772,7 +4765,7 @@ result
 
 ```{r perf-safety-wave2-age-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -4797,7 +4790,7 @@ result
 
 ```{r perf-safety-wave2-age-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -4822,7 +4815,7 @@ result
 
 ```{r perf-safety-wave2-age-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -4847,7 +4840,7 @@ result
 
 ```{r perf-safety-wave2-age-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -4872,7 +4865,7 @@ result
 
 ```{r perf-safety-wave2-age-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -4897,7 +4890,7 @@ result
 
 ```{r perf-safety-wave2-age-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -4922,7 +4915,7 @@ result
 
 ```{r perf-safety-wave2-age-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -4947,7 +4940,7 @@ result
 
 ```{r perf-safety-wave2-age-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -4972,7 +4965,7 @@ result
 
 ```{r perf-safety-wave2-age-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -4997,7 +4990,7 @@ result
 
 ```{r perf-safety-wave2-age-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -5030,7 +5023,7 @@ result
 
 ```{r perf-safety-wave2-gender-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -5055,7 +5048,7 @@ result
 
 ```{r perf-safety-wave2-gender-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -5080,7 +5073,7 @@ result
 
 ```{r perf-safety-wave2-gender-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -5105,7 +5098,7 @@ result
 
 ```{r perf-safety-wave2-gender-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -5130,7 +5123,7 @@ result
 
 ```{r perf-safety-wave2-gender-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -5155,7 +5148,7 @@ result
 
 ```{r perf-safety-wave2-gender-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -5180,7 +5173,7 @@ result
 
 ```{r perf-safety-wave2-gender-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -5205,7 +5198,7 @@ result
 
 ```{r perf-safety-wave2-gender-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -5230,7 +5223,7 @@ result
 
 ```{r perf-safety-wave2-gender-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -5255,7 +5248,7 @@ result
 
 ```{r perf-safety-wave2-gender-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -5288,7 +5281,7 @@ result
 
 ```{r perf-safety-wave2-edu-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -5313,7 +5306,7 @@ result
 
 ```{r perf-safety-wave2-edu-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -5338,7 +5331,7 @@ result
 
 ```{r perf-safety-wave2-edu-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -5363,7 +5356,7 @@ result
 
 ```{r perf-safety-wave2-edu-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -5388,7 +5381,7 @@ result
 
 ```{r perf-safety-wave2-edu-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -5413,7 +5406,7 @@ result
 
 ```{r perf-safety-wave2-edu-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -5438,7 +5431,7 @@ result
 
 ```{r perf-safety-wave2-edu-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -5463,7 +5456,7 @@ result
 
 ```{r perf-safety-wave2-edu-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -5488,7 +5481,7 @@ result
 
 ```{r perf-safety-wave2-edu-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -5513,7 +5506,7 @@ result
 
 ```{r perf-safety-wave2-edu-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -5546,7 +5539,7 @@ result
 
 ```{r perf-safety-wave2-mig-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   stacked_type = "percent",
@@ -5571,7 +5564,7 @@ result
 
 ```{r perf-safety-wave2-mig-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden bewaren op papier",
   stacked_type = "percent",
@@ -5596,7 +5589,7 @@ result
 
 ```{r perf-safety-wave2-mig-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Wachtwoorden van ≥14 tekens",
   stacked_type = "percent",
@@ -5621,7 +5614,7 @@ result
 
 ```{r perf-safety-wave2-mig-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Verschillende wachtwoorden per account",
   stacked_type = "percent",
@@ -5646,7 +5639,7 @@ result
 
 ```{r perf-safety-wave2-mig-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Passkey gebruiken (vinger/gezicht)",
   stacked_type = "percent",
@@ -5671,7 +5664,7 @@ result
 
 ```{r perf-safety-wave2-mig-item6-2}
 # Twee-staps-verificatie
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Twee-staps-verificatie",
   stacked_type = "percent",
@@ -5696,7 +5689,7 @@ result
 
 ```{r perf-safety-wave2-mig-item7-2}
 # Software-updates installeren
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Software-updates installeren",
   stacked_type = "percent",
@@ -5721,7 +5714,7 @@ result
 
 ```{r perf-safety-wave2-mig-item8-2}
 # Adblocker gebruiken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Adblocker gebruiken",
   stacked_type = "percent",
@@ -5746,7 +5739,7 @@ result
 
 ```{r perf-safety-wave2-mig-item9-2}
 # Back-ups maken
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Back-ups maken",
   stacked_type = "percent",
@@ -5771,7 +5764,7 @@ result
 
 ```{r perf-safety-wave2-mig-item10-2}
 # Geen van bovenstaande
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Geen van bovenstaande",
   stacked_type = "percent",
@@ -5812,21 +5805,21 @@ result
 
 ```{r perf-safety-overtime-overall-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_1"
+  y_var = "PSCS3_1"
 )
 
 result
@@ -5838,21 +5831,21 @@ result
 
 ```{r perf-safety-overtime-overall-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren op papier",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_2"
+  y_var = "PSCS3_2"
 )
 
 result
@@ -5864,21 +5857,21 @@ result
 
 ```{r perf-safety-overtime-overall-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden van ≥14 tekens",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_3"
+  y_var = "PSCS3_3"
 )
 
 result
@@ -5890,21 +5883,21 @@ result
 
 ```{r perf-safety-overtime-overall-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Verschillende wachtwoorden per account",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_4"
+  y_var = "PSCS3_4"
 )
 
 result
@@ -5916,21 +5909,21 @@ result
 
 ```{r perf-safety-overtime-overall-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Passkey gebruiken (vinger/gezicht)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_5"
+  y_var = "PSCS3_5"
 )
 
 result
@@ -5942,21 +5935,21 @@ result
 
 ```{r perf-safety-overtime-overall-item6-2}
 # Twee-staps-verificatie
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Twee-staps-verificatie",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_6"
+  y_var = "PSCS3_6"
 )
 
 result
@@ -5968,21 +5961,21 @@ result
 
 ```{r perf-safety-overtime-overall-item7-2}
 # Software-updates installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Software-updates installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_7"
+  y_var = "PSCS3_7"
 )
 
 result
@@ -5994,21 +5987,21 @@ result
 
 ```{r perf-safety-overtime-overall-item8-2}
 # Adblocker gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Adblocker gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_8"
+  y_var = "PSCS3_8"
 )
 
 result
@@ -6020,21 +6013,21 @@ result
 
 ```{r perf-safety-overtime-overall-item9-2}
 # Back-ups maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Back-ups maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_9"
+  y_var = "PSCS3_9"
 )
 
 result
@@ -6046,21 +6039,21 @@ result
 
 ```{r perf-safety-overtime-overall-item10-2}
 # Geen van bovenstaande
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van bovenstaande",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage dat correct heeft geantwoord",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_10"
+  y_var = "PSCS3_10"
 )
 
 result
@@ -6080,20 +6073,20 @@ result
 
 ```{r perf-safety-overtime-age-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_1",
+  y_var = "PSCS3_1",
   group_var = "AgeGroup"
 )
 
@@ -6106,20 +6099,20 @@ result
 
 ```{r perf-safety-overtime-age-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren op papier",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_2",
+  y_var = "PSCS3_2",
   group_var = "AgeGroup"
 )
 
@@ -6132,20 +6125,20 @@ result
 
 ```{r perf-safety-overtime-age-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden van ≥14 tekens",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_3",
+  y_var = "PSCS3_3",
   group_var = "AgeGroup"
 )
 
@@ -6158,20 +6151,20 @@ result
 
 ```{r perf-safety-overtime-age-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Verschillende wachtwoorden per account",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_4",
+  y_var = "PSCS3_4",
   group_var = "AgeGroup"
 )
 
@@ -6184,20 +6177,20 @@ result
 
 ```{r perf-safety-overtime-age-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Passkey gebruiken (vinger/gezicht)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_5",
+  y_var = "PSCS3_5",
   group_var = "AgeGroup"
 )
 
@@ -6210,20 +6203,20 @@ result
 
 ```{r perf-safety-overtime-age-item6-2}
 # Twee-staps-verificatie
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Twee-staps-verificatie",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_6",
+  y_var = "PSCS3_6",
   group_var = "AgeGroup"
 )
 
@@ -6236,20 +6229,20 @@ result
 
 ```{r perf-safety-overtime-age-item7-2}
 # Software-updates installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Software-updates installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_7",
+  y_var = "PSCS3_7",
   group_var = "AgeGroup"
 )
 
@@ -6262,20 +6255,20 @@ result
 
 ```{r perf-safety-overtime-age-item8-2}
 # Adblocker gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Adblocker gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_8",
+  y_var = "PSCS3_8",
   group_var = "AgeGroup"
 )
 
@@ -6288,20 +6281,20 @@ result
 
 ```{r perf-safety-overtime-age-item9-2}
 # Back-ups maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Back-ups maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_9",
+  y_var = "PSCS3_9",
   group_var = "AgeGroup"
 )
 
@@ -6314,20 +6307,20 @@ result
 
 ```{r perf-safety-overtime-age-item10-2}
 # Geen van bovenstaande
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van bovenstaande",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_10",
+  y_var = "PSCS3_10",
   group_var = "AgeGroup"
 )
 
@@ -6348,20 +6341,20 @@ result
 
 ```{r perf-safety-overtime-gender-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_1",
+  y_var = "PSCS3_1",
   group_var = "geslacht"
 )
 
@@ -6374,20 +6367,20 @@ result
 
 ```{r perf-safety-overtime-gender-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren op papier",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_2",
+  y_var = "PSCS3_2",
   group_var = "geslacht"
 )
 
@@ -6400,20 +6393,20 @@ result
 
 ```{r perf-safety-overtime-gender-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden van ≥14 tekens",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_3",
+  y_var = "PSCS3_3",
   group_var = "geslacht"
 )
 
@@ -6426,20 +6419,20 @@ result
 
 ```{r perf-safety-overtime-gender-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Verschillende wachtwoorden per account",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_4",
+  y_var = "PSCS3_4",
   group_var = "geslacht"
 )
 
@@ -6452,20 +6445,20 @@ result
 
 ```{r perf-safety-overtime-gender-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Passkey gebruiken (vinger/gezicht)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_5",
+  y_var = "PSCS3_5",
   group_var = "geslacht"
 )
 
@@ -6478,20 +6471,20 @@ result
 
 ```{r perf-safety-overtime-gender-item6-2}
 # Twee-staps-verificatie
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Twee-staps-verificatie",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_6",
+  y_var = "PSCS3_6",
   group_var = "geslacht"
 )
 
@@ -6504,20 +6497,20 @@ result
 
 ```{r perf-safety-overtime-gender-item7-2}
 # Software-updates installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Software-updates installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_7",
+  y_var = "PSCS3_7",
   group_var = "geslacht"
 )
 
@@ -6530,20 +6523,20 @@ result
 
 ```{r perf-safety-overtime-gender-item8-2}
 # Adblocker gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Adblocker gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_8",
+  y_var = "PSCS3_8",
   group_var = "geslacht"
 )
 
@@ -6556,20 +6549,20 @@ result
 
 ```{r perf-safety-overtime-gender-item9-2}
 # Back-ups maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Back-ups maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_9",
+  y_var = "PSCS3_9",
   group_var = "geslacht"
 )
 
@@ -6582,20 +6575,20 @@ result
 
 ```{r perf-safety-overtime-gender-item10-2}
 # Geen van bovenstaande
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van bovenstaande",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_10",
+  y_var = "PSCS3_10",
   group_var = "geslacht"
 )
 
@@ -6616,20 +6609,20 @@ result
 
 ```{r perf-safety-overtime-edu-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_1",
+  y_var = "PSCS3_1",
   group_var = "Education"
 )
 
@@ -6642,20 +6635,20 @@ result
 
 ```{r perf-safety-overtime-edu-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren op papier",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_2",
+  y_var = "PSCS3_2",
   group_var = "Education"
 )
 
@@ -6668,20 +6661,20 @@ result
 
 ```{r perf-safety-overtime-edu-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden van ≥14 tekens",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_3",
+  y_var = "PSCS3_3",
   group_var = "Education"
 )
 
@@ -6694,20 +6687,20 @@ result
 
 ```{r perf-safety-overtime-edu-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Verschillende wachtwoorden per account",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_4",
+  y_var = "PSCS3_4",
   group_var = "Education"
 )
 
@@ -6720,20 +6713,20 @@ result
 
 ```{r perf-safety-overtime-edu-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Passkey gebruiken (vinger/gezicht)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_5",
+  y_var = "PSCS3_5",
   group_var = "Education"
 )
 
@@ -6746,20 +6739,20 @@ result
 
 ```{r perf-safety-overtime-edu-item6-2}
 # Twee-staps-verificatie
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Twee-staps-verificatie",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_6",
+  y_var = "PSCS3_6",
   group_var = "Education"
 )
 
@@ -6772,20 +6765,20 @@ result
 
 ```{r perf-safety-overtime-edu-item7-2}
 # Software-updates installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Software-updates installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_7",
+  y_var = "PSCS3_7",
   group_var = "Education"
 )
 
@@ -6798,20 +6791,20 @@ result
 
 ```{r perf-safety-overtime-edu-item8-2}
 # Adblocker gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Adblocker gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_8",
+  y_var = "PSCS3_8",
   group_var = "Education"
 )
 
@@ -6824,20 +6817,20 @@ result
 
 ```{r perf-safety-overtime-edu-item9-2}
 # Back-ups maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Back-ups maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_9",
+  y_var = "PSCS3_9",
   group_var = "Education"
 )
 
@@ -6850,20 +6843,20 @@ result
 
 ```{r perf-safety-overtime-edu-item10-2}
 # Geen van bovenstaande
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van bovenstaande",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_10",
+  y_var = "PSCS3_10",
   group_var = "Education"
 )
 
@@ -6884,20 +6877,20 @@ result
 
 ```{r perf-safety-overtime-mig-item1-2}
 # Wachtwoorden bewaren in een wachtwoordenkluis
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren in een wachtwoordenkluis",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_1",
+  y_var = "PSCS3_1",
   group_var = "MigrationBackground"
 )
 
@@ -6910,20 +6903,20 @@ result
 
 ```{r perf-safety-overtime-mig-item2-2}
 # Wachtwoorden bewaren op papier
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden bewaren op papier",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_2",
+  y_var = "PSCS3_2",
   group_var = "MigrationBackground"
 )
 
@@ -6936,20 +6929,20 @@ result
 
 ```{r perf-safety-overtime-mig-item3-2}
 # Wachtwoorden van ≥14 tekens
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Wachtwoorden van ≥14 tekens",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_3",
+  y_var = "PSCS3_3",
   group_var = "MigrationBackground"
 )
 
@@ -6962,20 +6955,20 @@ result
 
 ```{r perf-safety-overtime-mig-item4-2}
 # Verschillende wachtwoorden per account
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Verschillende wachtwoorden per account",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_4",
+  y_var = "PSCS3_4",
   group_var = "MigrationBackground"
 )
 
@@ -6988,20 +6981,20 @@ result
 
 ```{r perf-safety-overtime-mig-item5-2}
 # Passkey gebruiken (vinger/gezicht)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Passkey gebruiken (vinger/gezicht)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_5",
+  y_var = "PSCS3_5",
   group_var = "MigrationBackground"
 )
 
@@ -7014,20 +7007,20 @@ result
 
 ```{r perf-safety-overtime-mig-item6-2}
 # Twee-staps-verificatie
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Twee-staps-verificatie",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_6",
+  y_var = "PSCS3_6",
   group_var = "MigrationBackground"
 )
 
@@ -7040,20 +7033,20 @@ result
 
 ```{r perf-safety-overtime-mig-item7-2}
 # Software-updates installeren
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Software-updates installeren",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_7",
+  y_var = "PSCS3_7",
   group_var = "MigrationBackground"
 )
 
@@ -7066,20 +7059,20 @@ result
 
 ```{r perf-safety-overtime-mig-item8-2}
 # Adblocker gebruiken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Adblocker gebruiken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_8",
+  y_var = "PSCS3_8",
   group_var = "MigrationBackground"
 )
 
@@ -7092,20 +7085,20 @@ result
 
 ```{r perf-safety-overtime-mig-item9-2}
 # Back-ups maken
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Back-ups maken",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_9",
+  y_var = "PSCS3_9",
   group_var = "MigrationBackground"
 )
 
@@ -7118,20 +7111,20 @@ result
 
 ```{r perf-safety-overtime-mig-item10-2}
 # Geen van bovenstaande
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Geen van bovenstaande",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage dat correct heeft geantwoord",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSCS3_10",
+  y_var = "PSCS3_10",
   group_var = "MigrationBackground"
 )
 
@@ -7153,6 +7146,435 @@ dashboardr::modal_content(
   modal_id = 'PSCS3_1',
   text = '<h2>Meer info</h2>
 <img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/safety_competence_infobox_image.png" style="max-width:50%; height:auto;">'
+)
+```
+
+## {{< iconify ph warning-fill >}} Phishing herkenning
+
+
+**Prestaties** meten de praktische digitale vaardigheden van deelnemers in een reeks taken uit het echte leven. In plaats van zelfrapportage testen deze items wat mensen *werkelijk kunnen*: bijvoorbeeld het zoeken naar betrouwbare informatie.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+create_blockquote('<a href=\"#PSCS1R\" class=\"modal-link\">Lees onderstaand bericht</a> goed door. Wat voor soort bericht denk je dat dit is?', preset = 'question')
+```
+[{{< iconify ph cards >}} Bekijk alle Prestatieresultaten](performance.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Ronde 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r perf-pscs1-wave1-overall-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  x_vars = "PSCS1R",
+  x_var_labels = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+```{r perf-pscs1-wave1-age-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+```{r perf-pscs1-wave1-gender-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+```{r perf-pscs1-wave1-edu-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+```{r perf-pscs1-wave1-mig-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Ronde 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r perf-pscs1-wave2-overall-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  x_vars = "PSCS1R",
+  x_var_labels = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+```{r perf-pscs1-wave2-age-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+```{r perf-pscs1-wave2-gender-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+```{r perf-pscs1-wave2-edu-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+```{r perf-pscs1-wave2-mig-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "PSCS1R"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Verloop over tijd
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r perf-pscs1-overtime-overall-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_timeline(
+  data = data,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage dat correct heeft geantwoord",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PSCS1R"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+```{r perf-pscs1-overtime-age-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_timeline(
+  data = data,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSCS1R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+```{r perf-pscs1-overtime-gender-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_timeline(
+  data = data,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSCS1R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+```{r perf-pscs1-overtime-edu-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_timeline(
+  data = data,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSCS1R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+```{r perf-pscs1-overtime-mig-2}
+# Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?
+result <- viz_timeline(
+  data = data,
+  title = "Lees onderstaand bericht goed door. Wat voor soort bericht denk je dat dit is?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage dat correct heeft geantwoord",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PSCS1R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+```{r, echo=FALSE, results='asis'}
+dashboardr::modal_content(
+  modal_id = 'PSCS1R',
+  text = '<h2>Meer info</h2>
+<img src="PSCS1.jpg" style="max-width:80%; height:auto;">'
 )
 ```
 

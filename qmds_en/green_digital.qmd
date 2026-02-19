@@ -3,9 +3,8 @@ title: "{{< iconify ph recycle-fill >}} Green Digital"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "green_digital")
 ```
 
 **Sustainable/Green Digital Competence** focuses on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
@@ -17,10 +16,8 @@ library(dashboardr)
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -33,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -42,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -69,11 +66,11 @@ create_blockquote("Think about the extent to which each sentence applies to you,
 
 ```{r green-wave1-overall-2}
 # Sustainable/Green Digital Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "Sustainable/Green Digital Skills",
-  questions = c("SEnv1", "SEnv2", "SEnv3"),
-  question_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
+  x_vars = c("SEnv1", "SEnv2", "SEnv3"),
+  x_var_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -99,7 +96,7 @@ result
 
 ```{r green-wave1-age-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -123,7 +120,7 @@ result
 
 ```{r green-wave1-age-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -147,7 +144,7 @@ result
 
 ```{r green-wave1-age-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -179,7 +176,7 @@ result
 
 ```{r green-wave1-gender-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -203,7 +200,7 @@ result
 
 ```{r green-wave1-gender-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -227,7 +224,7 @@ result
 
 ```{r green-wave1-gender-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -259,7 +256,7 @@ result
 
 ```{r green-wave1-edu-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -283,7 +280,7 @@ result
 
 ```{r green-wave1-edu-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -307,7 +304,7 @@ result
 
 ```{r green-wave1-edu-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -339,7 +336,7 @@ result
 
 ```{r green-wave1-mig-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -363,7 +360,7 @@ result
 
 ```{r green-wave1-mig-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -387,7 +384,7 @@ result
 
 ```{r green-wave1-mig-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -422,11 +419,11 @@ result
 
 ```{r green-wave2-overall-2}
 # Sustainable/Green Digital Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "Sustainable/Green Digital Skills",
-  questions = c("SEnv1", "SEnv2", "SEnv3"),
-  question_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
+  x_vars = c("SEnv1", "SEnv2", "SEnv3"),
+  x_var_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -452,7 +449,7 @@ result
 
 ```{r green-wave2-age-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -476,7 +473,7 @@ result
 
 ```{r green-wave2-age-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -500,7 +497,7 @@ result
 
 ```{r green-wave2-age-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -532,7 +529,7 @@ result
 
 ```{r green-wave2-gender-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -556,7 +553,7 @@ result
 
 ```{r green-wave2-gender-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -580,7 +577,7 @@ result
 
 ```{r green-wave2-gender-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -612,7 +609,7 @@ result
 
 ```{r green-wave2-edu-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -636,7 +633,7 @@ result
 
 ```{r green-wave2-edu-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -660,7 +657,7 @@ result
 
 ```{r green-wave2-edu-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -692,7 +689,7 @@ result
 
 ```{r green-wave2-mig-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to reduce the battery use of a phone or computer",
   stacked_type = "percent",
@@ -716,7 +713,7 @@ result
 
 ```{r green-wave2-mig-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   stacked_type = "percent",
@@ -740,7 +737,7 @@ result
 
 ```{r green-wave2-mig-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to have a phone or computer recycled",
   stacked_type = "percent",
@@ -780,21 +777,21 @@ result
 
 ```{r green-overtime-overall-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to reduce the battery use of a phone or computer",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv1"
+  y_var = "SEnv1"
 )
 
 result
@@ -806,21 +803,21 @@ result
 
 ```{r green-overtime-overall-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv2"
+  y_var = "SEnv2"
 )
 
 result
@@ -832,21 +829,21 @@ result
 
 ```{r green-overtime-overall-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to have a phone or computer recycled",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv3"
+  y_var = "SEnv3"
 )
 
 result
@@ -866,19 +863,19 @@ result
 
 ```{r green-overtime-age-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to reduce the battery use of a phone or computer",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv1",
+  y_var = "SEnv1",
   group_var = "AgeGroup"
 )
 
@@ -891,19 +888,19 @@ result
 
 ```{r green-overtime-age-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv2",
+  y_var = "SEnv2",
   group_var = "AgeGroup"
 )
 
@@ -916,19 +913,19 @@ result
 
 ```{r green-overtime-age-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to have a phone or computer recycled",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv3",
+  y_var = "SEnv3",
   group_var = "AgeGroup"
 )
 
@@ -949,19 +946,19 @@ result
 
 ```{r green-overtime-gender-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to reduce the battery use of a phone or computer",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv1",
+  y_var = "SEnv1",
   group_var = "geslacht"
 )
 
@@ -974,19 +971,19 @@ result
 
 ```{r green-overtime-gender-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv2",
+  y_var = "SEnv2",
   group_var = "geslacht"
 )
 
@@ -999,19 +996,19 @@ result
 
 ```{r green-overtime-gender-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to have a phone or computer recycled",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv3",
+  y_var = "SEnv3",
   group_var = "geslacht"
 )
 
@@ -1032,19 +1029,19 @@ result
 
 ```{r green-overtime-edu-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to reduce the battery use of a phone or computer",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv1",
+  y_var = "SEnv1",
   group_var = "Education"
 )
 
@@ -1057,19 +1054,19 @@ result
 
 ```{r green-overtime-edu-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv2",
+  y_var = "SEnv2",
   group_var = "Education"
 )
 
@@ -1082,19 +1079,19 @@ result
 
 ```{r green-overtime-edu-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to have a phone or computer recycled",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv3",
+  y_var = "SEnv3",
   group_var = "Education"
 )
 
@@ -1115,19 +1112,19 @@ result
 
 ```{r green-overtime-mig-item1-2}
 # I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to reduce the battery use of a phone or computer",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv1",
+  y_var = "SEnv1",
   group_var = "MigrationBackground"
 )
 
@@ -1140,19 +1137,19 @@ result
 
 ```{r green-overtime-mig-item2-2}
 # I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv2",
+  y_var = "SEnv2",
   group_var = "MigrationBackground"
 )
 
@@ -1165,19 +1162,19 @@ result
 
 ```{r green-overtime-mig-item3-2}
 # I know how to have a phone or computer recycled
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to have a phone or computer recycled",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv3",
+  y_var = "SEnv3",
   group_var = "MigrationBackground"
 )
 
@@ -1215,11 +1212,11 @@ create_blockquote("The following statements are about the internet. Please indic
 
 ```{r kgreen-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KEnv2RC", "KEnv3RC"),
-  question_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
+  x_vars = c("KEnv2RC", "KEnv3RC"),
+  x_var_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1246,7 +1243,7 @@ result
 
 ```{r kgreen-wave1-age-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1271,7 +1268,7 @@ result
 
 ```{r kgreen-wave1-age-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1304,7 +1301,7 @@ result
 
 ```{r kgreen-wave1-gender-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1329,7 +1326,7 @@ result
 
 ```{r kgreen-wave1-gender-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1362,7 +1359,7 @@ result
 
 ```{r kgreen-wave1-edu-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1387,7 +1384,7 @@ result
 
 ```{r kgreen-wave1-edu-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1420,7 +1417,7 @@ result
 
 ```{r kgreen-wave1-mig-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1445,7 +1442,7 @@ result
 
 ```{r kgreen-wave1-mig-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1481,11 +1478,11 @@ result
 
 ```{r kgreen-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KEnv2RC", "KEnv3RC"),
-  question_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
+  x_vars = c("KEnv2RC", "KEnv3RC"),
+  x_var_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1512,7 +1509,7 @@ result
 
 ```{r kgreen-wave2-age-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1537,7 +1534,7 @@ result
 
 ```{r kgreen-wave2-age-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1570,7 +1567,7 @@ result
 
 ```{r kgreen-wave2-gender-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1595,7 +1592,7 @@ result
 
 ```{r kgreen-wave2-gender-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1628,7 +1625,7 @@ result
 
 ```{r kgreen-wave2-edu-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1653,7 +1650,7 @@ result
 
 ```{r kgreen-wave2-edu-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1686,7 +1683,7 @@ result
 
 ```{r kgreen-wave2-mig-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -1711,7 +1708,7 @@ result
 
 ```{r kgreen-wave2-mig-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -1752,21 +1749,21 @@ result
 
 ```{r kgreen-overtime-overall-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC"
+  y_var = "KEnv2RC"
 )
 
 result
@@ -1778,21 +1775,21 @@ result
 
 ```{r kgreen-overtime-overall-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC"
+  y_var = "KEnv3RC"
 )
 
 result
@@ -1812,20 +1809,20 @@ result
 
 ```{r kgreen-overtime-age-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "AgeGroup"
 )
 
@@ -1838,20 +1835,20 @@ result
 
 ```{r kgreen-overtime-age-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "AgeGroup"
 )
 
@@ -1872,20 +1869,20 @@ result
 
 ```{r kgreen-overtime-gender-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "geslacht"
 )
 
@@ -1898,20 +1895,20 @@ result
 
 ```{r kgreen-overtime-gender-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "geslacht"
 )
 
@@ -1932,20 +1929,20 @@ result
 
 ```{r kgreen-overtime-edu-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "Education"
 )
 
@@ -1958,20 +1955,20 @@ result
 
 ```{r kgreen-overtime-edu-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "Education"
 )
 
@@ -1992,20 +1989,20 @@ result
 
 ```{r kgreen-overtime-mig-item1-2}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2018,20 +2015,20 @@ result
 
 ```{r kgreen-overtime-mig-item2-2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "MigrationBackground"
 )
 
@@ -2069,11 +2066,11 @@ create_blockquote("Which of the following activities do you sometimes do?", pres
 
 ```{r perf-green-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
-  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
+  x_vars = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  x_var_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2100,7 +2097,7 @@ result
 
 ```{r perf-green-wave1-age-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -2125,7 +2122,7 @@ result
 
 ```{r perf-green-wave1-age-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -2150,7 +2147,7 @@ result
 
 ```{r perf-green-wave1-age-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -2175,7 +2172,7 @@ result
 
 ```{r perf-green-wave1-age-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -2200,7 +2197,7 @@ result
 
 ```{r perf-green-wave1-age-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -2225,7 +2222,7 @@ result
 
 ```{r perf-green-wave1-age-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -2250,7 +2247,7 @@ result
 
 ```{r perf-green-wave1-age-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -2275,7 +2272,7 @@ result
 
 ```{r perf-green-wave1-age-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -2300,7 +2297,7 @@ result
 
 ```{r perf-green-wave1-age-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "None of these actions",
   stacked_type = "percent",
@@ -2333,7 +2330,7 @@ result
 
 ```{r perf-green-wave1-gender-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -2358,7 +2355,7 @@ result
 
 ```{r perf-green-wave1-gender-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -2383,7 +2380,7 @@ result
 
 ```{r perf-green-wave1-gender-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -2408,7 +2405,7 @@ result
 
 ```{r perf-green-wave1-gender-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -2433,7 +2430,7 @@ result
 
 ```{r perf-green-wave1-gender-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -2458,7 +2455,7 @@ result
 
 ```{r perf-green-wave1-gender-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -2483,7 +2480,7 @@ result
 
 ```{r perf-green-wave1-gender-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -2508,7 +2505,7 @@ result
 
 ```{r perf-green-wave1-gender-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -2533,7 +2530,7 @@ result
 
 ```{r perf-green-wave1-gender-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "None of these actions",
   stacked_type = "percent",
@@ -2566,7 +2563,7 @@ result
 
 ```{r perf-green-wave1-edu-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -2591,7 +2588,7 @@ result
 
 ```{r perf-green-wave1-edu-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -2616,7 +2613,7 @@ result
 
 ```{r perf-green-wave1-edu-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -2641,7 +2638,7 @@ result
 
 ```{r perf-green-wave1-edu-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -2666,7 +2663,7 @@ result
 
 ```{r perf-green-wave1-edu-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -2691,7 +2688,7 @@ result
 
 ```{r perf-green-wave1-edu-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -2716,7 +2713,7 @@ result
 
 ```{r perf-green-wave1-edu-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -2741,7 +2738,7 @@ result
 
 ```{r perf-green-wave1-edu-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -2766,7 +2763,7 @@ result
 
 ```{r perf-green-wave1-edu-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "None of these actions",
   stacked_type = "percent",
@@ -2799,7 +2796,7 @@ result
 
 ```{r perf-green-wave1-mig-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -2824,7 +2821,7 @@ result
 
 ```{r perf-green-wave1-mig-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -2849,7 +2846,7 @@ result
 
 ```{r perf-green-wave1-mig-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -2874,7 +2871,7 @@ result
 
 ```{r perf-green-wave1-mig-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -2899,7 +2896,7 @@ result
 
 ```{r perf-green-wave1-mig-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -2924,7 +2921,7 @@ result
 
 ```{r perf-green-wave1-mig-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -2949,7 +2946,7 @@ result
 
 ```{r perf-green-wave1-mig-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -2974,7 +2971,7 @@ result
 
 ```{r perf-green-wave1-mig-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -2999,7 +2996,7 @@ result
 
 ```{r perf-green-wave1-mig-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "None of these actions",
   stacked_type = "percent",
@@ -3035,11 +3032,11 @@ result
 
 ```{r perf-green-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
-  question_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
+  x_vars = c("PSGDS1_1", "PSGDS1_2", "PSGDS1_3", "PSGDS1_4", "PSGDS1_5", "PSGDS1_6", "PSGDS1_7", "PSGDS1_8", "PSGDS1_9"),
+  x_var_labels = c("Clean mailbox", "Use sustainable search engines", "Avoid unnecessary Cloud storage", "Turn down screen brightness", "Use sleep mode", "Close unused phone apps", "Recycle devices", "Repair before replacing", "None of these actions"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3066,7 +3063,7 @@ result
 
 ```{r perf-green-wave2-age-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -3091,7 +3088,7 @@ result
 
 ```{r perf-green-wave2-age-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -3116,7 +3113,7 @@ result
 
 ```{r perf-green-wave2-age-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -3141,7 +3138,7 @@ result
 
 ```{r perf-green-wave2-age-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -3166,7 +3163,7 @@ result
 
 ```{r perf-green-wave2-age-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -3191,7 +3188,7 @@ result
 
 ```{r perf-green-wave2-age-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -3216,7 +3213,7 @@ result
 
 ```{r perf-green-wave2-age-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -3241,7 +3238,7 @@ result
 
 ```{r perf-green-wave2-age-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -3266,7 +3263,7 @@ result
 
 ```{r perf-green-wave2-age-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "None of these actions",
   stacked_type = "percent",
@@ -3299,7 +3296,7 @@ result
 
 ```{r perf-green-wave2-gender-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -3324,7 +3321,7 @@ result
 
 ```{r perf-green-wave2-gender-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -3349,7 +3346,7 @@ result
 
 ```{r perf-green-wave2-gender-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -3374,7 +3371,7 @@ result
 
 ```{r perf-green-wave2-gender-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -3399,7 +3396,7 @@ result
 
 ```{r perf-green-wave2-gender-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -3424,7 +3421,7 @@ result
 
 ```{r perf-green-wave2-gender-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -3449,7 +3446,7 @@ result
 
 ```{r perf-green-wave2-gender-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -3474,7 +3471,7 @@ result
 
 ```{r perf-green-wave2-gender-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -3499,7 +3496,7 @@ result
 
 ```{r perf-green-wave2-gender-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "None of these actions",
   stacked_type = "percent",
@@ -3532,7 +3529,7 @@ result
 
 ```{r perf-green-wave2-edu-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -3557,7 +3554,7 @@ result
 
 ```{r perf-green-wave2-edu-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -3582,7 +3579,7 @@ result
 
 ```{r perf-green-wave2-edu-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -3607,7 +3604,7 @@ result
 
 ```{r perf-green-wave2-edu-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -3632,7 +3629,7 @@ result
 
 ```{r perf-green-wave2-edu-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -3657,7 +3654,7 @@ result
 
 ```{r perf-green-wave2-edu-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -3682,7 +3679,7 @@ result
 
 ```{r perf-green-wave2-edu-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -3707,7 +3704,7 @@ result
 
 ```{r perf-green-wave2-edu-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -3732,7 +3729,7 @@ result
 
 ```{r perf-green-wave2-edu-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "None of these actions",
   stacked_type = "percent",
@@ -3765,7 +3762,7 @@ result
 
 ```{r perf-green-wave2-mig-item1-2}
 # Clean mailbox
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Clean mailbox",
   stacked_type = "percent",
@@ -3790,7 +3787,7 @@ result
 
 ```{r perf-green-wave2-mig-item2-2}
 # Use sustainable search engines
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sustainable search engines",
   stacked_type = "percent",
@@ -3815,7 +3812,7 @@ result
 
 ```{r perf-green-wave2-mig-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Avoid unnecessary Cloud storage",
   stacked_type = "percent",
@@ -3840,7 +3837,7 @@ result
 
 ```{r perf-green-wave2-mig-item4-2}
 # Turn down screen brightness
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Turn down screen brightness",
   stacked_type = "percent",
@@ -3865,7 +3862,7 @@ result
 
 ```{r perf-green-wave2-mig-item5-2}
 # Use sleep mode
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Use sleep mode",
   stacked_type = "percent",
@@ -3890,7 +3887,7 @@ result
 
 ```{r perf-green-wave2-mig-item6-2}
 # Close unused phone apps
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Close unused phone apps",
   stacked_type = "percent",
@@ -3915,7 +3912,7 @@ result
 
 ```{r perf-green-wave2-mig-item7-2}
 # Recycle devices
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Recycle devices",
   stacked_type = "percent",
@@ -3940,7 +3937,7 @@ result
 
 ```{r perf-green-wave2-mig-item8-2}
 # Repair before replacing
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Repair before replacing",
   stacked_type = "percent",
@@ -3965,7 +3962,7 @@ result
 
 ```{r perf-green-wave2-mig-item9-2}
 # None of these actions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "None of these actions",
   stacked_type = "percent",
@@ -4006,21 +4003,21 @@ result
 
 ```{r perf-green-overtime-overall-item1-2}
 # Clean mailbox
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_1"
+  y_var = "PSGDS1_1"
 )
 
 result
@@ -4032,21 +4029,21 @@ result
 
 ```{r perf-green-overtime-overall-item2-2}
 # Use sustainable search engines
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_2"
+  y_var = "PSGDS1_2"
 )
 
 result
@@ -4058,21 +4055,21 @@ result
 
 ```{r perf-green-overtime-overall-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_3"
+  y_var = "PSGDS1_3"
 )
 
 result
@@ -4084,21 +4081,21 @@ result
 
 ```{r perf-green-overtime-overall-item4-2}
 # Turn down screen brightness
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_4"
+  y_var = "PSGDS1_4"
 )
 
 result
@@ -4110,21 +4107,21 @@ result
 
 ```{r perf-green-overtime-overall-item5-2}
 # Use sleep mode
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_5"
+  y_var = "PSGDS1_5"
 )
 
 result
@@ -4136,21 +4133,21 @@ result
 
 ```{r perf-green-overtime-overall-item6-2}
 # Close unused phone apps
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_6"
+  y_var = "PSGDS1_6"
 )
 
 result
@@ -4162,21 +4159,21 @@ result
 
 ```{r perf-green-overtime-overall-item7-2}
 # Recycle devices
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_7"
+  y_var = "PSGDS1_7"
 )
 
 result
@@ -4188,21 +4185,21 @@ result
 
 ```{r perf-green-overtime-overall-item8-2}
 # Repair before replacing
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_8"
+  y_var = "PSGDS1_8"
 )
 
 result
@@ -4214,21 +4211,21 @@ result
 
 ```{r perf-green-overtime-overall-item9-2}
 # None of these actions
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_9"
+  y_var = "PSGDS1_9"
 )
 
 result
@@ -4248,20 +4245,20 @@ result
 
 ```{r perf-green-overtime-age-item1-2}
 # Clean mailbox
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_1",
+  y_var = "PSGDS1_1",
   group_var = "AgeGroup"
 )
 
@@ -4274,20 +4271,20 @@ result
 
 ```{r perf-green-overtime-age-item2-2}
 # Use sustainable search engines
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_2",
+  y_var = "PSGDS1_2",
   group_var = "AgeGroup"
 )
 
@@ -4300,20 +4297,20 @@ result
 
 ```{r perf-green-overtime-age-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_3",
+  y_var = "PSGDS1_3",
   group_var = "AgeGroup"
 )
 
@@ -4326,20 +4323,20 @@ result
 
 ```{r perf-green-overtime-age-item4-2}
 # Turn down screen brightness
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_4",
+  y_var = "PSGDS1_4",
   group_var = "AgeGroup"
 )
 
@@ -4352,20 +4349,20 @@ result
 
 ```{r perf-green-overtime-age-item5-2}
 # Use sleep mode
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_5",
+  y_var = "PSGDS1_5",
   group_var = "AgeGroup"
 )
 
@@ -4378,20 +4375,20 @@ result
 
 ```{r perf-green-overtime-age-item6-2}
 # Close unused phone apps
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_6",
+  y_var = "PSGDS1_6",
   group_var = "AgeGroup"
 )
 
@@ -4404,20 +4401,20 @@ result
 
 ```{r perf-green-overtime-age-item7-2}
 # Recycle devices
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_7",
+  y_var = "PSGDS1_7",
   group_var = "AgeGroup"
 )
 
@@ -4430,20 +4427,20 @@ result
 
 ```{r perf-green-overtime-age-item8-2}
 # Repair before replacing
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_8",
+  y_var = "PSGDS1_8",
   group_var = "AgeGroup"
 )
 
@@ -4456,20 +4453,20 @@ result
 
 ```{r perf-green-overtime-age-item9-2}
 # None of these actions
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_9",
+  y_var = "PSGDS1_9",
   group_var = "AgeGroup"
 )
 
@@ -4490,20 +4487,20 @@ result
 
 ```{r perf-green-overtime-gender-item1-2}
 # Clean mailbox
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_1",
+  y_var = "PSGDS1_1",
   group_var = "geslacht"
 )
 
@@ -4516,20 +4513,20 @@ result
 
 ```{r perf-green-overtime-gender-item2-2}
 # Use sustainable search engines
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_2",
+  y_var = "PSGDS1_2",
   group_var = "geslacht"
 )
 
@@ -4542,20 +4539,20 @@ result
 
 ```{r perf-green-overtime-gender-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_3",
+  y_var = "PSGDS1_3",
   group_var = "geslacht"
 )
 
@@ -4568,20 +4565,20 @@ result
 
 ```{r perf-green-overtime-gender-item4-2}
 # Turn down screen brightness
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_4",
+  y_var = "PSGDS1_4",
   group_var = "geslacht"
 )
 
@@ -4594,20 +4591,20 @@ result
 
 ```{r perf-green-overtime-gender-item5-2}
 # Use sleep mode
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_5",
+  y_var = "PSGDS1_5",
   group_var = "geslacht"
 )
 
@@ -4620,20 +4617,20 @@ result
 
 ```{r perf-green-overtime-gender-item6-2}
 # Close unused phone apps
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_6",
+  y_var = "PSGDS1_6",
   group_var = "geslacht"
 )
 
@@ -4646,20 +4643,20 @@ result
 
 ```{r perf-green-overtime-gender-item7-2}
 # Recycle devices
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_7",
+  y_var = "PSGDS1_7",
   group_var = "geslacht"
 )
 
@@ -4672,20 +4669,20 @@ result
 
 ```{r perf-green-overtime-gender-item8-2}
 # Repair before replacing
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_8",
+  y_var = "PSGDS1_8",
   group_var = "geslacht"
 )
 
@@ -4698,20 +4695,20 @@ result
 
 ```{r perf-green-overtime-gender-item9-2}
 # None of these actions
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_9",
+  y_var = "PSGDS1_9",
   group_var = "geslacht"
 )
 
@@ -4732,20 +4729,20 @@ result
 
 ```{r perf-green-overtime-edu-item1-2}
 # Clean mailbox
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_1",
+  y_var = "PSGDS1_1",
   group_var = "Education"
 )
 
@@ -4758,20 +4755,20 @@ result
 
 ```{r perf-green-overtime-edu-item2-2}
 # Use sustainable search engines
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_2",
+  y_var = "PSGDS1_2",
   group_var = "Education"
 )
 
@@ -4784,20 +4781,20 @@ result
 
 ```{r perf-green-overtime-edu-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_3",
+  y_var = "PSGDS1_3",
   group_var = "Education"
 )
 
@@ -4810,20 +4807,20 @@ result
 
 ```{r perf-green-overtime-edu-item4-2}
 # Turn down screen brightness
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_4",
+  y_var = "PSGDS1_4",
   group_var = "Education"
 )
 
@@ -4836,20 +4833,20 @@ result
 
 ```{r perf-green-overtime-edu-item5-2}
 # Use sleep mode
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_5",
+  y_var = "PSGDS1_5",
   group_var = "Education"
 )
 
@@ -4862,20 +4859,20 @@ result
 
 ```{r perf-green-overtime-edu-item6-2}
 # Close unused phone apps
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_6",
+  y_var = "PSGDS1_6",
   group_var = "Education"
 )
 
@@ -4888,20 +4885,20 @@ result
 
 ```{r perf-green-overtime-edu-item7-2}
 # Recycle devices
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_7",
+  y_var = "PSGDS1_7",
   group_var = "Education"
 )
 
@@ -4914,20 +4911,20 @@ result
 
 ```{r perf-green-overtime-edu-item8-2}
 # Repair before replacing
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_8",
+  y_var = "PSGDS1_8",
   group_var = "Education"
 )
 
@@ -4940,20 +4937,20 @@ result
 
 ```{r perf-green-overtime-edu-item9-2}
 # None of these actions
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_9",
+  y_var = "PSGDS1_9",
   group_var = "Education"
 )
 
@@ -4974,20 +4971,20 @@ result
 
 ```{r perf-green-overtime-mig-item1-2}
 # Clean mailbox
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Clean mailbox",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_1",
+  y_var = "PSGDS1_1",
   group_var = "MigrationBackground"
 )
 
@@ -5000,20 +4997,20 @@ result
 
 ```{r perf-green-overtime-mig-item2-2}
 # Use sustainable search engines
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sustainable search engines",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_2",
+  y_var = "PSGDS1_2",
   group_var = "MigrationBackground"
 )
 
@@ -5026,20 +5023,20 @@ result
 
 ```{r perf-green-overtime-mig-item3-2}
 # Avoid unnecessary Cloud storage
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Avoid unnecessary Cloud storage",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_3",
+  y_var = "PSGDS1_3",
   group_var = "MigrationBackground"
 )
 
@@ -5052,20 +5049,20 @@ result
 
 ```{r perf-green-overtime-mig-item4-2}
 # Turn down screen brightness
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Turn down screen brightness",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_4",
+  y_var = "PSGDS1_4",
   group_var = "MigrationBackground"
 )
 
@@ -5078,20 +5075,20 @@ result
 
 ```{r perf-green-overtime-mig-item5-2}
 # Use sleep mode
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Use sleep mode",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_5",
+  y_var = "PSGDS1_5",
   group_var = "MigrationBackground"
 )
 
@@ -5104,20 +5101,20 @@ result
 
 ```{r perf-green-overtime-mig-item6-2}
 # Close unused phone apps
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Close unused phone apps",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_6",
+  y_var = "PSGDS1_6",
   group_var = "MigrationBackground"
 )
 
@@ -5130,20 +5127,20 @@ result
 
 ```{r perf-green-overtime-mig-item7-2}
 # Recycle devices
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Recycle devices",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_7",
+  y_var = "PSGDS1_7",
   group_var = "MigrationBackground"
 )
 
@@ -5156,20 +5153,20 @@ result
 
 ```{r perf-green-overtime-mig-item8-2}
 # Repair before replacing
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Repair before replacing",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_8",
+  y_var = "PSGDS1_8",
   group_var = "MigrationBackground"
 )
 
@@ -5182,20 +5179,20 @@ result
 
 ```{r perf-green-overtime-mig-item9-2}
 # None of these actions
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "None of these actions",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PSGDS1_9",
+  y_var = "PSGDS1_9",
   group_var = "MigrationBackground"
 )
 

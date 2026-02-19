@@ -1,0 +1,1400 @@
+---
+title: "{{< iconify ph lightning-fill >}} Skills"
+format: html
+---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(6, 6, "skills", "top")
+```
+
+
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "skills")
+```
+
+The **Skills** section measures participants’ *self-assessed ability* to perform a wide range of digital tasks. These items capture how confident people feel doing things like searching for information, creating content, protecting their privacy, or recognizing when AI is being used. The questions cover different domains of digital competence, from information and communication skills to AI and generative AI skills, and together provide insight into participants’ everyday digital capabilities and confidence levels.
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Load data
+data <- readRDS('dataset_4014obs.rds')
+
+# Data summary
+cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
+
+# Create filtered datasets
+# Each filter is applied once and reused across visualizations
+
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# Use dashboardr's loading overlay function
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
+```
+
+## {{< iconify ph magic-wand-fill >}} Gen AI
+
+
+**Generative AI competence** covers the ability to engage with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
+[{{< iconify ph cards >}} See all Gen AI results](gen_ai.html)
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph number-circle-one-fill >}} Wave 1
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r genai-wave1-overall}
+# GenAI Skills
+result <- viz_stackedbars(
+  data = data_filtered_984a0efe,
+  title = "GenAI Skills",
+  x_vars = c("SGAI1", "SGAI2", "SGAI3"),
+  x_var_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave1-age-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave1-age-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave1-age-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave1-gender-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave1-gender-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave1-gender-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave1-edu-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave1-edu-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave1-edu-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave1-mig-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave1-mig-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave1-mig-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-two-fill >}} Wave 2
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+```{r genai-wave2-overall}
+# GenAI Skills
+result <- viz_stackedbars(
+  data = data_filtered_4af682fd,
+  title = "GenAI Skills",
+  x_vars = c("SGAI1", "SGAI2", "SGAI3", "SGAI4", "SGAI5"),
+  x_var_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person", "I know how to use ChatGPT to generate new ideas or solutions", "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave2-age-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave2-age-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave2-age-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r genai-wave2-age-item4}
+# I know how to use ChatGPT to generate new ideas or solutions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to use ChatGPT to generate new ideas or solutions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r genai-wave2-age-item5}
+# I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SGAI5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave2-gender-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave2-gender-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave2-gender-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r genai-wave2-gender-item4}
+# I know how to use ChatGPT to generate new ideas or solutions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to use ChatGPT to generate new ideas or solutions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r genai-wave2-gender-item5}
+# I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SGAI5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave2-edu-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave2-edu-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave2-edu-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r genai-wave2-edu-item4}
+# I know how to use ChatGPT to generate new ideas or solutions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to use ChatGPT to generate new ideas or solutions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r genai-wave2-edu-item5}
+# I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SGAI5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-wave2-mig-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-wave2-mig-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-wave2-mig-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r genai-wave2-mig-item4}
+# I know how to use ChatGPT to generate new ideas or solutions
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know how to use ChatGPT to generate new ideas or solutions",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 5
+
+
+```{r genai-wave2-mig-item5}
+# I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SGAI5"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph chart-line-fill >}} Over Time
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Overall
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-overtime-overall-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_timeline(
+  data = data,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI1"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-overtime-overall-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_timeline(
+  data = data,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-overtime-overall-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_timeline(
+  data = data,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI3"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-overtime-age-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_timeline(
+  data = data,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI1",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-overtime-age-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_timeline(
+  data = data,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI2",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-overtime-age-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_timeline(
+  data = data,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI3",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-overtime-gender-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_timeline(
+  data = data,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI1",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-overtime-gender-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_timeline(
+  data = data,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI2",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-overtime-gender-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_timeline(
+  data = data,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI3",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-overtime-edu-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_timeline(
+  data = data,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI1",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-overtime-edu-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_timeline(
+  data = data,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI2",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-overtime-edu-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_timeline(
+  data = data,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI3",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r genai-overtime-mig-item1}
+# I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
+result <- viz_timeline(
+  data = data,
+  title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI1",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r genai-overtime-mig-item2}
+# I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
+result <- viz_timeline(
+  data = data,
+  title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI2",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 3
+
+
+```{r genai-overtime-mig-item3}
+# I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
+result <- viz_timeline(
+  data = data,
+  title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage who answered (Completely) True (4-5)",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SGAI3",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+:::
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(6, 6, "skills", "bottom")
+```
+

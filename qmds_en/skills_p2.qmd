@@ -4,59 +4,14 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='skills.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='2' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <a href='skills_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["skills.html","skills_p2.html","skills_p3.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(2, 6, "skills", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "skills")
 ```
 
 The **Skills** section measures participants’ *self-assessed ability* to perform a wide range of digital tasks. These items capture how confident people feel doing things like searching for information, creating content, protecting their privacy, or recognizing when AI is being used. The questions cover different domains of digital competence, from information and communication skills to AI and generative AI skills, and together provide insight into participants’ everyday digital capabilities and confidence levels.
@@ -68,10 +23,8 @@ The **Skills** section measures participants’ *self-assessed ability* to perfo
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -84,7 +37,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -93,32 +46,22 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
 
-
-<details>
-<summary>For all skills questions, we used the following wording</summary>
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("Think about the extent to which each sentence applies to you, if you would have to do this activity now and without help. Please be honest. It is very normal that you never do some things. We'd like to know this. If you don't understand what the question means, please choose 'I don't understand the question.' Do you recognize yourself in the following statements?", preset = "question")
-```
-
-</details>
-
-## {{< iconify ph shield-check-fill >}} Safety
+## {{< iconify ph chats-fill >}} Netiquette
 
 
-**Safety & Control of Information and Devices Competence** encompasses protecting devices and personal information: using security measures, managing privacy settings, identifying phishing, and controlling what information is shared online.
-[{{< iconify ph cards >}} See all Safety results](safety.html)
+**Netiquette Competence** refers to proper online communication etiquette: knowing when to ask permission before sharing, choosing the right communication tool, understanding what not to share online, and using emoticons appropriately.
+[{{< iconify ph cards >}} See all Netiquette results](netiquette.html)
 
 
 ::: {.panel-tabset}
@@ -131,13 +74,13 @@ create_blockquote("Think about the extent to which each sentence applies to you,
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r safety-wave1-overall}
-# Safety and Control of Information and Devices Skills
-result <- create_stackedbars(
+```{r nskills-wave1-overall}
+# Netiquette Skills
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Safety and Control of Information and Devices Skills",
-  questions = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
-  question_labels = c("I know how to protect a device against access (e.g. a PIN code or fingerprint)", "I know how to protect devices against viruses", "I know how to adjust the privacy settings on a mobile phone or tablet", "I know how to change the location settings on a mobile phone or tablet", "I know how to identify suspicious e-mail messages that try to get my personal data", "I know how to delete the history of websites that I have visited before", "I know how to block messages from someone I don't want to hear from"),
+  title = "Netiquette Skills",
+  x_vars = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
+  x_var_labels = c("I know when I should ask for permission to share something online", "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)", "I know which things I should not share online", "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -161,11 +104,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave1-age-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave1-age-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -175,7 +118,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -185,11 +128,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave1-age-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave1-age-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -199,7 +142,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -209,11 +152,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave1-age-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-age-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -223,7 +166,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -233,11 +176,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave1-age-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-age-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -247,79 +190,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave1-age-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave1-age-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave1-age-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -337,11 +208,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave1-gender-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave1-gender-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -351,7 +222,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -361,11 +232,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave1-gender-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave1-gender-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -375,7 +246,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -385,11 +256,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave1-gender-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-gender-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -399,7 +270,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -409,11 +280,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave1-gender-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-gender-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -423,79 +294,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave1-gender-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave1-gender-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave1-gender-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -513,11 +312,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave1-edu-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave1-edu-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -527,7 +326,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -537,11 +336,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave1-edu-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave1-edu-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -551,7 +350,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -561,11 +360,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave1-edu-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-edu-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -575,7 +374,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -585,11 +384,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave1-edu-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-edu-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -599,79 +398,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave1-edu-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave1-edu-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave1-edu-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -689,11 +416,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave1-mig-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave1-mig-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -703,7 +430,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -713,11 +440,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave1-mig-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave1-mig-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -727,7 +454,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -737,11 +464,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave1-mig-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-mig-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -751,7 +478,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -761,11 +488,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave1-mig-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave1-mig-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -775,79 +502,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave1-mig-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave1-mig-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave1-mig-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -868,13 +523,13 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r safety-wave2-overall}
-# Safety and Control of Information and Devices Skills
-result <- create_stackedbars(
+```{r nskills-wave2-overall}
+# Netiquette Skills
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Safety and Control of Information and Devices Skills",
-  questions = c("SSafDev1", "SSafDev2", "SPriv1", "SPriv2", "SPriv3", "SPriv4", "SCom3"),
-  question_labels = c("I know how to protect a device against access (e.g. a PIN code or fingerprint)", "I know how to protect devices against viruses", "I know how to adjust the privacy settings on a mobile phone or tablet", "I know how to change the location settings on a mobile phone or tablet", "I know how to identify suspicious e-mail messages that try to get my personal data", "I know how to delete the history of websites that I have visited before", "I know how to block messages from someone I don't want to hear from"),
+  title = "Netiquette Skills",
+  x_vars = c("SCom1_V2", "SCom2", "SCom4_V2", "SCom5"),
+  x_var_labels = c("I know when I should ask for permission to share something online", "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)", "I know which things I should not share online", "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -898,11 +553,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave2-age-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave2-age-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -912,7 +567,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -922,11 +577,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave2-age-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave2-age-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -936,7 +591,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -946,11 +601,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave2-age-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-age-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -960,7 +615,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -970,11 +625,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave2-age-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-age-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -984,79 +639,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave2-age-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave2-age-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave2-age-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -1074,11 +657,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave2-gender-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave2-gender-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1088,7 +671,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -1098,11 +681,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave2-gender-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave2-gender-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1112,7 +695,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -1122,11 +705,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave2-gender-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-gender-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1136,7 +719,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -1146,11 +729,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave2-gender-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-gender-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1160,79 +743,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave2-gender-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave2-gender-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave2-gender-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -1250,11 +761,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave2-edu-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave2-edu-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1264,7 +775,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -1274,11 +785,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave2-edu-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave2-edu-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1288,7 +799,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -1298,11 +809,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave2-edu-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-edu-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1312,7 +823,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -1322,11 +833,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave2-edu-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-edu-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1336,79 +847,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave2-edu-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave2-edu-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave2-edu-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -1426,11 +865,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-wave2-mig-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_stackedbar(
+```{r nskills-wave2-mig-item1}
+# I know when I should ask for permission to share something online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1440,7 +879,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SSafDev1"
+  stack_var = "SCom1_V2"
 )
 
 result
@@ -1450,11 +889,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-wave2-mig-item2}
-# I know how to protect devices against viruses
-result <- create_stackedbar(
+```{r nskills-wave2-mig-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1464,7 +903,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SSafDev2"
+  stack_var = "SCom2"
 )
 
 result
@@ -1474,11 +913,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-wave2-mig-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-mig-item3}
+# I know which things I should not share online
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1488,7 +927,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SPriv1"
+  stack_var = "SCom4_V2"
 )
 
 result
@@ -1498,11 +937,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-wave2-mig-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_stackedbar(
+```{r nskills-wave2-mig-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -1512,79 +951,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-wave2-mig-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-wave2-mig-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to delete the history of websites that I have visited before",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-wave2-mig-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to block messages from someone I don't want to hear from",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SCom3"
+  stack_var = "SCom5"
 )
 
 result
@@ -1610,23 +977,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-overtime-overall-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_timeline(
+```{r nskills-overtime-overall-item1}
+# I know when I should ask for permission to share something online
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1"
+  y_var = "SCom1_V2"
 )
 
 result
@@ -1636,23 +1003,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-overtime-overall-item2}
-# I know how to protect devices against viruses
-result <- create_timeline(
+```{r nskills-overtime-overall-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2"
+  y_var = "SCom2"
 )
 
 result
@@ -1662,23 +1029,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-overtime-overall-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-overall-item3}
+# I know which things I should not share online
+result <- viz_timeline(
   data = data,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1"
+  y_var = "SCom4_V2"
 )
 
 result
@@ -1688,101 +1055,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-overtime-overall-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-overall-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_timeline(
   data = data,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-overtime-overall-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_timeline(
-  data = data,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv3"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-overtime-overall-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_timeline(
-  data = data,
-  title = "I know how to delete the history of websites that I have visited before",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv4"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-overtime-overall-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_timeline(
-  data = data,
-  title = "I know how to block messages from someone I don't want to hear from",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SCom3"
+  y_var = "SCom5"
 )
 
 result
@@ -1800,21 +1089,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-overtime-age-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_timeline(
+```{r nskills-overtime-age-item1}
+# I know when I should ask for permission to share something online
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SCom1_V2",
   group_var = "AgeGroup"
 )
 
@@ -1825,21 +1114,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-overtime-age-item2}
-# I know how to protect devices against viruses
-result <- create_timeline(
+```{r nskills-overtime-age-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SCom2",
   group_var = "AgeGroup"
 )
 
@@ -1850,21 +1139,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-overtime-age-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-age-item3}
+# I know which things I should not share online
+result <- viz_timeline(
   data = data,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SCom4_V2",
   group_var = "AgeGroup"
 )
 
@@ -1875,96 +1164,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-overtime-age-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-age-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_timeline(
   data = data,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-overtime-age-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_timeline(
-  data = data,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv3",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-overtime-age-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_timeline(
-  data = data,
-  title = "I know how to delete the history of websites that I have visited before",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv4",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-overtime-age-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_timeline(
-  data = data,
-  title = "I know how to block messages from someone I don't want to hear from",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom5",
   group_var = "AgeGroup"
 )
 
@@ -1983,21 +1197,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-overtime-gender-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_timeline(
+```{r nskills-overtime-gender-item1}
+# I know when I should ask for permission to share something online
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SCom1_V2",
   group_var = "geslacht"
 )
 
@@ -2008,21 +1222,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-overtime-gender-item2}
-# I know how to protect devices against viruses
-result <- create_timeline(
+```{r nskills-overtime-gender-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SCom2",
   group_var = "geslacht"
 )
 
@@ -2033,21 +1247,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-overtime-gender-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-gender-item3}
+# I know which things I should not share online
+result <- viz_timeline(
   data = data,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SCom4_V2",
   group_var = "geslacht"
 )
 
@@ -2058,96 +1272,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-overtime-gender-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-gender-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_timeline(
   data = data,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-overtime-gender-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_timeline(
-  data = data,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv3",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-overtime-gender-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_timeline(
-  data = data,
-  title = "I know how to delete the history of websites that I have visited before",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv4",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-overtime-gender-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_timeline(
-  data = data,
-  title = "I know how to block messages from someone I don't want to hear from",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom5",
   group_var = "geslacht"
 )
 
@@ -2166,21 +1305,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-overtime-edu-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_timeline(
+```{r nskills-overtime-edu-item1}
+# I know when I should ask for permission to share something online
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SCom1_V2",
   group_var = "Education"
 )
 
@@ -2191,21 +1330,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-overtime-edu-item2}
-# I know how to protect devices against viruses
-result <- create_timeline(
+```{r nskills-overtime-edu-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SCom2",
   group_var = "Education"
 )
 
@@ -2216,21 +1355,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-overtime-edu-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-edu-item3}
+# I know which things I should not share online
+result <- viz_timeline(
   data = data,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SCom4_V2",
   group_var = "Education"
 )
 
@@ -2241,96 +1380,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-overtime-edu-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-edu-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_timeline(
   data = data,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-overtime-edu-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_timeline(
-  data = data,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv3",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-overtime-edu-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_timeline(
-  data = data,
-  title = "I know how to delete the history of websites that I have visited before",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv4",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-overtime-edu-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_timeline(
-  data = data,
-  title = "I know how to block messages from someone I don't want to hear from",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom5",
   group_var = "Education"
 )
 
@@ -2349,21 +1413,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r safety-overtime-mig-item1}
-# I know how to protect a device against access (e.g. a PIN code or fingerprint)
-result <- create_timeline(
+```{r nskills-overtime-mig-item1}
+# I know when I should ask for permission to share something online
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect a device against access (e.g. a PIN code or fingerprint)",
+  title = "I know when I should ask for permission to share something online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev1",
+  y_var = "SCom1_V2",
   group_var = "MigrationBackground"
 )
 
@@ -2374,21 +1438,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r safety-overtime-mig-item2}
-# I know how to protect devices against viruses
-result <- create_timeline(
+```{r nskills-overtime-mig-item2}
+# I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)
+result <- viz_timeline(
   data = data,
-  title = "I know how to protect devices against viruses",
+  title = "I know which communication tool best fits which situation (for example: call, send a WhatsApp-message, send an e-mail)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SSafDev2",
+  y_var = "SCom2",
   group_var = "MigrationBackground"
 )
 
@@ -2399,21 +1463,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r safety-overtime-mig-item3}
-# I know how to adjust the privacy settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-mig-item3}
+# I know which things I should not share online
+result <- viz_timeline(
   data = data,
-  title = "I know how to adjust the privacy settings on a mobile phone or tablet",
+  title = "I know which things I should not share online",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv1",
+  y_var = "SCom4_V2",
   group_var = "MigrationBackground"
 )
 
@@ -2424,96 +1488,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-```{r safety-overtime-mig-item4}
-# I know how to change the location settings on a mobile phone or tablet
-result <- create_timeline(
+```{r nskills-overtime-mig-item4}
+# I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)
+result <- viz_timeline(
   data = data,
-  title = "I know how to change the location settings on a mobile phone or tablet",
+  title = "I know when it is appropriate and when it is not appropriate to use emoticons (for example smileys ☺ or emoji's)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SPriv2",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 5
-
-
-```{r safety-overtime-mig-item5}
-# I know how to identify suspicious e-mail messages that try to get my personal data
-result <- create_timeline(
-  data = data,
-  title = "I know how to identify suspicious e-mail messages that try to get my personal data",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv3",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 6
-
-
-```{r safety-overtime-mig-item6}
-# I know how to delete the history of websites that I have visited before
-result <- create_timeline(
-  data = data,
-  title = "I know how to delete the history of websites that I have visited before",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SPriv4",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 7
-
-
-```{r safety-overtime-mig-item7}
-# I know how to block messages from someone I don't want to hear from
-result <- create_timeline(
-  data = data,
-  title = "I know how to block messages from someone I don't want to hear from",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SCom3",
+  y_var = "SCom5",
   group_var = "MigrationBackground"
 )
 
@@ -2529,11 +1518,11 @@ result
 
 :::
 
-## {{< iconify ph heart-fill >}} Digital Health
+## {{< iconify ph palette-fill >}} Digital Content Creation
 
 
-**Digital Health & Wellbeing** skills relate to managing healthy digital habits.
-[{{< iconify ph cards >}} See all Digital Health results](digital_health.html)
+**Digital Content Creation Competence** cover the ability to create and modify digital content: making presentations, combining different media, editing images/music/video, and understanding copyright rules around digital content.
+[{{< iconify ph cards >}} See all Digital Content Creation results](digital_content_creation.html)
 
 
 ::: {.panel-tabset}
@@ -2546,13 +1535,13 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r dhealth-wave1-overall}
-# Digital Health and Wellbeing Skills
-result <- create_stackedbars(
+```{r dccs-wave1-overall}
+# Digital Content Creation Skills
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Digital Health and Wellbeing Skills",
-  questions = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
-  question_labels = c("I know how to control how much time I spend on the internet", "I know how to make sure my phone doesn't distract me", "I know how I can stop using my phone and computer for a while, if I want to"),
+  title = "Digital Content Creation Skills",
+  x_vars = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
+  x_var_labels = c("I can make a presentation on the computer (for example in Powerpoint)", "I can make something that combines different digital media (for example a movie with music)", "I can change existing digital images, music and video", "I can make a photo or video more attractive (for example with a filter or Photoshop)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2576,11 +1565,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave1-age-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave1-age-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2590,7 +1579,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -2600,11 +1589,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave1-age-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave1-age-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2614,7 +1603,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -2624,11 +1613,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave1-age-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave1-age-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2638,7 +1627,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave1-age-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SCrea5"
 )
 
 result
@@ -2656,11 +1669,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave1-gender-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave1-gender-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2670,7 +1683,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -2680,11 +1693,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave1-gender-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave1-gender-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2694,7 +1707,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -2704,11 +1717,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave1-gender-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave1-gender-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2718,7 +1731,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave1-gender-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SCrea5"
 )
 
 result
@@ -2736,11 +1773,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave1-edu-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave1-edu-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2750,7 +1787,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -2760,11 +1797,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave1-edu-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave1-edu-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2774,7 +1811,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -2784,11 +1821,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave1-edu-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave1-edu-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2798,7 +1835,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave1-edu-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SCrea5"
 )
 
 result
@@ -2816,11 +1877,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave1-mig-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave1-mig-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2830,7 +1891,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -2840,11 +1901,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave1-mig-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave1-mig-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2854,7 +1915,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -2864,11 +1925,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave1-mig-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave1-mig-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2878,7 +1939,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave1-mig-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SCrea5"
 )
 
 result
@@ -2899,13 +1984,13 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r dhealth-wave2-overall}
-# Digital Health and Wellbeing Skills
-result <- create_stackedbars(
+```{r dccs-wave2-overall}
+# Digital Content Creation Skills
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Digital Health and Wellbeing Skills",
-  questions = c("SHealth1", "SHealth2_V2", "SHealth3_V2"),
-  question_labels = c("I know how to control how much time I spend on the internet", "I know how to make sure my phone doesn't distract me", "I know how I can stop using my phone and computer for a while, if I want to"),
+  title = "Digital Content Creation Skills",
+  x_vars = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
+  x_var_labels = c("I can make a presentation on the computer (for example in Powerpoint)", "I can make something that combines different digital media (for example a movie with music)", "I can change existing digital images, music and video", "I can make a photo or video more attractive (for example with a filter or Photoshop)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2929,11 +2014,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave2-age-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave2-age-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2943,7 +2028,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -2953,11 +2038,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave2-age-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave2-age-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2967,7 +2052,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -2977,11 +2062,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave2-age-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave2-age-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -2991,7 +2076,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "AgeGroup",
   x_label = "Age",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave2-age-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "SCrea5"
 )
 
 result
@@ -3009,11 +2118,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave2-gender-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave2-gender-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3023,7 +2132,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -3033,11 +2142,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave2-gender-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave2-gender-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3047,7 +2156,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -3057,11 +2166,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave2-gender-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave2-gender-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3071,7 +2180,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "geslacht",
   x_label = "Gender",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave2-gender-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "SCrea5"
 )
 
 result
@@ -3089,11 +2222,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave2-edu-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave2-edu-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3103,7 +2236,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -3113,11 +2246,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave2-edu-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave2-edu-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3127,7 +2260,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -3137,11 +2270,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave2-edu-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave2-edu-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3151,7 +2284,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "Education",
   x_label = "Education",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave2-edu-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "SCrea5"
 )
 
 result
@@ -3169,11 +2326,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-wave2-mig-item1}
-# I know how to control how much time I spend on the internet
-result <- create_stackedbar(
+```{r dccs-wave2-mig-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3183,7 +2340,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SHealth1"
+  stack_var = "SCrea2"
 )
 
 result
@@ -3193,11 +2350,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-wave2-mig-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_stackedbar(
+```{r dccs-wave2-mig-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3207,7 +2364,7 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SHealth2_V2"
+  stack_var = "SCrea3"
 )
 
 result
@@ -3217,11 +2374,11 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-wave2-mig-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_stackedbar(
+```{r dccs-wave2-mig-item3}
+# I can change existing digital images, music and video
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   stacked_type = "percent",
   horizontal = TRUE,
   stack_breaks = c(0.5, 2.5, 3.5, 5.5),
@@ -3231,7 +2388,31 @@ result <- create_stackedbar(
   weight_var = "weging_GAMO",
   x_var = "MigrationBackground",
   x_label = "Migration Background",
-  stack_var = "SHealth3_V2"
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-wave2-mig-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
+  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "SCrea5"
 )
 
 result
@@ -3257,23 +2438,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-overtime-overall-item1}
-# I know how to control how much time I spend on the internet
-result <- create_timeline(
+```{r dccs-overtime-overall-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_timeline(
   data = data,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1"
+  y_var = "SCrea2"
 )
 
 result
@@ -3283,23 +2464,23 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-overtime-overall-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_timeline(
+```{r dccs-overtime-overall-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_timeline(
   data = data,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2"
+  y_var = "SCrea3"
 )
 
 result
@@ -3309,23 +2490,49 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-overtime-overall-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_timeline(
+```{r dccs-overtime-overall-item3}
+# I can change existing digital images, music and video
+result <- viz_timeline(
   data = data,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2"
+  y_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-overtime-overall-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_timeline(
+  data = data,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage of Respondents",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCrea5"
 )
 
 result
@@ -3343,21 +2550,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-overtime-age-item1}
-# I know how to control how much time I spend on the internet
-result <- create_timeline(
+```{r dccs-overtime-age-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_timeline(
   data = data,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1",
+  y_var = "SCrea2",
   group_var = "AgeGroup"
 )
 
@@ -3368,21 +2575,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-overtime-age-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_timeline(
+```{r dccs-overtime-age-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_timeline(
   data = data,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
+  y_var = "SCrea3",
   group_var = "AgeGroup"
 )
 
@@ -3393,21 +2600,46 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-overtime-age-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_timeline(
+```{r dccs-overtime-age-item3}
+# I can change existing digital images, music and video
+result <- viz_timeline(
   data = data,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
+  y_var = "SCrea4",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-overtime-age-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_timeline(
+  data = data,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCrea5",
   group_var = "AgeGroup"
 )
 
@@ -3426,21 +2658,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r dhealth-overtime-gender-item1}
-# I know how to control how much time I spend on the internet
-result <- create_timeline(
+```{r dccs-overtime-gender-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_timeline(
   data = data,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1",
+  y_var = "SCrea2",
   group_var = "geslacht"
 )
 
@@ -3451,21 +2683,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r dhealth-overtime-gender-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_timeline(
+```{r dccs-overtime-gender-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_timeline(
   data = data,
-  title = "I know how to make sure my phone doesn't distract me",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
+  y_var = "SCrea3",
   group_var = "geslacht"
 )
 
@@ -3476,21 +2708,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r dhealth-overtime-gender-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_timeline(
+```{r dccs-overtime-gender-item3}
+# I can change existing digital images, music and video
+result <- viz_timeline(
   data = data,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
+  title = "I can change existing digital images, music and video",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
+  y_var = "SCrea4",
   group_var = "geslacht"
 )
 
@@ -3498,1142 +2730,24 @@ result
 ```
 
 
-:::
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dhealth-overtime-edu-item1}
-# I know how to control how much time I spend on the internet
-result <- create_timeline(
+```{r dccs-overtime-gender-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_timeline(
   data = data,
-  title = "I know how to control how much time I spend on the internet",
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SHealth1",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dhealth-overtime-edu-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_timeline(
-  data = data,
-  title = "I know how to make sure my phone doesn't distract me",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r dhealth-overtime-edu-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_timeline(
-  data = data,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
-  group_var = "Education"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dhealth-overtime-mig-item1}
-# I know how to control how much time I spend on the internet
-result <- create_timeline(
-  data = data,
-  title = "I know how to control how much time I spend on the internet",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SHealth1",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dhealth-overtime-mig-item2}
-# I know how to make sure my phone doesn't distract me
-result <- create_timeline(
-  data = data,
-  title = "I know how to make sure my phone doesn't distract me",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SHealth2_V2",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r dhealth-overtime-mig-item3}
-# I know how I can stop using my phone and computer for a while, if I want to
-result <- create_timeline(
-  data = data,
-  title = "I know how I can stop using my phone and computer for a while, if I want to",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SHealth3_V2",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-:::
-
-## {{< iconify ph recycle-fill >}} Green Digital
-
-
-**Sustainable/Green Digital Competence** focuses on environmentally conscious technology use: reducing energy consumption, buying sustainable devices, recycling electronics, and understanding the environmental impact of digital activities.
-[{{< iconify ph cards >}} See all Green Digital results](green_digital.html)
-
-
-::: {.panel-tabset}
-
-### {{< iconify ph number-circle-one-fill >}} Wave 1
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Overall
-
-
-```{r green-wave1-overall}
-# Sustainable/Green Digital Skills
-result <- create_stackedbars(
-  data = data_filtered_984a0efe,
-  title = "Sustainable/Green Digital Skills",
-  questions = c("SEnv1", "SEnv2", "SEnv3"),
-  question_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Age
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave1-age-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave1-age-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave1-age-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave1-gender-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave1-gender-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave1-gender-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave1-edu-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave1-edu-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave1-edu-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave1-mig-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave1-mig-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave1-mig-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-### {{< iconify ph number-circle-two-fill >}} Wave 2
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Overall
-
-
-```{r green-wave2-overall}
-# Sustainable/Green Digital Skills
-result <- create_stackedbars(
-  data = data_filtered_4af682fd,
-  title = "Sustainable/Green Digital Skills",
-  questions = c("SEnv1", "SEnv2", "SEnv3"),
-  question_labels = c("I know how to reduce the battery use of a phone or computer", "I know how I can buy a phone or computer in a \"green\" or sustainable way", "I know how to have a phone or computer recycled"),
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Age
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave2-age-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave2-age-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave2-age-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave2-gender-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave2-gender-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave2-gender-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave2-edu-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave2-edu-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave2-edu-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-wave2-mig-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to reduce the battery use of a phone or computer",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-wave2-mig-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-wave2-mig-item3}
-# I know how to have a phone or computer recycled
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know how to have a phone or computer recycled",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Overall
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-overtime-overall-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
-  data = data,
-  title = "I know how to reduce the battery use of a phone or computer",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-overtime-overall-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
-  data = data,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv2"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-overtime-overall-item3}
-# I know how to have a phone or computer recycled
-result <- create_timeline(
-  data = data,
-  title = "I know how to have a phone or computer recycled",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv3"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi:human-male-male-child >}} Age
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-overtime-age-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
-  data = data,
-  title = "I know how to reduce the battery use of a phone or computer",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv1",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-overtime-age-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
-  data = data,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv2",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-overtime-age-item3}
-# I know how to have a phone or computer recycled
-result <- create_timeline(
-  data = data,
-  title = "I know how to have a phone or computer recycled",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv3",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r green-overtime-gender-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
-  data = data,
-  title = "I know how to reduce the battery use of a phone or computer",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv1",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r green-overtime-gender-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
-  data = data,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv2",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 3
-
-
-```{r green-overtime-gender-item3}
-# I know how to have a phone or computer recycled
-result <- create_timeline(
-  data = data,
-  title = "I know how to have a phone or computer recycled",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SEnv3",
+  y_var = "SCrea5",
   group_var = "geslacht"
 )
 
@@ -4652,21 +2766,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r green-overtime-edu-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
+```{r dccs-overtime-edu-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_timeline(
   data = data,
-  title = "I know how to reduce the battery use of a phone or computer",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv1",
+  y_var = "SCrea2",
   group_var = "Education"
 )
 
@@ -4677,21 +2791,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r green-overtime-edu-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
+```{r dccs-overtime-edu-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_timeline(
   data = data,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv2",
+  y_var = "SCrea3",
   group_var = "Education"
 )
 
@@ -4702,21 +2816,46 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r green-overtime-edu-item3}
-# I know how to have a phone or computer recycled
-result <- create_timeline(
+```{r dccs-overtime-edu-item3}
+# I can change existing digital images, music and video
+result <- viz_timeline(
   data = data,
-  title = "I know how to have a phone or computer recycled",
+  title = "I can change existing digital images, music and video",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv3",
+  y_var = "SCrea4",
+  group_var = "Education"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 4
+
+
+```{r dccs-overtime-edu-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_timeline(
+  data = data,
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = c(4, 5),
+  x_label = "",
+  y_label = "Percentage of Respondents",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_min = 0,
+  y_max = 100,
+  weight_var = "weging_GAMO",
+  y_var = "SCrea5",
   group_var = "Education"
 )
 
@@ -4735,21 +2874,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 1
 
 
-```{r green-overtime-mig-item1}
-# I know how to reduce the battery use of a phone or computer
-result <- create_timeline(
+```{r dccs-overtime-mig-item1}
+# I can make a presentation on the computer (for example in Powerpoint)
+result <- viz_timeline(
   data = data,
-  title = "I know how to reduce the battery use of a phone or computer",
+  title = "I can make a presentation on the computer (for example in Powerpoint)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv1",
+  y_var = "SCrea2",
   group_var = "MigrationBackground"
 )
 
@@ -4760,21 +2899,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r green-overtime-mig-item2}
-# I know how I can buy a phone or computer in a "green" or sustainable way
-result <- create_timeline(
+```{r dccs-overtime-mig-item2}
+# I can make something that combines different digital media (for example a movie with music)
+result <- viz_timeline(
   data = data,
-  title = "I know how I can buy a phone or computer in a \"green\" or sustainable way",
+  title = "I can make something that combines different digital media (for example a movie with music)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv2",
+  y_var = "SCrea3",
   group_var = "MigrationBackground"
 )
 
@@ -4785,21 +2924,21 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Question 3
 
 
-```{r green-overtime-mig-item3}
-# I know how to have a phone or computer recycled
-result <- create_timeline(
+```{r dccs-overtime-mig-item3}
+# I can change existing digital images, music and video
+result <- viz_timeline(
   data = data,
-  title = "I know how to have a phone or computer recycled",
+  title = "I can change existing digital images, music and video",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SEnv3",
+  y_var = "SCrea4",
   group_var = "MigrationBackground"
 )
 
@@ -4807,824 +2946,24 @@ result
 ```
 
 
-:::
+###### {{< iconify ph chat-circle-fill >}} Question 4
 
 
-:::
-
-
-:::
-
-## {{< iconify ph lightbulb-fill >}} Digital Problem Solving
-
-
-**Digital Problem Solving Competence** involves knowing where to find help with digital challenges and understanding how to improve digital competencies.
-[{{< iconify ph cards >}} See all Digital Problem Solving results](digital_problem_solving.html)
-
-
-::: {.panel-tabset}
-
-### {{< iconify ph number-circle-one-fill >}} Wave 1
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Overall
-
-
-```{r dprob-wave1-overall}
-# Digital Problem Solving Skills
-result <- create_stackedbars(
-  data = data_filtered_984a0efe,
-  title = "Digital Problem Solving Skills",
-  questions = c("SProbl1", "SProbl2"),
-  question_labels = c("I know where or from whom I can get help to improve my digital skills", "I know where or from whom I can get help if I'm unable to do something on the internet"),
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Age
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave1-age-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave1-age-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave1-gender-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave1-gender-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave1-edu-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave1-edu-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave1-mig-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave1-mig-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_984a0efe,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-### {{< iconify ph number-circle-two-fill >}} Wave 2
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Overall
-
-
-```{r dprob-wave2-overall}
-# Digital Problem Solving Skills
-result <- create_stackedbars(
-  data = data_filtered_4af682fd,
-  title = "Digital Problem Solving Skills",
-  questions = c("SProbl1", "SProbl2"),
-  question_labels = c("I know where or from whom I can get help to improve my digital skills", "I know where or from whom I can get help if I'm unable to do something on the internet"),
-  stacked_type = "percent",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  horizontal = TRUE,
-  x_label = "",
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  stack_label = NULL,
-  weight_var = "weging_GAMO"
-)
-
-result
-```
-
-
-##### {{< iconify mdi:human-male-male-child >}} Age
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave2-age-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave2-age-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "AgeGroup",
-  x_label = "Age",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave2-gender-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave2-gender-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "geslacht",
-  x_label = "Gender",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave2-edu-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave2-edu-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "Education",
-  x_label = "Education",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-wave2-mig-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-wave2-mig-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_stackedbar(
-  data = data_filtered_4af682fd,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  stacked_type = "percent",
-  horizontal = TRUE,
-  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
-  stack_bin_labels = c("(Completely) Untrue (1-2)", "Not true and not untrue (3)", "(Completely) True (4-5)"),
-  stack_order = c("(Completely) True (4-5)", "Not true and not untrue (3)", "(Completely) Untrue (1-2)"),
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  weight_var = "weging_GAMO",
-  x_var = "MigrationBackground",
-  x_label = "Migration Background",
-  stack_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-:::
-
-
-### {{< iconify ph chart-line-fill >}} Over Time
-
-
-::: {.panel-tabset}
-
-##### {{< iconify ph users-fill >}} Overall
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-overtime-overall-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
+```{r dccs-overtime-mig-item4}
+# I can make a photo or video more attractive (for example with a filter or Photoshop)
+result <- viz_timeline(
   data = data,
-  title = "I know where or from whom I can get help to improve my digital skills",
+  title = "I can make a photo or video more attractive (for example with a filter or Photoshop)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage of Respondents",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SProbl1"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-overtime-overall-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage of Respondents",
-  response_filter_combine = TRUE,
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl2"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi:human-male-male-child >}} Age
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-overtime-age-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl1",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-overtime-age-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl2",
-  group_var = "AgeGroup"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify mdi gender-transgender >}} Gender
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-overtime-gender-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl1",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-overtime-gender-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl2",
-  group_var = "geslacht"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph graduation-cap-fill >}} Education
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-overtime-edu-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl1",
-  group_var = "Education"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-overtime-edu-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl2",
-  group_var = "Education"
-)
-
-result
-```
-
-
-:::
-
-
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
-
-
-::: {.panel-tabset}
-
-###### {{< iconify ph chat-circle-fill >}} Question 1
-
-
-```{r dprob-overtime-mig-item1}
-# I know where or from whom I can get help to improve my digital skills
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help to improve my digital skills",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl1",
-  group_var = "MigrationBackground"
-)
-
-result
-```
-
-
-###### {{< iconify ph chat-circle-fill >}} Question 2
-
-
-```{r dprob-overtime-mig-item2}
-# I know where or from whom I can get help if I'm unable to do something on the internet
-result <- create_timeline(
-  data = data,
-  title = "I know where or from whom I can get help if I'm unable to do something on the internet",
-  time_var = "wave_time_label",
-  chart_type = "line",
-  response_filter = c(4, 5),
-  x_label = "",
-  y_label = "Percentage of Respondents",
-  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  y_min = 0,
-  y_max = 100,
-  weight_var = "weging_GAMO",
-  response_var = "SProbl2",
+  y_var = "SCrea5",
   group_var = "MigrationBackground"
 )
 
@@ -5642,50 +2981,7 @@ result
 
 
 
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='skills.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='2' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <a href='skills_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["skills.html","skills_p2.html","skills_p3.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(2, 6, "skills", "bottom")
 ```
 

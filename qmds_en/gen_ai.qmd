@@ -3,16 +3,11 @@ title: "{{< iconify ph magic-wand-fill >}} Gen AI"
 format: html
 ---
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "gen_ai")
 ```
 
 **Generative AI competence** covers the ability to engage with AI tools like ChatGPT: knowing how to verify AI-generated information, writing effective prompts, detecting AI-generated content, and understanding GenAI's capabilities and limitations.
-
-```{r, echo=FALSE, results='asis'}
-dashboardr::enable_modals()
-```
 
 ```{r setup}
 #| echo: false
@@ -21,10 +16,8 @@ dashboardr::enable_modals()
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -37,7 +30,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -46,8 +39,8 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
@@ -73,11 +66,11 @@ create_blockquote("Think about the extent to which each sentence applies to you,
 
 ```{r genai-wave1-overall-2}
 # GenAI Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "GenAI Skills",
-  questions = c("SGAI1", "SGAI2", "SGAI3"),
-  question_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"),
+  x_vars = c("SGAI1", "SGAI2", "SGAI3"),
+  x_var_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -103,7 +96,7 @@ result
 
 ```{r genai-wave1-age-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -127,7 +120,7 @@ result
 
 ```{r genai-wave1-age-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -151,7 +144,7 @@ result
 
 ```{r genai-wave1-age-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -183,7 +176,7 @@ result
 
 ```{r genai-wave1-gender-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -207,7 +200,7 @@ result
 
 ```{r genai-wave1-gender-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -231,7 +224,7 @@ result
 
 ```{r genai-wave1-gender-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -263,7 +256,7 @@ result
 
 ```{r genai-wave1-edu-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -287,7 +280,7 @@ result
 
 ```{r genai-wave1-edu-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -311,7 +304,7 @@ result
 
 ```{r genai-wave1-edu-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -343,7 +336,7 @@ result
 
 ```{r genai-wave1-mig-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -367,7 +360,7 @@ result
 
 ```{r genai-wave1-mig-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -391,7 +384,7 @@ result
 
 ```{r genai-wave1-mig-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -426,11 +419,11 @@ result
 
 ```{r genai-wave2-overall-2}
 # GenAI Skills
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "GenAI Skills",
-  questions = c("SGAI1", "SGAI2", "SGAI3", "SGAI4", "SGAI5"),
-  question_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person", "I know how to use ChatGPT to generate new ideas or solutions", "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)"),
+  x_vars = c("SGAI1", "SGAI2", "SGAI3", "SGAI4", "SGAI5"),
+  x_var_labels = c("I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information", "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result", "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person", "I know how to use ChatGPT to generate new ideas or solutions", "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -456,7 +449,7 @@ result
 
 ```{r genai-wave2-age-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -480,7 +473,7 @@ result
 
 ```{r genai-wave2-age-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -504,7 +497,7 @@ result
 
 ```{r genai-wave2-age-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -528,7 +521,7 @@ result
 
 ```{r genai-wave2-age-item4-2}
 # I know how to use ChatGPT to generate new ideas or solutions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to use ChatGPT to generate new ideas or solutions",
   stacked_type = "percent",
@@ -552,7 +545,7 @@ result
 
 ```{r genai-wave2-age-item5-2}
 # I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
   stacked_type = "percent",
@@ -584,7 +577,7 @@ result
 
 ```{r genai-wave2-gender-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -608,7 +601,7 @@ result
 
 ```{r genai-wave2-gender-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -632,7 +625,7 @@ result
 
 ```{r genai-wave2-gender-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -656,7 +649,7 @@ result
 
 ```{r genai-wave2-gender-item4-2}
 # I know how to use ChatGPT to generate new ideas or solutions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to use ChatGPT to generate new ideas or solutions",
   stacked_type = "percent",
@@ -680,7 +673,7 @@ result
 
 ```{r genai-wave2-gender-item5-2}
 # I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
   stacked_type = "percent",
@@ -712,7 +705,7 @@ result
 
 ```{r genai-wave2-edu-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -736,7 +729,7 @@ result
 
 ```{r genai-wave2-edu-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -760,7 +753,7 @@ result
 
 ```{r genai-wave2-edu-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -784,7 +777,7 @@ result
 
 ```{r genai-wave2-edu-item4-2}
 # I know how to use ChatGPT to generate new ideas or solutions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to use ChatGPT to generate new ideas or solutions",
   stacked_type = "percent",
@@ -808,7 +801,7 @@ result
 
 ```{r genai-wave2-edu-item5-2}
 # I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
   stacked_type = "percent",
@@ -840,7 +833,7 @@ result
 
 ```{r genai-wave2-mig-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   stacked_type = "percent",
@@ -864,7 +857,7 @@ result
 
 ```{r genai-wave2-mig-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   stacked_type = "percent",
@@ -888,7 +881,7 @@ result
 
 ```{r genai-wave2-mig-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   stacked_type = "percent",
@@ -912,7 +905,7 @@ result
 
 ```{r genai-wave2-mig-item4-2}
 # I know how to use ChatGPT to generate new ideas or solutions
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know how to use ChatGPT to generate new ideas or solutions",
   stacked_type = "percent",
@@ -936,7 +929,7 @@ result
 
 ```{r genai-wave2-mig-item5-2}
 # I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "I know when the use of ChatGPT can lead to moral problems (for example misleading or privacy violations)",
   stacked_type = "percent",
@@ -976,21 +969,21 @@ result
 
 ```{r genai-overtime-overall-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI1"
+  y_var = "SGAI1"
 )
 
 result
@@ -1002,21 +995,21 @@ result
 
 ```{r genai-overtime-overall-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI2"
+  y_var = "SGAI2"
 )
 
 result
@@ -1028,21 +1021,21 @@ result
 
 ```{r genai-overtime-overall-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
-  response_filter_label = "Percentage who answered (Completely) True (4-5)",
-  response_filter_combine = TRUE,
+  y_filter = c(4, 5),
+  y_filter_label = "Percentage who answered (Completely) True (4-5)",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3"
+  y_var = "SGAI3"
 )
 
 result
@@ -1062,19 +1055,19 @@ result
 
 ```{r genai-overtime-age-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI1",
+  y_var = "SGAI1",
   group_var = "AgeGroup"
 )
 
@@ -1087,19 +1080,19 @@ result
 
 ```{r genai-overtime-age-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI2",
+  y_var = "SGAI2",
   group_var = "AgeGroup"
 )
 
@@ -1112,19 +1105,19 @@ result
 
 ```{r genai-overtime-age-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3",
+  y_var = "SGAI3",
   group_var = "AgeGroup"
 )
 
@@ -1145,19 +1138,19 @@ result
 
 ```{r genai-overtime-gender-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI1",
+  y_var = "SGAI1",
   group_var = "geslacht"
 )
 
@@ -1170,19 +1163,19 @@ result
 
 ```{r genai-overtime-gender-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI2",
+  y_var = "SGAI2",
   group_var = "geslacht"
 )
 
@@ -1195,19 +1188,19 @@ result
 
 ```{r genai-overtime-gender-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3",
+  y_var = "SGAI3",
   group_var = "geslacht"
 )
 
@@ -1228,19 +1221,19 @@ result
 
 ```{r genai-overtime-edu-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI1",
+  y_var = "SGAI1",
   group_var = "Education"
 )
 
@@ -1253,19 +1246,19 @@ result
 
 ```{r genai-overtime-edu-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI2",
+  y_var = "SGAI2",
   group_var = "Education"
 )
 
@@ -1278,19 +1271,19 @@ result
 
 ```{r genai-overtime-edu-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3",
+  y_var = "SGAI3",
   group_var = "Education"
 )
 
@@ -1311,19 +1304,19 @@ result
 
 ```{r genai-overtime-mig-item1-2}
 # I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I usually know when the content created for me by GenAI, such as ChatGPT, contains correct information",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI1",
+  y_var = "SGAI1",
   group_var = "MigrationBackground"
 )
 
@@ -1336,19 +1329,19 @@ result
 
 ```{r genai-overtime-mig-item2-2}
 # I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know which questions (or 'prompts') I should ask GenAI, such as ChatGPT, to receive a useful result",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI2",
+  y_var = "SGAI2",
   group_var = "MigrationBackground"
 )
 
@@ -1361,19 +1354,19 @@ result
 
 ```{r genai-overtime-mig-item3-2}
 # I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "I know how to check whether a text or picture is created by GenAI, such as ChatGPT, instead of a person",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = c(4, 5),
+  y_filter = c(4, 5),
   x_label = "",
   y_label = "Percentage who answered (Completely) True (4-5)",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   y_min = 0,
   y_max = 100,
   weight_var = "weging_GAMO",
-  response_var = "SGAI3",
+  y_var = "SGAI3",
   group_var = "MigrationBackground"
 )
 
@@ -1411,11 +1404,11 @@ create_blockquote("The following statements are about the internet. Please indic
 
 ```{r kgai-wave1-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
+  x_vars = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
+  x_var_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1442,7 +1435,7 @@ result
 
 ```{r kgai-wave1-age-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -1467,7 +1460,7 @@ result
 
 ```{r kgai-wave1-age-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -1492,7 +1485,7 @@ result
 
 ```{r kgai-wave1-age-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -1517,7 +1510,7 @@ result
 
 ```{r kgai-wave1-age-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -1542,7 +1535,7 @@ result
 
 ```{r kgai-wave1-age-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -1575,7 +1568,7 @@ result
 
 ```{r kgai-wave1-gender-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -1600,7 +1593,7 @@ result
 
 ```{r kgai-wave1-gender-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -1625,7 +1618,7 @@ result
 
 ```{r kgai-wave1-gender-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -1650,7 +1643,7 @@ result
 
 ```{r kgai-wave1-gender-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -1675,7 +1668,7 @@ result
 
 ```{r kgai-wave1-gender-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -1708,7 +1701,7 @@ result
 
 ```{r kgai-wave1-edu-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -1733,7 +1726,7 @@ result
 
 ```{r kgai-wave1-edu-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -1758,7 +1751,7 @@ result
 
 ```{r kgai-wave1-edu-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -1783,7 +1776,7 @@ result
 
 ```{r kgai-wave1-edu-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -1808,7 +1801,7 @@ result
 
 ```{r kgai-wave1-edu-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -1841,7 +1834,7 @@ result
 
 ```{r kgai-wave1-mig-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -1866,7 +1859,7 @@ result
 
 ```{r kgai-wave1-mig-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -1891,7 +1884,7 @@ result
 
 ```{r kgai-wave1-mig-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -1916,7 +1909,7 @@ result
 
 ```{r kgai-wave1-mig-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -1941,7 +1934,7 @@ result
 
 ```{r kgai-wave1-mig-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -1977,11 +1970,11 @@ result
 
 ```{r kgai-wave2-overall-2}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
-  question_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
+  x_vars = c("KGAI1RC", "KGAI2RC", "KGAI3RC", "KGAI4RC", "KGAI5RC"),
+  x_var_labels = c("Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)", "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)", "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)", "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)", "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2008,7 +2001,7 @@ result
 
 ```{r kgai-wave2-age-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2033,7 +2026,7 @@ result
 
 ```{r kgai-wave2-age-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2058,7 +2051,7 @@ result
 
 ```{r kgai-wave2-age-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -2083,7 +2076,7 @@ result
 
 ```{r kgai-wave2-age-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -2108,7 +2101,7 @@ result
 
 ```{r kgai-wave2-age-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -2141,7 +2134,7 @@ result
 
 ```{r kgai-wave2-gender-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2166,7 +2159,7 @@ result
 
 ```{r kgai-wave2-gender-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2191,7 +2184,7 @@ result
 
 ```{r kgai-wave2-gender-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -2216,7 +2209,7 @@ result
 
 ```{r kgai-wave2-gender-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -2241,7 +2234,7 @@ result
 
 ```{r kgai-wave2-gender-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -2274,7 +2267,7 @@ result
 
 ```{r kgai-wave2-edu-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2299,7 +2292,7 @@ result
 
 ```{r kgai-wave2-edu-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2324,7 +2317,7 @@ result
 
 ```{r kgai-wave2-edu-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -2349,7 +2342,7 @@ result
 
 ```{r kgai-wave2-edu-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -2374,7 +2367,7 @@ result
 
 ```{r kgai-wave2-edu-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -2407,7 +2400,7 @@ result
 
 ```{r kgai-wave2-mig-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   stacked_type = "percent",
@@ -2432,7 +2425,7 @@ result
 
 ```{r kgai-wave2-mig-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   stacked_type = "percent",
@@ -2457,7 +2450,7 @@ result
 
 ```{r kgai-wave2-mig-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   stacked_type = "percent",
@@ -2482,7 +2475,7 @@ result
 
 ```{r kgai-wave2-mig-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   stacked_type = "percent",
@@ -2507,7 +2500,7 @@ result
 
 ```{r kgai-wave2-mig-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   stacked_type = "percent",
@@ -2548,21 +2541,21 @@ result
 
 ```{r kgai-overtime-overall-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC"
+  y_var = "KGAI1RC"
 )
 
 result
@@ -2574,21 +2567,21 @@ result
 
 ```{r kgai-overtime-overall-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC"
+  y_var = "KGAI2RC"
 )
 
 result
@@ -2600,21 +2593,21 @@ result
 
 ```{r kgai-overtime-overall-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC"
+  y_var = "KGAI3RC"
 )
 
 result
@@ -2626,21 +2619,21 @@ result
 
 ```{r kgai-overtime-overall-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC"
+  y_var = "KGAI4RC"
 )
 
 result
@@ -2652,21 +2645,21 @@ result
 
 ```{r kgai-overtime-overall-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC"
+  y_var = "KGAI5RC"
 )
 
 result
@@ -2686,20 +2679,20 @@ result
 
 ```{r kgai-overtime-age-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "AgeGroup"
 )
 
@@ -2712,20 +2705,20 @@ result
 
 ```{r kgai-overtime-age-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "AgeGroup"
 )
 
@@ -2738,20 +2731,20 @@ result
 
 ```{r kgai-overtime-age-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "AgeGroup"
 )
 
@@ -2764,20 +2757,20 @@ result
 
 ```{r kgai-overtime-age-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "AgeGroup"
 )
 
@@ -2790,20 +2783,20 @@ result
 
 ```{r kgai-overtime-age-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "AgeGroup"
 )
 
@@ -2824,20 +2817,20 @@ result
 
 ```{r kgai-overtime-gender-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "geslacht"
 )
 
@@ -2850,20 +2843,20 @@ result
 
 ```{r kgai-overtime-gender-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "geslacht"
 )
 
@@ -2876,20 +2869,20 @@ result
 
 ```{r kgai-overtime-gender-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "geslacht"
 )
 
@@ -2902,20 +2895,20 @@ result
 
 ```{r kgai-overtime-gender-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "geslacht"
 )
 
@@ -2928,20 +2921,20 @@ result
 
 ```{r kgai-overtime-gender-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "geslacht"
 )
 
@@ -2962,20 +2955,20 @@ result
 
 ```{r kgai-overtime-edu-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "Education"
 )
 
@@ -2988,20 +2981,20 @@ result
 
 ```{r kgai-overtime-edu-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "Education"
 )
 
@@ -3014,20 +3007,20 @@ result
 
 ```{r kgai-overtime-edu-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "Education"
 )
 
@@ -3040,20 +3033,20 @@ result
 
 ```{r kgai-overtime-edu-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "Education"
 )
 
@@ -3066,20 +3059,20 @@ result
 
 ```{r kgai-overtime-edu-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "Education"
 )
 
@@ -3100,20 +3093,20 @@ result
 
 ```{r kgai-overtime-mig-item1-2}
 # Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Because GenAI, such as ChatGPT, searches through many websites on the internet, the information it gives is reliable. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI1RC",
+  y_var = "KGAI1RC",
   group_var = "MigrationBackground"
 )
 
@@ -3126,20 +3119,20 @@ result
 
 ```{r kgai-overtime-mig-item2-2}
 # The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The usage of GenAI, such as ChatGPT, has almost no impact on the environment. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI2RC",
+  y_var = "KGAI2RC",
   group_var = "MigrationBackground"
 )
 
@@ -3152,20 +3145,20 @@ result
 
 ```{r kgai-overtime-mig-item3-2}
 # Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Someone else can also get access to the information you give to GenAI, such as ChatGPT. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI3RC",
+  y_var = "KGAI3RC",
   group_var = "MigrationBackground"
 )
 
@@ -3178,20 +3171,20 @@ result
 
 ```{r kgai-overtime-mig-item4-2}
 # People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "People can use genAI to create images, videos or audio-fragments of events or people who do not really exist or that have not actually taken place (for example 'deepfakes'). (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI4RC",
+  y_var = "KGAI4RC",
   group_var = "MigrationBackground"
 )
 
@@ -3204,20 +3197,20 @@ result
 
 ```{r kgai-overtime-mig-item5-2}
 # GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "GenAI, such as ChatGPT, can produce different results when asked the same question multiple times. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KGAI5RC",
+  y_var = "KGAI5RC",
   group_var = "MigrationBackground"
 )
 
@@ -3238,7 +3231,7 @@ result
 
 **Performance** measures participants' practical digital skills across a range of real-life tasks. Instead of self-reports, these items test what people *can actually do*: for example, searching for reliable information.
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote('Look closely at the <a href=\"#PAIS1R\" class=\"modal-link\">pictures below</a>. Which picture is not made with artificial intelligence (AI)?', preset = 'question')
+create_blockquote('What prompt should you ask ChatGPT to get the best recipe result? (Q1) Look closely at the <a href=\"#PAIS1R\" class=\"modal-link\">pictures below</a>. Which picture is not made with artificial intelligence (AI)? (Q2)', preset = 'question')
 ```
 [{{< iconify ph cards >}} See all Performance results](performance.html)
 
@@ -3254,12 +3247,12 @@ create_blockquote('Look closely at the <a href=\"#PAIS1R\" class=\"modal-link\">
 
 
 ```{r perf-genai-wave1-overall-2}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbars(
+# 
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
-  questions = "PAIS1R",
-  question_labels = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "",
+  x_vars = c("PGAIS1RC", "PAIS1R"),
+  x_var_labels = c("Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?", "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3279,9 +3272,39 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Age
 
 
-```{r perf-genai-wave1-age-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-age-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-age-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3301,12 +3324,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify mdi gender-transgender >}} Gender
 
 
-```{r perf-genai-wave1-gender-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-gender-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-gender-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3326,12 +3382,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph graduation-cap-fill >}} Education
 
 
-```{r perf-genai-wave1-edu-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-edu-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-edu-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3351,12 +3440,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
-```{r perf-genai-wave1-mig-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave1-mig-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_984a0efe,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave1-mig-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3374,6 +3496,9 @@ result <- create_stackedbar(
 
 result
 ```
+
+
+:::
 
 
 :::
@@ -3388,12 +3513,12 @@ result
 
 
 ```{r perf-genai-wave2-overall-2}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbars(
+# 
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
-  questions = "PAIS1R",
-  question_labels = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "",
+  x_vars = c("PGAIS1RC", "PAIS1R"),
+  x_var_labels = c("Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?", "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3413,9 +3538,39 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Age
 
 
-```{r perf-genai-wave2-age-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-age-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Age",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-age-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3435,12 +3590,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify mdi gender-transgender >}} Gender
 
 
-```{r perf-genai-wave2-gender-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-gender-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Gender",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-gender-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3460,12 +3648,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph graduation-cap-fill >}} Education
 
 
-```{r perf-genai-wave2-edu-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-edu-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Education",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-edu-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3485,12 +3706,45 @@ result
 ```
 
 
+:::
+
+
 ##### {{< iconify ph globe-hemisphere-east >}} Migration Background
 
 
-```{r perf-genai-wave2-mig-2}
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-wave2-mig-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_stackedbar(
+  data = data_filtered_4af682fd,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Incorrect", "Correct"),
+  stack_map_values = list("1" = "Correct", "0" = "Incorrect"),
+  stack_order = c("Correct", "Incorrect"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migration Background",
+  stack_var = "PGAIS1RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-wave2-mig-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   stacked_type = "percent",
@@ -3513,6 +3767,9 @@ result
 :::
 
 
+:::
+
+
 ### {{< iconify ph chart-line-fill >}} Over Time
 
 
@@ -3521,48 +3778,87 @@ result
 ##### {{< iconify ph users-fill >}} Overall
 
 
-```{r perf-genai-overtime-overall-2}
-# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-overall-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
   data = data,
-  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R"
+  y_var = "PGAIS1RC"
 )
 
 result
 ```
 
 
-##### {{< iconify mdi:human-male-male-child >}} Age
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-genai-overtime-age-2}
+```{r perf-genai-overtime-overall-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  y_var = "PAIS1R"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi:human-male-male-child >}} Age
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-age-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PGAIS1RC",
   group_var = "AgeGroup"
 )
 
@@ -3570,25 +3866,59 @@ result
 ```
 
 
-##### {{< iconify mdi gender-transgender >}} Gender
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-genai-overtime-gender-2}
+```{r perf-genai-overtime-age-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PAIS1R",
+  group_var = "AgeGroup"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Gender
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-gender-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC",
   group_var = "geslacht"
 )
 
@@ -3596,25 +3926,59 @@ result
 ```
 
 
-##### {{< iconify ph graduation-cap-fill >}} Education
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-genai-overtime-edu-2}
+```{r perf-genai-overtime-gender-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PAIS1R",
+  group_var = "geslacht"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Education
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-edu-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC",
   group_var = "Education"
 )
 
@@ -3622,30 +3986,93 @@ result
 ```
 
 
-##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+###### {{< iconify ph chat-circle-fill >}} Question 2
 
 
-```{r perf-genai-overtime-mig-2}
+```{r perf-genai-overtime-edu-item2-2}
 # Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "PAIS1R",
+  y_var = "PAIS1R",
+  group_var = "Education"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migration Background
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Question 1
+
+
+```{r perf-genai-overtime-mig-item1-2}
+# Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?
+result <- viz_timeline(
+  data = data,
+  title = "Let's say you want to cook for a friend, and you still have pasta and tomatoes at home. You want to ask ChatGPT to help you with a recipe. What question (or 'prompt') should you ask ChatGPT to get the best result?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PGAIS1RC",
   group_var = "MigrationBackground"
 )
 
 result
 ```
+
+
+###### {{< iconify ph chat-circle-fill >}} Question 2
+
+
+```{r perf-genai-overtime-mig-item2-2}
+# Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?
+result <- viz_timeline(
+  data = data,
+  title = "Look closely at the pictures below. Which picture is not made with artificial intelligence (AI)?",
+  time_var = "wave_time_label",
+  chart_type = "line",
+  y_filter = 1,
+  y_min = 0,
+  y_max = 100,
+  x_label = "",
+  y_label = "Percentage who selected/answered correctly",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  y_filter_label = NULL,
+  weight_var = "weging_GAMO",
+  y_var = "PAIS1R",
+  group_var = "MigrationBackground"
+)
+
+result
+```
+
+
+:::
 
 
 :::

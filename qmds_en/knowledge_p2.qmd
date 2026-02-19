@@ -4,59 +4,14 @@ format: html
 ---
 
 
-```{=html}
-<script>document.body.classList.add('has-pagination-top');</script>
-<nav class='pagination-nav pagination-top' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='knowledge.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'>Page </span>
-      <input type='number' class='pagination-input' id='page-input-top' min='1' max='3' value='2' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <a href='knowledge_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
-  const pageInput = document.getElementById('page-input-top');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(2, 3, "knowledge", "top")
 ```
 
 
 
-```{r}
-#| include: false
-library(dashboardr)
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "knowledge")
 ```
 
 The **Knowledge** section measures what participants *know* about the digital world: how it works, what risks it involves, and how different technologies affect everyday life. These items test factual understanding across topics such as information reliability, communication and privacy, online safety, AI, and generative AI. Respondents indicate whether each statement is true or false (or if they don’t know), allowing us to assess their level of digital literacy and awareness beyond self-perceived skills.
@@ -68,10 +23,8 @@ The **Knowledge** section measures what participants *know* about the digital wo
 #| error: false
 #| results: 'hide'
 
-# Load required libraries
+# Load dashboardr (includes dplyr, highcharter as dependencies)
 library(dashboardr)
-library(dplyr)
-library(highcharter)
 
 # Global chunk options
 knitr::opts_chunk$set(
@@ -84,7 +37,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 
-# Load data from dataset_4014obs.rds
+# Load data
 data <- readRDS('dataset_4014obs.rds')
 
 # Data summary
@@ -93,26 +46,16 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 # Create filtered datasets
 # Each filter is applied once and reused across visualizations
 
-data_filtered_984a0efe <- data %>% dplyr::filter(wave == 1)
-data_filtered_4af682fd <- data %>% dplyr::filter(wave == 2)
+data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
+data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
 
 ```
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 # Use dashboardr's loading overlay function
-dashboardr::add_loading_overlay("Loading", 1, theme = "light")
+dashboardr::create_loading_overlay("Loading", 1, theme = "light")
 ```
-
-
-<details>
-<summary>For all knowledge questions, we used the following wording</summary>
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-create_blockquote("The following statements are about the internet. Please indicate if the sentence is true or untrue, according to you. If you don't know, please choose 'I don't know'. You don't have to guess. If you don't understand the question, please choose 'I don't understand the question.' Nearly everyone will not know or understand questions. This is normal and something that we want to know.", preset = "question")
-```
-
-</details>
 
 ## {{< iconify ph palette-fill >}} Digital Content Creation
 
@@ -134,11 +77,11 @@ create_blockquote("The following statements are about the internet. Please indic
 
 ```{r kcrea-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KCrea2RC", "KCrea3RC"),
-  question_labels = c("Some people are paid to use products in the videos they make. (Correct Statement)", "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)"),
+  x_vars = c("KCrea2RC", "KCrea3RC"),
+  x_var_labels = c("Some people are paid to use products in the videos they make. (Correct Statement)", "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -165,7 +108,7 @@ result
 
 ```{r kcrea-wave1-age-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -190,7 +133,7 @@ result
 
 ```{r kcrea-wave1-age-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -223,7 +166,7 @@ result
 
 ```{r kcrea-wave1-gender-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -248,7 +191,7 @@ result
 
 ```{r kcrea-wave1-gender-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -281,7 +224,7 @@ result
 
 ```{r kcrea-wave1-edu-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -306,7 +249,7 @@ result
 
 ```{r kcrea-wave1-edu-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -339,7 +282,7 @@ result
 
 ```{r kcrea-wave1-mig-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -364,7 +307,7 @@ result
 
 ```{r kcrea-wave1-mig-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -400,11 +343,11 @@ result
 
 ```{r kcrea-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KCrea2RC", "KCrea3RC"),
-  question_labels = c("Some people are paid to use products in the videos they make. (Correct Statement)", "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)"),
+  x_vars = c("KCrea2RC", "KCrea3RC"),
+  x_var_labels = c("Some people are paid to use products in the videos they make. (Correct Statement)", "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -431,7 +374,7 @@ result
 
 ```{r kcrea-wave2-age-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -456,7 +399,7 @@ result
 
 ```{r kcrea-wave2-age-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -489,7 +432,7 @@ result
 
 ```{r kcrea-wave2-gender-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -514,7 +457,7 @@ result
 
 ```{r kcrea-wave2-gender-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -547,7 +490,7 @@ result
 
 ```{r kcrea-wave2-edu-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -572,7 +515,7 @@ result
 
 ```{r kcrea-wave2-edu-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -605,7 +548,7 @@ result
 
 ```{r kcrea-wave2-mig-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   stacked_type = "percent",
@@ -630,7 +573,7 @@ result
 
 ```{r kcrea-wave2-mig-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   stacked_type = "percent",
@@ -671,21 +614,21 @@ result
 
 ```{r kcrea-overtime-overall-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC"
+  y_var = "KCrea2RC"
 )
 
 result
@@ -697,21 +640,21 @@ result
 
 ```{r kcrea-overtime-overall-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC"
+  y_var = "KCrea3RC"
 )
 
 result
@@ -731,20 +674,20 @@ result
 
 ```{r kcrea-overtime-age-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "AgeGroup"
 )
 
@@ -757,20 +700,20 @@ result
 
 ```{r kcrea-overtime-age-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "AgeGroup"
 )
 
@@ -791,20 +734,20 @@ result
 
 ```{r kcrea-overtime-gender-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "geslacht"
 )
 
@@ -817,20 +760,20 @@ result
 
 ```{r kcrea-overtime-gender-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "geslacht"
 )
 
@@ -851,20 +794,20 @@ result
 
 ```{r kcrea-overtime-edu-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "Education"
 )
 
@@ -877,20 +820,20 @@ result
 
 ```{r kcrea-overtime-edu-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "Education"
 )
 
@@ -911,20 +854,20 @@ result
 
 ```{r kcrea-overtime-mig-item1}
 # Some people are paid to use products in the videos they make. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Some people are paid to use products in the videos they make. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea2RC",
+  y_var = "KCrea2RC",
   group_var = "MigrationBackground"
 )
 
@@ -937,20 +880,20 @@ result
 
 ```{r kcrea-overtime-mig-item2}
 # You can change and share existing videos, as long as you don't make money by doing it. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You can change and share existing videos, as long as you don't make money by doing it. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KCrea3RC",
+  y_var = "KCrea3RC",
   group_var = "MigrationBackground"
 )
 
@@ -986,11 +929,11 @@ result
 
 ```{r ksafety-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
-  question_labels = c("To keep your devices safer, you should always install updates immediately. (Correct Statement)", "It's best to have the same password for each account. (False Statement)", "What you do online is used by companies to advertise their products and services. (Correct Statement)"),
+  x_vars = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  x_var_labels = c("To keep your devices safer, you should always install updates immediately. (Correct Statement)", "It's best to have the same password for each account. (False Statement)", "What you do online is used by companies to advertise their products and services. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1017,7 +960,7 @@ result
 
 ```{r ksafety-wave1-age-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1042,7 +985,7 @@ result
 
 ```{r ksafety-wave1-age-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1067,7 +1010,7 @@ result
 
 ```{r ksafety-wave1-age-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1100,7 +1043,7 @@ result
 
 ```{r ksafety-wave1-gender-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1125,7 +1068,7 @@ result
 
 ```{r ksafety-wave1-gender-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1150,7 +1093,7 @@ result
 
 ```{r ksafety-wave1-gender-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1183,7 +1126,7 @@ result
 
 ```{r ksafety-wave1-edu-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1208,7 +1151,7 @@ result
 
 ```{r ksafety-wave1-edu-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1233,7 +1176,7 @@ result
 
 ```{r ksafety-wave1-edu-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1266,7 +1209,7 @@ result
 
 ```{r ksafety-wave1-mig-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1291,7 +1234,7 @@ result
 
 ```{r ksafety-wave1-mig-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1316,7 +1259,7 @@ result
 
 ```{r ksafety-wave1-mig-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1352,11 +1295,11 @@ result
 
 ```{r ksafety-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
-  question_labels = c("To keep your devices safer, you should always install updates immediately. (Correct Statement)", "It's best to have the same password for each account. (False Statement)", "What you do online is used by companies to advertise their products and services. (Correct Statement)"),
+  x_vars = c("KSafDev2RC", "KPriv1RC", "KPriv2RC"),
+  x_var_labels = c("To keep your devices safer, you should always install updates immediately. (Correct Statement)", "It's best to have the same password for each account. (False Statement)", "What you do online is used by companies to advertise their products and services. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -1383,7 +1326,7 @@ result
 
 ```{r ksafety-wave2-age-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1408,7 +1351,7 @@ result
 
 ```{r ksafety-wave2-age-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1433,7 +1376,7 @@ result
 
 ```{r ksafety-wave2-age-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1466,7 +1409,7 @@ result
 
 ```{r ksafety-wave2-gender-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1491,7 +1434,7 @@ result
 
 ```{r ksafety-wave2-gender-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1516,7 +1459,7 @@ result
 
 ```{r ksafety-wave2-gender-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1549,7 +1492,7 @@ result
 
 ```{r ksafety-wave2-edu-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1574,7 +1517,7 @@ result
 
 ```{r ksafety-wave2-edu-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1599,7 +1542,7 @@ result
 
 ```{r ksafety-wave2-edu-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1632,7 +1575,7 @@ result
 
 ```{r ksafety-wave2-mig-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   stacked_type = "percent",
@@ -1657,7 +1600,7 @@ result
 
 ```{r ksafety-wave2-mig-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "It's best to have the same password for each account. (False Statement)",
   stacked_type = "percent",
@@ -1682,7 +1625,7 @@ result
 
 ```{r ksafety-wave2-mig-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   stacked_type = "percent",
@@ -1723,21 +1666,21 @@ result
 
 ```{r ksafety-overtime-overall-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC"
+  y_var = "KSafDev2RC"
 )
 
 result
@@ -1749,21 +1692,21 @@ result
 
 ```{r ksafety-overtime-overall-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "It's best to have the same password for each account. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC"
+  y_var = "KPriv1RC"
 )
 
 result
@@ -1775,21 +1718,21 @@ result
 
 ```{r ksafety-overtime-overall-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC"
+  y_var = "KPriv2RC"
 )
 
 result
@@ -1809,20 +1752,20 @@ result
 
 ```{r ksafety-overtime-age-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "AgeGroup"
 )
 
@@ -1835,20 +1778,20 @@ result
 
 ```{r ksafety-overtime-age-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "It's best to have the same password for each account. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "AgeGroup"
 )
 
@@ -1861,20 +1804,20 @@ result
 
 ```{r ksafety-overtime-age-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "AgeGroup"
 )
 
@@ -1895,20 +1838,20 @@ result
 
 ```{r ksafety-overtime-gender-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "geslacht"
 )
 
@@ -1921,20 +1864,20 @@ result
 
 ```{r ksafety-overtime-gender-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "It's best to have the same password for each account. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "geslacht"
 )
 
@@ -1947,20 +1890,20 @@ result
 
 ```{r ksafety-overtime-gender-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "geslacht"
 )
 
@@ -1981,20 +1924,20 @@ result
 
 ```{r ksafety-overtime-edu-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "Education"
 )
 
@@ -2007,20 +1950,20 @@ result
 
 ```{r ksafety-overtime-edu-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "It's best to have the same password for each account. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "Education"
 )
 
@@ -2033,20 +1976,20 @@ result
 
 ```{r ksafety-overtime-edu-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "Education"
 )
 
@@ -2067,20 +2010,20 @@ result
 
 ```{r ksafety-overtime-mig-item1}
 # To keep your devices safer, you should always install updates immediately. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "To keep your devices safer, you should always install updates immediately. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KSafDev2RC",
+  y_var = "KSafDev2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2093,20 +2036,20 @@ result
 
 ```{r ksafety-overtime-mig-item2}
 # It's best to have the same password for each account. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "It's best to have the same password for each account. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv1RC",
+  y_var = "KPriv1RC",
   group_var = "MigrationBackground"
 )
 
@@ -2119,20 +2062,20 @@ result
 
 ```{r ksafety-overtime-mig-item3}
 # What you do online is used by companies to advertise their products and services. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "What you do online is used by companies to advertise their products and services. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KPriv2RC",
+  y_var = "KPriv2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2168,11 +2111,11 @@ result
 
 ```{r khealth-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KHealth2RC", "KHealth3RC"),
-  question_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)", "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)"),
+  x_vars = c("KHealth2RC", "KHealth3RC"),
+  x_var_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)", "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2199,7 +2142,7 @@ result
 
 ```{r khealth-wave1-age-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2224,7 +2167,7 @@ result
 
 ```{r khealth-wave1-age-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2257,7 +2200,7 @@ result
 
 ```{r khealth-wave1-gender-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2282,7 +2225,7 @@ result
 
 ```{r khealth-wave1-gender-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2315,7 +2258,7 @@ result
 
 ```{r khealth-wave1-edu-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2340,7 +2283,7 @@ result
 
 ```{r khealth-wave1-edu-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2373,7 +2316,7 @@ result
 
 ```{r khealth-wave1-mig-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2398,7 +2341,7 @@ result
 
 ```{r khealth-wave1-mig-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2434,11 +2377,11 @@ result
 
 ```{r khealth-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KHealth2RC", "KHealth3RC"),
-  question_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)", "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)"),
+  x_vars = c("KHealth2RC", "KHealth3RC"),
+  x_var_labels = c("Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)", "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -2465,7 +2408,7 @@ result
 
 ```{r khealth-wave2-age-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2490,7 +2433,7 @@ result
 
 ```{r khealth-wave2-age-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2523,7 +2466,7 @@ result
 
 ```{r khealth-wave2-gender-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2548,7 +2491,7 @@ result
 
 ```{r khealth-wave2-gender-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2581,7 +2524,7 @@ result
 
 ```{r khealth-wave2-edu-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2606,7 +2549,7 @@ result
 
 ```{r khealth-wave2-edu-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2639,7 +2582,7 @@ result
 
 ```{r khealth-wave2-mig-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   stacked_type = "percent",
@@ -2664,7 +2607,7 @@ result
 
 ```{r khealth-wave2-mig-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   stacked_type = "percent",
@@ -2705,21 +2648,21 @@ result
 
 ```{r khealth-overtime-overall-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC"
+  y_var = "KHealth2RC"
 )
 
 result
@@ -2731,21 +2674,21 @@ result
 
 ```{r khealth-overtime-overall-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC"
+  y_var = "KHealth3RC"
 )
 
 result
@@ -2765,20 +2708,20 @@ result
 
 ```{r khealth-overtime-age-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "AgeGroup"
 )
 
@@ -2791,20 +2734,20 @@ result
 
 ```{r khealth-overtime-age-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "AgeGroup"
 )
 
@@ -2825,20 +2768,20 @@ result
 
 ```{r khealth-overtime-gender-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "geslacht"
 )
 
@@ -2851,20 +2794,20 @@ result
 
 ```{r khealth-overtime-gender-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "geslacht"
 )
 
@@ -2885,20 +2828,20 @@ result
 
 ```{r khealth-overtime-edu-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "Education"
 )
 
@@ -2911,20 +2854,20 @@ result
 
 ```{r khealth-overtime-edu-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "Education"
 )
 
@@ -2945,20 +2888,20 @@ result
 
 ```{r khealth-overtime-mig-item1}
 # Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Platforms like YouTube or Netflix are designed to keep people watching as long as possible. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth2RC",
+  y_var = "KHealth2RC",
   group_var = "MigrationBackground"
 )
 
@@ -2971,20 +2914,20 @@ result
 
 ```{r khealth-overtime-mig-item2}
 # You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "You sleep worse if you use a smartphone or computer just before you go to bed. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KHealth3RC",
+  y_var = "KHealth3RC",
   group_var = "MigrationBackground"
 )
 
@@ -3020,11 +2963,11 @@ result
 
 ```{r kgreen-wave1-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_984a0efe,
   title = "",
-  questions = c("KEnv2RC", "KEnv3RC"),
-  question_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
+  x_vars = c("KEnv2RC", "KEnv3RC"),
+  x_var_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3051,7 +2994,7 @@ result
 
 ```{r kgreen-wave1-age-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3076,7 +3019,7 @@ result
 
 ```{r kgreen-wave1-age-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3109,7 +3052,7 @@ result
 
 ```{r kgreen-wave1-gender-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3134,7 +3077,7 @@ result
 
 ```{r kgreen-wave1-gender-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3167,7 +3110,7 @@ result
 
 ```{r kgreen-wave1-edu-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3192,7 +3135,7 @@ result
 
 ```{r kgreen-wave1-edu-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3225,7 +3168,7 @@ result
 
 ```{r kgreen-wave1-mig-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3250,7 +3193,7 @@ result
 
 ```{r kgreen-wave1-mig-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_984a0efe,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3286,11 +3229,11 @@ result
 
 ```{r kgreen-wave2-overall}
 # 
-result <- create_stackedbars(
+result <- viz_stackedbars(
   data = data_filtered_4af682fd,
   title = "",
-  questions = c("KEnv2RC", "KEnv3RC"),
-  question_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
+  x_vars = c("KEnv2RC", "KEnv3RC"),
+  x_var_labels = c("Phones contain materials that mineworkers extract from mines. (Correct Statement)", "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)"),
   stacked_type = "percent",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   horizontal = TRUE,
@@ -3317,7 +3260,7 @@ result
 
 ```{r kgreen-wave2-age-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3342,7 +3285,7 @@ result
 
 ```{r kgreen-wave2-age-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3375,7 +3318,7 @@ result
 
 ```{r kgreen-wave2-gender-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3400,7 +3343,7 @@ result
 
 ```{r kgreen-wave2-gender-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3433,7 +3376,7 @@ result
 
 ```{r kgreen-wave2-edu-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3458,7 +3401,7 @@ result
 
 ```{r kgreen-wave2-edu-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3491,7 +3434,7 @@ result
 
 ```{r kgreen-wave2-mig-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   stacked_type = "percent",
@@ -3516,7 +3459,7 @@ result
 
 ```{r kgreen-wave2-mig-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_stackedbar(
+result <- viz_stackedbar(
   data = data_filtered_4af682fd,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   stacked_type = "percent",
@@ -3557,21 +3500,21 @@ result
 
 ```{r kgreen-overtime-overall-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC"
+  y_var = "KEnv2RC"
 )
 
 result
@@ -3583,21 +3526,21 @@ result
 
 ```{r kgreen-overtime-overall-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
-  response_filter_label = "Percentage who selected/answered correctly",
-  response_filter_combine = TRUE,
+  y_filter_label = "Percentage who selected/answered correctly",
+  y_filter_combine = TRUE,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC"
+  y_var = "KEnv3RC"
 )
 
 result
@@ -3617,20 +3560,20 @@ result
 
 ```{r kgreen-overtime-age-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "AgeGroup"
 )
 
@@ -3643,20 +3586,20 @@ result
 
 ```{r kgreen-overtime-age-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "AgeGroup"
 )
 
@@ -3677,20 +3620,20 @@ result
 
 ```{r kgreen-overtime-gender-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "geslacht"
 )
 
@@ -3703,20 +3646,20 @@ result
 
 ```{r kgreen-overtime-gender-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "geslacht"
 )
 
@@ -3737,20 +3680,20 @@ result
 
 ```{r kgreen-overtime-edu-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "Education"
 )
 
@@ -3763,20 +3706,20 @@ result
 
 ```{r kgreen-overtime-edu-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "Education"
 )
 
@@ -3797,20 +3740,20 @@ result
 
 ```{r kgreen-overtime-mig-item1}
 # Phones contain materials that mineworkers extract from mines. (Correct Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "Phones contain materials that mineworkers extract from mines. (Correct Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv2RC",
+  y_var = "KEnv2RC",
   group_var = "MigrationBackground"
 )
 
@@ -3823,20 +3766,20 @@ result
 
 ```{r kgreen-overtime-mig-item2}
 # The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)
-result <- create_timeline(
+result <- viz_timeline(
   data = data,
   title = "The amount of data and WiFi you use does not affect CO2-emissions or the climate. (False Statement)",
   time_var = "wave_time_label",
   chart_type = "line",
-  response_filter = 1,
+  y_filter = 1,
   y_min = 0,
   y_max = 100,
   x_label = "",
   y_label = "Percentage who selected/answered correctly",
   color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
-  response_filter_label = NULL,
+  y_filter_label = NULL,
   weight_var = "weging_GAMO",
-  response_var = "KEnv3RC",
+  y_var = "KEnv3RC",
   group_var = "MigrationBackground"
 )
 
@@ -3854,50 +3797,7 @@ result
 
 
 
-```{=html}
-<nav class='pagination-nav pagination-bottom' role='navigation' aria-label='Page navigation'>
-  <div class='pagination-container'>
-    <a href='knowledge.html' class='pagination-btn pagination-prev' aria-label='Previous page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M12 16L6 10L12 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-    <div class='pagination-info'>
-      <span class='pagination-prefix'></span>
-      <input type='number' class='pagination-input' id='page-input-bottom' min='1' max='3' value='2' aria-label='Current page'>
-      <span class='pagination-separator'> / 3</span>
-    </div>
-    <a href='knowledge_p3.html' class='pagination-btn pagination-next' aria-label='Next page'>
-      <svg class='pagination-icon' width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M8 16L14 10L8 4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
-      </svg>
-    </a>
-  </div>
-</nav>
-
-<!-- Pagination Navigation Script -->
-<script>
-(function() {
-  const pageUrls = ["knowledge.html","knowledge_p2.html","knowledge_p3.html"];
-  const pageInput = document.getElementById('page-input-bottom');
-  
-  if (pageInput) {
-    pageInput.addEventListener('change', function() {
-      const pageNum = parseInt(this.value);
-      if (pageNum >= 1 && pageNum <= pageUrls.length) {
-        window.location.href = pageUrls[pageNum - 1];
-      } else {
-        this.value = this.getAttribute('value');
-      }
-    });
-    
-    pageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        this.blur();
-      }
-    });
-  }
-})();
-</script>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+dashboardr::create_pagination_nav(2, 3, "knowledge", "bottom")
 ```
 
