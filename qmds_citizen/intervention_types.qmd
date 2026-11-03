@@ -1,0 +1,159 @@
+---
+title: "{{< iconify ph shapes-fill >}} Vormen"
+format: html
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "intervention_types")
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Bundle loader — reads the RDS bundle once, then extracts datasets by key
+.load_bundle <- function(bundle_file, key) {
+  if (!exists('.dashboardr_bundle_cache', inherits = FALSE))
+    .dashboardr_bundle_cache <<- list()
+  if (is.null(.dashboardr_bundle_cache[[bundle_file]]))
+    .dashboardr_bundle_cache[[bundle_file]] <<- readRDS(bundle_file)
+  if (!(key %in% names(.dashboardr_bundle_cache[[bundle_file]])))
+    stop("Bundle key '", key, "' not found in ", bundle_file, call. = FALSE)
+  .dashboardr_bundle_cache[[bundle_file]][[key]]
+}
+
+# Load multiple datasets
+
+# Load wp2
+wp2 <- .load_bundle('dashboard_data_bundle.rds', 'wp2_151obs.rds')
+cat('wp2 loaded:', nrow(wp2), 'rows,', ncol(wp2), 'columns\n')
+
+# Load domains_long
+domains_long <- .load_bundle('dashboard_data_bundle.rds', 'domains_long_330obs.rds')
+cat('domains_long loaded:', nrow(domains_long), 'rows,', ncol(domains_long), 'columns\n')
+
+# Load problems_long
+problems_long <- .load_bundle('dashboard_data_bundle.rds', 'problems_long_236obs.rds')
+cat('problems_long loaded:', nrow(problems_long), 'rows,', ncol(problems_long), 'columns\n')
+
+# Load outcomes_long
+outcomes_long <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_long_235obs.rds')
+cat('outcomes_long loaded:', nrow(outcomes_long), 'rows,', ncol(outcomes_long), 'columns\n')
+
+# Load problems_report
+problems_report <- .load_bundle('dashboard_data_bundle.rds', 'problems_report_6obs.rds')
+cat('problems_report loaded:', nrow(problems_report), 'rows,', ncol(problems_report), 'columns\n')
+
+# Load outcomes_report
+outcomes_report <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_report_7obs.rds')
+cat('outcomes_report loaded:', nrow(outcomes_report), 'rows,', ncol(outcomes_report), 'columns\n')
+
+# Load runtime_report
+runtime_report <- .load_bundle('dashboard_data_bundle.rds', 'runtime_report_4obs.rds')
+cat('runtime_report loaded:', nrow(runtime_report), 'rows,', ncol(runtime_report), 'columns\n')
+
+```
+
+## Vorm van de interventies
+
+
+De meest voorkomende vorm waren **online bronnen** (26%), zoals informatie op een website, tips of educatieve video's. **Campagnes** gericht op begrip of bewustzijn kwamen ook veel voor (19%). **Offline trainingen** (15%) en **online trainingen** (11%) verschillen hiervan doordat het pedagogische programma's zijn die via opeenvolgende modules concrete kennis, vaardigheden of gedrag trainen.
+
+Opvallend is dat 17 interventies **serious games** waren (11%), zoals een cybersecurityspel waarin werknemers van een fictief mkb-bedrijf via interactieve video's moeten reageren op een ransomware-aanval.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph shapes-fill >}} Primair type
+
+
+```{r types-primary}
+# Soort interventie (primair)
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(type1_lab),
+  title = "Soort interventie (primair)",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  x_var = "type1_lab"
+)
+
+result
+```
+
+
+### {{< iconify ph squares-four-fill >}} Secundair type
+
+
+```{r types-secondary}
+# Soort interventie (secundair)
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(type2_lab),
+  title = "Soort interventie (secundair)",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  x_var = "type2_lab"
+)
+
+result
+```
+
+
+:::
+
+## Levensdomeinen en digitale contexten
+
+
+De meeste interventies richten zich op algemeen **dagelijks digitaal gebruik** (26% van alle vermeldingen), gevolgd door veiligheid (15%), kritisch denken (12%), sociale media of sociale relaties (11%) en onderwijs (10%). Verrassend genoeg zijn **werk** (7%), **gezondheid** (5%) en **nieuwsmedia** (2%) ondervertegenwoordigd.
+
+*Dagelijks gebruik betekent bijvoorbeeld e-mailen, een account aanmaken op sociale media, een wachtwoord wijzigen of programma's voor online videobellen leren gebruiken.*
+
+
+::: {.panel-tabset}
+
+### Levensdomeinen (max. 3 per interventie)
+
+```{r domains}
+# Levensdomeinen (max. 3 per interventie)
+result <- viz_bar(
+  data = domains_long,
+  title = "Levensdomeinen (max. 3 per interventie)",
+  horizontal = TRUE,
+  bar_type = "count",
+  x_var = "category",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "Aantal vermeldingen"
+)
+
+result
+```
+
+
+:::
+

@@ -1,0 +1,243 @@
+---
+title: "{{< iconify ph users-three-fill >}} Target groups"
+format: html
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "target_groups")
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Bundle loader — reads the RDS bundle once, then extracts datasets by key
+.load_bundle <- function(bundle_file, key) {
+  if (!exists('.dashboardr_bundle_cache', inherits = FALSE))
+    .dashboardr_bundle_cache <<- list()
+  if (is.null(.dashboardr_bundle_cache[[bundle_file]]))
+    .dashboardr_bundle_cache[[bundle_file]] <<- readRDS(bundle_file)
+  if (!(key %in% names(.dashboardr_bundle_cache[[bundle_file]])))
+    stop("Bundle key '", key, "' not found in ", bundle_file, call. = FALSE)
+  .dashboardr_bundle_cache[[bundle_file]][[key]]
+}
+
+# Load multiple datasets
+
+# Load wp2
+wp2 <- .load_bundle('dashboard_data_bundle.rds', 'wp2_151obs.rds')
+cat('wp2 loaded:', nrow(wp2), 'rows,', ncol(wp2), 'columns\n')
+
+# Load domains_long
+domains_long <- .load_bundle('dashboard_data_bundle.rds', 'domains_long_330obs.rds')
+cat('domains_long loaded:', nrow(domains_long), 'rows,', ncol(domains_long), 'columns\n')
+
+# Load problems_long
+problems_long <- .load_bundle('dashboard_data_bundle.rds', 'problems_long_236obs.rds')
+cat('problems_long loaded:', nrow(problems_long), 'rows,', ncol(problems_long), 'columns\n')
+
+# Load outcomes_long
+outcomes_long <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_long_235obs.rds')
+cat('outcomes_long loaded:', nrow(outcomes_long), 'rows,', ncol(outcomes_long), 'columns\n')
+
+# Load problems_report
+problems_report <- .load_bundle('dashboard_data_bundle.rds', 'problems_report_6obs.rds')
+cat('problems_report loaded:', nrow(problems_report), 'rows,', ncol(problems_report), 'columns\n')
+
+# Load outcomes_report
+outcomes_report <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_report_7obs.rds')
+cat('outcomes_report loaded:', nrow(outcomes_report), 'rows,', ncol(outcomes_report), 'columns\n')
+
+# Load runtime_report
+runtime_report <- .load_bundle('dashboard_data_bundle.rds', 'runtime_report_4obs.rds')
+cat('runtime_report loaded:', nrow(runtime_report), 'rows,', ncol(runtime_report), 'columns\n')
+
+```
+
+## Who is targeted?
+
+
+The interventions were created for citizens at various life stages and levels of ability, such as children, youth, elderly and those with low levels of (digital) literacy, and for citizens in their various roles in society, such as parents, teachers, employees, civil servants and entrepreneurs.
+
+Most interventions, **33%** (50 interventions), target children and youth, and another **28%** (42) target the general population. They are followed by entrepreneurs and small to medium-sized business owners (11%), the elderly (5%) and those with low (digital) literacy (5%). Parents and teachers are underrepresented as the primary target group, but they are the most prominent **secondary** target group (17% and 22% of interventions with a secondary target group), especially for interventions that primarily target children or youth.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph user-focus-fill >}} Primary target group
+
+
+```{r target-primary}
+# Primary target group of the interventions
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(target1_lab),
+  title = "Primary target group of the interventions",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% of interventions",
+  x_var = "target1_lab"
+)
+
+result
+```
+
+
+### {{< iconify ph users-fill >}} Secondary target group
+
+
+```{r target-secondary}
+# Secondary target group of the interventions
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(target2_lab),
+  title = "Secondary target group of the interventions",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% of interventions",
+  x_var = "target2_lab"
+)
+
+result
+```
+
+
+:::
+
+## Inclusiveness
+
+
+**28%** of the interventions made an explicit effort to include at least one marginalised group. This mostly happened through (1) age-specific support, (2) language and skills accessibility, such as plain language and multilingual materials, (3) financial and practical accessibility, such as free offers or help with acquiring devices, and (4) tailored approaches for specific vulnerable groups.
+
+Inclusiveness is mainly realised through age, language, digital skills and affordability. Structural forms of inclusion, such as *co-developing* interventions with marginalised groups, are less common.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph users-fill >}} Overall
+
+
+```{r inclusive-overall}
+# Explicit effort to include at least one marginalised group
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(inclusive_lab),
+  title = "Explicit effort to include at least one marginalised group",
+  horizontal = TRUE,
+  bar_type = "percent",
+  x_var = "inclusive_lab",
+  x_order = c("Yes", "No"),
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% of interventions"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 260)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 260px !important; min-height: 260px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+Code description: *Did the intervention make an explicit effort to include at least one marginalised group?*
+
+
+
+### {{< iconify ph user-focus-fill >}} By target group
+
+
+```{r inclusive-by-target}
+# Explicit effort to include at least one marginalised group
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, inclusive_lab),
+  title = "Explicit effort to include at least one marginalised group",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_var = "inclusive_lab",
+  stack_order = c("Yes", "No"),
+  color_palette = c("#3D7271", "#E28D50"),
+  stack_label = "Explicit effort to include at least one marginalised group?",
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Children & youth (n=50)", "General population (n=42)", "Entrepreneurs (n=16)", "Elderly (n=8)", "Low (digital) literacy (n=8)", "Other (n=27)")
+)
+
+result
+```
+
+
+### {{< iconify ph buildings-fill >}} By initiator
+
+
+```{r inclusive-by-initiator}
+# Explicit effort to include at least one marginalised group
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, inclusive_lab),
+  title = "Explicit effort to include at least one marginalised group",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_var = "inclusive_lab",
+  stack_order = c("Yes", "No"),
+  color_palette = c("#3D7271", "#E28D50"),
+  stack_label = "Explicit effort to include at least one marginalised group?",
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Public sector (n=90)", "Public-private (n=38)", "Private sector (n=23)")
+)
+
+result
+```
+
+
+### {{< iconify ph shapes-fill >}} By intervention type
+
+
+```{r inclusive-by-type}
+# Explicit effort to include at least one marginalised group
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, inclusive_lab),
+  title = "Explicit effort to include at least one marginalised group",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_var = "inclusive_lab",
+  stack_order = c("Yes", "No"),
+  color_palette = c("#3D7271", "#E28D50"),
+  stack_label = "Explicit effort to include at least one marginalised group?",
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online resources (n=40)", "Campaign (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Other (n=26)")
+)
+
+result
+```
+
+
+:::
+

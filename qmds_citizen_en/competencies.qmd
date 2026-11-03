@@ -1,0 +1,556 @@
+---
+title: "{{< iconify ph lightning-fill >}} Competencies"
+format: html
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "competencies")
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Bundle loader — reads the RDS bundle once, then extracts datasets by key
+.load_bundle <- function(bundle_file, key) {
+  if (!exists('.dashboardr_bundle_cache', inherits = FALSE))
+    .dashboardr_bundle_cache <<- list()
+  if (is.null(.dashboardr_bundle_cache[[bundle_file]]))
+    .dashboardr_bundle_cache[[bundle_file]] <<- readRDS(bundle_file)
+  if (!(key %in% names(.dashboardr_bundle_cache[[bundle_file]])))
+    stop("Bundle key '", key, "' not found in ", bundle_file, call. = FALSE)
+  .dashboardr_bundle_cache[[bundle_file]][[key]]
+}
+
+# Load multiple datasets
+
+# Load wp2
+wp2 <- .load_bundle('dashboard_data_bundle.rds', 'wp2_151obs.rds')
+cat('wp2 loaded:', nrow(wp2), 'rows,', ncol(wp2), 'columns\n')
+
+# Load domains_long
+domains_long <- .load_bundle('dashboard_data_bundle.rds', 'domains_long_330obs.rds')
+cat('domains_long loaded:', nrow(domains_long), 'rows,', ncol(domains_long), 'columns\n')
+
+# Load problems_long
+problems_long <- .load_bundle('dashboard_data_bundle.rds', 'problems_long_236obs.rds')
+cat('problems_long loaded:', nrow(problems_long), 'rows,', ncol(problems_long), 'columns\n')
+
+# Load outcomes_long
+outcomes_long <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_long_235obs.rds')
+cat('outcomes_long loaded:', nrow(outcomes_long), 'rows,', ncol(outcomes_long), 'columns\n')
+
+# Load problems_report
+problems_report <- .load_bundle('dashboard_data_bundle.rds', 'problems_report_6obs.rds')
+cat('problems_report loaded:', nrow(problems_report), 'rows,', ncol(problems_report), 'columns\n')
+
+# Load outcomes_report
+outcomes_report <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_report_7obs.rds')
+cat('outcomes_report loaded:', nrow(outcomes_report), 'rows,', ncol(outcomes_report), 'columns\n')
+
+# Load runtime_report
+runtime_report <- .load_bundle('dashboard_data_bundle.rds', 'runtime_report_4obs.rds')
+cat('runtime_report loaded:', nrow(runtime_report), 'rows,', ncol(runtime_report), 'columns\n')
+
+```
+
+## Knowledge, skills and behaviour
+
+
+Because digital citizenship comprises knowledge, skills and behaviour, we coded to what extent interventions targeted these three competencies. **95%** targeted knowledge, **58%** targeted skills and only **16%** directly targeted behaviour.
+
+An intervention was coded as targeting behaviour only if behavioural change was *directly* implemented as part of the intervention. Interventions that merely informed about behaviour were coded as *indirect*; this was the case for 66% of the interventions. In the chart, *Yes* for behaviour therefore means *directly* targeting behavioural change.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph users-fill >}} Overall
+
+
+```{r comp-overall}
+# Interventions targeting knowledge, skills and behaviour
+result <- viz_stackedbars(
+  data = wp2 %>% tidyr::drop_na(knowledge_lab, skills_lab, behavior_lab),
+  title = "Interventions targeting knowledge, skills and behaviour",
+  x_vars = c("knowledge_lab", "skills_lab", "behavior_lab"),
+  x_var_labels = c("Knowledge", "Skills", "Behaviour"),
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_order = c("Yes", "Indirect", "No"),
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  stack_label = "Does the intervention target this competency?"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 390)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 390px !important; min-height: 390px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+
+### {{< iconify ph user-focus-fill >}} By target group
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph book-open-fill >}} Knowledge
+
+
+```{r comp-by-target-knowledge-lab}
+# Knowledge
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, knowledge_lab),
+  title = "Knowledge",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Children & youth (n=50)", "General population (n=42)", "Entrepreneurs (n=16)", "Elderly (n=8)", "Low (digital) literacy (n=8)", "Other (n=27)"),
+  stack_var = "knowledge_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Targets knowledge?"
+)
+
+result
+```
+
+
+##### {{< iconify ph lightning-fill >}} Skills
+
+
+```{r comp-by-target-skills-lab}
+# Skills
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, skills_lab),
+  title = "Skills",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Children & youth (n=50)", "General population (n=42)", "Entrepreneurs (n=16)", "Elderly (n=8)", "Low (digital) literacy (n=8)", "Other (n=27)"),
+  stack_var = "skills_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Targets skills?"
+)
+
+result
+```
+
+
+##### {{< iconify ph person-simple-walk-fill >}} Behaviour
+
+
+```{r comp-by-target-behavior-lab}
+# Behaviour
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, behavior_lab),
+  title = "Behaviour",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Children & youth (n=50)", "General population (n=42)", "Entrepreneurs (n=16)", "Elderly (n=8)", "Low (digital) literacy (n=8)", "Other (n=27)"),
+  stack_var = "behavior_lab",
+  stack_order = c("Yes", "Indirect", "No"),
+  stack_label = "Targets behaviour change?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph buildings-fill >}} By initiator
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph book-open-fill >}} Knowledge
+
+
+```{r comp-by-initiator-knowledge-lab}
+# Knowledge
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, knowledge_lab),
+  title = "Knowledge",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Public sector (n=90)", "Public-private (n=38)", "Private sector (n=23)"),
+  stack_var = "knowledge_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Targets knowledge?"
+)
+
+result
+```
+
+
+##### {{< iconify ph lightning-fill >}} Skills
+
+
+```{r comp-by-initiator-skills-lab}
+# Skills
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, skills_lab),
+  title = "Skills",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Public sector (n=90)", "Public-private (n=38)", "Private sector (n=23)"),
+  stack_var = "skills_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Targets skills?"
+)
+
+result
+```
+
+
+##### {{< iconify ph person-simple-walk-fill >}} Behaviour
+
+
+```{r comp-by-initiator-behavior-lab}
+# Behaviour
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, behavior_lab),
+  title = "Behaviour",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Public sector (n=90)", "Public-private (n=38)", "Private sector (n=23)"),
+  stack_var = "behavior_lab",
+  stack_order = c("Yes", "Indirect", "No"),
+  stack_label = "Targets behaviour change?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph shapes-fill >}} By intervention type
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph book-open-fill >}} Knowledge
+
+
+```{r comp-by-type-knowledge-lab}
+# Knowledge
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, knowledge_lab),
+  title = "Knowledge",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online resources (n=40)", "Campaign (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Other (n=26)"),
+  stack_var = "knowledge_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Targets knowledge?"
+)
+
+result
+```
+
+
+##### {{< iconify ph lightning-fill >}} Skills
+
+
+```{r comp-by-type-skills-lab}
+# Skills
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, skills_lab),
+  title = "Skills",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online resources (n=40)", "Campaign (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Other (n=26)"),
+  stack_var = "skills_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Targets skills?"
+)
+
+result
+```
+
+
+##### {{< iconify ph person-simple-walk-fill >}} Behaviour
+
+
+```{r comp-by-type-behavior-lab}
+# Behaviour
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, behavior_lab),
+  title = "Behaviour",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online resources (n=40)", "Campaign (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Other (n=26)"),
+  stack_var = "behavior_lab",
+  stack_order = c("Yes", "Indirect", "No"),
+  stack_label = "Targets behaviour change?"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+## Active and responsible participation
+
+
+**Active participation** was stimulated when citizens learn to meaningfully engage in key life domains such as work or digital government via digital media, tools or technologies. This was encouraged by about half of the interventions (50%).
+
+**Responsible participation** refers to an ethical use of digital media that reduces harm to oneself or others, for example by informing citizens about false information, online etiquette or protection against cybercrime. This was encouraged by the majority of interventions (81%).
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph users-fill >}} Overall
+
+
+```{r part-overall}
+# Interventions encouraging active and responsible participation
+result <- viz_stackedbars(
+  data = wp2 %>% tidyr::drop_na(active_lab, responsible_lab),
+  title = "Interventions encouraging active and responsible participation",
+  x_vars = c("active_lab", "responsible_lab"),
+  x_var_labels = c("Active participation", "Responsible participation"),
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_order = c("Yes", "No"),
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  stack_label = "Does the intervention encourage this form of participation?"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 300)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 300px !important; min-height: 300px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+
+### {{< iconify ph user-focus-fill >}} By target group
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph hand-waving-fill >}} Active participation
+
+
+```{r part-by-target-active-lab}
+# Active participation
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, active_lab),
+  title = "Active participation",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Children & youth (n=50)", "General population (n=42)", "Entrepreneurs (n=16)", "Elderly (n=8)", "Low (digital) literacy (n=8)", "Other (n=27)"),
+  stack_var = "active_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Encourages active participation?"
+)
+
+result
+```
+
+
+##### {{< iconify ph shield-check-fill >}} Responsible participation
+
+
+```{r part-by-target-responsible-lab}
+# Responsible participation
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, responsible_lab),
+  title = "Responsible participation",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Children & youth (n=50)", "General population (n=42)", "Entrepreneurs (n=16)", "Elderly (n=8)", "Low (digital) literacy (n=8)", "Other (n=27)"),
+  stack_var = "responsible_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Encourages responsible participation?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph buildings-fill >}} By initiator
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph hand-waving-fill >}} Active participation
+
+
+```{r part-by-initiator-active-lab}
+# Active participation
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, active_lab),
+  title = "Active participation",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Public sector (n=90)", "Public-private (n=38)", "Private sector (n=23)"),
+  stack_var = "active_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Encourages active participation?"
+)
+
+result
+```
+
+
+##### {{< iconify ph shield-check-fill >}} Responsible participation
+
+
+```{r part-by-initiator-responsible-lab}
+# Responsible participation
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, responsible_lab),
+  title = "Responsible participation",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Public sector (n=90)", "Public-private (n=38)", "Private sector (n=23)"),
+  stack_var = "responsible_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Encourages responsible participation?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph shapes-fill >}} By intervention type
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph hand-waving-fill >}} Active participation
+
+
+```{r part-by-type-active-lab}
+# Active participation
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, active_lab),
+  title = "Active participation",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online resources (n=40)", "Campaign (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Other (n=26)"),
+  stack_var = "active_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Encourages active participation?"
+)
+
+result
+```
+
+
+##### {{< iconify ph shield-check-fill >}} Responsible participation
+
+
+```{r part-by-type-responsible-lab}
+# Responsible participation
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, responsible_lab),
+  title = "Responsible participation",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online resources (n=40)", "Campaign (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Other (n=26)"),
+  stack_var = "responsible_lab",
+  stack_order = c("Yes", "No"),
+  stack_label = "Encourages responsible participation?"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+

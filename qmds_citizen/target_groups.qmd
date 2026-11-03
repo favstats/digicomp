@@ -1,0 +1,243 @@
+---
+title: "{{< iconify ph users-three-fill >}} Doelgroepen"
+format: html
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "target_groups")
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Bundle loader — reads the RDS bundle once, then extracts datasets by key
+.load_bundle <- function(bundle_file, key) {
+  if (!exists('.dashboardr_bundle_cache', inherits = FALSE))
+    .dashboardr_bundle_cache <<- list()
+  if (is.null(.dashboardr_bundle_cache[[bundle_file]]))
+    .dashboardr_bundle_cache[[bundle_file]] <<- readRDS(bundle_file)
+  if (!(key %in% names(.dashboardr_bundle_cache[[bundle_file]])))
+    stop("Bundle key '", key, "' not found in ", bundle_file, call. = FALSE)
+  .dashboardr_bundle_cache[[bundle_file]][[key]]
+}
+
+# Load multiple datasets
+
+# Load wp2
+wp2 <- .load_bundle('dashboard_data_bundle.rds', 'wp2_151obs.rds')
+cat('wp2 loaded:', nrow(wp2), 'rows,', ncol(wp2), 'columns\n')
+
+# Load domains_long
+domains_long <- .load_bundle('dashboard_data_bundle.rds', 'domains_long_330obs.rds')
+cat('domains_long loaded:', nrow(domains_long), 'rows,', ncol(domains_long), 'columns\n')
+
+# Load problems_long
+problems_long <- .load_bundle('dashboard_data_bundle.rds', 'problems_long_236obs.rds')
+cat('problems_long loaded:', nrow(problems_long), 'rows,', ncol(problems_long), 'columns\n')
+
+# Load outcomes_long
+outcomes_long <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_long_235obs.rds')
+cat('outcomes_long loaded:', nrow(outcomes_long), 'rows,', ncol(outcomes_long), 'columns\n')
+
+# Load problems_report
+problems_report <- .load_bundle('dashboard_data_bundle.rds', 'problems_report_6obs.rds')
+cat('problems_report loaded:', nrow(problems_report), 'rows,', ncol(problems_report), 'columns\n')
+
+# Load outcomes_report
+outcomes_report <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_report_7obs.rds')
+cat('outcomes_report loaded:', nrow(outcomes_report), 'rows,', ncol(outcomes_report), 'columns\n')
+
+# Load runtime_report
+runtime_report <- .load_bundle('dashboard_data_bundle.rds', 'runtime_report_4obs.rds')
+cat('runtime_report loaded:', nrow(runtime_report), 'rows,', ncol(runtime_report), 'columns\n')
+
+```
+
+## Wie worden er bereikt?
+
+
+De interventies zijn ontworpen voor burgers in verschillende levensfasen en vaardigheidsniveaus, zoals kinderen, jongeren, ouderen en mensen met een laag niveau van (digitale) geletterdheid, en voor burgers in hun verschillende rollen in de samenleving, zoals ouders, leraren, werknemers, ambtenaren en ondernemers.
+
+Het merendeel van de interventies, **33%** (50 interventies), is gericht op kinderen en jongeren, en nog eens **28%** (42) op de algemene bevolking. Daarna volgen ondernemers en eigenaren van kleine tot middelgrote bedrijven (11%), ouderen (5%) en mensen met een lage (digitale) geletterdheid (5%). Ouders en leraren zijn ondervertegenwoordigd als primaire doelgroep, maar vormen de belangrijkste **secundaire** doelgroep (17% en 22% van de interventies met een secundaire doelgroep), vooral bij interventies die zich primair op kinderen of jongeren richten.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph user-focus-fill >}} Primaire doelgroep
+
+
+```{r target-primary}
+# Primaire doelgroep van de interventies
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(target1_lab),
+  title = "Primaire doelgroep van de interventies",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  x_var = "target1_lab"
+)
+
+result
+```
+
+
+### {{< iconify ph users-fill >}} Secundaire doelgroep
+
+
+```{r target-secondary}
+# Secundaire doelgroep van de interventies
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(target2_lab),
+  title = "Secundaire doelgroep van de interventies",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  x_var = "target2_lab"
+)
+
+result
+```
+
+
+:::
+
+## Inclusiviteit
+
+
+**28%** van de interventies probeerde expliciet ten minste één gemarginaliseerde groep te betrekken. Dit gebeurde vooral via (1) leeftijdsgerichte ondersteuning, (2) taal- en vaardigheidstoegankelijkheid, zoals eenvoudige taal en meertalige materialen, (3) financiële en praktische toegankelijkheid, zoals gratis aanbod of hulp bij de aanschaf van apparaten, en (4) maatwerk voor specifieke kwetsbare groepen.
+
+Inclusiviteit wordt vooral ingevuld via leeftijd, taal, digitale vaardigheden en betaalbaarheid. Structurele vormen van inclusie, zoals het *samen* ontwikkelen van interventies met gemarginaliseerde groepen, komen minder vaak voor.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r inclusive-overall}
+# Expliciete poging om ten minste één gemarginaliseerde groep te betrekken
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(inclusive_lab),
+  title = "Expliciete poging om ten minste één gemarginaliseerde groep te betrekken",
+  horizontal = TRUE,
+  bar_type = "percent",
+  x_var = "inclusive_lab",
+  x_order = c("Ja", "Nee"),
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 260)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 260px !important; min-height: 260px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+Code omschrijving: *Heeft de interventie expliciet geprobeerd om ten minste één gemarginaliseerde groep te betrekken?*
+
+
+
+### {{< iconify ph user-focus-fill >}} Naar doelgroep
+
+
+```{r inclusive-by-target}
+# Expliciete poging om ten minste één gemarginaliseerde groep te betrekken
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, inclusive_lab),
+  title = "Expliciete poging om ten minste één gemarginaliseerde groep te betrekken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_var = "inclusive_lab",
+  stack_order = c("Ja", "Nee"),
+  color_palette = c("#3D7271", "#E28D50"),
+  stack_label = "Expliciete poging om ten minste één gemarginaliseerde groep te betrekken?",
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Kinderen/jongeren (n=50)", "Algemene bevolking (n=42)", "Ondernemers (n=16)", "Laag (digitaal) geletterd (n=8)", "Ouderen (n=8)", "Overig (n=27)")
+)
+
+result
+```
+
+
+### {{< iconify ph buildings-fill >}} Naar initiatiefnemer
+
+
+```{r inclusive-by-initiator}
+# Expliciete poging om ten minste één gemarginaliseerde groep te betrekken
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, inclusive_lab),
+  title = "Expliciete poging om ten minste één gemarginaliseerde groep te betrekken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_var = "inclusive_lab",
+  stack_order = c("Ja", "Nee"),
+  color_palette = c("#3D7271", "#E28D50"),
+  stack_label = "Expliciete poging om ten minste één gemarginaliseerde groep te betrekken?",
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Publieke sector (n=90)", "Publiek-privaat (n=38)", "Private sector (n=23)")
+)
+
+result
+```
+
+
+### {{< iconify ph shapes-fill >}} Naar type interventie
+
+
+```{r inclusive-by-type}
+# Expliciete poging om ten minste één gemarginaliseerde groep te betrekken
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, inclusive_lab),
+  title = "Expliciete poging om ten minste één gemarginaliseerde groep te betrekken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_var = "inclusive_lab",
+  stack_order = c("Ja", "Nee"),
+  color_palette = c("#3D7271", "#E28D50"),
+  stack_label = "Expliciete poging om ten minste één gemarginaliseerde groep te betrekken?",
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online bronnen (n=40)", "Campagne (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Overig (n=26)")
+)
+
+result
+```
+
+
+:::
+

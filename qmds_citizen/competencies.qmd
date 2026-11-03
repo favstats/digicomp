@@ -1,0 +1,556 @@
+---
+title: "{{< iconify ph lightning-fill >}} Competenties"
+format: html
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "competencies")
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Bundle loader — reads the RDS bundle once, then extracts datasets by key
+.load_bundle <- function(bundle_file, key) {
+  if (!exists('.dashboardr_bundle_cache', inherits = FALSE))
+    .dashboardr_bundle_cache <<- list()
+  if (is.null(.dashboardr_bundle_cache[[bundle_file]]))
+    .dashboardr_bundle_cache[[bundle_file]] <<- readRDS(bundle_file)
+  if (!(key %in% names(.dashboardr_bundle_cache[[bundle_file]])))
+    stop("Bundle key '", key, "' not found in ", bundle_file, call. = FALSE)
+  .dashboardr_bundle_cache[[bundle_file]][[key]]
+}
+
+# Load multiple datasets
+
+# Load wp2
+wp2 <- .load_bundle('dashboard_data_bundle.rds', 'wp2_151obs.rds')
+cat('wp2 loaded:', nrow(wp2), 'rows,', ncol(wp2), 'columns\n')
+
+# Load domains_long
+domains_long <- .load_bundle('dashboard_data_bundle.rds', 'domains_long_330obs.rds')
+cat('domains_long loaded:', nrow(domains_long), 'rows,', ncol(domains_long), 'columns\n')
+
+# Load problems_long
+problems_long <- .load_bundle('dashboard_data_bundle.rds', 'problems_long_236obs.rds')
+cat('problems_long loaded:', nrow(problems_long), 'rows,', ncol(problems_long), 'columns\n')
+
+# Load outcomes_long
+outcomes_long <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_long_235obs.rds')
+cat('outcomes_long loaded:', nrow(outcomes_long), 'rows,', ncol(outcomes_long), 'columns\n')
+
+# Load problems_report
+problems_report <- .load_bundle('dashboard_data_bundle.rds', 'problems_report_6obs.rds')
+cat('problems_report loaded:', nrow(problems_report), 'rows,', ncol(problems_report), 'columns\n')
+
+# Load outcomes_report
+outcomes_report <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_report_7obs.rds')
+cat('outcomes_report loaded:', nrow(outcomes_report), 'rows,', ncol(outcomes_report), 'columns\n')
+
+# Load runtime_report
+runtime_report <- .load_bundle('dashboard_data_bundle.rds', 'runtime_report_4obs.rds')
+cat('runtime_report loaded:', nrow(runtime_report), 'rows,', ncol(runtime_report), 'columns\n')
+
+```
+
+## Kennis, vaardigheden en gedrag
+
+
+Omdat digitaal burgerschap bestaat uit kennis, vaardigheden en gedrag, codeerden we in hoeverre interventies zich op deze drie competenties richten. **95%** richt zich op kennis, **58%** op vaardigheden en slechts **16%** direct op gedrag.
+
+Een interventie werd alleen als gericht op gedrag gecodeerd als er *direct* gedragsverandering plaatsvond als onderdeel van de interventie. Interventies die alleen informeerden over gedrag werden als *indirect* gecodeerd; dit gold voor 66% van de interventies. In de grafiek staat *Ja* bij gedrag dus voor *direct* gericht op gedragsverandering.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r comp-overall}
+# Interventies gericht op kennis, vaardigheden en gedrag
+result <- viz_stackedbars(
+  data = wp2 %>% tidyr::drop_na(knowledge_lab, skills_lab, behavior_lab),
+  title = "Interventies gericht op kennis, vaardigheden en gedrag",
+  x_vars = c("knowledge_lab", "skills_lab", "behavior_lab"),
+  x_var_labels = c("Kennis", "Vaardigheden", "Gedrag"),
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_order = c("Ja", "Indirect", "Nee"),
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  stack_label = "Is de interventie gericht op deze competentie?"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 390)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 390px !important; min-height: 390px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+
+### {{< iconify ph user-focus-fill >}} Naar doelgroep
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph book-open-fill >}} Kennis
+
+
+```{r comp-by-target-knowledge-lab}
+# Kennis
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, knowledge_lab),
+  title = "Kennis",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Kinderen/jongeren (n=50)", "Algemene bevolking (n=42)", "Ondernemers (n=16)", "Laag (digitaal) geletterd (n=8)", "Ouderen (n=8)", "Overig (n=27)"),
+  stack_var = "knowledge_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Gericht op kennis?"
+)
+
+result
+```
+
+
+##### {{< iconify ph lightning-fill >}} Vaardigheden
+
+
+```{r comp-by-target-skills-lab}
+# Vaardigheden
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, skills_lab),
+  title = "Vaardigheden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Kinderen/jongeren (n=50)", "Algemene bevolking (n=42)", "Ondernemers (n=16)", "Laag (digitaal) geletterd (n=8)", "Ouderen (n=8)", "Overig (n=27)"),
+  stack_var = "skills_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Gericht op vaardigheden?"
+)
+
+result
+```
+
+
+##### {{< iconify ph person-simple-walk-fill >}} Gedrag
+
+
+```{r comp-by-target-behavior-lab}
+# Gedrag
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, behavior_lab),
+  title = "Gedrag",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Kinderen/jongeren (n=50)", "Algemene bevolking (n=42)", "Ondernemers (n=16)", "Laag (digitaal) geletterd (n=8)", "Ouderen (n=8)", "Overig (n=27)"),
+  stack_var = "behavior_lab",
+  stack_order = c("Ja", "Indirect", "Nee"),
+  stack_label = "Gericht op gedragsverandering?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph buildings-fill >}} Naar initiatiefnemer
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph book-open-fill >}} Kennis
+
+
+```{r comp-by-initiator-knowledge-lab}
+# Kennis
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, knowledge_lab),
+  title = "Kennis",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Publieke sector (n=90)", "Publiek-privaat (n=38)", "Private sector (n=23)"),
+  stack_var = "knowledge_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Gericht op kennis?"
+)
+
+result
+```
+
+
+##### {{< iconify ph lightning-fill >}} Vaardigheden
+
+
+```{r comp-by-initiator-skills-lab}
+# Vaardigheden
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, skills_lab),
+  title = "Vaardigheden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Publieke sector (n=90)", "Publiek-privaat (n=38)", "Private sector (n=23)"),
+  stack_var = "skills_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Gericht op vaardigheden?"
+)
+
+result
+```
+
+
+##### {{< iconify ph person-simple-walk-fill >}} Gedrag
+
+
+```{r comp-by-initiator-behavior-lab}
+# Gedrag
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, behavior_lab),
+  title = "Gedrag",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Publieke sector (n=90)", "Publiek-privaat (n=38)", "Private sector (n=23)"),
+  stack_var = "behavior_lab",
+  stack_order = c("Ja", "Indirect", "Nee"),
+  stack_label = "Gericht op gedragsverandering?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph shapes-fill >}} Naar type interventie
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph book-open-fill >}} Kennis
+
+
+```{r comp-by-type-knowledge-lab}
+# Kennis
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, knowledge_lab),
+  title = "Kennis",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online bronnen (n=40)", "Campagne (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Overig (n=26)"),
+  stack_var = "knowledge_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Gericht op kennis?"
+)
+
+result
+```
+
+
+##### {{< iconify ph lightning-fill >}} Vaardigheden
+
+
+```{r comp-by-type-skills-lab}
+# Vaardigheden
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, skills_lab),
+  title = "Vaardigheden",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online bronnen (n=40)", "Campagne (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Overig (n=26)"),
+  stack_var = "skills_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Gericht op vaardigheden?"
+)
+
+result
+```
+
+
+##### {{< iconify ph person-simple-walk-fill >}} Gedrag
+
+
+```{r comp-by-type-behavior-lab}
+# Gedrag
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, behavior_lab),
+  title = "Gedrag",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#F5D76E", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online bronnen (n=40)", "Campagne (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Overig (n=26)"),
+  stack_var = "behavior_lab",
+  stack_order = c("Ja", "Indirect", "Nee"),
+  stack_label = "Gericht op gedragsverandering?"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+## Actieve en verantwoorde participatie
+
+
+**Actieve participatie** werd gestimuleerd wanneer burgers via digitale media, tools of technologieën leren op een zinvolle manier deel te nemen aan belangrijke maatschappelijke domeinen zoals werk of digitale overheid. Dit gebeurde bij ongeveer de helft van de interventies (50%).
+
+**Verantwoorde participatie** verwijst naar een ethisch gebruik van digitale media om schade aan zichzelf of anderen te beperken, bijvoorbeeld door te informeren over desinformatie, online etiquette of bescherming tegen cybercriminaliteit. Dit werd door de meerderheid van de interventies (81%) aangemoedigd.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r part-overall}
+# Interventies die actieve en verantwoorde participatie stimuleren
+result <- viz_stackedbars(
+  data = wp2 %>% tidyr::drop_na(active_lab, responsible_lab),
+  title = "Interventies die actieve en verantwoorde participatie stimuleren",
+  x_vars = c("active_lab", "responsible_lab"),
+  x_var_labels = c("Actieve participatie", "Verantwoorde participatie"),
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_order = c("Ja", "Nee"),
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  stack_label = "Stimuleert de interventie deze vorm van participatie?"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 300)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 300px !important; min-height: 300px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+
+### {{< iconify ph user-focus-fill >}} Naar doelgroep
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph hand-waving-fill >}} Actieve participatie
+
+
+```{r part-by-target-active-lab}
+# Actieve participatie
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, active_lab),
+  title = "Actieve participatie",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Kinderen/jongeren (n=50)", "Algemene bevolking (n=42)", "Ondernemers (n=16)", "Laag (digitaal) geletterd (n=8)", "Ouderen (n=8)", "Overig (n=27)"),
+  stack_var = "active_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Stimuleert actieve participatie?"
+)
+
+result
+```
+
+
+##### {{< iconify ph shield-check-fill >}} Verantwoorde participatie
+
+
+```{r part-by-target-responsible-lab}
+# Verantwoorde participatie
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(target_group_short, responsible_lab),
+  title = "Verantwoorde participatie",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "target_group_short",
+  x_order = c("Kinderen/jongeren (n=50)", "Algemene bevolking (n=42)", "Ondernemers (n=16)", "Laag (digitaal) geletterd (n=8)", "Ouderen (n=8)", "Overig (n=27)"),
+  stack_var = "responsible_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Stimuleert verantwoorde participatie?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph buildings-fill >}} Naar initiatiefnemer
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph hand-waving-fill >}} Actieve participatie
+
+
+```{r part-by-initiator-active-lab}
+# Actieve participatie
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, active_lab),
+  title = "Actieve participatie",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Publieke sector (n=90)", "Publiek-privaat (n=38)", "Private sector (n=23)"),
+  stack_var = "active_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Stimuleert actieve participatie?"
+)
+
+result
+```
+
+
+##### {{< iconify ph shield-check-fill >}} Verantwoorde participatie
+
+
+```{r part-by-initiator-responsible-lab}
+# Verantwoorde participatie
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(initiator_n, responsible_lab),
+  title = "Verantwoorde participatie",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "initiator_n",
+  x_order = c("Publieke sector (n=90)", "Publiek-privaat (n=38)", "Private sector (n=23)"),
+  stack_var = "responsible_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Stimuleert verantwoorde participatie?"
+)
+
+result
+```
+
+
+:::
+
+
+### {{< iconify ph shapes-fill >}} Naar type interventie
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph hand-waving-fill >}} Actieve participatie
+
+
+```{r part-by-type-active-lab}
+# Actieve participatie
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, active_lab),
+  title = "Actieve participatie",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online bronnen (n=40)", "Campagne (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Overig (n=26)"),
+  stack_var = "active_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Stimuleert actieve participatie?"
+)
+
+result
+```
+
+
+##### {{< iconify ph shield-check-fill >}} Verantwoorde participatie
+
+
+```{r part-by-type-responsible-lab}
+# Verantwoorde participatie
+result <- viz_stackedbar(
+  data = wp2 %>% tidyr::drop_na(type_short, responsible_lab),
+  title = "Verantwoorde participatie",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  color_palette = c("#3D7271", "#E28D50"),
+  x_label = "",
+  x_var = "type_short",
+  x_order = c("Online bronnen (n=40)", "Campagne (n=29)", "Offline training (n=23)", "(Serious) game (n=17)", "Online training (n=16)", "Overig (n=26)"),
+  stack_var = "responsible_lab",
+  stack_order = c("Ja", "Nee"),
+  stack_label = "Stimuleert verantwoorde participatie?"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+

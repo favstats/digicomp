@@ -1,0 +1,187 @@
+---
+title: "{{< iconify ph buildings-fill >}} Initiatiefnemers"
+format: html
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "initiators_scope")
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Bundle loader — reads the RDS bundle once, then extracts datasets by key
+.load_bundle <- function(bundle_file, key) {
+  if (!exists('.dashboardr_bundle_cache', inherits = FALSE))
+    .dashboardr_bundle_cache <<- list()
+  if (is.null(.dashboardr_bundle_cache[[bundle_file]]))
+    .dashboardr_bundle_cache[[bundle_file]] <<- readRDS(bundle_file)
+  if (!(key %in% names(.dashboardr_bundle_cache[[bundle_file]])))
+    stop("Bundle key '", key, "' not found in ", bundle_file, call. = FALSE)
+  .dashboardr_bundle_cache[[bundle_file]][[key]]
+}
+
+# Load multiple datasets
+
+# Load wp2
+wp2 <- .load_bundle('dashboard_data_bundle.rds', 'wp2_151obs.rds')
+cat('wp2 loaded:', nrow(wp2), 'rows,', ncol(wp2), 'columns\n')
+
+# Load domains_long
+domains_long <- .load_bundle('dashboard_data_bundle.rds', 'domains_long_330obs.rds')
+cat('domains_long loaded:', nrow(domains_long), 'rows,', ncol(domains_long), 'columns\n')
+
+# Load problems_long
+problems_long <- .load_bundle('dashboard_data_bundle.rds', 'problems_long_236obs.rds')
+cat('problems_long loaded:', nrow(problems_long), 'rows,', ncol(problems_long), 'columns\n')
+
+# Load outcomes_long
+outcomes_long <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_long_235obs.rds')
+cat('outcomes_long loaded:', nrow(outcomes_long), 'rows,', ncol(outcomes_long), 'columns\n')
+
+# Load problems_report
+problems_report <- .load_bundle('dashboard_data_bundle.rds', 'problems_report_6obs.rds')
+cat('problems_report loaded:', nrow(problems_report), 'rows,', ncol(problems_report), 'columns\n')
+
+# Load outcomes_report
+outcomes_report <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_report_7obs.rds')
+cat('outcomes_report loaded:', nrow(outcomes_report), 'rows,', ncol(outcomes_report), 'columns\n')
+
+# Load runtime_report
+runtime_report <- .load_bundle('dashboard_data_bundle.rds', 'runtime_report_4obs.rds')
+cat('runtime_report loaded:', nrow(runtime_report), 'rows,', ncol(runtime_report), 'columns\n')
+
+```
+
+## Initiatiefnemers, reikwijdte en looptijd
+
+
+De **publieke sector** is het best vertegenwoordigd: 60% van de interventies komt van overheidsinstanties, gemeenten, scholen, bibliotheken en vergelijkbare instellingen. 25% is voortgekomen uit een **publiek-private samenwerking**, zoals programma's voor internetveiligheid van ministeries en internetproviders. Actoren uit de **private sector**, zoals zorgverleners, commerciële opleidingscentra of technologiebedrijven, initiëren 15% van de interventies.
+
+Het merendeel van de interventies is gericht op **nationaal** niveau (46%), vaak in combinatie met lokale implementatie. **Regionale** interventies (27%) en **online** interventies (24%) komen ook veel voor.
+
+Slechts 9% van de interventies gaf een expliciete start- en einddatum aan. De meeste interventies (58%) gaven geen looptijd aan, ook al blijven informatie en materialen online beschikbaar; 31% betreft terugkerende of doorlopende interventies, en 1% geeft expliciet aan dat de interventie is stopgezet.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph buildings-fill >}} Initiatiefnemers
+
+
+```{r org-initiator}
+# Initiatiefnemers
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(initiator_lab),
+  title = "Initiatiefnemers",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  x_var = "initiator_lab"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 320)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 320px !important; min-height: 320px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+
+### {{< iconify ph map-trifold-fill >}} Regionale reikwijdte
+
+
+```{r org-scope}
+# Regionale reikwijdte (primair)
+result <- viz_bar(
+  data = wp2 %>% tidyr::drop_na(scope1_lab),
+  title = "Regionale reikwijdte (primair)",
+  horizontal = TRUE,
+  bar_type = "percent",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  x_var = "scope1_lab"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 360)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 360px !important; min-height: 360px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+
+### {{< iconify ph calendar-fill >}} Looptijd
+
+
+```{r org-runtime}
+# Looptijd van de interventies (% van interventies)
+result <- viz_bar(
+  data = runtime_report,
+  title = "Looptijd van de interventies (% van interventies)",
+  horizontal = TRUE,
+  x_var = "category",
+  y_var = "pct",
+  x_order = c("Geen looptijd gespecificeerd", "Terugkerend of doorlopend", "Expliciete start- en einddatum", "Expliciet stopgezet"),
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  tooltip_suffix = "%"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 340)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 340px !important; min-height: 340px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+*Bron: eindrapport 'Grip op Digitaal Burgerschap' (inductieve codering van de probleem-, uitkomst- en looptijdbeschrijvingen).*
+
+
+
+:::
+

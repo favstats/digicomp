@@ -1,0 +1,37 @@
+/* ---- Navbar layout fixes (WP2 dashboard) ---------------------------------
+   1. Never truncate the dashboard title on the left
+   2. Keep each icon on the same line as its label
+   3. Keep a visible gap between the result pages and the right-hand menu
+   4. Tighten spacing on laptop-width screens; on narrower screens switch to
+      the collapsed (hamburger) menu instead of squeezing items             */
+
+.navbar .navbar-brand-container { flex-shrink: 0; max-width: none; }
+.navbar .navbar-brand { overflow: visible; text-overflow: clip; }
+
+.navbar .nav-link,
+.navbar .menu-text { white-space: nowrap; }
+
+@media (min-width: 992px) {
+  .navbar-collapse .navbar-nav.ms-auto { margin-left: auto !important; padding-left: 2.5rem; }
+}
+
+/* Laptop widths: smaller labels and padding so everything fits on one row */
+@media (min-width: 1200px) and (max-width: 1599.98px) {
+  .navbar .navbar-title { font-size: 1.1rem; }
+  .navbar .navbar-nav .nav-link { font-size: .9rem; padding-left: .45rem; padding-right: .45rem; }
+}
+
+/* Below 1440px: drop the icons from the top-level items to make room */
+@media (min-width: 1200px) and (max-width: 1439.98px) {
+  .navbar .navbar-nav > .nav-item > .nav-link iconify-icon { display: none; }
+}
+
+/* Narrower than 1200px: use the collapsed menu (as on tablets/phones) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .navbar.navbar-expand-lg .navbar-container { flex-wrap: wrap; }
+  .navbar.navbar-expand-lg .navbar-toggler { display: block; order: 4; }
+  .navbar.navbar-expand-lg .navbar-collapse { flex-basis: 100%; order: 10; flex-direction: column; align-items: flex-start; }
+  .navbar.navbar-expand-lg .navbar-collapse:not(.show) { display: none !important; }
+  .navbar.navbar-expand-lg .navbar-nav { flex-direction: column; }
+  .navbar.navbar-expand-lg .navbar-nav.ms-auto { margin-left: 0 !important; padding-left: 0; }
+}

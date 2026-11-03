@@ -1,0 +1,212 @@
+---
+title: "{{< iconify ph warning-circle-fill >}} Problemen"
+format: html
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "problems_outcomes")
+```
+
+```{r setup}
+#| echo: false
+#| warning: false
+#| message: false
+#| error: false
+#| results: 'hide'
+
+# Load dashboardr (includes dplyr, highcharter as dependencies)
+library(dashboardr)
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  fig.width = 12,
+  fig.height = 8,
+  dpi = 300
+)
+
+# Bundle loader — reads the RDS bundle once, then extracts datasets by key
+.load_bundle <- function(bundle_file, key) {
+  if (!exists('.dashboardr_bundle_cache', inherits = FALSE))
+    .dashboardr_bundle_cache <<- list()
+  if (is.null(.dashboardr_bundle_cache[[bundle_file]]))
+    .dashboardr_bundle_cache[[bundle_file]] <<- readRDS(bundle_file)
+  if (!(key %in% names(.dashboardr_bundle_cache[[bundle_file]])))
+    stop("Bundle key '", key, "' not found in ", bundle_file, call. = FALSE)
+  .dashboardr_bundle_cache[[bundle_file]][[key]]
+}
+
+# Load multiple datasets
+
+# Load wp2
+wp2 <- .load_bundle('dashboard_data_bundle.rds', 'wp2_151obs.rds')
+cat('wp2 loaded:', nrow(wp2), 'rows,', ncol(wp2), 'columns\n')
+
+# Load domains_long
+domains_long <- .load_bundle('dashboard_data_bundle.rds', 'domains_long_330obs.rds')
+cat('domains_long loaded:', nrow(domains_long), 'rows,', ncol(domains_long), 'columns\n')
+
+# Load problems_long
+problems_long <- .load_bundle('dashboard_data_bundle.rds', 'problems_long_236obs.rds')
+cat('problems_long loaded:', nrow(problems_long), 'rows,', ncol(problems_long), 'columns\n')
+
+# Load outcomes_long
+outcomes_long <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_long_235obs.rds')
+cat('outcomes_long loaded:', nrow(outcomes_long), 'rows,', ncol(outcomes_long), 'columns\n')
+
+# Load problems_report
+problems_report <- .load_bundle('dashboard_data_bundle.rds', 'problems_report_6obs.rds')
+cat('problems_report loaded:', nrow(problems_report), 'rows,', ncol(problems_report), 'columns\n')
+
+# Load outcomes_report
+outcomes_report <- .load_bundle('dashboard_data_bundle.rds', 'outcomes_report_7obs.rds')
+cat('outcomes_report loaded:', nrow(outcomes_report), 'rows,', ncol(outcomes_report), 'columns\n')
+
+# Load runtime_report
+runtime_report <- .load_bundle('dashboard_data_bundle.rds', 'runtime_report_4obs.rds')
+cat('runtime_report loaded:', nrow(runtime_report), 'rows,', ncol(runtime_report), 'columns\n')
+
+```
+
+## Welke problemen worden aangepakt?
+
+
+De meeste interventies richten zich op **cybercriminaliteit** (36%): het verminderen van het risico op fraude, oplichting of identiteitsfraude, beschermende maatregelen tegen cyberaanvallen op mkb's, of weerbaarheidstrainingen voor kwetsbare groepen zoals ouderen. Veel van deze interventies worden geïnitieerd door het Centrum voor Criminaliteitspreventie en Veiligheid (CCV) of de politie.
+
+Het tweede belangrijkste probleem betreft de **veiligheid en het welzijn van jongeren** (21%), zoals cyberpesten, online haat, schending van online seksuele grenzen, socialmediaverslaving en problematisch telefoongebruik. Daarna volgen **AI en digitale transformaties** (14%), **digitale inclusie** (10%), **digitale geletterdheid** (10%) en **desinformatie, nieuws- en mediawijsheid** (6,4%).
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph chart-bar-horizontal-fill >}} Aangepakte problemen
+
+
+```{r problems-report}
+# Aangepakt probleem (inductieve codering, % van interventies)
+result <- viz_bar(
+  data = problems_report,
+  title = "Aangepakt probleem (inductieve codering, % van interventies)",
+  horizontal = TRUE,
+  x_var = "category",
+  y_var = "pct",
+  x_order = c("Cybercriminaliteit", "Veiligheid en welzijn van jongeren", "AI en digitale transformatie", "Digitale inclusie", "Digitale geletterdheid", "Desinformatie, nieuws- en mediawijsheid"),
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  tooltip_suffix = "%"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 440)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 440px !important; min-height: 440px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+*Bron: eindrapport 'Grip op Digitaal Burgerschap' (inductieve codering van de probleem-, uitkomst- en looptijdbeschrijvingen).*
+
+
+
+### {{< iconify ph bank-fill >}} Maatschappelijke vraagstukken
+
+
+
+Daarnaast codeerden we welke maatschappelijke vraagstukken uit het beleidskader Digitale Samenleving elke interventie aanspreekt (maximaal drie per interventie).
+
+```{r problems-policy}
+# Maatschappelijke vraagstukken (max. 3 per interventie)
+result <- viz_bar(
+  data = problems_long,
+  title = "Maatschappelijke vraagstukken (max. 3 per interventie)",
+  horizontal = TRUE,
+  bar_type = "count",
+  x_var = "category",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "Aantal interventies"
+)
+
+result
+```
+
+
+:::
+
+## Wat willen de interventies bereiken?
+
+
+Over het algemeen is het doel van de interventies om burgers digitaal vaardiger en veiliger te maken, wat nauw aansluit bij de problemen die ze beogen aan te pakken. 34% verwacht **meer online veiligheid** door verminderde kwetsbaarheid voor cybercriminaliteit, fraude en phishing; 30% wil **digitale geletterdheid** bevorderen (basisvaardigheden, mediawijsheid, AI-geletterdheid); en 21% richt zich specifiek op de **digitale veiligheid en gezondheid van jongeren**. Interventies richten zich minder vaak op toegang tot digitale apparaten en diensten (8%), verantwoorde digitalisering binnen organisaties (4%) en bredere sociale risico's, zoals openbare-ordeverstoringen of verkeersveiligheid (2%). Bij 1% is geen concrete uitkomst vermeld.
+
+
+::: {.panel-tabset}
+
+### {{< iconify ph chart-bar-horizontal-fill >}} Verwachte uitkomsten
+
+
+```{r outcomes-inductive}
+# Verwachte uitkomst (inductieve codering, % van interventies)
+result <- viz_bar(
+  data = outcomes_report,
+  title = "Verwachte uitkomst (inductieve codering, % van interventies)",
+  horizontal = TRUE,
+  x_var = "category",
+  y_var = "pct",
+  x_order = c("Meer online veiligheid", "Digitale geletterdheid bevorderen", "Digitale veiligheid en gezondheid van jongeren", "Toegang tot digitale apparaten en diensten", "Verantwoorde digitalisering in organisaties", "Bredere sociale risico's", "Geen concrete uitkomst vermeld"),
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "% van interventies",
+  tooltip_suffix = "%"
+)
+
+# Set chart height
+if (inherits(result, 'highchart')) {
+  result <- highcharter::hc_size(result, height = 490)
+}
+
+# Force container height with explicit wrapper
+result <- htmltools::div(
+  style = 'height: 490px !important; min-height: 490px !important; width: 100%; overflow: visible;',
+  result
+)
+
+result
+```
+
+*Bron: eindrapport 'Grip op Digitaal Burgerschap' (inductieve codering van de probleem-, uitkomst- en looptijdbeschrijvingen).*
+
+
+
+### {{< iconify ph target-fill >}} Uitkomstcategorieën
+
+
+```{r outcomes-codes}
+# Verwachte uitkomsten (max. 2 per interventie)
+result <- viz_bar(
+  data = outcomes_long,
+  title = "Verwachte uitkomsten (max. 2 per interventie)",
+  horizontal = TRUE,
+  bar_type = "count",
+  x_var = "category",
+  sort_by_value = TRUE,
+  color_palette = "#3D7271",
+  x_label = "",
+  y_label = "Aantal interventies"
+)
+
+result
+```
+
+
+:::
+
