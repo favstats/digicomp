@@ -8,9 +8,9 @@
 #
 # Run from the repo root (the digicomp.Rproj folder):
 #   source("dashboard-citizen.R")
-# This builds the Dutch version into docs/citizenship/ and then the English
-# version into docs/citizenship/en/ (same layout as the DigIQ Monitor's docs/
-# and docs/en/). Set `lang <- "en"` (or "nl") and `build_both <- FALSE` before
+# This builds the Dutch version into docs/burgerschap/ and then the English
+# version into docs/citizenship/, i.e. dashboard.dedigiq.nl/burgerschap (NL)
+# and dashboard.dedigiq.nl/citizenship (EN). Set `lang <- "en"` (or "nl") and `build_both <- FALSE` before
 # sourcing to build a single language.
 #
 # Inputs (paths relative to the repo root):
@@ -38,14 +38,13 @@ main_color <- "#3D7271"
 # Defaults to TRUE; set `show_table <- FALSE` before sourcing to drop it.
 if (!exists("show_table")) show_table <- TRUE
 
-# Output locations (NL at docs/citizenship/, EN at docs/citizenship/en/) —
-# mirrors digicomp's docs/ + docs/en/ layout, one level down
+# Output locations: NL at docs/burgerschap/, EN at docs/citizenship/
 out_dir     <- if (lang == "nl") "qmds_citizen" else "qmds_citizen_en"
-publish_dir <- if (lang == "nl") "../docs/citizenship" else "../docs/citizenship/en"
+publish_dir <- if (lang == "nl") "../docs/burgerschap" else "../docs/citizenship"
 assets_dir  <- "citizenship_assets"
 
 # Language toggle link (relative so the site works wherever it is hosted)
-other_lang_href <- if (lang == "nl") "en/index.html" else "../index.html"
+other_lang_href <- if (lang == "nl") "../citizenship/index.html" else "../burgerschap/index.html"
 other_lang_flag <- if (lang == "nl") "circle-flags:uk" else "circle-flags:nl"
 
 # WP2 data: the Dutch file Marina sent on 21 September 2026 — the dataset the
