@@ -1,4 +1,6 @@
 
+try(Sys.setlocale("LC_ALL", "en_US.UTF-8"), silent = TRUE)
+
 library(tidyverse)
 
 # run Dutch

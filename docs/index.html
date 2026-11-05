@@ -177,18 +177,6 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
-  <li class="nav-item">
-    <a class="nav-link" href="./skills.html"> 
-<span class="menu-text"><iconify-icon role="img" inline="" icon="ph:lightning-fill" aria-label="Icon lightning-fill from ph Iconify.design set." title="Icon lightning-fill from ph Iconify.design set."></iconify-icon> Vaardigheden</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./performance.html"> 
-<span class="menu-text"><iconify-icon role="img" inline="" icon="ph:clipboard-text" aria-label="Icon clipboard-text from ph Iconify.design set." title="Icon clipboard-text from ph Iconify.design set."></iconify-icon> Prestatie</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./knowledge.html"> 
-<span class="menu-text"><iconify-icon role="img" inline="" icon="ph:book-open-fill" aria-label="Icon book-open-fill from ph Iconify.design set." title="Icon book-open-fill from ph Iconify.design set."></iconify-icon> Kennis</span></a>
-  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item dropdown ">
@@ -282,17 +270,441 @@ section {
 })();
 </script>
 
-<link rel="stylesheet" href="assets/accessibility.css?v=20260220045711">
-<script src="assets/accessibility.js?v=20260220045711"></script>
-<div style="text-align: center;">
-<p>Welkom bij de DigIQ Monitor, met recente inzichten in de digitale competentie van Nederlandse burgers van 10 tot 100 jaar!</p>
-<div style="text-align: center;">
-<p><img src="https://raw.githubusercontent.com/favstats/digicomp/refs/heads/main/img/cover.png" alt="Digitale competentie cover" style="width: 75%; max-width: 100%; height: auto;"></p>
+<link rel="stylesheet" href="assets/accessibility.css?v=20261104190639">
+<script src="assets/accessibility.js?v=20261104190639"></script>
+<style>
+  /* DigIQ Unified Theme & Editorial Observatory Styling */
+  html { scroll-behavior: smooth; }
+  section.level2 { scroll-margin-top: 85px; }
+
+  /* Navbar hover readability */
+  .navbar a:hover, .navbar .navbar-brand:hover, .navbar .navbar-nav .nav-link:hover {
+    color: #3D7271 !important;
+  }
+  .navbar a:hover svg, .navbar .aa-DetachedSearchButton:hover svg, .navbar button:hover svg {
+    fill: #3D7271 !important;
+    stroke: #3D7271 !important;
+  }
+
+  /* Underline tabsets in DigIQ Teal & Terracotta instead of default royal blue */
+  .panel-tabset .nav-item a::after {
+    background-color: #E28D50 !important;
+  }
+  .panel-tabset .nav-tabs .nav-link.active {
+    color: #0F6B5A !important;
+    font-weight: 700 !important;
+  }
+  .panel-tabset .nav-tabs .nav-link.active::after {
+    background-color: #3D7271 !important;
+    height: 3px !important;
+  }
+
+  /* Question blockquotes in clean DigIQ Teal */
+  blockquote.blockquote {
+    border-left: 4px solid #3D7271 !important;
+    background: linear-gradient(90deg, #f4f9f8 0%, #fafcfc 100%) !important;
+    color: #1e3332 !important;
+    border-radius: 0 8px 8px 0 !important;
+    padding: 13px 20px !important;
+    box-shadow: 0 1px 4px rgba(15, 45, 43, 0.04) !important;
+  }
+
+  /* Clickable modal links inside question blockquotes */
+  a.modal-link {
+    color: #0F6B5A !important;
+    font-weight: 600;
+    text-decoration: underline !important;
+    text-decoration-color: rgba(15, 107, 90, 0.45) !important;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+  a.modal-link:hover {
+    color: #E28D50 !important;
+    text-decoration-color: #E28D50 !important;
+  }
+
+  /* Wave 3 missing-data callout note on Performance sections */
+  .dc-wave3-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    border: 1px solid #ebd5c3;
+    border-left: 4px solid #E28D50;
+    background: linear-gradient(90deg, #fdf8f3 0%, #fffcfa 100%);
+    color: #5c3314;
+    padding: 0.7rem 1.05rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.75rem 0 1.1rem 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .dc-wave3-note iconify-icon {
+    color: #E28D50;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    margin-top: 0.14rem;
+  }
+
+  /* Landing page: hide redundant Quarto title header & style Editorial Observatory Hero */
+  body:has(.dc-observatory-hero) #title-block-header {
+    display: none;
+  }
+  .dc-observatory-hero {
+    position: relative;
+    overflow: hidden;
+    margin: 0.5rem 0 2rem 0;
+    padding: 2.2rem 2.5rem 1.75rem 2.5rem;
+    border-radius: 16px;
+    background:
+      radial-gradient(circle at 96% 8%, rgba(61, 114, 113, 0.11) 0%, transparent 45%),
+      radial-gradient(circle at 4% 95%, rgba(226, 141, 80, 0.08) 0%, transparent 40%),
+      linear-gradient(180deg, #ffffff 0%, #f7fbfa 100%);
+    border: 1px solid #d5e3e0;
+    box-shadow: 0 1px 3px rgba(15, 45, 43, 0.03), 0 10px 30px -8px rgba(15, 45, 43, 0.07);
+  }
+  .dc-observatory-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0F6B5A 0%, #3D7271 62%, #E28D50 100%);
+  }
+  .dc-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #0F6B5A;
+    background: #eaf4f1;
+    border: 1px solid #cbe2dc;
+    padding: 0.28rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.95rem;
+  }
+  .dc-hero-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #E28D50;
+    box-shadow: 0 0 0 3px rgba(226, 141, 80, 0.22);
+  }
+  .dc-hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #122928;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.2;
+  }
+  .dc-hero-lead p {
+    font-size: 1.03rem;
+    line-height: 1.65;
+    color: #364f4d;
+    max-width: 880px;
+    margin: 0 0 0.55rem 0;
+  }
+  .dc-hero-lead p:first-child {
+    font-weight: 600;
+    color: #1c3b39;
+  }
+  .dc-hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 0.9rem;
+    margin-top: 1.45rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e1ecea;
+  }
+  .dc-metric-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #e2ecea;
+    border-radius: 10px;
+  }
+  .dc-metric-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #eef6f4;
+    color: #3D7271;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .dc-metric-val {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #142d2c;
+    line-height: 1.2;
+  }
+  .dc-metric-sub {
+    font-size: 0.78rem;
+    color: #5b7472;
+    margin-top: 0.1rem;
+  }
+
+  /* Landing page 11-tile Bento Grid */
+  .dc-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+    gap: 1.15rem;
+    margin: 1.25rem 0 2.25rem 0;
+  }
+  @media (min-width: 1100px) {
+    .dc-links {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .dc-links > .dc-link {
+      grid-column: span 2;
+    }
+    /* Center the final 2 AI cards (10 & 11) on the bottom row */
+    .dc-links > .dc-link:nth-child(10) {
+      grid-column: 2 / span 2;
+    }
+    .dc-links > .dc-link:nth-child(11) {
+      grid-column: 4 / span 2;
+    }
+  }
+  .dc-link {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.35rem 1.4rem 1.15rem 1.4rem;
+    border-radius: 13px;
+    border: 1px solid #dce7e5;
+    border-left: 4px solid #3D7271;
+    background: #ffffff;
+    color: inherit !important;
+    text-decoration: none !important;
+    text-align: left;
+    box-shadow: 0 1px 2px rgba(15, 40, 38, 0.03), 0 6px 18px -4px rgba(15, 40, 38, 0.05);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  }
+  .dc-link::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3D7271, #E28D50);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+  }
+  .dc-link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(15, 40, 38, 0.04), 0 16px 32px -6px rgba(15, 40, 38, 0.11);
+    border-color: #b8cfcc;
+    border-left-color: #E28D50;
+  }
+  .dc-link:hover::after {
+    opacity: 1;
+  }
+  .dc-card-watermark {
+    position: absolute;
+    right: -10px;
+    bottom: -14px;
+    font-size: 5.4rem;
+    color: #3D7271;
+    opacity: 0.04;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease, color 0.3s ease;
+  }
+  .dc-link:hover .dc-card-watermark {
+    transform: scale(1.08) rotate(-5deg);
+    opacity: 0.075;
+    color: #0F6B5A;
+  }
+  .dc-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .dc-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+  .dc-card-emblem {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: #eef5f3;
+    border: 1px solid #d5e6e2;
+    color: #0F6B5A;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.22rem;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .dc-link:hover .dc-card-emblem {
+    background: #3D7271;
+    border-color: #3D7271;
+    color: #ffffff;
+    transform: scale(1.04);
+  }
+  .dc-link-title {
+    font-weight: 700;
+    color: #142c2b;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    transition: color 0.2s ease;
+  }
+  .dc-link:hover .dc-link-title {
+    color: #0F6B5A;
+  }
+  .dc-card-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: #7c9694;
+    background: #f3f7f6;
+    border: 1px solid #e3ecea;
+    padding: 0.14rem 0.48rem;
+    border-radius: 6px;
+    flex-shrink: 0;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .dc-link:hover .dc-card-num {
+    color: #9c4215;
+    background: #fdf3eb;
+    border-color: #f0cdb4;
+  }
+  .dc-link-text {
+    position: relative;
+    z-index: 1;
+    font-size: 0.91rem;
+    line-height: 1.54;
+    color: #495e5d;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+  .dc-card-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.65rem;
+    border-top: 1px solid #eff4f3;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #3D7271;
+    letter-spacing: 0.01em;
+    transition: color 0.2s ease;
+  }
+  .dc-card-cta-arrow {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #88a3a0;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .dc-link:hover .dc-card-footer {
+    color: #0F6B5A;
+  }
+  .dc-link:hover .dc-card-cta-arrow {
+    transform: translateX(4px);
+    color: #E28D50;
+  }
+
+  /* Dimension page intro panel & unified architectural jump-chips */
+  .dc-dim-intro {
+    background: #ffffff;
+    border: 1px solid #d8e4e2;
+    border-left: 5px solid #3D7271;
+    border-radius: 12px;
+    padding: 1.2rem 1.45rem;
+    margin: 0.65rem 0 1.65rem 0;
+    box-shadow: 0 2px 12px rgba(15, 45, 43, 0.04);
+  }
+  .dc-dim-intro > p {
+    font-size: 1.01rem;
+    line-height: 1.65;
+    color: #213736;
+    margin-bottom: 0.8rem;
+  }
+  .dc-jump-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid #e7f0ee;
+    font-size: 0.92rem;
+    color: #425958;
+    margin: 0;
+  }
+  .dc-jump-label {
+    font-weight: 600;
+    color: #1b3332;
+    margin-right: 0.15rem;
+  }
+  a.dc-jump-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.24rem 0.7rem;
+    border-radius: 7px;
+    background: #f3f8f7;
+    border: 1px solid #cde0dd;
+    color: #0F6B5A !important;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.16s ease;
+  }
+  a.dc-jump-link:hover {
+    background: #3D7271;
+    border-color: #3D7271;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(61, 114, 113, 0.18);
+  }
+</style>
+<div class='dc-observatory-hero'>
+  <div class='dc-hero-eyebrow'><span class='dc-hero-dot'></span> Project CID · Nationale Monitor Digitale Competentie</div>
+  <h1 class='dc-hero-title'>Welkom bij de DigIQ Monitor</h1>
+  <div class='dc-hero-lead'>
+    <p>Welkom bij de DigIQ Monitor, met recente inzichten in de digitale competentie van Nederlandse burgers van 10 tot 100 jaar!</p><p>Dit dashboard verzamelt gegevens die met behulp van de <strong>DigIQ</strong> zijn verzameld om te laten zien hoe zelfverzekerd burgers zijn over hun eigen digitale competentie, hoeveel kennis ze hebben over het gebruik van digitale media en technologie, en hoe ze op dit gebied presteren. Dit wordt gemeten aan de hand van de volgende 11 dimensies:</p>
+  </div>
+  <div class='dc-hero-metrics'>
+    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:users-three-fill'></iconify-icon></div><div><div class='dc-metric-val'>5.307 Respondenten</div><div class='dc-metric-sub'>Gewogen nationale steekproef (10–100 jaar)</div></div></div>
+    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:chart-line-up-bold'></iconify-icon></div><div><div class='dc-metric-val'>3 Datarondes</div><div class='dc-metric-sub'>Dec '24 · Jun '25 · Dec '25</div></div></div>
+    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:squares-four-fill'></iconify-icon></div><div><div class='dc-metric-val'>11 Dimensies</div><div class='dc-metric-sub'>Van informatie & veiligheid tot GenAI</div></div></div>
+    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:compass-tool-fill'></iconify-icon></div><div><div class='dc-metric-val'>3 Meetpijlers</div><div class='dc-metric-sub'>Vaardigheden · Kennis · Prestatie</div></div></div>
+  </div>
 </div>
-<p>Dit dashboard verzamelt gegevens die met behulp van de <strong>DigIQ</strong> zijn verzameld om te laten zien hoe zelfverzekerd burgers zijn over hun eigen digitale competentie, hoeveel kennis ze hebben over het gebruik van digitale media en technologie, en hoe ze op dit gebied presteren.</p>
-<p>De monitor is verdeeld in drie hoofdpagina’s:<br>
-<a href="skills.html"><iconify-icon role="img" inline="" icon="ph:lightning-fill" aria-label="Icon lightning-fill from ph Iconify.design set." title="Icon lightning-fill from ph Iconify.design set."></iconify-icon> Vaardigheden</a>, <a href="knowledge.html"><iconify-icon role="img" inline="" icon="ph:book-open-fill" aria-label="Icon book-open-fill from ph Iconify.design set." title="Icon book-open-fill from ph Iconify.design set."></iconify-icon> Kennis</a>, en <a href="performance.html"><iconify-icon role="img" inline="" icon="ph:clipboard-text" aria-label="Icon clipboard-text from ph Iconify.design set." title="Icon clipboard-text from ph Iconify.design set."></iconify-icon> Prestaties</a>.</p>
-<p><iconify-icon role="img" inline="" icon="ph:cursor-click-fill" aria-label="Icon cursor-click-fill from ph Iconify.design set." title="Icon cursor-click-fill from ph Iconify.design set."></iconify-icon> Klik op de hyperlinks hierboven voor snelle navigatie. Onder <strong>Dimensies</strong> vindt u een beschrijving van de 11 domeinen van digitale competentie.</p>
+
+<div class='dc-links'>
+<a class='dc-link' href='strategic_information.html'><iconify-icon class='dc-card-watermark' icon='ph:magnifying-glass'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:magnifying-glass'></iconify-icon></span><span class='dc-link-title'>Strategische Informatie</span></div><span class='dc-card-num'>01</span></div><div class='dc-link-text'>Effectief zoeken naar en vinden van online informatie, goede zoekwoorden kiezen en zoekfuncties gebruiken.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='critical_information.html'><iconify-icon class='dc-card-watermark' icon='ph:detective-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:detective-fill'></iconify-icon></span><span class='dc-link-title'>Kritische Informatie</span></div><span class='dc-card-num'>02</span></div><div class='dc-link-text'>Online informatie evalueren, betrouwbaarheid beoordelen en het doel van online content begrijpen.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='netiquette.html'><iconify-icon class='dc-card-watermark' icon='ph:chats-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:chats-fill'></iconify-icon></span><span class='dc-link-title'>Netiquette</span></div><span class='dc-card-num'>03</span></div><div class='dc-link-text'>Online communicatie-etiquette: toestemming vragen voor delen, de juiste tool kiezen en respectvol communiceren.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='digital_content_creation.html'><iconify-icon class='dc-card-watermark' icon='ph:palette-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:palette-fill'></iconify-icon></span><span class='dc-link-title'>Digitale Inhoudscreatie</span></div><span class='dc-card-num'>04</span></div><div class='dc-link-text'>Digitale content maken en aanpassen, media combineren, beeld/video bewerken en auteursrechten begrijpen.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='safety.html'><iconify-icon class='dc-card-watermark' icon='ph:shield-check-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:shield-check-fill'></iconify-icon></span><span class='dc-link-title'>Veiligheid</span></div><span class='dc-card-num'>05</span></div><div class='dc-link-text'>Apparaten en persoonlijke gegevens beschermen, privacy-instellingen beheren en phishing herkennen.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='digital_health.html'><iconify-icon class='dc-card-watermark' icon='ph:heart-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:heart-fill'></iconify-icon></span><span class='dc-link-title'>Digitale Gezondheid</span></div><span class='dc-card-num'>06</span></div><div class='dc-link-text'>Gezonde digitale gewoonten beheren, schermtijd controleren, afleidingen beperken en welzijn beschermen.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='green_digital.html'><iconify-icon class='dc-card-watermark' icon='ph:recycle-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:recycle-fill'></iconify-icon></span><span class='dc-link-title'>Groen Digitaal</span></div><span class='dc-card-num'>07</span></div><div class='dc-link-text'>Milieubewust technologiegebruik: energieverbruik verminderen, elektronica recyclen en duurzame keuzes maken.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='digital_problem_solving.html'><iconify-icon class='dc-card-watermark' icon='ph:lightbulb-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:lightbulb-fill'></iconify-icon></span><span class='dc-link-title'>Digitale Problemen Oplossen</span></div><span class='dc-card-num'>08</span></div><div class='dc-link-text'>Weten waar je hulp kunt vinden bij digitale uitdagingen en hoe je digitale competenties kunt verbeteren.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='transactional.html'><iconify-icon class='dc-card-watermark' icon='ph:wallet-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:wallet-fill'></iconify-icon></span><span class='dc-link-title'>Transactioneel</span></div><span class='dc-card-num'>09</span></div><div class='dc-link-text'>Officiële online zaken afhandelen: overheidsdiensten, digitale betalingen, zorgzaken en documenten uploaden.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='ai.html'><iconify-icon class='dc-card-watermark' icon='ph:robot-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:robot-fill'></iconify-icon></span><span class='dc-link-title'>AI</span></div><span class='dc-card-num'>10</span></div><div class='dc-link-text'>Herkennen wanneer en hoe websites en apps kunstmatige intelligentie gebruiken om content en aanbevelingen te personaliseren.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+<a class='dc-link' href='gen_ai.html'><iconify-icon class='dc-card-watermark' icon='ph:magic-wand-fill'></iconify-icon><div><div class='dc-card-top'><div class='dc-card-title-group'><span class='dc-card-emblem'><iconify-icon icon='ph:magic-wand-fill'></iconify-icon></span><span class='dc-link-title'>Gen AI</span></div><span class='dc-card-num'>11</span></div><div class='dc-link-text'>Omgaan met generatieve AI-tools zoals ChatGPT: effectieve prompts schrijven, output controleren en AI-media herkennen.</div></div><div class='dc-card-footer'><span>Bekijk dimensie</span><span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span></div></a>
+</div>
+
+<div style="text-align: center; color: #4a5b5a; font-size: 0.96rem; margin-top: 0.5rem;">
 <p>Voor achtergrondinformatie over het project en gedetailleerde ronde-rapportages, zie het <strong>Meer informatie</strong> menu rechtsboven.</p>
 <br> <br>
 <center>

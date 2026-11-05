@@ -7,7 +7,341 @@ format: html
 dashboardr::.page_config(accessibility = TRUE, modals = TRUE, crosstab_prefix = "digital_content_creation")
 ```
 
+```{=html}
+<style>
+  /* DigIQ Unified Theme & Color Palette Overrides */
+  html { scroll-behavior: smooth; }
+  section.level2 { scroll-margin-top: 85px; }
+
+  /* Navbar hover readability */
+  .navbar a:hover, .navbar .navbar-brand:hover, .navbar .navbar-nav .nav-link:hover {
+    color: #3D7271 !important;
+  }
+  .navbar a:hover svg, .navbar .aa-DetachedSearchButton:hover svg, .navbar button:hover svg {
+    fill: #3D7271 !important;
+    stroke: #3D7271 !important;
+  }
+
+  /* Underline tabsets in DigIQ Teal & Terracotta instead of default royal blue */
+  .panel-tabset .nav-item a::after {
+    background-color: #E28D50 !important;
+  }
+  .panel-tabset .nav-tabs .nav-link.active {
+    color: #0F6B5A !important;
+    font-weight: 700 !important;
+  }
+  .panel-tabset .nav-tabs .nav-link.active::after {
+    background-color: #3D7271 !important;
+    height: 3px !important;
+  }
+
+  /* Question blockquotes in DigIQ Teal & Soft Mint */
+  blockquote.blockquote {
+    border-left: 5px solid #3D7271 !important;
+    background: linear-gradient(90deg, #f2f8f6 0%, #f9fbfb 100%) !important;
+    color: #243b3a !important;
+    border-radius: 0 10px 10px 0 !important;
+    padding: 14px 22px !important;
+    box-shadow: 0 2px 6px rgba(61, 114, 113, 0.06) !important;
+  }
+
+  /* Clickable modal links inside question blockquotes */
+  a.modal-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #e4f2ee;
+    color: #0F6B5A !important;
+    padding: 2px 9px;
+    border-radius: 6px;
+    border: 1px solid #b5ded2;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.18s ease;
+  }
+  a.modal-link:hover {
+    background-color: #3D7271;
+    color: #ffffff !important;
+    border-color: #3D7271;
+    transform: translateY(-1px);
+  }
+
+  /* Wave 3 missing-data callout note on Performance sections */
+  .dc-wave3-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    border-left: 4px solid #E28D50;
+    background-color: #fdf6ef;
+    color: #6e3b14;
+    padding: 0.7rem 1.05rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.75rem 0 1rem 0;
+    font-size: 0.93rem;
+    line-height: 1.5;
+  }
+  .dc-wave3-note iconify-icon {
+    color: #E28D50;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.12rem;
+  }
+
+  /* Landing page hero & info banner */
+  .dc-hero {
+    max-width: 920px;
+    margin: 0.5rem auto 1.75rem auto;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #f4f9f7 0%, #ebf4f1 100%);
+    border: 1px solid #d5e5e1;
+    border-top: 4px solid #3D7271;
+    border-radius: 14px;
+    text-align: center;
+    color: #243b3a;
+    box-shadow: 0 4px 16px rgba(31, 63, 62, 0.05);
+  }
+  .dc-hero p:first-child {
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: #0F6B5A;
+    margin-bottom: 0.65rem;
+  }
+  .dc-hero p:last-child {
+    font-size: 1.01rem;
+    line-height: 1.65;
+    color: #334e4d;
+    margin-bottom: 0;
+  }
+
+  /* Landing page 11-tile grid */
+  .dc-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.15rem;
+    margin: 1.5rem 0 2rem 0;
+  }
+  @media (min-width: 1100px) {
+    .dc-links {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .dc-links > .dc-link {
+      grid-column: span 2;
+    }
+    /* Center the final 2 cards (10 & 11) on the bottom row */
+    .dc-links > .dc-link:nth-child(10) {
+      grid-column: 2 / span 2;
+    }
+    .dc-links > .dc-link:nth-child(11) {
+      grid-column: 4 / span 2;
+    }
+  }
+  .dc-link {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.25rem 1.35rem;
+    border-radius: 13px;
+    border: 1px solid #d5e3e0;
+    border-left: 6px solid #3D7271;
+    background: #ffffff;
+    color: inherit !important;
+    text-decoration: none !important;
+    text-align: left;
+    box-shadow: 0 2px 10px rgba(31, 63, 62, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .dc-link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(31, 63, 62, 0.12);
+    border-color: #3D7271;
+    border-left-color: #E28D50;
+    background: #fbfdfc;
+  }
+  .dc-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+  .dc-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #e6f4f0 0%, #c7e6d5 100%);
+    color: #0F6B5A;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .dc-link:hover .dc-card-icon {
+    background: #3D7271;
+    color: #ffffff;
+    transform: scale(1.05);
+  }
+  .dc-link-title {
+    font-weight: 700;
+    color: #1f3f3e;
+    font-size: 1.06rem;
+    line-height: 1.25;
+    flex-grow: 1;
+    transition: color 0.2s ease;
+  }
+  .dc-link:hover .dc-link-title {
+    color: #0F6B5A;
+  }
+  .dc-card-arrow {
+    color: #9ab3b0;
+    font-size: 1.05rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+  }
+  .dc-link:hover .dc-card-arrow {
+    transform: translateX(4px);
+    color: #E28D50;
+  }
+  .dc-link-text {
+    font-size: 0.91rem;
+    line-height: 1.5;
+    color: #4a5b5a;
+    margin-bottom: 0.9rem;
+    flex-grow: 1;
+  }
+  .dc-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 0.65rem;
+    border-top: 1px solid #edf3f2;
+  }
+  .dc-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .dc-tag-skills {
+    background-color: #e6f4f0;
+    color: #0F6B5A;
+    border: 1px solid #bfe3d7;
+  }
+  .dc-tag-knowledge {
+    background-color: #fef6dc;
+    color: #825600;
+    border: 1px solid #f0d57d;
+  }
+  .dc-tag-perf {
+    background-color: #fdede2;
+    color: #9c4215;
+    border: 1px solid #eeb998;
+  }
+
+  /* Dimension page intro card & clickable measurement jump-pills */
+  .dc-dim-intro {
+    background: linear-gradient(135deg, #f6faf9 0%, #ecf4f2 100%);
+    border: 1px solid #d3e3e0;
+    border-left: 6px solid #3D7271;
+    border-radius: 13px;
+    padding: 1.25rem 1.5rem;
+    margin: 0.75rem 0 1.75rem 0;
+    box-shadow: 0 3px 12px rgba(31, 63, 62, 0.05);
+  }
+  .dc-dim-intro > p {
+    font-size: 1.03rem;
+    line-height: 1.65;
+    color: #243b3a;
+    margin-bottom: 0.85rem;
+  }
+  .dc-jump-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(61, 114, 113, 0.15);
+    font-size: 0.96rem;
+    color: #2f4b4a;
+  }
+  .dc-jump-label {
+    font-weight: 600;
+    color: #1f3f3e;
+    margin-right: 0.15rem;
+  }
+  .dc-jump-sep {
+    color: #546e6d;
+    margin-right: 0.1rem;
+  }
+  a.dc-jump-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    padding: 0.32rem 0.82rem;
+    border-radius: 999px;
+    font-size: 0.89rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+  a.dc-jump-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(31, 63, 62, 0.15);
+  }
+  .dc-jump-arrow {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    transition: transform 0.18s ease;
+  }
+  a.dc-jump-pill:hover .dc-jump-arrow {
+    transform: translateY(2px);
+    opacity: 1;
+  }
+  a.dc-jump-skills {
+    background-color: #e6f4f0;
+    color: #0F6B5A !important;
+    border: 1px solid #b3ddd0;
+  }
+  a.dc-jump-skills:hover {
+    background-color: #3D7271;
+    color: #ffffff !important;
+    border-color: #3D7271;
+  }
+  a.dc-jump-knowledge {
+    background-color: #fef6dc;
+    color: #7d5200 !important;
+    border: 1px solid #ebd076;
+  }
+  a.dc-jump-knowledge:hover {
+    background-color: #c98f12;
+    color: #ffffff !important;
+    border-color: #c98f12;
+  }
+  a.dc-jump-perf {
+    background-color: #fdede2;
+    color: #9c4215 !important;
+    border: 1px solid #ebb491;
+  }
+  a.dc-jump-perf:hover {
+    background-color: #E28D50;
+    color: #ffffff !important;
+    border-color: #E28D50;
+  }
+</style>
+```
+
+::: {.dc-dim-intro}
 **Digitale Contentcreatie competentie** omvat het vermogen om digitale content te maken en aan te passen: presentaties maken, verschillende media combineren, beelden/muziek/video bewerken, en auteursrechten begrijpen rond digitale content.
+
+```{=html}
+<div class='dc-jump-row'><span class='dc-jump-label'>Dit wordt op drie manieren gemeten:</span> <a class='dc-jump-pill dc-jump-skills' href='#inhoudscreatie-vaardigheden'><iconify-icon inline icon='ph:lightning-fill'></iconify-icon> <span>zelfingeschatte vaardigheden</span> <span class='dc-jump-arrow'>&#8595;</span></a><span class='dc-jump-sep'>,</span> <a class='dc-jump-pill dc-jump-knowledge' href='#inhoudscreatie-kennis'><iconify-icon inline icon='ph:book-open-fill'></iconify-icon> <span>items die kennis testen</span> <span class='dc-jump-arrow'>&#8595;</span></a><span class='dc-jump-sep'>, en</span> <a class='dc-jump-pill dc-jump-perf' href='#inhoudscreatie-prestatie'><iconify-icon inline icon='ph:clipboard-text'></iconify-icon> <span>prestaties/gedrag</span> <span class='dc-jump-arrow'>&#8595;</span></a><span class='dc-jump-sep'>.</span></div>
+```
+:::
 
 ```{r setup}
 #| echo: false
@@ -31,7 +365,7 @@ knitr::opts_chunk$set(
 )
 
 # Load data
-data <- readRDS('dataset_4014obs.rds')
+data <- readRDS('dataset_large_5307obs.rds')
 
 # Data summary
 cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
@@ -41,17 +375,19 @@ cat('Dataset loaded:', nrow(data), 'rows,', ncol(data), 'columns\n')
 
 data_filtered_984a0efe <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 1)
 data_filtered_4af682fd <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 2)
+data_filtered_5311412c <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave == 3)
+data_filtered_f45d3309 <- dashboardr::.convert_haven(data) %>% dplyr::filter(wave %in% c(1, 2))
 
 ```
 
 ## {{< iconify ph lightning-fill >}} Inhoudscreatie Vaardigheden
 
 
-**Vaardigheden** meet het *zelfgerapporteerde vermogen* van deelnemers om een ​​breed scala aan digitale taken uit te voeren. Deze items leggen vast hoe zelfverzekerd mensen zich voelen bij het zoeken naar informatie.
+**Vaardigheden** meet het *zelfgerapporteerde vermogen* van deelnemers om een breed scala aan digitale taken uit te voeren. Deze items leggen vast hoe zelfverzekerd mensen zich voelen bij het zoeken naar informatie.
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoonlijk, als je de activiteit nu en in je eentje zou moeten doen. Wees vooral eerlijk, het is heel normaal dat je sommige dingen nooit doet. Dat willen we juist weten! Als je niet begrijpt wat de vraag inhoudt, kruis dan aan 'Ik begrijp de vraag niet'.", preset = "question")
 ```
-[{{< iconify ph cards >}} Bekijk alle Vaardigheden-resultaten](skills.html)
+
 
 
 ::: {.panel-tabset}
@@ -64,7 +400,7 @@ create_blockquote("Bedenk in hoeverre elke zin klopt of waar is voor jou persoon
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r dccs-wave1-overall-2}
+```{r dccs-wave1-overall}
 # Digitale Contentcreatievaardigheden
 result <- viz_stackedbars(
   data = data_filtered_984a0efe,
@@ -94,7 +430,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave1-age-item1-2}
+```{r dccs-wave1-age-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -118,7 +454,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave1-age-item2-2}
+```{r dccs-wave1-age-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -142,7 +478,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave1-age-item3-2}
+```{r dccs-wave1-age-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -166,7 +502,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave1-age-item4-2}
+```{r dccs-wave1-age-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -198,7 +534,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave1-gender-item1-2}
+```{r dccs-wave1-gender-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -222,7 +558,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave1-gender-item2-2}
+```{r dccs-wave1-gender-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -246,7 +582,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave1-gender-item3-2}
+```{r dccs-wave1-gender-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -270,7 +606,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave1-gender-item4-2}
+```{r dccs-wave1-gender-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -302,7 +638,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave1-edu-item1-2}
+```{r dccs-wave1-edu-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -326,7 +662,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave1-edu-item2-2}
+```{r dccs-wave1-edu-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -350,7 +686,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave1-edu-item3-2}
+```{r dccs-wave1-edu-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -374,7 +710,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave1-edu-item4-2}
+```{r dccs-wave1-edu-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -406,7 +742,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave1-mig-item1-2}
+```{r dccs-wave1-mig-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -430,7 +766,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave1-mig-item2-2}
+```{r dccs-wave1-mig-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -454,7 +790,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave1-mig-item3-2}
+```{r dccs-wave1-mig-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -478,7 +814,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave1-mig-item4-2}
+```{r dccs-wave1-mig-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -513,7 +849,7 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r dccs-wave2-overall-2}
+```{r dccs-wave2-overall}
 # Digitale Contentcreatievaardigheden
 result <- viz_stackedbars(
   data = data_filtered_4af682fd,
@@ -543,7 +879,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave2-age-item1-2}
+```{r dccs-wave2-age-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -567,7 +903,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave2-age-item2-2}
+```{r dccs-wave2-age-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -591,7 +927,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave2-age-item3-2}
+```{r dccs-wave2-age-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -615,7 +951,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave2-age-item4-2}
+```{r dccs-wave2-age-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -647,7 +983,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave2-gender-item1-2}
+```{r dccs-wave2-gender-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -671,7 +1007,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave2-gender-item2-2}
+```{r dccs-wave2-gender-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -695,7 +1031,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave2-gender-item3-2}
+```{r dccs-wave2-gender-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -719,7 +1055,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave2-gender-item4-2}
+```{r dccs-wave2-gender-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -751,7 +1087,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave2-edu-item1-2}
+```{r dccs-wave2-edu-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -775,7 +1111,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave2-edu-item2-2}
+```{r dccs-wave2-edu-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -799,7 +1135,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave2-edu-item3-2}
+```{r dccs-wave2-edu-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -823,7 +1159,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave2-edu-item4-2}
+```{r dccs-wave2-edu-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -855,7 +1191,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-wave2-mig-item1-2}
+```{r dccs-wave2-mig-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -879,7 +1215,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-wave2-mig-item2-2}
+```{r dccs-wave2-mig-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -903,7 +1239,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-wave2-mig-item3-2}
+```{r dccs-wave2-mig-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -927,10 +1263,459 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-wave2-mig-item4-2}
+```{r dccs-wave2-mig-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
+  title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SCrea5"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-three-fill >}} Ronde 3
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r dccs-wave3-overall}
+# Digitale Contentcreatievaardigheden
+result <- viz_stackedbars(
+  data = data_filtered_5311412c,
+  title = "Digitale Contentcreatievaardigheden",
+  x_vars = c("SCrea2", "SCrea3", "SCrea4", "SCrea5"),
+  x_var_labels = c("Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)", "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)", "Ik kan bestaande digitale plaatjes, muziek en video veranderen", "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r dccs-wave3-age-item1}
+# Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SCrea2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r dccs-wave3-age-item2}
+# Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SCrea3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dccs-wave3-age-item3}
+# Ik kan bestaande digitale plaatjes, muziek en video veranderen
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r dccs-wave3-age-item4}
+# Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "SCrea5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r dccs-wave3-gender-item1}
+# Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SCrea2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r dccs-wave3-gender-item2}
+# Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SCrea3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dccs-wave3-gender-item3}
+# Ik kan bestaande digitale plaatjes, muziek en video veranderen
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r dccs-wave3-gender-item4}
+# Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "SCrea5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r dccs-wave3-edu-item1}
+# Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SCrea2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r dccs-wave3-edu-item2}
+# Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SCrea3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dccs-wave3-edu-item3}
+# Ik kan bestaande digitale plaatjes, muziek en video veranderen
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r dccs-wave3-edu-item4}
+# Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "SCrea5"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r dccs-wave3-mig-item1}
+# Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SCrea2"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r dccs-wave3-mig-item2}
+# Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SCrea3"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 3
+
+
+```{r dccs-wave3-mig-item3}
+# Ik kan bestaande digitale plaatjes, muziek en video veranderen
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Ik kan bestaande digitale plaatjes, muziek en video veranderen",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0.5, 2.5, 3.5, 5.5),
+  stack_bin_labels = c("Helemaal Onwaar (1-2)", "Niet onwaar en niet waar (3)", "Helemaal Waar (4-5)"),
+  stack_order = c("Helemaal Waar (4-5)", "Niet onwaar en niet waar (3)", "Helemaal Onwaar (1-2)"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "SCrea4"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 4
+
+
+```{r dccs-wave3-mig-item4}
+# Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
   title = "Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)",
   stacked_type = "percent",
   horizontal = TRUE,
@@ -967,7 +1752,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-overtime-overall-item1-2}
+```{r dccs-overtime-overall-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_timeline(
   data = data,
@@ -993,7 +1778,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-overtime-overall-item2-2}
+```{r dccs-overtime-overall-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_timeline(
   data = data,
@@ -1019,7 +1804,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-overtime-overall-item3-2}
+```{r dccs-overtime-overall-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_timeline(
   data = data,
@@ -1045,7 +1830,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-overtime-overall-item4-2}
+```{r dccs-overtime-overall-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_timeline(
   data = data,
@@ -1079,7 +1864,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-overtime-age-item1-2}
+```{r dccs-overtime-age-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_timeline(
   data = data,
@@ -1104,7 +1889,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-overtime-age-item2-2}
+```{r dccs-overtime-age-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_timeline(
   data = data,
@@ -1129,7 +1914,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-overtime-age-item3-2}
+```{r dccs-overtime-age-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_timeline(
   data = data,
@@ -1154,7 +1939,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-overtime-age-item4-2}
+```{r dccs-overtime-age-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_timeline(
   data = data,
@@ -1187,7 +1972,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-overtime-gender-item1-2}
+```{r dccs-overtime-gender-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_timeline(
   data = data,
@@ -1212,7 +1997,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-overtime-gender-item2-2}
+```{r dccs-overtime-gender-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_timeline(
   data = data,
@@ -1237,7 +2022,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-overtime-gender-item3-2}
+```{r dccs-overtime-gender-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_timeline(
   data = data,
@@ -1262,7 +2047,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-overtime-gender-item4-2}
+```{r dccs-overtime-gender-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_timeline(
   data = data,
@@ -1295,7 +2080,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-overtime-edu-item1-2}
+```{r dccs-overtime-edu-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_timeline(
   data = data,
@@ -1320,7 +2105,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-overtime-edu-item2-2}
+```{r dccs-overtime-edu-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_timeline(
   data = data,
@@ -1345,7 +2130,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-overtime-edu-item3-2}
+```{r dccs-overtime-edu-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_timeline(
   data = data,
@@ -1370,7 +2155,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-overtime-edu-item4-2}
+```{r dccs-overtime-edu-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_timeline(
   data = data,
@@ -1403,7 +2188,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r dccs-overtime-mig-item1-2}
+```{r dccs-overtime-mig-item1}
 # Ik kan op de computer een presentatie maken (bijvoorbeeld in Powerpoint)
 result <- viz_timeline(
   data = data,
@@ -1428,7 +2213,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r dccs-overtime-mig-item2-2}
+```{r dccs-overtime-mig-item2}
 # Ik kan iets maken dat verschillende digitale media combineert (bijvoorbeeld een filmpje met muziek eronder)
 result <- viz_timeline(
   data = data,
@@ -1453,7 +2238,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 3
 
 
-```{r dccs-overtime-mig-item3-2}
+```{r dccs-overtime-mig-item3}
 # Ik kan bestaande digitale plaatjes, muziek en video veranderen
 result <- viz_timeline(
   data = data,
@@ -1478,7 +2263,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 4
 
 
-```{r dccs-overtime-mig-item4-2}
+```{r dccs-overtime-mig-item4}
 # Ik kan een foto of video mooier maken (bijvoorbeeld met een filter of Photoshop)
 result <- viz_timeline(
   data = data,
@@ -1515,7 +2300,7 @@ result
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote("Nu volgen een aantal uitspraken die gaan over het online media en digitale technologie. Geef aan of de zin volgens jou feitelijk wel waar of juist niet waar is (dus in het algemeen, niet voor jou persoonlijk). Als je het niet weet, kruis dan aan 'ik weet het niet'. Je hoeft dus niet te gokken.", preset = "question")
 ```
-[{{< iconify ph cards >}} Bekijk alle Kennisresultaten](knowledge.html)
+
 
 
 ::: {.panel-tabset}
@@ -1528,7 +2313,7 @@ create_blockquote("Nu volgen een aantal uitspraken die gaan over het online medi
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r kcrea-wave1-overall-2}
+```{r kcrea-wave1-overall}
 # 
 result <- viz_stackedbars(
   data = data_filtered_984a0efe,
@@ -1559,7 +2344,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave1-age-item1-2}
+```{r kcrea-wave1-age-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1584,7 +2369,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave1-age-item2-2}
+```{r kcrea-wave1-age-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1617,7 +2402,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave1-gender-item1-2}
+```{r kcrea-wave1-gender-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1642,7 +2427,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave1-gender-item2-2}
+```{r kcrea-wave1-gender-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1675,7 +2460,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave1-edu-item1-2}
+```{r kcrea-wave1-edu-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1700,7 +2485,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave1-edu-item2-2}
+```{r kcrea-wave1-edu-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1733,7 +2518,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave1-mig-item1-2}
+```{r kcrea-wave1-mig-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1758,7 +2543,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave1-mig-item2-2}
+```{r kcrea-wave1-mig-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_984a0efe,
@@ -1794,7 +2579,7 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r kcrea-wave2-overall-2}
+```{r kcrea-wave2-overall}
 # 
 result <- viz_stackedbars(
   data = data_filtered_4af682fd,
@@ -1825,7 +2610,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave2-age-item1-2}
+```{r kcrea-wave2-age-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -1850,7 +2635,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave2-age-item2-2}
+```{r kcrea-wave2-age-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -1883,7 +2668,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave2-gender-item1-2}
+```{r kcrea-wave2-gender-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -1908,7 +2693,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave2-gender-item2-2}
+```{r kcrea-wave2-gender-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -1941,7 +2726,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave2-edu-item1-2}
+```{r kcrea-wave2-edu-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -1966,7 +2751,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave2-edu-item2-2}
+```{r kcrea-wave2-edu-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -1999,7 +2784,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-wave2-mig-item1-2}
+```{r kcrea-wave2-mig-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
@@ -2024,10 +2809,276 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-wave2-mig-item2-2}
+```{r kcrea-wave2-mig-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_stackedbar(
   data = data_filtered_4af682fd,
+  title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+:::
+
+
+### {{< iconify ph number-circle-three-fill >}} Ronde 3
+
+
+::: {.panel-tabset}
+
+##### {{< iconify ph users-fill >}} Algemeen
+
+
+```{r kcrea-wave3-overall}
+# 
+result <- viz_stackedbars(
+  data = data_filtered_5311412c,
+  title = "",
+  x_vars = c("KCrea2RC", "KCrea3RC"),
+  x_var_labels = c("Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken", "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient"),
+  stacked_type = "percent",
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  horizontal = TRUE,
+  x_label = "",
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_label = NULL,
+  weight_var = "weging_GAMO"
+)
+
+result
+```
+
+
+##### {{< iconify mdi:human-male-male-child >}} Leeftijd
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kcrea-wave3-age-item1}
+# Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kcrea-wave3-age-item2}
+# Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "AgeGroup",
+  x_label = "Leeftijd",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify mdi gender-transgender >}} Geslacht
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kcrea-wave3-gender-item1}
+# Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kcrea-wave3-gender-item2}
+# Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "geslacht",
+  x_label = "Geslacht",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kcrea-wave3-edu-item1}
+# Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kcrea-wave3-edu-item2}
+# Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "Education",
+  x_label = "Opleidingsniveau",
+  stack_var = "KCrea3RC"
+)
+
+result
+```
+
+
+:::
+
+
+##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
+
+
+::: {.panel-tabset}
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 1
+
+
+```{r kcrea-wave3-mig-item1}
+# Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
+  title = "Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken",
+  stacked_type = "percent",
+  horizontal = TRUE,
+  stack_breaks = c(0, 10, 20, 30),
+  stack_bin_labels = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  stack_map_values = list("1" = "Correct beantwoord", "0" = "Incorrect beantwoord"),
+  stack_order = c("Correct beantwoord", "Incorrect beantwoord", "Weet/begrijp niet"),
+  color_palette = c("#3D7271", "#E28D50", "#F5D76E", "#C7E6D5", "#0F6B5A", "#BABACD"),
+  weight_var = "weging_GAMO",
+  x_var = "MigrationBackground",
+  x_label = "Migratieachtergrond",
+  stack_var = "KCrea2RC"
+)
+
+result
+```
+
+
+###### {{< iconify ph chat-circle-fill >}} Vraag 2
+
+
+```{r kcrea-wave3-mig-item2}
+# Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
+result <- viz_stackedbar(
+  data = data_filtered_5311412c,
   title = "Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient",
   stacked_type = "percent",
   horizontal = TRUE,
@@ -2065,7 +3116,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-overtime-overall-item1-2}
+```{r kcrea-overtime-overall-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_timeline(
   data = data,
@@ -2091,7 +3142,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-overtime-overall-item2-2}
+```{r kcrea-overtime-overall-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_timeline(
   data = data,
@@ -2125,7 +3176,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-overtime-age-item1-2}
+```{r kcrea-overtime-age-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_timeline(
   data = data,
@@ -2151,7 +3202,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-overtime-age-item2-2}
+```{r kcrea-overtime-age-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_timeline(
   data = data,
@@ -2185,7 +3236,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-overtime-gender-item1-2}
+```{r kcrea-overtime-gender-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_timeline(
   data = data,
@@ -2211,7 +3262,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-overtime-gender-item2-2}
+```{r kcrea-overtime-gender-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_timeline(
   data = data,
@@ -2245,7 +3296,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-overtime-edu-item1-2}
+```{r kcrea-overtime-edu-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_timeline(
   data = data,
@@ -2271,7 +3322,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-overtime-edu-item2-2}
+```{r kcrea-overtime-edu-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_timeline(
   data = data,
@@ -2305,7 +3356,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 1
 
 
-```{r kcrea-overtime-mig-item1-2}
+```{r kcrea-overtime-mig-item1}
 # Sommige mensen worden betaald om producten te gebruiken in de video's die ze maken
 result <- viz_timeline(
   data = data,
@@ -2331,7 +3382,7 @@ result
 ###### {{< iconify ph chat-circle-fill >}} Vraag 2
 
 
-```{r kcrea-overtime-mig-item2-2}
+```{r kcrea-overtime-mig-item2}
 # Je mag bestaande video's en muziek aanpassen en delen, zolang je er geen geld mee verdient
 result <- viz_timeline(
   data = data,
@@ -2366,10 +3417,12 @@ result
 
 
 **Prestaties** meten de praktische digitale vaardigheden van deelnemers in een reeks taken uit het echte leven. In plaats van zelfrapportage testen deze items wat mensen *werkelijk kunnen*: bijvoorbeeld het zoeken naar betrouwbare informatie.
+
+<div class="dc-wave3-note"><iconify-icon inline icon="ph:info-fill"></iconify-icon> <span><strong>Let op:</strong> Deze prestatie-items zijn alleen voor Ronde 1 en Ronde 2 op een vergelijkbare manier gemeten en daarom ontbreken de gegevens van Ronde 3.</span></div>
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 create_blockquote('Welk van de <a href=\"#PDCCS1R\" class=\"modal-link\">onderstaande icoontjes</a> is voor het bijsnijden of stukken weghalen van een foto?', preset = 'question')
 ```
-[{{< iconify ph cards >}} Bekijk alle Prestatieresultaten](performance.html)
+
 
 
 ::: {.panel-tabset}
@@ -2382,7 +3435,7 @@ create_blockquote('Welk van de <a href=\"#PDCCS1R\" class=\"modal-link\">onderst
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-dccs-wave1-overall-2}
+```{r perf-dccs-wave1-overall}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbars(
@@ -2411,7 +3464,7 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-dccs-wave1-age-2}
+```{r perf-dccs-wave1-age}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2438,7 +3491,7 @@ result
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-dccs-wave1-gender-2}
+```{r perf-dccs-wave1-gender}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2465,7 +3518,7 @@ result
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-dccs-wave1-edu-2}
+```{r perf-dccs-wave1-edu}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2492,7 +3545,7 @@ result
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-dccs-wave1-mig-2}
+```{r perf-dccs-wave1-mig}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2527,7 +3580,7 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-dccs-wave2-overall-2}
+```{r perf-dccs-wave2-overall}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbars(
@@ -2556,7 +3609,7 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-dccs-wave2-age-2}
+```{r perf-dccs-wave2-age}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2583,7 +3636,7 @@ result
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-dccs-wave2-gender-2}
+```{r perf-dccs-wave2-gender}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2610,7 +3663,7 @@ result
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-dccs-wave2-edu-2}
+```{r perf-dccs-wave2-edu}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2637,7 +3690,7 @@ result
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-dccs-wave2-mig-2}
+```{r perf-dccs-wave2-mig}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_stackedbar(
@@ -2672,11 +3725,11 @@ result
 ##### {{< iconify ph users-fill >}} Algemeen
 
 
-```{r perf-dccs-overtime-overall-2}
+```{r perf-dccs-overtime-overall}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_timeline(
-  data = data,
+  data = data_filtered_f45d3309,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
@@ -2700,11 +3753,11 @@ result
 ##### {{< iconify mdi:human-male-male-child >}} Leeftijd
 
 
-```{r perf-dccs-overtime-age-2}
+```{r perf-dccs-overtime-age}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_timeline(
-  data = data,
+  data = data_filtered_f45d3309,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
@@ -2728,11 +3781,11 @@ result
 ##### {{< iconify mdi gender-transgender >}} Geslacht
 
 
-```{r perf-dccs-overtime-gender-2}
+```{r perf-dccs-overtime-gender}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_timeline(
-  data = data,
+  data = data_filtered_f45d3309,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
@@ -2756,11 +3809,11 @@ result
 ##### {{< iconify ph graduation-cap-fill >}} Opleidingsniveau
 
 
-```{r perf-dccs-overtime-edu-2}
+```{r perf-dccs-overtime-edu}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_timeline(
-  data = data,
+  data = data_filtered_f45d3309,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
@@ -2784,11 +3837,11 @@ result
 ##### {{< iconify ph globe-hemisphere-east >}} Migratieachtergrond
 
 
-```{r perf-dccs-overtime-mig-2}
+```{r perf-dccs-overtime-mig}
 # Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 
 result <- viz_timeline(
-  data = data,
+  data = data_filtered_f45d3309,
   title = "Welk van onderstaande icoontjes is voor het bijsnijden of stukken weghalen van een foto?
 ",
   time_var = "wave_time_label",
