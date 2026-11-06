@@ -4585,8 +4585,8 @@ dim_page_intro <- function(desc_key, skills_key, knowledge_key = NULL, perf_key,
 dashboard <- create_dashboard(
   ## Descriptions
   title = "DigIQ Monitor", 
-  output_dir = "qmds_en", 
-  publish_dir = "../docs/en",
+  output_dir = if (lang == "nl") "qmds" else "qmds_en", 
+  publish_dir = if (lang == "nl") "../docs" else "../docs/en",
   author = "Fabio Votta",
   description = "DigIQ Monitor",
   page_footer = "© 2025 DigIQ Monitor - All Rights Reserved",
@@ -4841,7 +4841,7 @@ dashboard <- create_dashboard(
       "      )",
       "    ),",
       "    div(",
-      "      class = 'col-md-2',",
+      "      class = 'col-md-10',",
       "      div(",
       "        class = 'card-body',",
       "        p(",
@@ -4883,7 +4883,7 @@ dashboard <- create_dashboard(
       "        )",
       "      ),",
       "      div(",
-      "        class = 'col-md-2',",
+      "        class = 'col-md-10',",
       "        div(",
       "          class = 'card-body',",
       "          p(",
@@ -5140,6 +5140,11 @@ build_wave_sample_content <- function(w_num) {
   }
 
   # Build Wave sample content collection using dashboardr functions
+  dev_section_hdr <- if (lang == "nl") "Gebruik van apparaten" else "Use of Devices"
+  tab_comp_lbl <- if (lang == "nl") "Computer" else "Computer"
+  tab_tab_lbl  <- if (lang == "nl") "Tablet" else "Tablet"
+  tab_phn_lbl  <- if (lang == "nl") "Telefoon" else "Phone"
+
   wave_content <- create_content() %>%
     add_text(paste0("**N = ", format(w_n_total, big.mark = ","),
       " | ", transl("w1_label_mean_age", lang), ": ",
@@ -5154,12 +5159,10 @@ build_wave_sample_content <- function(w_num) {
     add_reactable(w1_styled_reactable(w1_mig_df)) %>%
     add_text(paste0("### ", transl("w1_header_panel", lang))) %>%
     add_reactable(w1_styled_reactable(w1_sample_df)) %>%
-    add_text(paste0("### ", transl("w1_header_device_computer", lang))) %>%
-    add_reactable(w1_styled_reactable(w1_comp_df)) %>%
-    add_text(paste0("### ", transl("w1_header_device_tablet", lang))) %>%
-    add_reactable(w1_styled_reactable(w1_tablet_df)) %>%
-    add_text(paste0("### ", transl("w1_header_device_phone", lang))) %>%
-    add_reactable(w1_styled_reactable(w1_phone_df)) %>%
+    add_text(paste0("### ", dev_section_hdr)) %>%
+    add_reactable(w1_styled_reactable(w1_comp_df), tabgroup = tab_comp_lbl) %>%
+    add_reactable(w1_styled_reactable(w1_tablet_df), tabgroup = tab_tab_lbl) %>%
+    add_reactable(w1_styled_reactable(w1_phone_df), tabgroup = tab_phn_lbl) %>%
     add_text(paste0("### ", transl("w1_header_literacy", lang))) %>%
     add_reactable(w1_styled_reactable(w1_lit_df)) %>%
     add_text(paste0("### ", transl("w1_header_work", lang))) %>%
@@ -5198,6 +5201,42 @@ build_wave_sample_content <- function(w_num) {
   wave_content
 }
 
+wave_page_intro_html <- function(text_key) {
+  samp_lbl <- if (lang == "nl") "Steekproef" else "Sample"
+  demo_lbl <- transl("w1_header_demographics", lang)
+  dev_lbl  <- if (lang == "nl") "Gebruik van apparaten" else "Use of Devices"
+  cor_lbl  <- transl("w1_header_correlations", lang)
+  jump_lbl <- if (lang == "nl") "Ga direct naar:" else "Jump to section:"
+
+  s_anch <- paste0("#", slugify_anchor(samp_lbl))
+  d_anch <- paste0("#", slugify_anchor(demo_lbl))
+  v_anch <- paste0("#", slugify_anchor(dev_lbl))
+  c_anch <- paste0("#", slugify_anchor(cor_lbl))
+
+  jump_bar <- paste0(
+    "<div class='dc-dim-intro' style='margin-bottom: 1.4rem;'>",
+    "<div class='dc-jump-row' style='border-top: none; padding-top: 0;'>",
+    "<span class='dc-jump-label'>", jump_lbl, "</span> ",
+    "<a class='dc-jump-link' href='", s_anch, "'><iconify-icon inline icon='ph:users-three-fill'></iconify-icon> <span>", samp_lbl, "</span> &#8595;</a> ",
+    "<a class='dc-jump-link' href='", d_anch, "'><iconify-icon inline icon='ph:chart-bar-fill'></iconify-icon> <span>", demo_lbl, "</span> &#8595;</a> ",
+    "<a class='dc-jump-link' href='", v_anch, "'><iconify-icon inline icon='ph:devices-fill'></iconify-icon> <span>", dev_lbl, "</span> &#8595;</a> ",
+    "<a class='dc-jump-link' href='", c_anch, "'><iconify-icon inline icon='ph:squares-four-fill'></iconify-icon> <span>", cor_lbl, "</span> &#8595;</a>",
+    "</div></div>"
+  )
+
+  md_text(
+    unified_theme_css,
+    "```{=html}",
+    jump_bar,
+    "```",
+    "<div style='text-align: justify;'>",
+    transl(text_key, lang),
+    "</div>",
+    "",
+    paste0("## ", demo_lbl)
+  )
+}
+
 wave1_content <- build_wave_sample_content(1)
 wave2_content <- build_wave_sample_content(2)
 wave3_content <- build_wave_sample_content(3)
@@ -5211,14 +5250,7 @@ dashboard <- dashboard %>%
     slug = "wave_1",
     icon = "ph:number-circle-one-fill",
     data = digicom_data,
-    text = md_text(
-      unified_theme_css,
-      "<div style='text-align: justify;'>",
-      transl("ronde1_page_text", lang),
-      "</div>",
-      "",
-      paste0("## ", transl("w1_header_demographics", lang))
-    ),
+    text = wave_page_intro_html("ronde1_page_text"),
     visualizations = wave1_content
   ) %>%
 
@@ -5228,14 +5260,7 @@ dashboard <- dashboard %>%
     slug = "wave_2",
     icon = "ph:number-circle-two-fill",
     data = digicom_data,
-    text = md_text(
-      unified_theme_css,
-      "<div style='text-align: justify;'>",
-      transl("ronde2_page_text", lang),
-      "</div>",
-      "",
-      paste0("## ", transl("w1_header_demographics", lang))
-    ),
+    text = wave_page_intro_html("ronde2_page_text"),
     visualizations = wave2_content
   ) %>%
 
@@ -5245,23 +5270,15 @@ dashboard <- dashboard %>%
     slug = "wave_3",
     icon = "ph:number-circle-three-fill",
     data = digicom_data,
-    text = md_text(
-      unified_theme_css,
-      "<div style='text-align: justify;'>",
-      transl("ronde3_page_text", lang),
-      "</div>",
-      "",
-      paste0("## ", transl("w1_header_demographics", lang))
-    ),
+    text = wave_page_intro_html("ronde3_page_text"),
     visualizations = wave3_content
   ) %>%
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text
   add_navbar_element(
     text = lang_change(lang),
-    icon = "circle-flags:lang-nl",
-    # circle-flags:lang-nl
-    href = "https://favstats.github.io/digicomp",
+    icon = if (lang == "nl") "circle-flags:uk" else "circle-flags:lang-nl",
+    href = if (lang == "nl") "https://favstats.github.io/digicomp/en" else "https://favstats.github.io/digicomp",
     align = "right"
   )  
 
@@ -5275,12 +5292,12 @@ cat("\n=== Visualization Collection Summary ===\n")
 # cat("\n=== Summary Visualizations ===\n")
 # print(summary_vizzes)
 
-files_to_delete <- dir("qmds_en", pattern = "\\.markdown$", full.names = TRUE)
+files_to_delete <- dir("qmds", pattern = "\\.markdown$", full.names = TRUE)
 file.remove(files_to_delete)
 
-files_to_delete <- dir("qmds_en", pattern = "\\.markdown$", full.names = TRUE)
+files_to_delete <- dir("qmds", pattern = "\\.markdown$", full.names = TRUE)
 file.remove(files_to_delete)
-# generate_dashboard(dashboard, render = T,  open = "browser")
+# generate_dashboard(dashboard, render = F,  open = "browser")
 
 
 # Create minimal dashboard with just this page
@@ -5294,6 +5311,6 @@ file.remove(files_to_delete)
 ## 8.3 Generate Dashboard ----
 # Generate the dashboard
 cat("\n=== Generating Dashboard ===\n")
-generate_dashboard(dashboard, render = T, open = FALSE)
+generate_dashboard(dashboard, render = F, open = FALSE)
 
 
