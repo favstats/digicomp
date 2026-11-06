@@ -5090,7 +5090,7 @@ build_wave_sample_content <- function(w_num) {
   }
   w1_avail_vars <- w1_avail_vars[sapply(w1_avail_vars, function(v) sum(!is.na(wave_data_page[[v]])) >= 2)]
 
-  w1_cor_hc <- NULL
+  w1_cor_plot <- NULL
   if (length(w1_avail_vars) >= 2) {
     w1_cor_data <- wave_data_page[, w1_avail_vars]
     w1_cor_matrix <- suppressWarnings(cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs"))
@@ -5105,96 +5105,38 @@ build_wave_sample_content <- function(w_num) {
         "Work_2" = "Werkuren", "LiteracyN" = "Geletterdheid", "FinancialInsecurityN" = "Fin. Onzekerheid")
     } else {
       c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
-        "MeanNet" = "Netiquette", "MeanCrea" = "Content Creation", "MeanSaf" = "Safety",
-        "MeanHealth" = "Digital Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green Digital",
+        "MeanNet" = "Netiquette", "MeanCrea" = "Creativity", "MeanSaf" = "Safety",
+        "MeanHealth" = "Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green",
         "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
         "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
         "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
         "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
     }
+    rownames(w1_cor_matrix) <- w1_display_names[rownames(w1_cor_matrix)]
+    colnames(w1_cor_matrix) <- w1_display_names[colnames(w1_cor_matrix)]
 
-    x_cats <- unname(w1_display_names[w1_avail_vars])
-    y_cats <- rev(x_cats)
-    n_vars <- length(w1_avail_vars)
+    w1_cor_melted <- reshape2::melt(w1_cor_matrix)
+    names(w1_cor_melted) <- c("Var1", "Var2", "Correlation")
+    w1_cor_melted$Var1 <- factor(w1_cor_melted$Var1, levels = w1_display_names[w1_avail_vars])
+    w1_cor_melted$Var2 <- factor(w1_cor_melted$Var2, levels = rev(w1_display_names[w1_avail_vars]))
+    w1_cor_melted$Correlation[as.numeric(w1_cor_melted$Var1) < as.numeric(factor(w1_cor_melted$Var2, levels = levels(w1_cor_melted$Var1)))] <- NA
 
-    hc_points <- list()
-    idx <- 1L
-    for (i in seq_len(n_vars)) {
-      for (j in seq_len(n_vars)) {
-        # Lower triangle + diagonal: i >= j in original matrix
-        if (i >= j) {
-          val <- round(w1_cor_matrix[i, j], 2)
-          if (!is.na(val)) {
-            y_idx <- n_vars - j # 0-indexed in reversed y_cats
-            x_idx <- i - 1L
-            hc_points[[idx]] <- list(
-              x = x_idx,
-              y = y_idx,
-              value = val,
-              varX = x_cats[i],
-              varY = x_cats[j],
-              dataLabels = list(
-                color = if (abs(val) > 0.55) "#ffffff" else "#142d2c"
-              )
-            )
-            idx <- idx + 1L
-          }
-        }
-      }
-    }
-
-    cor_label <- if (lang == "nl") "Spearman correlatie" else "Spearman correlation"
-    w1_cor_hc <- highcharter::highchart() %>%
-      highcharter::hc_chart(
-        type = "heatmap",
-        style = list(fontFamily = "Fira Sans, sans-serif"),
-        marginTop = 50,
-        marginBottom = 95
-      ) %>%
-      highcharter::hc_title(
-        text = transl("w1_cor_title", lang),
-        align = "left",
-        style = list(color = "#3D7271", fontWeight = "bold", fontSize = "16px")
-      ) %>%
-      highcharter::hc_xAxis(
-        categories = x_cats,
-        labels = list(rotation = -40, style = list(fontSize = "11px", color = "#1e3332"))
-      ) %>%
-      highcharter::hc_yAxis(
-        categories = y_cats,
-        title = list(text = NULL),
-        labels = list(style = list(fontSize = "11px", color = "#1e3332"))
-      ) %>%
-      highcharter::hc_colorAxis(
-        min = -1,
-        max = 1,
-        stops = highcharter::color_stops(3, c("#E28D50", "#FFFFFF", "#3D7271"))
-      ) %>%
-      highcharter::hc_legend(
-        align = "right",
-        layout = "vertical",
-        margin = 0,
-        verticalAlign = "middle",
-        symbolHeight = 260
-      ) %>%
-      highcharter::hc_tooltip(
-        useHTML = TRUE,
-        pointFormat = paste0(
-          "<b>{point.varY} &times; {point.varX}</b><br/>",
-          cor_label, ": <b>{point.value:.2f}</b>"
-        )
-      ) %>%
-      highcharter::hc_add_series(
-        name = cor_label,
-        data = hc_points,
-        borderWidth = 1.5,
-        borderColor = "#ffffff",
-        dataLabels = list(
-          enabled = TRUE,
-          format = "{point.value:.2f}",
-          style = list(fontSize = "10px", fontWeight = "600", textOutline = "none")
-        )
-      )
+    cor_legend_label <- if (lang == "nl") "Correlatie" else "Correlation"
+    w1_cor_plot <- ggplot(w1_cor_melted, aes(x = Var1, y = Var2, fill = Correlation)) +
+      geom_tile(color = "white") +
+      geom_text(aes(label = ifelse(is.na(Correlation), "", sprintf("%.2f", Correlation))),
+        color = "black", size = 2.5) +
+      scale_fill_gradient2(low = "#E28D50", mid = "white", high = "#3D7271",
+        midpoint = 0, limits = c(-1, 1), na.value = "white") +
+      theme_minimal(base_size = 12) +
+      theme(
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+        axis.text.y = element_text(size = 10),
+        plot.title = element_text(size = 14, face = "bold", color = "#3D7271"),
+        legend.position = "right"
+      ) +
+      labs(title = transl("w1_cor_title", lang),
+        x = "", y = "", fill = cor_legend_label)
   }
 
   # Build Wave sample content collection using dashboardr functions
@@ -5247,10 +5189,10 @@ build_wave_sample_content <- function(w_num) {
     add_text(paste0("### ", transl("w1_header_financial", lang))) %>%
     add_reactable(w1_styled_reactable(w1_fin_df))
 
-  if (!is.null(w1_cor_hc)) {
+  if (!is.null(w1_cor_plot)) {
     wave_content <- wave_content %>%
       add_text(paste0("## ", transl("w1_header_correlations", lang))) %>%
-      add_hc(w1_cor_hc, height = "700px")
+      add_ggplot(w1_cor_plot, width = 14, height = 12)
   }
 
   wave_content

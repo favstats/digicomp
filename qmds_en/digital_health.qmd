@@ -416,7 +416,7 @@ dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "digital_health
 <script>
 (function() {
   function initDigIQNavEnhancements() {
-    // 1. Page-aware Language Switcher (preserves current page filename & #hash)
+    // Page-aware Language Switcher (preserves current page filename & #hash)
     var langLinks = document.querySelectorAll('a.nav-link[href*="favstats.github.io/digicomp"]');
     var path = window.location.pathname || '';
     var parts = path.split('/').filter(Boolean);
@@ -438,20 +438,6 @@ dashboardr::.page_config(accessibility = TRUE, crosstab_prefix = "digital_health
     }
     updateLangHrefs();
     window.addEventListener('hashchange', updateLangHrefs);
-
-    // 2. Cross-Navigation Link to Sister Dashboard (/burgerschap & /citizenship)
-    var moreMenus = document.querySelectorAll('ul.dropdown-menu[aria-labelledby*="more-info"], ul.dropdown-menu[aria-labelledby*="meer-informatie"]');
-    moreMenus.forEach(function(menu) {
-      if (menu.querySelector('.dc-sister-dashboard-link')) return;
-      var dividerLi = document.createElement('li');
-      dividerLi.innerHTML = '<hr class="dropdown-divider">';
-      var itemLi = document.createElement('li');
-      var targetHref = isEN ? '../citizenship/index.html' : './burgerschap/index.html';
-      var targetLabel = isEN ? 'Digital Citizenship' : 'Digitaal Burgerschap';
-      itemLi.innerHTML = '<a class="dropdown-item dc-sister-dashboard-link" href="' + targetHref + '"><span class="dropdown-text"><iconify-icon role="img" inline="" icon="ph:users-three-fill"></iconify-icon> ' + targetLabel + '</span></a>';
-      menu.appendChild(dividerLi);
-      menu.appendChild(itemLi);
-    });
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initDigIQNavEnhancements);
