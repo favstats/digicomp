@@ -3984,8 +3984,9 @@ more_info_menu <- navbar_menu(
   text = transl("menu_more_info", lang),
   pages = c(
     transl("page_name_about", lang),
-    transl("page_name_ronde1", lang)
-    # Future: transl("page_name_ronde2", lang)
+    transl("page_name_ronde1", lang),
+    transl("page_name_ronde2", lang),
+    transl("page_name_ronde3", lang)
   ),
   icon = "ph:info-fill",
   align = "right"
@@ -4015,7 +4016,7 @@ landing_pages <- tribble(
 )
 
 digiq_shared_css <- "
-  /* DigIQ Unified Theme & Color Palette Overrides */
+  /* DigIQ Unified Theme & Editorial Observatory Styling */
   html { scroll-behavior: smooth; }
   section.level2 { scroll-margin-top: 85px; }
 
@@ -4041,90 +4042,164 @@ digiq_shared_css <- "
     height: 3px !important;
   }
 
-  /* Question blockquotes in DigIQ Teal & Soft Mint */
+  /* Question blockquotes in clean DigIQ Teal */
   blockquote.blockquote {
-    border-left: 5px solid #3D7271 !important;
-    background: linear-gradient(90deg, #f2f8f6 0%, #f9fbfb 100%) !important;
-    color: #243b3a !important;
-    border-radius: 0 10px 10px 0 !important;
-    padding: 14px 22px !important;
-    box-shadow: 0 2px 6px rgba(61, 114, 113, 0.06) !important;
+    border-left: 4px solid #3D7271 !important;
+    background: linear-gradient(90deg, #f4f9f8 0%, #fafcfc 100%) !important;
+    color: #1e3332 !important;
+    border-radius: 0 8px 8px 0 !important;
+    padding: 13px 20px !important;
+    box-shadow: 0 1px 4px rgba(15, 45, 43, 0.04) !important;
   }
 
   /* Clickable modal links inside question blockquotes */
   a.modal-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background-color: #e4f2ee;
     color: #0F6B5A !important;
-    padding: 2px 9px;
-    border-radius: 6px;
-    border: 1px solid #b5ded2;
     font-weight: 600;
-    text-decoration: none !important;
-    transition: all 0.18s ease;
+    text-decoration: underline !important;
+    text-decoration-color: rgba(15, 107, 90, 0.45) !important;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
   }
   a.modal-link:hover {
-    background-color: #3D7271;
-    color: #ffffff !important;
-    border-color: #3D7271;
-    transform: translateY(-1px);
+    color: #E28D50 !important;
+    text-decoration-color: #E28D50 !important;
   }
 
   /* Wave 3 missing-data callout note on Performance sections */
   .dc-wave3-note {
     display: flex;
     align-items: flex-start;
-    gap: 0.6rem;
+    gap: 0.65rem;
+    border: 1px solid #ebd5c3;
     border-left: 4px solid #E28D50;
-    background-color: #fdf6ef;
-    color: #6e3b14;
+    background: linear-gradient(90deg, #fdf8f3 0%, #fffcfa 100%);
+    color: #5c3314;
     padding: 0.7rem 1.05rem;
     border-radius: 0 8px 8px 0;
-    margin: 0.75rem 0 1rem 0;
-    font-size: 0.93rem;
+    margin: 0.75rem 0 1.1rem 0;
+    font-size: 0.92rem;
     line-height: 1.5;
   }
   .dc-wave3-note iconify-icon {
     color: #E28D50;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    margin-top: 0.14rem;
+  }
+
+  /* Landing page: hide redundant Quarto title header & style Editorial Observatory Hero */
+  body:has(.dc-observatory-hero) #title-block-header {
+    display: none;
+  }
+  .dc-observatory-hero {
+    position: relative;
+    overflow: hidden;
+    margin: 0.5rem 0 2rem 0;
+    padding: 2.2rem 2.5rem 1.75rem 2.5rem;
+    border-radius: 16px;
+    background:
+      radial-gradient(circle at 96% 8%, rgba(61, 114, 113, 0.11) 0%, transparent 45%),
+      radial-gradient(circle at 4% 95%, rgba(226, 141, 80, 0.08) 0%, transparent 40%),
+      linear-gradient(180deg, #ffffff 0%, #f7fbfa 100%);
+    border: 1px solid #d5e3e0;
+    box-shadow: 0 1px 3px rgba(15, 45, 43, 0.03), 0 10px 30px -8px rgba(15, 45, 43, 0.07);
+  }
+  .dc-observatory-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0F6B5A 0%, #3D7271 62%, #E28D50 100%);
+  }
+  .dc-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #0F6B5A;
+    background: #eaf4f1;
+    border: 1px solid #cbe2dc;
+    padding: 0.28rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.95rem;
+  }
+  .dc-hero-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #E28D50;
+    box-shadow: 0 0 0 3px rgba(226, 141, 80, 0.22);
+  }
+  .dc-hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #122928;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.2;
+  }
+  .dc-hero-lead p {
+    font-size: 1.03rem;
+    line-height: 1.65;
+    color: #364f4d;
+    max-width: 880px;
+    margin: 0 0 0.55rem 0;
+  }
+  .dc-hero-lead p:first-child {
+    font-weight: 600;
+    color: #1c3b39;
+  }
+  .dc-hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 0.9rem;
+    margin-top: 1.45rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e1ecea;
+  }
+  .dc-metric-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #e2ecea;
+    border-radius: 10px;
+  }
+  .dc-metric-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #eef6f4;
+    color: #3D7271;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-size: 1.2rem;
     flex-shrink: 0;
-    margin-top: 0.12rem;
+  }
+  .dc-metric-val {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #142d2c;
+    line-height: 1.2;
+  }
+  .dc-metric-sub {
+    font-size: 0.78rem;
+    color: #5b7472;
+    margin-top: 0.1rem;
   }
 
-  /* Landing page hero & info banner */
-  .dc-hero {
-    max-width: 920px;
-    margin: 0.5rem auto 1.75rem auto;
-    padding: 1.5rem 2rem;
-    background: linear-gradient(135deg, #f4f9f7 0%, #ebf4f1 100%);
-    border: 1px solid #d5e5e1;
-    border-top: 4px solid #3D7271;
-    border-radius: 14px;
-    text-align: center;
-    color: #243b3a;
-    box-shadow: 0 4px 16px rgba(31, 63, 62, 0.05);
-  }
-  .dc-hero p:first-child {
-    font-size: 1.18rem;
-    font-weight: 600;
-    color: #0F6B5A;
-    margin-bottom: 0.65rem;
-  }
-  .dc-hero p:last-child {
-    font-size: 1.01rem;
-    line-height: 1.65;
-    color: #334e4d;
-    margin-bottom: 0;
-  }
-
-  /* Landing page 11-tile grid */
+  /* Landing page 11-tile Bento Grid */
   .dc-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
     gap: 1.15rem;
-    margin: 1.5rem 0 2rem 0;
+    margin: 1.25rem 0 2.25rem 0;
   }
   @media (min-width: 1100px) {
     .dc-links {
@@ -4133,7 +4208,7 @@ digiq_shared_css <- "
     .dc-links > .dc-link {
       grid-column: span 2;
     }
-    /* Center the final 2 cards (10 & 11) on the bottom row */
+    /* Center the final 2 AI cards (10 & 11) on the bottom row */
     .dc-links > .dc-link:nth-child(10) {
       grid-column: 2 / span 2;
     }
@@ -4142,237 +4217,267 @@ digiq_shared_css <- "
     }
   }
   .dc-link {
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 1.25rem 1.35rem;
+    padding: 1.35rem 1.4rem 1.15rem 1.4rem;
     border-radius: 13px;
-    border: 1px solid #d5e3e0;
-    border-left: 6px solid #3D7271;
+    border: 1px solid #dce7e5;
+    border-left: 4px solid #3D7271;
     background: #ffffff;
     color: inherit !important;
     text-decoration: none !important;
     text-align: left;
-    box-shadow: 0 2px 10px rgba(31, 63, 62, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 1px 2px rgba(15, 40, 38, 0.03), 0 6px 18px -4px rgba(15, 40, 38, 0.05);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  }
+  .dc-link::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3D7271, #E28D50);
+    opacity: 0;
+    transition: opacity 0.22s ease;
   }
   .dc-link:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(31, 63, 62, 0.12);
-    border-color: #3D7271;
+    box-shadow: 0 4px 8px rgba(15, 40, 38, 0.04), 0 16px 32px -6px rgba(15, 40, 38, 0.11);
+    border-color: #b8cfcc;
     border-left-color: #E28D50;
-    background: #fbfdfc;
   }
-  .dc-card-header {
+  .dc-link:hover::after {
+    opacity: 1;
+  }
+  .dc-card-watermark {
+    position: absolute;
+    right: -10px;
+    bottom: -14px;
+    font-size: 5.4rem;
+    color: #3D7271;
+    opacity: 0.04;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease, color 0.3s ease;
+  }
+  .dc-link:hover .dc-card-watermark {
+    transform: scale(1.08) rotate(-5deg);
+    opacity: 0.075;
+    color: #0F6B5A;
+  }
+  .dc-card-top {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 0.75rem;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
   }
-  .dc-card-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 11px;
-    background: linear-gradient(135deg, #e6f4f0 0%, #c7e6d5 100%);
+  .dc-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+  .dc-card-emblem {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: #eef5f3;
+    border: 1px solid #d5e6e2;
     color: #0F6B5A;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.35rem;
+    font-size: 1.22rem;
     flex-shrink: 0;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   }
-  .dc-link:hover .dc-card-icon {
+  .dc-link:hover .dc-card-emblem {
     background: #3D7271;
+    border-color: #3D7271;
     color: #ffffff;
-    transform: scale(1.05);
+    transform: scale(1.04);
   }
   .dc-link-title {
     font-weight: 700;
-    color: #1f3f3e;
-    font-size: 1.06rem;
+    color: #142c2b;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
     line-height: 1.25;
-    flex-grow: 1;
     transition: color 0.2s ease;
   }
   .dc-link:hover .dc-link-title {
     color: #0F6B5A;
   }
-  .dc-card-arrow {
-    color: #9ab3b0;
-    font-size: 1.05rem;
-    transition: transform 0.2s ease, color 0.2s ease;
+  .dc-card-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: #7c9694;
+    background: #f3f7f6;
+    border: 1px solid #e3ecea;
+    padding: 0.14rem 0.48rem;
+    border-radius: 6px;
     flex-shrink: 0;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
   }
-  .dc-link:hover .dc-card-arrow {
+  .dc-link:hover .dc-card-num {
+    color: #9c4215;
+    background: #fdf3eb;
+    border-color: #f0cdb4;
+  }
+  .dc-link-text {
+    position: relative;
+    z-index: 1;
+    font-size: 0.91rem;
+    line-height: 1.54;
+    color: #495e5d;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+  .dc-card-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.65rem;
+    border-top: 1px solid #eff4f3;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #3D7271;
+    letter-spacing: 0.01em;
+    transition: color 0.2s ease;
+  }
+  .dc-card-cta-arrow {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #88a3a0;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .dc-link:hover .dc-card-footer {
+    color: #0F6B5A;
+  }
+  .dc-link:hover .dc-card-cta-arrow {
     transform: translateX(4px);
     color: #E28D50;
   }
-  .dc-link-text {
-    font-size: 0.91rem;
-    line-height: 1.5;
-    color: #4a5b5a;
-    margin-bottom: 0.9rem;
-    flex-grow: 1;
-  }
-  .dc-card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    padding-top: 0.65rem;
-    border-top: 1px solid #edf3f2;
-  }
-  .dc-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.28rem;
-    font-size: 0.74rem;
-    font-weight: 600;
-    padding: 0.2rem 0.55rem;
-    border-radius: 999px;
-    letter-spacing: 0.01em;
-  }
-  .dc-tag-skills {
-    background-color: #e6f4f0;
-    color: #0F6B5A;
-    border: 1px solid #bfe3d7;
-  }
-  .dc-tag-knowledge {
-    background-color: #fef6dc;
-    color: #825600;
-    border: 1px solid #f0d57d;
-  }
-  .dc-tag-perf {
-    background-color: #fdede2;
-    color: #9c4215;
-    border: 1px solid #eeb998;
-  }
 
-  /* Dimension page intro card & clickable measurement jump-pills */
+  /* Dimension page intro panel & unified architectural jump-chips */
   .dc-dim-intro {
-    background: linear-gradient(135deg, #f6faf9 0%, #ecf4f2 100%);
-    border: 1px solid #d3e3e0;
-    border-left: 6px solid #3D7271;
-    border-radius: 13px;
-    padding: 1.25rem 1.5rem;
-    margin: 0.75rem 0 1.75rem 0;
-    box-shadow: 0 3px 12px rgba(31, 63, 62, 0.05);
+    background: #ffffff;
+    border: 1px solid #d8e4e2;
+    border-left: 5px solid #3D7271;
+    border-radius: 12px;
+    padding: 1.2rem 1.45rem;
+    margin: 0.65rem 0 1.65rem 0;
+    box-shadow: 0 2px 12px rgba(15, 45, 43, 0.04);
   }
   .dc-dim-intro > p {
-    font-size: 1.03rem;
+    font-size: 1.01rem;
     line-height: 1.65;
-    color: #243b3a;
-    margin-bottom: 0.85rem;
+    color: #213736;
+    margin-bottom: 0.8rem;
   }
   .dc-jump-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.45rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(61, 114, 113, 0.15);
-    font-size: 0.96rem;
-    color: #2f4b4a;
+    padding-top: 0.7rem;
+    border-top: 1px solid #e7f0ee;
+    font-size: 0.92rem;
+    color: #425958;
+    margin: 0;
   }
   .dc-jump-label {
     font-weight: 600;
-    color: #1f3f3e;
+    color: #1b3332;
     margin-right: 0.15rem;
   }
-  .dc-jump-sep {
-    color: #546e6d;
-    margin-right: 0.1rem;
-  }
-  a.dc-jump-pill {
+  a.dc-jump-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.38rem;
-    padding: 0.32rem 0.82rem;
-    border-radius: 999px;
-    font-size: 0.89rem;
+    gap: 0.35rem;
+    padding: 0.24rem 0.7rem;
+    border-radius: 7px;
+    background: #f3f8f7;
+    border: 1px solid #cde0dd;
+    color: #0F6B5A !important;
+    font-size: 0.86rem;
     font-weight: 600;
     text-decoration: none !important;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.16s ease;
   }
-  a.dc-jump-pill:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(31, 63, 62, 0.15);
-  }
-  .dc-jump-arrow {
-    font-size: 0.8rem;
-    opacity: 0.8;
-    transition: transform 0.18s ease;
-  }
-  a.dc-jump-pill:hover .dc-jump-arrow {
-    transform: translateY(2px);
-    opacity: 1;
-  }
-  a.dc-jump-skills {
-    background-color: #e6f4f0;
-    color: #0F6B5A !important;
-    border: 1px solid #b3ddd0;
-  }
-  a.dc-jump-skills:hover {
-    background-color: #3D7271;
-    color: #ffffff !important;
+  a.dc-jump-link:hover {
+    background: #3D7271;
     border-color: #3D7271;
-  }
-  a.dc-jump-knowledge {
-    background-color: #fef6dc;
-    color: #7d5200 !important;
-    border: 1px solid #ebd076;
-  }
-  a.dc-jump-knowledge:hover {
-    background-color: #c98f12;
     color: #ffffff !important;
-    border-color: #c98f12;
-  }
-  a.dc-jump-perf {
-    background-color: #fdede2;
-    color: #9c4215 !important;
-    border: 1px solid #ebb491;
-  }
-  a.dc-jump-perf:hover {
-    background-color: #E28D50;
-    color: #ffffff !important;
-    border-color: #E28D50;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(61, 114, 113, 0.18);
   }
 "
 
-tag_skills_label <- transl("tab_skills", lang)
-tag_knowledge_label <- transl("tab_knowledge", lang)
-tag_perf_label <- transl("tab_performance", lang)
+explore_cta_label <- if (lang == "nl") "Bekijk dimensie" else "Explore dimension"
 
-landing_cards_html <- pmap_chr(
-  landing_pages,
-  function(slug, icon, title_key, card_key, has_knowledge) {
-    tags_html <- paste0(
-      "<div class='dc-card-tags'>",
-      "<span class='dc-tag dc-tag-skills'><iconify-icon inline icon='ph:lightning-fill'></iconify-icon> ", tag_skills_label, "</span>",
-      if (has_knowledge) paste0("<span class='dc-tag dc-tag-knowledge'><iconify-icon inline icon='ph:book-open-fill'></iconify-icon> ", tag_knowledge_label, "</span>") else "",
-      "<span class='dc-tag dc-tag-perf'><iconify-icon inline icon='ph:clipboard-text'></iconify-icon> ", tag_perf_label, "</span>",
-      "</div>"
-    )
+landing_cards_html <- imap_chr(
+  transpose(landing_pages),
+  function(row, idx) {
+    num_str <- sprintf("%02d", idx)
     paste0(
-      "<a class='dc-link' href='", slug, ".html'>",
+      "<a class='dc-link' href='", row$slug, ".html'>",
+      "<iconify-icon class='dc-card-watermark' icon='", row$icon, "'></iconify-icon>",
       "<div>",
-      "<div class='dc-card-header'>",
-      "<div class='dc-card-icon'><iconify-icon icon='", icon, "'></iconify-icon></div>",
-      "<div class='dc-link-title'>", transl(title_key, lang), "</div>",
-      "<span class='dc-card-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span>",
+      "<div class='dc-card-top'>",
+      "<div class='dc-card-title-group'>",
+      "<span class='dc-card-emblem'><iconify-icon icon='", row$icon, "'></iconify-icon></span>",
+      "<span class='dc-link-title'>", transl(row$title_key, lang), "</span>",
       "</div>",
-      "<div class='dc-link-text'>", transl(card_key, lang), "</div>",
+      "<span class='dc-card-num'>", num_str, "</span>",
       "</div>",
-      tags_html,
+      "<div class='dc-link-text'>", transl(row$card_key, lang), "</div>",
+      "</div>",
+      "<div class='dc-card-footer'>",
+      "<span>", explore_cta_label, "</span>",
+      "<span class='dc-card-cta-arrow'><iconify-icon inline icon='ph:arrow-right-bold'></iconify-icon></span>",
+      "</div>",
       "</a>"
     )
   }
 )
 
-landing_links <- paste0(
+hero_eyebrow <- if (lang == "nl") "Project CID · Nationale Monitor Digitale Competentie" else "Project CID · National Digital Competence Monitor"
+hero_m1_val  <- if (lang == "nl") "5.307 Respondenten" else "5,307 Respondents"
+hero_m1_sub  <- if (lang == "nl") "Gewogen nationale steekproef (10–100 jaar)" else "Weighted national sample (aged 10–100)"
+hero_m2_val  <- if (lang == "nl") "3 Datarondes" else "3 Survey Waves"
+hero_m2_sub  <- "Dec '24 · Jun '25 · Dec '25"
+hero_m3_val  <- if (lang == "nl") "11 Dimensies" else "11 Dimensions"
+hero_m3_sub  <- if (lang == "nl") "Van informatie & veiligheid tot GenAI" else "From information & safety to GenAI"
+hero_m4_val  <- if (lang == "nl") "3 Meetpijlers" else "3 Measurement Pillars"
+hero_m4_sub  <- if (lang == "nl") "Vaardigheden · Kennis · Prestatie" else "Skills · Knowledge · Performance"
+
+landing_hero_html <- paste0(
   "```{=html}\n",
   "<style>", digiq_shared_css, "</style>\n",
+  "<div class='dc-observatory-hero'>\n",
+  "  <div class='dc-hero-eyebrow'><span class='dc-hero-dot'></span> ", hero_eyebrow, "</div>\n",
+  "  <h1 class='dc-hero-title'>", transl("dashboard_title", lang), "</h1>\n",
+  "  <div class='dc-hero-lead'>\n",
+  "    <p>", gsub("\\*\\*(.*?)\\*\\*", "<strong>\\1</strong>", gsub("\n\n", "</p><p>", transl("landing_page_text", lang), fixed = TRUE)), "</p>\n",
+  "  </div>\n",
+  "  <div class='dc-hero-metrics'>\n",
+  "    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:users-three-fill'></iconify-icon></div><div><div class='dc-metric-val'>", hero_m1_val, "</div><div class='dc-metric-sub'>", hero_m1_sub, "</div></div></div>\n",
+  "    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:chart-line-up-bold'></iconify-icon></div><div><div class='dc-metric-val'>", hero_m2_val, "</div><div class='dc-metric-sub'>", hero_m2_sub, "</div></div></div>\n",
+  "    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:squares-four-fill'></iconify-icon></div><div><div class='dc-metric-val'>", hero_m3_val, "</div><div class='dc-metric-sub'>", hero_m3_sub, "</div></div></div>\n",
+  "    <div class='dc-metric-item'><div class='dc-metric-icon'><iconify-icon icon='ph:compass-tool-fill'></iconify-icon></div><div><div class='dc-metric-val'>", hero_m4_val, "</div><div class='dc-metric-sub'>", hero_m4_sub, "</div></div></div>\n",
+  "  </div>\n",
+  "</div>\n```\n"
+)
+
+landing_links <- paste0(
+  "```{=html}\n",
   "<div class='dc-links'>\n",
   paste(landing_cards_html, collapse = "\n"),
   "\n</div>\n```\n"
@@ -4390,42 +4495,27 @@ dim_page_intro <- function(desc_key, skills_key, knowledge_key = NULL, perf_key,
   k_label <- if (lang == "nl") "items die kennis testen" else "items testing knowledge"
   p_label <- if (lang == "nl") "prestaties/gedrag" else "performance/behavior"
 
-  s_pill <- paste0(
-    "<a class='dc-jump-pill dc-jump-skills' href='", s_anchor, "'>",
-    "<iconify-icon inline icon='ph:lightning-fill'></iconify-icon> ",
-    "<span>", s_label, "</span> <span class='dc-jump-arrow'>&#8595;</span></a>"
-  )
-  p_pill <- paste0(
-    "<a class='dc-jump-pill dc-jump-perf' href='", p_anchor, "'>",
-    "<iconify-icon inline icon='ph:clipboard-text'></iconify-icon> ",
-    "<span>", p_label, "</span> <span class='dc-jump-arrow'>&#8595;</span></a>"
-  )
+  s_link <- paste0("<a class='dc-jump-link' href='", s_anchor, "'><iconify-icon inline icon='ph:lightning-fill'></iconify-icon> <span>", s_label, "</span> &#8595;</a>")
+  p_link <- paste0("<a class='dc-jump-link' href='", p_anchor, "'><iconify-icon inline icon='ph:clipboard-text'></iconify-icon> <span>", p_label, "</span> &#8595;</a>")
 
   if (!is.null(knowledge_key)) {
     k_anchor <- paste0("#", slugify_anchor(transl(knowledge_key, lang)))
-    k_pill <- paste0(
-      "<a class='dc-jump-pill dc-jump-knowledge' href='", k_anchor, "'>",
-      "<iconify-icon inline icon='ph:book-open-fill'></iconify-icon> ",
-      "<span>", k_label, "</span> <span class='dc-jump-arrow'>&#8595;</span></a>"
-    )
+    k_link <- paste0("<a class='dc-jump-link' href='", k_anchor, "'><iconify-icon inline icon='ph:book-open-fill'></iconify-icon> <span>", k_label, "</span> &#8595;</a>")
     intro_label <- if (lang == "nl") "Dit wordt op drie manieren gemeten:" else "It is measured in three ways:"
-    and_sep <- if (lang == "nl") ", en" else ", and"
+    and_sep <- if (lang == "nl") "en" else "and"
     jump_html <- paste0(
       "<div class='dc-jump-row'>",
       "<span class='dc-jump-label'>", intro_label, "</span> ",
-      s_pill, "<span class='dc-jump-sep'>,</span> ",
-      k_pill, "<span class='dc-jump-sep'>", and_sep, "</span> ",
-      p_pill, "<span class='dc-jump-sep'>.</span>",
+      s_link, " ", k_link, " <span>", and_sep, "</span> ", p_link,
       "</div>"
     )
   } else {
     intro_label <- if (lang == "nl") "Dit wordt op twee manieren gemeten:" else "It is measured in two ways:"
-    and_sep <- if (lang == "nl") " en" else " and"
+    and_sep <- if (lang == "nl") "en" else "and"
     jump_html <- paste0(
       "<div class='dc-jump-row'>",
       "<span class='dc-jump-label'>", intro_label, "</span> ",
-      s_pill, "<span class='dc-jump-sep'>", and_sep, "</span> ",
-      p_pill, "<span class='dc-jump-sep'>.</span>",
+      s_link, " <span>", and_sep, "</span> ", p_link,
       "</div>"
     )
   }
@@ -4496,13 +4586,11 @@ dashboard <- create_dashboard(
   metrics_style = "bootstrap",
   backend = "echarts4r"
 ) %>%
-  # Landing page with icon and 11 clickable dimension tiles
+  # Landing page with Editorial Observatory Hero and 11 Bento Dimension Cards
   add_page(
     name = transl("dashboard_title", lang),
     text = md_text(
-      "::: {.dc-hero}",
-      transl("landing_page_text", lang),
-      ":::",
+      landing_hero_html,
       "",
       landing_links,
       "",
@@ -4766,10 +4854,7 @@ dashboard <- create_dashboard(
     )
   )
 
-# 7. WAVE 1 PAGE: Pre-compute demographics & correlations =====================
-
-wave1_data_page <- digicom_data %>% filter(wave == 1)
-w1_n_total <- nrow(wave1_data_page)
+# 7. WAVE SAMPLE PAGES (Ronde 1, 2, 3): Pre-compute demographics & correlations ==
 
 # Helper: create a frequency table for a variable
 w1_make_freq <- function(data, var_name, labels_map = NULL, exclude_vals = NULL) {
@@ -4818,214 +4903,232 @@ w1_styled_reactable <- function(df) {
   )
 }
 
-# 1. Age group (PDF spec: 10-15, 16-30, 31-60, 61-110)
-wave1_data_page$AgeGroupW1 <- cut(wave1_data_page$Age, breaks = c(10, 16, 31, 61, 110),
-  right = FALSE, labels = c("10-15", "16-30", "31-60", "61-110"))
-w1_age_df <- w1_make_freq(wave1_data_page, "AgeGroupW1")
+build_wave_sample_content <- function(w_num) {
+  wave_data_page <- digicom_data %>% filter(wave == w_num)
+  w_n_total <- nrow(wave_data_page)
 
-# 2. Gender (values are text in digicom_data: "Female", "Male", etc.)
-w1_gender_df <- w1_make_freq(wave1_data_page, "Gender",
-  labels_map = c("Male" = transl("label_male", lang),
-                 "Female" = transl("label_female", lang),
-                 "X" = "X",
-                 "I'd rather not say" = transl("scale_prefer_not_answer", lang)))
+  # 1. Age group (PDF spec: 10-15, 16-30, 31-60, 61-110)
+  wave_data_page$AgeGroupW1 <- cut(wave_data_page$Age, breaks = c(10, 16, 31, 61, 110),
+    right = FALSE, labels = c("10-15", "16-30", "31-60", "61-110"))
+  w1_age_df <- w1_make_freq(wave_data_page, "AgeGroupW1")
 
-# 3. Education level (Education column is already translated & factored)
-w1_edu_df <- w1_make_freq(wave1_data_page, "Education")
+  # 2. Gender (normalize numeric/string codes from Wave 3 alongside text labels)
+  wave_data_page$GenderNorm <- as.character(wave_data_page$Gender)
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "1"] <- "Male"
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "2"] <- "Female"
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "4"] <- "X"
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "99"] <- "I'd rather not say"
 
-# 4. Migration background
-w1_mig_df <- w1_make_freq(wave1_data_page, "MigrationBackground")
+  w1_gender_df <- w1_make_freq(wave_data_page, "GenderNorm",
+    labels_map = c("Male" = transl("label_male", lang),
+                   "Female" = transl("label_female", lang),
+                   "X" = "X",
+                   "I'd rather not say" = transl("scale_prefer_not_answer", lang)))
 
-# 5. Panel type
-wave1_data_page$SampleRW1 <- ifelse(wave1_data_page$Sample %in% c(1, 2, "Panel adults", "Panel children"),
-  transl("w1_panel", lang),
-  ifelse(wave1_data_page$Sample %in% c(3, 4, "Address sample"),
-    transl("w1_address", lang), NA))
-w1_sample_df <- w1_make_freq(wave1_data_page, "SampleRW1")
+  # 3. Education level (Education column is already translated & factored)
+  w1_edu_df <- w1_make_freq(wave_data_page, "Education")
 
-# 6. Use of Devices
-w1_device_labels <- setNames(
-  c(transl("w1_device_never", lang), transl("w1_device_almost_never", lang),
-    transl("w1_device_sometimes", lang), transl("w1_device_often", lang),
-    transl("w1_device_very_often", lang)),
-  c("1", "2", "3", "4", "5"))
-w1_comp_df <- w1_make_freq(wave1_data_page, "UseComp", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
-w1_tablet_df <- w1_make_freq(wave1_data_page, "UseTablet", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
-w1_phone_df <- w1_make_freq(wave1_data_page, "UsePhone", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+  # 4. Migration background
+  w1_mig_df <- w1_make_freq(wave_data_page, "MigrationBackground")
 
-# 7. General Literacy
-w1_lit_labels <- setNames(
-  c(transl("w1_lit_never", lang), transl("w1_lit_almost_never", lang),
-    transl("w1_lit_sometimes", lang), transl("w1_lit_often", lang),
-    transl("w1_lit_very_often", lang)),
-  c("1", "2", "3", "4", "5"))
-w1_lit_df <- w1_make_freq(wave1_data_page, "Literacy", labels_map = w1_lit_labels, exclude_vals = c("66", "99"))
+  # 5. Panel type
+  wave_data_page$SampleRW1 <- ifelse(wave_data_page$Sample %in% c(1, 2, "1", "2", "Panel adults", "Panel children"),
+    transl("w1_panel", lang),
+    ifelse(wave_data_page$Sample %in% c(3, 4, "3", "4", "Address sample"),
+      transl("w1_address", lang), NA))
+  w1_sample_df <- w1_make_freq(wave_data_page, "SampleRW1")
 
-# 8. Work status
-w1_work_labels <- setNames(
-  c(transl("w1_work_student", lang), transl("w1_work_employed", lang),
-    transl("w1_work_housekeeper", lang), transl("w1_work_unemployed", lang),
-    transl("w1_work_retired", lang), transl("w1_work_volunteer", lang),
-    transl("w1_work_other", lang)),
-  c("1", "2", "3", "4", "5", "6", "7"))
-w1_work_df <- w1_make_freq(wave1_data_page, "Work", labels_map = w1_work_labels, exclude_vals = c("99"))
+  # 6. Use of Devices
+  w1_device_labels <- setNames(
+    c(transl("w1_device_never", lang), transl("w1_device_almost_never", lang),
+      transl("w1_device_sometimes", lang), transl("w1_device_often", lang),
+      transl("w1_device_very_often", lang)),
+    c("1", "2", "3", "4", "5"))
+  w1_comp_df <- w1_make_freq(wave_data_page, "UseComp", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+  w1_tablet_df <- w1_make_freq(wave_data_page, "UseTablet", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+  w1_phone_df <- w1_make_freq(wave_data_page, "UsePhone", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
 
-# 9. Hours of work with computer (employed only)
-w1_employed <- wave1_data_page %>% filter(Work == 2 | Work == "2" | Work == "Employed")
-w1_work2_df <- NULL
-if (nrow(w1_employed) > 0 && "Work_2" %in% names(w1_employed)) {
-  w1_work2_hours <- as.numeric(w1_employed$Work_2)
-  w1_work2_hours <- w1_work2_hours[!is.na(w1_work2_hours)]
-  w1_work2_df <- data.frame(
-    Statistic = c(transl("w1_work2_n", lang), transl("w1_work2_mean", lang),
-                  transl("w1_work2_median", lang)),
-    Value = c(length(w1_work2_hours),
-              round(mean(w1_work2_hours, na.rm = TRUE), 1),
-              round(median(w1_work2_hours, na.rm = TRUE), 1)),
-    stringsAsFactors = FALSE
-  )
-}
+  # 7. General Literacy
+  w1_lit_labels <- setNames(
+    c(transl("w1_lit_never", lang), transl("w1_lit_almost_never", lang),
+      transl("w1_lit_sometimes", lang), transl("w1_lit_often", lang),
+      transl("w1_lit_very_often", lang)),
+    c("1", "2", "3", "4", "5"))
+  w1_lit_df <- w1_make_freq(wave_data_page, "Literacy", labels_map = w1_lit_labels, exclude_vals = c("66", "99"))
 
-# 10. Financial insecurity
-w1_fin_labels <- setNames(
-  c(transl("w1_fin_completely_untrue", lang), transl("w1_fin_slightly_untrue", lang),
-    transl("w1_fin_neither", lang), transl("w1_fin_slightly_true", lang),
-    transl("w1_fin_completely_true", lang)),
-  c("1", "2", "3", "4", "5"))
-w1_fin_df <- w1_make_freq(wave1_data_page, "FinancialInsecurity", labels_map = w1_fin_labels, exclude_vals = c("66", "99"))
+  # 8. Work status
+  w1_work_labels <- setNames(
+    c(transl("w1_work_student", lang), transl("w1_work_employed", lang),
+      transl("w1_work_housekeeper", lang), transl("w1_work_unemployed", lang),
+      transl("w1_work_retired", lang), transl("w1_work_volunteer", lang),
+      transl("w1_work_other", lang)),
+    c("1", "2", "3", "4", "5", "6", "7"))
+  w1_work_df <- w1_make_freq(wave_data_page, "Work", labels_map = w1_work_labels, exclude_vals = c("99"))
 
-# -- Correlation heatmap (Spearman, 19 variables per PDF spec) --
-
-# Compute TotalPerformance
-w1_perf_items <- c("PSIS1RC", "PSIS2R", "PCIS1R", "PCIS2R", "PCIS3R", "PNS1R",
-  "PDCCS1R", "PSCS1R", "PSCS3R", "PDHWS1R", "PSGDS1R", "SourceHelpR",
-  "PAIS2R", "PAIS1R", "PGAIS1RC", "PTS1R")
-w1_avail_perf <- intersect(w1_perf_items, names(wave1_data_page))
-if (length(w1_avail_perf) > 0) {
-  wave1_data_page$TotalPerformance <- rowSums(wave1_data_page[, w1_avail_perf], na.rm = FALSE)
-}
-
-# Compute demographic dummies per PDF spec
-wave1_data_page$GenderN <- ifelse(wave1_data_page$Gender == 1 | wave1_data_page$Gender == "Male", 1,
-  ifelse(wave1_data_page$Gender == 2 | wave1_data_page$Gender == "Female", 0, NA))
-wave1_data_page$EducationN <- ifelse(wave1_data_page$EducationR == "Low" | wave1_data_page$EducationR == 1, 1,
-  ifelse(wave1_data_page$EducationR == "Middle" | wave1_data_page$EducationR == 2, 2,
-  ifelse(wave1_data_page$EducationR == "High" | wave1_data_page$EducationR == 3, 3, NA)))
-wave1_data_page$MigrationBackgroundN <- ifelse(wave1_data_page$MigrationBackground == transl("label_no", lang), 0,
-  ifelse(wave1_data_page$MigrationBackground == transl("label_yes", lang), 1, NA))
-wave1_data_page$SampleN <- ifelse(wave1_data_page$Sample %in% c(1, 2, "Panel adults", "Panel children"), 1,
-  ifelse(wave1_data_page$Sample %in% c(3, 4, "Address sample"), 0, NA))
-wave1_data_page$Work_Werk <- ifelse(wave1_data_page$Work == 2 | wave1_data_page$Work == "2", 1, 0)
-wave1_data_page$Work_Stud <- ifelse(wave1_data_page$Work == 1 | wave1_data_page$Work == "1", 1, 0)
-wave1_data_page$LiteracyN <- as.numeric(wave1_data_page$Literacy)
-wave1_data_page$LiteracyN[wave1_data_page$LiteracyN %in% c(66, 99)] <- NA
-wave1_data_page$FinancialInsecurityN <- as.numeric(wave1_data_page$FinancialInsecurity)
-wave1_data_page$FinancialInsecurityN[wave1_data_page$FinancialInsecurityN %in% c(66, 99)] <- NA
-if ("MeanKnowledge" %in% names(wave1_data_page)) {
-  wave1_data_page$TotalKnowledge <- wave1_data_page$MeanKnowledge
-}
-
-# Full variable set (19 variables per PDF spec)
-w1_cor_vars <- c("MeanStratInfo", "MeanCritInfo", "MeanNet", "MeanCrea",
-  "MeanSaf", "MeanHealth", "MeanTrans", "MeanGreen", "MeanProbl",
-  "MeanAI", "MeangenAI", "TotalKnowledge", "TotalPerformance",
-  "GenderN", "Work_Werk", "Work_Stud", "Work_2", "LiteracyN", "FinancialInsecurityN")
-w1_avail_vars <- intersect(w1_cor_vars, names(wave1_data_page))
-
-w1_cor_plot <- NULL
-if (length(w1_avail_vars) >= 2) {
-  if ("Work_2" %in% w1_avail_vars) {
-    wave1_data_page$Work_2 <- as.numeric(wave1_data_page$Work_2)
-  }
-  w1_cor_data <- wave1_data_page[, w1_avail_vars]
-  w1_cor_matrix <- cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs")
-
-  w1_display_names <- c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
-    "MeanNet" = "Netiquette", "MeanCrea" = "Creativity", "MeanSaf" = "Safety",
-    "MeanHealth" = "Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green",
-    "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
-    "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
-    "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
-    "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
-  rownames(w1_cor_matrix) <- w1_display_names[rownames(w1_cor_matrix)]
-  colnames(w1_cor_matrix) <- w1_display_names[colnames(w1_cor_matrix)]
-
-  w1_cor_melted <- reshape2::melt(w1_cor_matrix)
-  names(w1_cor_melted) <- c("Var1", "Var2", "Correlation")
-  w1_cor_melted$Var1 <- factor(w1_cor_melted$Var1, levels = w1_display_names[w1_avail_vars])
-  w1_cor_melted$Var2 <- factor(w1_cor_melted$Var2, levels = rev(w1_display_names[w1_avail_vars]))
-  w1_cor_melted$Correlation[as.numeric(w1_cor_melted$Var1) < as.numeric(factor(w1_cor_melted$Var2, levels = levels(w1_cor_melted$Var1)))] <- NA
-
-  w1_cor_plot <- ggplot(w1_cor_melted, aes(x = Var1, y = Var2, fill = Correlation)) +
-    geom_tile(color = "white") +
-    geom_text(aes(label = ifelse(is.na(Correlation), "", sprintf("%.2f", Correlation))),
-      color = "black", size = 2.5) +
-    scale_fill_gradient2(low = "#E28D50", mid = "white", high = "#3D7271",
-      midpoint = 0, limits = c(-1, 1), na.value = "white") +
-    theme_minimal(base_size = 12) +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-      axis.text.y = element_text(size = 10),
-      plot.title = element_text(size = 14, face = "bold", color = "#3D7271"),
-      legend.position = "right"
-    ) +
-    labs(title = transl("w1_cor_title", lang),
-      x = "", y = "", fill = "Correlation")
-}
-
-# Build Wave 1 content collection using dashboardr functions
-wave1_content <- create_content() %>%
-  add_text(paste0("**N = ", format(w1_n_total, big.mark = ","),
-    " | ", transl("w1_label_mean_age", lang), ": ",
-    round(mean(wave1_data_page$Age, na.rm = TRUE), 1), "**")) %>%
-  add_text(paste0("### ", transl("w1_header_age_group", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_age_df)) %>%
-  add_text(paste0("### ", transl("w1_header_gender", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_gender_df)) %>%
-  add_text(paste0("### ", transl("w1_header_education", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_edu_df)) %>%
-  add_text(paste0("### ", transl("w1_header_migration", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_mig_df)) %>%
-  add_text(paste0("### ", transl("w1_header_panel", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_sample_df)) %>%
-  add_text(paste0("### ", transl("w1_header_device_computer", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_comp_df)) %>%
-  add_text(paste0("### ", transl("w1_header_device_tablet", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_tablet_df)) %>%
-  add_text(paste0("### ", transl("w1_header_device_phone", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_phone_df)) %>%
-  add_text(paste0("### ", transl("w1_header_literacy", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_lit_df)) %>%
-  add_text(paste0("### ", transl("w1_header_work", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_work_df))
-
-if (!is.null(w1_work2_df)) {
-  w1_work2_rt <- reactable::reactable(w1_work2_df,
-    compact = TRUE, borderless = TRUE, striped = TRUE,
-    defaultPageSize = nrow(w1_work2_df), pagination = FALSE,
-    theme = reactable::reactableTheme(
-      headerStyle = list(background = "#3D7271", color = "white", fontWeight = "bold", fontSize = "13px"),
-      cellStyle = list(fontSize = "13px")
-    ),
-    columns = list(
-      Statistic = reactable::colDef(minWidth = 180),
-      Value = reactable::colDef(align = "right", minWidth = 80)
+  # 9. Hours of work with computer (employed only)
+  w1_employed <- wave_data_page %>% filter(Work == 2 | Work == "2" | Work == "Employed")
+  w1_work2_df <- NULL
+  if (nrow(w1_employed) > 0 && "Work_2" %in% names(w1_employed)) {
+    w1_work2_hours <- as.numeric(w1_employed$Work_2)
+    w1_work2_hours <- w1_work2_hours[!is.na(w1_work2_hours)]
+    w1_work2_df <- data.frame(
+      Statistic = c(transl("w1_work2_n", lang), transl("w1_work2_mean", lang),
+                    transl("w1_work2_median", lang)),
+      Value = c(length(w1_work2_hours),
+                round(mean(w1_work2_hours, na.rm = TRUE), 1),
+                round(median(w1_work2_hours, na.rm = TRUE), 1)),
+      stringsAsFactors = FALSE
     )
-  )
-  wave1_content <- wave1_content %>%
-    add_text(paste0("### ", transl("w1_header_work_hours", lang))) %>%
-    add_reactable(w1_work2_rt)
+  }
+
+  # 10. Financial insecurity
+  w1_fin_labels <- setNames(
+    c(transl("w1_fin_completely_untrue", lang), transl("w1_fin_slightly_untrue", lang),
+      transl("w1_fin_neither", lang), transl("w1_fin_slightly_true", lang),
+      transl("w1_fin_completely_true", lang)),
+    c("1", "2", "3", "4", "5"))
+  w1_fin_df <- w1_make_freq(wave_data_page, "FinancialInsecurity", labels_map = w1_fin_labels, exclude_vals = c("66", "99"))
+
+  # -- Correlation heatmap (Spearman, 19 variables per PDF spec) --
+
+  # Compute TotalPerformance
+  w1_perf_items <- c("PSIS1RC", "PSIS2R", "PCIS1R", "PCIS2R", "PCIS3R", "PNS1R",
+    "PDCCS1R", "PSCS1R", "PSCS3R", "PDHWS1R", "PSGDS1R", "SourceHelpR",
+    "PAIS2R", "PAIS1R", "PGAIS1RC", "PTS1R")
+  w1_avail_perf <- intersect(w1_perf_items, names(wave_data_page))
+  if (length(w1_avail_perf) > 0) {
+    wave_data_page$TotalPerformance <- rowSums(wave_data_page[, w1_avail_perf], na.rm = FALSE)
+  }
+
+  # Compute demographic dummies per PDF spec
+  wave_data_page$GenderN <- ifelse(wave_data_page$Gender %in% c(1, "1", "Male"), 1,
+    ifelse(wave_data_page$Gender %in% c(2, "2", "Female"), 0, NA))
+  wave_data_page$EducationN <- ifelse(wave_data_page$EducationR == "Low" | wave_data_page$EducationR == 1, 1,
+    ifelse(wave_data_page$EducationR == "Middle" | wave_data_page$EducationR == 2, 2,
+    ifelse(wave_data_page$EducationR == "High" | wave_data_page$EducationR == 3, 3, NA)))
+  wave_data_page$MigrationBackgroundN <- ifelse(wave_data_page$MigrationBackground == transl("label_no", lang), 0,
+    ifelse(wave_data_page$MigrationBackground == transl("label_yes", lang), 1, NA))
+  wave_data_page$SampleN <- ifelse(wave_data_page$Sample %in% c(1, 2, "1", "2", "Panel adults", "Panel children"), 1,
+    ifelse(wave_data_page$Sample %in% c(3, 4, "3", "4", "Address sample"), 0, NA))
+  wave_data_page$Work_Werk <- ifelse(wave_data_page$Work == 2 | wave_data_page$Work == "2", 1, 0)
+  wave_data_page$Work_Stud <- ifelse(wave_data_page$Work == 1 | wave_data_page$Work == "1", 1, 0)
+  wave_data_page$LiteracyN <- as.numeric(wave_data_page$Literacy)
+  wave_data_page$LiteracyN[wave_data_page$LiteracyN %in% c(66, 99)] <- NA
+  wave_data_page$FinancialInsecurityN <- as.numeric(wave_data_page$FinancialInsecurity)
+  wave_data_page$FinancialInsecurityN[wave_data_page$FinancialInsecurityN %in% c(66, 99)] <- NA
+  if ("MeanKnowledge" %in% names(wave_data_page)) {
+    wave_data_page$TotalKnowledge <- wave_data_page$MeanKnowledge
+  }
+
+  # Full variable set (19 variables per PDF spec; filter to columns with >= 2 non-NA observations)
+  w1_cor_vars <- c("MeanStratInfo", "MeanCritInfo", "MeanNet", "MeanCrea",
+    "MeanSaf", "MeanHealth", "MeanTrans", "MeanGreen", "MeanProbl",
+    "MeanAI", "MeangenAI", "TotalKnowledge", "TotalPerformance",
+    "GenderN", "Work_Werk", "Work_Stud", "Work_2", "LiteracyN", "FinancialInsecurityN")
+  w1_avail_vars <- intersect(w1_cor_vars, names(wave_data_page))
+  if ("Work_2" %in% w1_avail_vars) {
+    wave_data_page$Work_2 <- as.numeric(wave_data_page$Work_2)
+  }
+  w1_avail_vars <- w1_avail_vars[sapply(w1_avail_vars, function(v) sum(!is.na(wave_data_page[[v]])) >= 2)]
+
+  w1_cor_plot <- NULL
+  if (length(w1_avail_vars) >= 2) {
+    w1_cor_data <- wave_data_page[, w1_avail_vars]
+    w1_cor_matrix <- cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs")
+
+    w1_display_names <- c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
+      "MeanNet" = "Netiquette", "MeanCrea" = "Creativity", "MeanSaf" = "Safety",
+      "MeanHealth" = "Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green",
+      "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
+      "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
+      "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
+      "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
+    rownames(w1_cor_matrix) <- w1_display_names[rownames(w1_cor_matrix)]
+    colnames(w1_cor_matrix) <- w1_display_names[colnames(w1_cor_matrix)]
+
+    w1_cor_melted <- reshape2::melt(w1_cor_matrix)
+    names(w1_cor_melted) <- c("Var1", "Var2", "Correlation")
+    w1_cor_melted$Var1 <- factor(w1_cor_melted$Var1, levels = w1_display_names[w1_avail_vars])
+    w1_cor_melted$Var2 <- factor(w1_cor_melted$Var2, levels = rev(w1_display_names[w1_avail_vars]))
+    w1_cor_melted$Correlation[as.numeric(w1_cor_melted$Var1) < as.numeric(factor(w1_cor_melted$Var2, levels = levels(w1_cor_melted$Var1)))] <- NA
+
+    w1_cor_plot <- ggplot(w1_cor_melted, aes(x = Var1, y = Var2, fill = Correlation)) +
+      geom_tile(color = "white") +
+      geom_text(aes(label = ifelse(is.na(Correlation), "", sprintf("%.2f", Correlation))),
+        color = "black", size = 2.5) +
+      scale_fill_gradient2(low = "#E28D50", mid = "white", high = "#3D7271",
+        midpoint = 0, limits = c(-1, 1), na.value = "white") +
+      theme_minimal(base_size = 12) +
+      theme(
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+        axis.text.y = element_text(size = 10),
+        plot.title = element_text(size = 14, face = "bold", color = "#3D7271"),
+        legend.position = "right"
+      ) +
+      labs(title = transl("w1_cor_title", lang),
+        x = "", y = "", fill = "Correlation")
+  }
+
+  # Build Wave sample content collection using dashboardr functions
+  wave_content <- create_content() %>%
+    add_text(paste0("**N = ", format(w_n_total, big.mark = ","),
+      " | ", transl("w1_label_mean_age", lang), ": ",
+      round(mean(wave_data_page$Age, na.rm = TRUE), 1), "**")) %>%
+    add_text(paste0("### ", transl("w1_header_age_group", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_age_df)) %>%
+    add_text(paste0("### ", transl("w1_header_gender", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_gender_df)) %>%
+    add_text(paste0("### ", transl("w1_header_education", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_edu_df)) %>%
+    add_text(paste0("### ", transl("w1_header_migration", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_mig_df)) %>%
+    add_text(paste0("### ", transl("w1_header_panel", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_sample_df)) %>%
+    add_text(paste0("### ", transl("w1_header_device_computer", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_comp_df)) %>%
+    add_text(paste0("### ", transl("w1_header_device_tablet", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_tablet_df)) %>%
+    add_text(paste0("### ", transl("w1_header_device_phone", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_phone_df)) %>%
+    add_text(paste0("### ", transl("w1_header_literacy", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_lit_df)) %>%
+    add_text(paste0("### ", transl("w1_header_work", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_work_df))
+
+  if (!is.null(w1_work2_df)) {
+    w1_work2_rt <- reactable::reactable(w1_work2_df,
+      compact = TRUE, borderless = TRUE, striped = TRUE,
+      defaultPageSize = nrow(w1_work2_df), pagination = FALSE,
+      theme = reactable::reactableTheme(
+        headerStyle = list(background = "#3D7271", color = "white", fontWeight = "bold", fontSize = "13px"),
+        cellStyle = list(fontSize = "13px")
+      ),
+      columns = list(
+        Statistic = reactable::colDef(minWidth = 180),
+        Value = reactable::colDef(align = "right", minWidth = 80)
+      )
+    )
+    wave_content <- wave_content %>%
+      add_text(paste0("### ", transl("w1_header_work_hours", lang))) %>%
+      add_reactable(w1_work2_rt)
+  }
+
+  wave_content <- wave_content %>%
+    add_text(paste0("### ", transl("w1_header_financial", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_fin_df))
+
+  if (!is.null(w1_cor_plot)) {
+    wave_content <- wave_content %>%
+      add_text(paste0("## ", transl("w1_header_correlations", lang))) %>%
+      add_ggplot(w1_cor_plot, width = 14, height = 12)
+  }
+
+  wave_content
 }
 
-wave1_content <- wave1_content %>%
-  add_text(paste0("### ", transl("w1_header_financial", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_fin_df))
-
-if (!is.null(w1_cor_plot)) {
-  wave1_content <- wave1_content %>%
-    add_text(paste0("## ", transl("w1_header_correlations", lang))) %>%
-    add_ggplot(w1_cor_plot, width = 14, height = 12)
-}
+wave1_content <- build_wave_sample_content(1)
+wave2_content <- build_wave_sample_content(2)
+wave3_content <- build_wave_sample_content(3)
 
 # Resume dashboard pipeline
 dashboard <- dashboard %>%
@@ -5043,6 +5146,36 @@ dashboard <- dashboard %>%
       paste0("## ", transl("w1_header_demographics", lang))
     ),
     visualizations = wave1_content
+  ) %>%
+
+  # Ronde 2 / Wave 2 page (in More Info dropdown)
+  add_page(
+    name = transl("page_name_ronde2", lang),
+    icon = "ph:number-circle-two-fill",
+    data = digicom_data,
+    text = md_text(
+      "<div style='text-align: justify;'>",
+      transl("ronde2_page_text", lang),
+      "</div>",
+      "",
+      paste0("## ", transl("w1_header_demographics", lang))
+    ),
+    visualizations = wave2_content
+  ) %>%
+
+  # Ronde 3 / Wave 3 page (in More Info dropdown)
+  add_page(
+    name = transl("page_name_ronde3", lang),
+    icon = "ph:number-circle-three-fill",
+    data = digicom_data,
+    text = md_text(
+      "<div style='text-align: justify;'>",
+      transl("ronde3_page_text", lang),
+      "</div>",
+      "",
+      paste0("## ", transl("w1_header_demographics", lang))
+    ),
+    visualizations = wave3_content
   ) %>%
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text

@@ -3984,8 +3984,9 @@ more_info_menu <- navbar_menu(
   text = transl("menu_more_info", lang),
   pages = c(
     transl("page_name_about", lang),
-    transl("page_name_ronde1", lang)
-    # Future: transl("page_name_ronde2", lang)
+    transl("page_name_ronde1", lang),
+    transl("page_name_ronde2", lang),
+    transl("page_name_ronde3", lang)
   ),
   icon = "ph:info-fill",
   align = "right"
@@ -4853,10 +4854,7 @@ dashboard <- create_dashboard(
     )
   )
 
-# 7. WAVE 1 PAGE: Pre-compute demographics & correlations =====================
-
-wave1_data_page <- digicom_data %>% filter(wave == 1)
-w1_n_total <- nrow(wave1_data_page)
+# 7. WAVE SAMPLE PAGES (Ronde 1, 2, 3): Pre-compute demographics & correlations ==
 
 # Helper: create a frequency table for a variable
 w1_make_freq <- function(data, var_name, labels_map = NULL, exclude_vals = NULL) {
@@ -4905,214 +4903,232 @@ w1_styled_reactable <- function(df) {
   )
 }
 
-# 1. Age group (PDF spec: 10-15, 16-30, 31-60, 61-110)
-wave1_data_page$AgeGroupW1 <- cut(wave1_data_page$Age, breaks = c(10, 16, 31, 61, 110),
-  right = FALSE, labels = c("10-15", "16-30", "31-60", "61-110"))
-w1_age_df <- w1_make_freq(wave1_data_page, "AgeGroupW1")
+build_wave_sample_content <- function(w_num) {
+  wave_data_page <- digicom_data %>% filter(wave == w_num)
+  w_n_total <- nrow(wave_data_page)
 
-# 2. Gender (values are text in digicom_data: "Female", "Male", etc.)
-w1_gender_df <- w1_make_freq(wave1_data_page, "Gender",
-  labels_map = c("Male" = transl("label_male", lang),
-                 "Female" = transl("label_female", lang),
-                 "X" = "X",
-                 "I'd rather not say" = transl("scale_prefer_not_answer", lang)))
+  # 1. Age group (PDF spec: 10-15, 16-30, 31-60, 61-110)
+  wave_data_page$AgeGroupW1 <- cut(wave_data_page$Age, breaks = c(10, 16, 31, 61, 110),
+    right = FALSE, labels = c("10-15", "16-30", "31-60", "61-110"))
+  w1_age_df <- w1_make_freq(wave_data_page, "AgeGroupW1")
 
-# 3. Education level (Education column is already translated & factored)
-w1_edu_df <- w1_make_freq(wave1_data_page, "Education")
+  # 2. Gender (normalize numeric/string codes from Wave 3 alongside text labels)
+  wave_data_page$GenderNorm <- as.character(wave_data_page$Gender)
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "1"] <- "Male"
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "2"] <- "Female"
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "4"] <- "X"
+  wave_data_page$GenderNorm[wave_data_page$GenderNorm == "99"] <- "I'd rather not say"
 
-# 4. Migration background
-w1_mig_df <- w1_make_freq(wave1_data_page, "MigrationBackground")
+  w1_gender_df <- w1_make_freq(wave_data_page, "GenderNorm",
+    labels_map = c("Male" = transl("label_male", lang),
+                   "Female" = transl("label_female", lang),
+                   "X" = "X",
+                   "I'd rather not say" = transl("scale_prefer_not_answer", lang)))
 
-# 5. Panel type
-wave1_data_page$SampleRW1 <- ifelse(wave1_data_page$Sample %in% c(1, 2, "Panel adults", "Panel children"),
-  transl("w1_panel", lang),
-  ifelse(wave1_data_page$Sample %in% c(3, 4, "Address sample"),
-    transl("w1_address", lang), NA))
-w1_sample_df <- w1_make_freq(wave1_data_page, "SampleRW1")
+  # 3. Education level (Education column is already translated & factored)
+  w1_edu_df <- w1_make_freq(wave_data_page, "Education")
 
-# 6. Use of Devices
-w1_device_labels <- setNames(
-  c(transl("w1_device_never", lang), transl("w1_device_almost_never", lang),
-    transl("w1_device_sometimes", lang), transl("w1_device_often", lang),
-    transl("w1_device_very_often", lang)),
-  c("1", "2", "3", "4", "5"))
-w1_comp_df <- w1_make_freq(wave1_data_page, "UseComp", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
-w1_tablet_df <- w1_make_freq(wave1_data_page, "UseTablet", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
-w1_phone_df <- w1_make_freq(wave1_data_page, "UsePhone", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+  # 4. Migration background
+  w1_mig_df <- w1_make_freq(wave_data_page, "MigrationBackground")
 
-# 7. General Literacy
-w1_lit_labels <- setNames(
-  c(transl("w1_lit_never", lang), transl("w1_lit_almost_never", lang),
-    transl("w1_lit_sometimes", lang), transl("w1_lit_often", lang),
-    transl("w1_lit_very_often", lang)),
-  c("1", "2", "3", "4", "5"))
-w1_lit_df <- w1_make_freq(wave1_data_page, "Literacy", labels_map = w1_lit_labels, exclude_vals = c("66", "99"))
+  # 5. Panel type
+  wave_data_page$SampleRW1 <- ifelse(wave_data_page$Sample %in% c(1, 2, "1", "2", "Panel adults", "Panel children"),
+    transl("w1_panel", lang),
+    ifelse(wave_data_page$Sample %in% c(3, 4, "3", "4", "Address sample"),
+      transl("w1_address", lang), NA))
+  w1_sample_df <- w1_make_freq(wave_data_page, "SampleRW1")
 
-# 8. Work status
-w1_work_labels <- setNames(
-  c(transl("w1_work_student", lang), transl("w1_work_employed", lang),
-    transl("w1_work_housekeeper", lang), transl("w1_work_unemployed", lang),
-    transl("w1_work_retired", lang), transl("w1_work_volunteer", lang),
-    transl("w1_work_other", lang)),
-  c("1", "2", "3", "4", "5", "6", "7"))
-w1_work_df <- w1_make_freq(wave1_data_page, "Work", labels_map = w1_work_labels, exclude_vals = c("99"))
+  # 6. Use of Devices
+  w1_device_labels <- setNames(
+    c(transl("w1_device_never", lang), transl("w1_device_almost_never", lang),
+      transl("w1_device_sometimes", lang), transl("w1_device_often", lang),
+      transl("w1_device_very_often", lang)),
+    c("1", "2", "3", "4", "5"))
+  w1_comp_df <- w1_make_freq(wave_data_page, "UseComp", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+  w1_tablet_df <- w1_make_freq(wave_data_page, "UseTablet", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
+  w1_phone_df <- w1_make_freq(wave_data_page, "UsePhone", labels_map = w1_device_labels, exclude_vals = c("66", "99"))
 
-# 9. Hours of work with computer (employed only)
-w1_employed <- wave1_data_page %>% filter(Work == 2 | Work == "2" | Work == "Employed")
-w1_work2_df <- NULL
-if (nrow(w1_employed) > 0 && "Work_2" %in% names(w1_employed)) {
-  w1_work2_hours <- as.numeric(w1_employed$Work_2)
-  w1_work2_hours <- w1_work2_hours[!is.na(w1_work2_hours)]
-  w1_work2_df <- data.frame(
-    Statistic = c(transl("w1_work2_n", lang), transl("w1_work2_mean", lang),
-                  transl("w1_work2_median", lang)),
-    Value = c(length(w1_work2_hours),
-              round(mean(w1_work2_hours, na.rm = TRUE), 1),
-              round(median(w1_work2_hours, na.rm = TRUE), 1)),
-    stringsAsFactors = FALSE
-  )
-}
+  # 7. General Literacy
+  w1_lit_labels <- setNames(
+    c(transl("w1_lit_never", lang), transl("w1_lit_almost_never", lang),
+      transl("w1_lit_sometimes", lang), transl("w1_lit_often", lang),
+      transl("w1_lit_very_often", lang)),
+    c("1", "2", "3", "4", "5"))
+  w1_lit_df <- w1_make_freq(wave_data_page, "Literacy", labels_map = w1_lit_labels, exclude_vals = c("66", "99"))
 
-# 10. Financial insecurity
-w1_fin_labels <- setNames(
-  c(transl("w1_fin_completely_untrue", lang), transl("w1_fin_slightly_untrue", lang),
-    transl("w1_fin_neither", lang), transl("w1_fin_slightly_true", lang),
-    transl("w1_fin_completely_true", lang)),
-  c("1", "2", "3", "4", "5"))
-w1_fin_df <- w1_make_freq(wave1_data_page, "FinancialInsecurity", labels_map = w1_fin_labels, exclude_vals = c("66", "99"))
+  # 8. Work status
+  w1_work_labels <- setNames(
+    c(transl("w1_work_student", lang), transl("w1_work_employed", lang),
+      transl("w1_work_housekeeper", lang), transl("w1_work_unemployed", lang),
+      transl("w1_work_retired", lang), transl("w1_work_volunteer", lang),
+      transl("w1_work_other", lang)),
+    c("1", "2", "3", "4", "5", "6", "7"))
+  w1_work_df <- w1_make_freq(wave_data_page, "Work", labels_map = w1_work_labels, exclude_vals = c("99"))
 
-# -- Correlation heatmap (Spearman, 19 variables per PDF spec) --
-
-# Compute TotalPerformance
-w1_perf_items <- c("PSIS1RC", "PSIS2R", "PCIS1R", "PCIS2R", "PCIS3R", "PNS1R",
-  "PDCCS1R", "PSCS1R", "PSCS3R", "PDHWS1R", "PSGDS1R", "SourceHelpR",
-  "PAIS2R", "PAIS1R", "PGAIS1RC", "PTS1R")
-w1_avail_perf <- intersect(w1_perf_items, names(wave1_data_page))
-if (length(w1_avail_perf) > 0) {
-  wave1_data_page$TotalPerformance <- rowSums(wave1_data_page[, w1_avail_perf], na.rm = FALSE)
-}
-
-# Compute demographic dummies per PDF spec
-wave1_data_page$GenderN <- ifelse(wave1_data_page$Gender == 1 | wave1_data_page$Gender == "Male", 1,
-  ifelse(wave1_data_page$Gender == 2 | wave1_data_page$Gender == "Female", 0, NA))
-wave1_data_page$EducationN <- ifelse(wave1_data_page$EducationR == "Low" | wave1_data_page$EducationR == 1, 1,
-  ifelse(wave1_data_page$EducationR == "Middle" | wave1_data_page$EducationR == 2, 2,
-  ifelse(wave1_data_page$EducationR == "High" | wave1_data_page$EducationR == 3, 3, NA)))
-wave1_data_page$MigrationBackgroundN <- ifelse(wave1_data_page$MigrationBackground == transl("label_no", lang), 0,
-  ifelse(wave1_data_page$MigrationBackground == transl("label_yes", lang), 1, NA))
-wave1_data_page$SampleN <- ifelse(wave1_data_page$Sample %in% c(1, 2, "Panel adults", "Panel children"), 1,
-  ifelse(wave1_data_page$Sample %in% c(3, 4, "Address sample"), 0, NA))
-wave1_data_page$Work_Werk <- ifelse(wave1_data_page$Work == 2 | wave1_data_page$Work == "2", 1, 0)
-wave1_data_page$Work_Stud <- ifelse(wave1_data_page$Work == 1 | wave1_data_page$Work == "1", 1, 0)
-wave1_data_page$LiteracyN <- as.numeric(wave1_data_page$Literacy)
-wave1_data_page$LiteracyN[wave1_data_page$LiteracyN %in% c(66, 99)] <- NA
-wave1_data_page$FinancialInsecurityN <- as.numeric(wave1_data_page$FinancialInsecurity)
-wave1_data_page$FinancialInsecurityN[wave1_data_page$FinancialInsecurityN %in% c(66, 99)] <- NA
-if ("MeanKnowledge" %in% names(wave1_data_page)) {
-  wave1_data_page$TotalKnowledge <- wave1_data_page$MeanKnowledge
-}
-
-# Full variable set (19 variables per PDF spec)
-w1_cor_vars <- c("MeanStratInfo", "MeanCritInfo", "MeanNet", "MeanCrea",
-  "MeanSaf", "MeanHealth", "MeanTrans", "MeanGreen", "MeanProbl",
-  "MeanAI", "MeangenAI", "TotalKnowledge", "TotalPerformance",
-  "GenderN", "Work_Werk", "Work_Stud", "Work_2", "LiteracyN", "FinancialInsecurityN")
-w1_avail_vars <- intersect(w1_cor_vars, names(wave1_data_page))
-
-w1_cor_plot <- NULL
-if (length(w1_avail_vars) >= 2) {
-  if ("Work_2" %in% w1_avail_vars) {
-    wave1_data_page$Work_2 <- as.numeric(wave1_data_page$Work_2)
-  }
-  w1_cor_data <- wave1_data_page[, w1_avail_vars]
-  w1_cor_matrix <- cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs")
-
-  w1_display_names <- c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
-    "MeanNet" = "Netiquette", "MeanCrea" = "Creativity", "MeanSaf" = "Safety",
-    "MeanHealth" = "Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green",
-    "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
-    "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
-    "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
-    "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
-  rownames(w1_cor_matrix) <- w1_display_names[rownames(w1_cor_matrix)]
-  colnames(w1_cor_matrix) <- w1_display_names[colnames(w1_cor_matrix)]
-
-  w1_cor_melted <- reshape2::melt(w1_cor_matrix)
-  names(w1_cor_melted) <- c("Var1", "Var2", "Correlation")
-  w1_cor_melted$Var1 <- factor(w1_cor_melted$Var1, levels = w1_display_names[w1_avail_vars])
-  w1_cor_melted$Var2 <- factor(w1_cor_melted$Var2, levels = rev(w1_display_names[w1_avail_vars]))
-  w1_cor_melted$Correlation[as.numeric(w1_cor_melted$Var1) < as.numeric(factor(w1_cor_melted$Var2, levels = levels(w1_cor_melted$Var1)))] <- NA
-
-  w1_cor_plot <- ggplot(w1_cor_melted, aes(x = Var1, y = Var2, fill = Correlation)) +
-    geom_tile(color = "white") +
-    geom_text(aes(label = ifelse(is.na(Correlation), "", sprintf("%.2f", Correlation))),
-      color = "black", size = 2.5) +
-    scale_fill_gradient2(low = "#E28D50", mid = "white", high = "#3D7271",
-      midpoint = 0, limits = c(-1, 1), na.value = "white") +
-    theme_minimal(base_size = 12) +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-      axis.text.y = element_text(size = 10),
-      plot.title = element_text(size = 14, face = "bold", color = "#3D7271"),
-      legend.position = "right"
-    ) +
-    labs(title = transl("w1_cor_title", lang),
-      x = "", y = "", fill = "Correlation")
-}
-
-# Build Wave 1 content collection using dashboardr functions
-wave1_content <- create_content() %>%
-  add_text(paste0("**N = ", format(w1_n_total, big.mark = ","),
-    " | ", transl("w1_label_mean_age", lang), ": ",
-    round(mean(wave1_data_page$Age, na.rm = TRUE), 1), "**")) %>%
-  add_text(paste0("### ", transl("w1_header_age_group", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_age_df)) %>%
-  add_text(paste0("### ", transl("w1_header_gender", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_gender_df)) %>%
-  add_text(paste0("### ", transl("w1_header_education", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_edu_df)) %>%
-  add_text(paste0("### ", transl("w1_header_migration", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_mig_df)) %>%
-  add_text(paste0("### ", transl("w1_header_panel", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_sample_df)) %>%
-  add_text(paste0("### ", transl("w1_header_device_computer", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_comp_df)) %>%
-  add_text(paste0("### ", transl("w1_header_device_tablet", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_tablet_df)) %>%
-  add_text(paste0("### ", transl("w1_header_device_phone", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_phone_df)) %>%
-  add_text(paste0("### ", transl("w1_header_literacy", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_lit_df)) %>%
-  add_text(paste0("### ", transl("w1_header_work", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_work_df))
-
-if (!is.null(w1_work2_df)) {
-  w1_work2_rt <- reactable::reactable(w1_work2_df,
-    compact = TRUE, borderless = TRUE, striped = TRUE,
-    defaultPageSize = nrow(w1_work2_df), pagination = FALSE,
-    theme = reactable::reactableTheme(
-      headerStyle = list(background = "#3D7271", color = "white", fontWeight = "bold", fontSize = "13px"),
-      cellStyle = list(fontSize = "13px")
-    ),
-    columns = list(
-      Statistic = reactable::colDef(minWidth = 180),
-      Value = reactable::colDef(align = "right", minWidth = 80)
+  # 9. Hours of work with computer (employed only)
+  w1_employed <- wave_data_page %>% filter(Work == 2 | Work == "2" | Work == "Employed")
+  w1_work2_df <- NULL
+  if (nrow(w1_employed) > 0 && "Work_2" %in% names(w1_employed)) {
+    w1_work2_hours <- as.numeric(w1_employed$Work_2)
+    w1_work2_hours <- w1_work2_hours[!is.na(w1_work2_hours)]
+    w1_work2_df <- data.frame(
+      Statistic = c(transl("w1_work2_n", lang), transl("w1_work2_mean", lang),
+                    transl("w1_work2_median", lang)),
+      Value = c(length(w1_work2_hours),
+                round(mean(w1_work2_hours, na.rm = TRUE), 1),
+                round(median(w1_work2_hours, na.rm = TRUE), 1)),
+      stringsAsFactors = FALSE
     )
-  )
-  wave1_content <- wave1_content %>%
-    add_text(paste0("### ", transl("w1_header_work_hours", lang))) %>%
-    add_reactable(w1_work2_rt)
+  }
+
+  # 10. Financial insecurity
+  w1_fin_labels <- setNames(
+    c(transl("w1_fin_completely_untrue", lang), transl("w1_fin_slightly_untrue", lang),
+      transl("w1_fin_neither", lang), transl("w1_fin_slightly_true", lang),
+      transl("w1_fin_completely_true", lang)),
+    c("1", "2", "3", "4", "5"))
+  w1_fin_df <- w1_make_freq(wave_data_page, "FinancialInsecurity", labels_map = w1_fin_labels, exclude_vals = c("66", "99"))
+
+  # -- Correlation heatmap (Spearman, 19 variables per PDF spec) --
+
+  # Compute TotalPerformance
+  w1_perf_items <- c("PSIS1RC", "PSIS2R", "PCIS1R", "PCIS2R", "PCIS3R", "PNS1R",
+    "PDCCS1R", "PSCS1R", "PSCS3R", "PDHWS1R", "PSGDS1R", "SourceHelpR",
+    "PAIS2R", "PAIS1R", "PGAIS1RC", "PTS1R")
+  w1_avail_perf <- intersect(w1_perf_items, names(wave_data_page))
+  if (length(w1_avail_perf) > 0) {
+    wave_data_page$TotalPerformance <- rowSums(wave_data_page[, w1_avail_perf], na.rm = FALSE)
+  }
+
+  # Compute demographic dummies per PDF spec
+  wave_data_page$GenderN <- ifelse(wave_data_page$Gender %in% c(1, "1", "Male"), 1,
+    ifelse(wave_data_page$Gender %in% c(2, "2", "Female"), 0, NA))
+  wave_data_page$EducationN <- ifelse(wave_data_page$EducationR == "Low" | wave_data_page$EducationR == 1, 1,
+    ifelse(wave_data_page$EducationR == "Middle" | wave_data_page$EducationR == 2, 2,
+    ifelse(wave_data_page$EducationR == "High" | wave_data_page$EducationR == 3, 3, NA)))
+  wave_data_page$MigrationBackgroundN <- ifelse(wave_data_page$MigrationBackground == transl("label_no", lang), 0,
+    ifelse(wave_data_page$MigrationBackground == transl("label_yes", lang), 1, NA))
+  wave_data_page$SampleN <- ifelse(wave_data_page$Sample %in% c(1, 2, "1", "2", "Panel adults", "Panel children"), 1,
+    ifelse(wave_data_page$Sample %in% c(3, 4, "3", "4", "Address sample"), 0, NA))
+  wave_data_page$Work_Werk <- ifelse(wave_data_page$Work == 2 | wave_data_page$Work == "2", 1, 0)
+  wave_data_page$Work_Stud <- ifelse(wave_data_page$Work == 1 | wave_data_page$Work == "1", 1, 0)
+  wave_data_page$LiteracyN <- as.numeric(wave_data_page$Literacy)
+  wave_data_page$LiteracyN[wave_data_page$LiteracyN %in% c(66, 99)] <- NA
+  wave_data_page$FinancialInsecurityN <- as.numeric(wave_data_page$FinancialInsecurity)
+  wave_data_page$FinancialInsecurityN[wave_data_page$FinancialInsecurityN %in% c(66, 99)] <- NA
+  if ("MeanKnowledge" %in% names(wave_data_page)) {
+    wave_data_page$TotalKnowledge <- wave_data_page$MeanKnowledge
+  }
+
+  # Full variable set (19 variables per PDF spec; filter to columns with >= 2 non-NA observations)
+  w1_cor_vars <- c("MeanStratInfo", "MeanCritInfo", "MeanNet", "MeanCrea",
+    "MeanSaf", "MeanHealth", "MeanTrans", "MeanGreen", "MeanProbl",
+    "MeanAI", "MeangenAI", "TotalKnowledge", "TotalPerformance",
+    "GenderN", "Work_Werk", "Work_Stud", "Work_2", "LiteracyN", "FinancialInsecurityN")
+  w1_avail_vars <- intersect(w1_cor_vars, names(wave_data_page))
+  if ("Work_2" %in% w1_avail_vars) {
+    wave_data_page$Work_2 <- as.numeric(wave_data_page$Work_2)
+  }
+  w1_avail_vars <- w1_avail_vars[sapply(w1_avail_vars, function(v) sum(!is.na(wave_data_page[[v]])) >= 2)]
+
+  w1_cor_plot <- NULL
+  if (length(w1_avail_vars) >= 2) {
+    w1_cor_data <- wave_data_page[, w1_avail_vars]
+    w1_cor_matrix <- cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs")
+
+    w1_display_names <- c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
+      "MeanNet" = "Netiquette", "MeanCrea" = "Creativity", "MeanSaf" = "Safety",
+      "MeanHealth" = "Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green",
+      "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
+      "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
+      "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
+      "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
+    rownames(w1_cor_matrix) <- w1_display_names[rownames(w1_cor_matrix)]
+    colnames(w1_cor_matrix) <- w1_display_names[colnames(w1_cor_matrix)]
+
+    w1_cor_melted <- reshape2::melt(w1_cor_matrix)
+    names(w1_cor_melted) <- c("Var1", "Var2", "Correlation")
+    w1_cor_melted$Var1 <- factor(w1_cor_melted$Var1, levels = w1_display_names[w1_avail_vars])
+    w1_cor_melted$Var2 <- factor(w1_cor_melted$Var2, levels = rev(w1_display_names[w1_avail_vars]))
+    w1_cor_melted$Correlation[as.numeric(w1_cor_melted$Var1) < as.numeric(factor(w1_cor_melted$Var2, levels = levels(w1_cor_melted$Var1)))] <- NA
+
+    w1_cor_plot <- ggplot(w1_cor_melted, aes(x = Var1, y = Var2, fill = Correlation)) +
+      geom_tile(color = "white") +
+      geom_text(aes(label = ifelse(is.na(Correlation), "", sprintf("%.2f", Correlation))),
+        color = "black", size = 2.5) +
+      scale_fill_gradient2(low = "#E28D50", mid = "white", high = "#3D7271",
+        midpoint = 0, limits = c(-1, 1), na.value = "white") +
+      theme_minimal(base_size = 12) +
+      theme(
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+        axis.text.y = element_text(size = 10),
+        plot.title = element_text(size = 14, face = "bold", color = "#3D7271"),
+        legend.position = "right"
+      ) +
+      labs(title = transl("w1_cor_title", lang),
+        x = "", y = "", fill = "Correlation")
+  }
+
+  # Build Wave sample content collection using dashboardr functions
+  wave_content <- create_content() %>%
+    add_text(paste0("**N = ", format(w_n_total, big.mark = ","),
+      " | ", transl("w1_label_mean_age", lang), ": ",
+      round(mean(wave_data_page$Age, na.rm = TRUE), 1), "**")) %>%
+    add_text(paste0("### ", transl("w1_header_age_group", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_age_df)) %>%
+    add_text(paste0("### ", transl("w1_header_gender", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_gender_df)) %>%
+    add_text(paste0("### ", transl("w1_header_education", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_edu_df)) %>%
+    add_text(paste0("### ", transl("w1_header_migration", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_mig_df)) %>%
+    add_text(paste0("### ", transl("w1_header_panel", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_sample_df)) %>%
+    add_text(paste0("### ", transl("w1_header_device_computer", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_comp_df)) %>%
+    add_text(paste0("### ", transl("w1_header_device_tablet", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_tablet_df)) %>%
+    add_text(paste0("### ", transl("w1_header_device_phone", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_phone_df)) %>%
+    add_text(paste0("### ", transl("w1_header_literacy", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_lit_df)) %>%
+    add_text(paste0("### ", transl("w1_header_work", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_work_df))
+
+  if (!is.null(w1_work2_df)) {
+    w1_work2_rt <- reactable::reactable(w1_work2_df,
+      compact = TRUE, borderless = TRUE, striped = TRUE,
+      defaultPageSize = nrow(w1_work2_df), pagination = FALSE,
+      theme = reactable::reactableTheme(
+        headerStyle = list(background = "#3D7271", color = "white", fontWeight = "bold", fontSize = "13px"),
+        cellStyle = list(fontSize = "13px")
+      ),
+      columns = list(
+        Statistic = reactable::colDef(minWidth = 180),
+        Value = reactable::colDef(align = "right", minWidth = 80)
+      )
+    )
+    wave_content <- wave_content %>%
+      add_text(paste0("### ", transl("w1_header_work_hours", lang))) %>%
+      add_reactable(w1_work2_rt)
+  }
+
+  wave_content <- wave_content %>%
+    add_text(paste0("### ", transl("w1_header_financial", lang))) %>%
+    add_reactable(w1_styled_reactable(w1_fin_df))
+
+  if (!is.null(w1_cor_plot)) {
+    wave_content <- wave_content %>%
+      add_text(paste0("## ", transl("w1_header_correlations", lang))) %>%
+      add_ggplot(w1_cor_plot, width = 14, height = 12)
+  }
+
+  wave_content
 }
 
-wave1_content <- wave1_content %>%
-  add_text(paste0("### ", transl("w1_header_financial", lang))) %>%
-  add_reactable(w1_styled_reactable(w1_fin_df))
-
-if (!is.null(w1_cor_plot)) {
-  wave1_content <- wave1_content %>%
-    add_text(paste0("## ", transl("w1_header_correlations", lang))) %>%
-    add_ggplot(w1_cor_plot, width = 14, height = 12)
-}
+wave1_content <- build_wave_sample_content(1)
+wave2_content <- build_wave_sample_content(2)
+wave3_content <- build_wave_sample_content(3)
 
 # Resume dashboard pipeline
 dashboard <- dashboard %>%
@@ -5130,6 +5146,36 @@ dashboard <- dashboard %>%
       paste0("## ", transl("w1_header_demographics", lang))
     ),
     visualizations = wave1_content
+  ) %>%
+
+  # Ronde 2 / Wave 2 page (in More Info dropdown)
+  add_page(
+    name = transl("page_name_ronde2", lang),
+    icon = "ph:number-circle-two-fill",
+    data = digicom_data,
+    text = md_text(
+      "<div style='text-align: justify;'>",
+      transl("ronde2_page_text", lang),
+      "</div>",
+      "",
+      paste0("## ", transl("w1_header_demographics", lang))
+    ),
+    visualizations = wave2_content
+  ) %>%
+
+  # Ronde 3 / Wave 3 page (in More Info dropdown)
+  add_page(
+    name = transl("page_name_ronde3", lang),
+    icon = "ph:number-circle-three-fill",
+    data = digicom_data,
+    text = md_text(
+      "<div style='text-align: justify;'>",
+      transl("ronde3_page_text", lang),
+      "</div>",
+      "",
+      paste0("## ", transl("w1_header_demographics", lang))
+    ),
+    visualizations = wave3_content
   ) %>%
   add_powered_by_dashboardr(style = "badge", size = "large") %>%
   # Add a "Powered by" link with icon and text

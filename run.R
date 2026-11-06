@@ -49,6 +49,7 @@ read_lines("qmds/_quarto.yml") %>%
   str_replace_all("over.qmd", "about.qmd") %>%
   str_replace_all("ronde_1.qmd", "wave_1.qmd") %>%
   str_replace_all("ronde_2.qmd", "wave_2.qmd") %>%
+  str_replace_all("ronde_3.qmd", "wave_3.qmd") %>%
   str_replace_all("meer_informatie.qmd", "more_info.qmd") %>%
   
   write_lines("qmds/_quarto.yml")
@@ -76,6 +77,7 @@ name_map <- c(
   "over"                      = "about",
   "ronde_1"                   = "wave_1",
   "ronde_2"                   = "wave_2",
+  "ronde_3"                   = "wave_3",
   "meer_informatie"           = "more_info",
   "ai"                        = "ai",        # stays the same
   "index"                     = "index"      # stays the same
