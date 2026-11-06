@@ -4420,6 +4420,42 @@ digiq_shared_css <- "
   }
 "
 
+digiq_shared_js <- "
+<script>
+(function() {
+  function initDigIQNavEnhancements() {
+    // Page-aware Language Switcher (preserves current page filename & #hash)
+    var langLinks = document.querySelectorAll('a.nav-link[href*=\"favstats.github.io/digicomp\"]');
+    var path = window.location.pathname || '';
+    var parts = path.split('/').filter(Boolean);
+    var lastPart = parts.length ? parts[parts.length - 1] : 'index.html';
+    var pageFile = (lastPart.indexOf('.html') !== -1) ? lastPart : 'index.html';
+    var isEN = path.indexOf('/en/') !== -1 || (parts.length && parts[parts.length - 1] === 'en');
+
+    function updateLangHrefs() {
+      var hash = window.location.hash || '';
+      langLinks.forEach(function(link) {
+        if (isEN) {
+          link.setAttribute('href', '../' + pageFile + hash);
+          link.setAttribute('title', 'Bekijk deze pagina in het Nederlands');
+        } else {
+          link.setAttribute('href', './en/' + pageFile + hash);
+          link.setAttribute('title', 'View this page in English');
+        }
+      });
+    }
+    updateLangHrefs();
+    window.addEventListener('hashchange', updateLangHrefs);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDigIQNavEnhancements);
+  } else {
+    initDigIQNavEnhancements();
+  }
+})();
+</script>
+"
+
 explore_cta_label <- if (lang == "nl") "Bekijk dimensie" else "Explore dimension"
 
 landing_cards_html <- imap_chr(
@@ -4458,9 +4494,17 @@ hero_m3_sub  <- if (lang == "nl") "Van informatie & veiligheid tot GenAI" else "
 hero_m4_val  <- if (lang == "nl") "3 Meetpijlers" else "3 Measurement Pillars"
 hero_m4_sub  <- if (lang == "nl") "Vaardigheden · Kennis · Prestatie" else "Skills · Knowledge · Performance"
 
+unified_theme_css <- paste0(
+  "```{=html}\n",
+  "<style>", digiq_shared_css, "</style>\n",
+  digiq_shared_js, "\n",
+  "```\n"
+)
+
 landing_hero_html <- paste0(
   "```{=html}\n",
   "<style>", digiq_shared_css, "</style>\n",
+  digiq_shared_js, "\n",
   "<div class='dc-observatory-hero'>\n",
   "  <div class='dc-hero-eyebrow'><span class='dc-hero-dot'></span> ", hero_eyebrow, "</div>\n",
   "  <h1 class='dc-hero-title'>", transl("dashboard_title", lang), "</h1>\n",
@@ -4523,6 +4567,7 @@ dim_page_intro <- function(desc_key, skills_key, knowledge_key = NULL, perf_key,
   md_text(
     "```{=html}",
     paste0("<style>", digiq_shared_css, "</style>"),
+    digiq_shared_js,
     "```",
     "",
     "::: {.dc-dim-intro}",
@@ -4667,6 +4712,7 @@ dashboard <- create_dashboard(
   # Analysis page with data and visualizations
   add_page(
     name = transl("page_name_strategic_info", lang),
+    slug = "strategic_information",
     icon = "ph:magnifying-glass",
     data = digicom_data,
     visualizations = strategic_visualizations,
@@ -4675,6 +4721,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_critical_info", lang),
+    slug = "critical_information",
     icon = "ph:detective-fill",
     data = digicom_data,
     visualizations = critical_info_visualizations,
@@ -4683,6 +4730,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_netiquette", lang),
+    slug = "netiquette",
     icon = "ph:chats-fill",
     data = digicom_data,
     visualizations = netiquette_visualizations,
@@ -4691,6 +4739,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_content_creation", lang),
+    slug = "digital_content_creation",
     icon = "ph:palette-fill",
     data = digicom_data,
     visualizations = content_creation_visualizations,
@@ -4699,6 +4748,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_safety", lang),
+    slug = "safety",
     icon = "ph:shield-check-fill",
     data = digicom_data,
     visualizations = safety_visualizations,
@@ -4707,6 +4757,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_digital_health", lang),
+    slug = "digital_health",
     icon = "ph:heart-fill",
     data = digicom_data,
     visualizations = health_visualizations,
@@ -4715,6 +4766,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_green", lang),
+    slug = "green_digital",
     icon = "ph:recycle-fill",
     data = digicom_data,
     visualizations = green_visualizations,
@@ -4723,6 +4775,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_problem_solving", lang),
+    slug = "digital_problem_solving",
     icon = "ph:lightbulb-fill",
     data = digicom_data,
     visualizations = problem_solving_visualizations,
@@ -4731,6 +4784,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_transactional", lang),
+    slug = "transactional",
     icon = "ph:wallet-fill",
     data = digicom_data,
     visualizations = transactional_visualizations,
@@ -4739,6 +4793,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_ai", lang),
+    slug = "ai",
     icon = "ph:robot-fill",
     data = digicom_data,
     visualizations = ai_visualizations,
@@ -4747,6 +4802,7 @@ dashboard <- create_dashboard(
 
   add_page(
     name = transl("page_name_genai", lang),
+    slug = "gen_ai",
     icon = "ph:magic-wand-fill",
     data = digicom_data,
     visualizations = genai_combined_visualizations,
@@ -4755,8 +4811,10 @@ dashboard <- create_dashboard(
   # About page (now in More Info dropdown)
   add_page(
     name = transl("page_name_about", lang),
+    slug = "about",
     icon = "ph:info-fill",
     text = md_text(
+      unified_theme_css,
       "<div style='text-align: justify;'>",
       transl("about_page_text_v2", lang),
       "",
@@ -4879,6 +4937,7 @@ w1_make_freq <- function(data, var_name, labels_map = NULL, exclude_vals = NULL)
 # Helper: create a styled reactable from a freq table
 w1_styled_reactable <- function(df) {
   max_pct <- max(df$Pct, na.rm = TRUE)
+  cat_header <- if (lang == "nl") "Categorie" else "Category"
   reactable::reactable(df,
     compact = TRUE, borderless = TRUE, striped = TRUE,
     defaultPageSize = nrow(df), pagination = FALSE,
@@ -4887,7 +4946,7 @@ w1_styled_reactable <- function(df) {
       cellStyle = list(fontSize = "13px")
     ),
     columns = list(
-      Category = reactable::colDef(name = "Category", minWidth = 180),
+      Category = reactable::colDef(name = cat_header, minWidth = 180),
       N = reactable::colDef(name = "N", align = "right", minWidth = 60),
       Pct = reactable::colDef(name = "%", align = "left", minWidth = 200,
         cell = function(value) {
@@ -5031,42 +5090,111 @@ build_wave_sample_content <- function(w_num) {
   }
   w1_avail_vars <- w1_avail_vars[sapply(w1_avail_vars, function(v) sum(!is.na(wave_data_page[[v]])) >= 2)]
 
-  w1_cor_plot <- NULL
+  w1_cor_hc <- NULL
   if (length(w1_avail_vars) >= 2) {
     w1_cor_data <- wave_data_page[, w1_avail_vars]
-    w1_cor_matrix <- cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs")
+    w1_cor_matrix <- suppressWarnings(cor(w1_cor_data, method = "spearman", use = "pairwise.complete.obs"))
 
-    w1_display_names <- c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
-      "MeanNet" = "Netiquette", "MeanCrea" = "Creativity", "MeanSaf" = "Safety",
-      "MeanHealth" = "Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green",
-      "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
-      "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
-      "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
-      "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
-    rownames(w1_cor_matrix) <- w1_display_names[rownames(w1_cor_matrix)]
-    colnames(w1_cor_matrix) <- w1_display_names[colnames(w1_cor_matrix)]
+    w1_display_names <- if (lang == "nl") {
+      c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Krit. Info",
+        "MeanNet" = "Netiquette", "MeanCrea" = "Inhoudscreatie", "MeanSaf" = "Veiligheid",
+        "MeanHealth" = "Gezondheid", "MeanTrans" = "Transactioneel", "MeanGreen" = "Groen Digitaal",
+        "MeanProbl" = "Probleemopl.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
+        "TotalKnowledge" = "Tot. Kennis", "TotalPerformance" = "Tot. Prestatie",
+        "GenderN" = "Geslacht", "Work_Werk" = "Werkend", "Work_Stud" = "Scholier/Student",
+        "Work_2" = "Werkuren", "LiteracyN" = "Geletterdheid", "FinancialInsecurityN" = "Fin. Onzekerheid")
+    } else {
+      c("MeanStratInfo" = "Strat. Info", "MeanCritInfo" = "Crit. Info",
+        "MeanNet" = "Netiquette", "MeanCrea" = "Content Creation", "MeanSaf" = "Safety",
+        "MeanHealth" = "Digital Health", "MeanTrans" = "Transactional", "MeanGreen" = "Green Digital",
+        "MeanProbl" = "Problem Solv.", "MeanAI" = "AI", "MeangenAI" = "GenAI",
+        "TotalKnowledge" = "Tot. Knowledge", "TotalPerformance" = "Tot. Performance",
+        "GenderN" = "Gender", "Work_Werk" = "Employed", "Work_Stud" = "Student",
+        "Work_2" = "Work Hours", "LiteracyN" = "Literacy", "FinancialInsecurityN" = "Fin. Insecurity")
+    }
 
-    w1_cor_melted <- reshape2::melt(w1_cor_matrix)
-    names(w1_cor_melted) <- c("Var1", "Var2", "Correlation")
-    w1_cor_melted$Var1 <- factor(w1_cor_melted$Var1, levels = w1_display_names[w1_avail_vars])
-    w1_cor_melted$Var2 <- factor(w1_cor_melted$Var2, levels = rev(w1_display_names[w1_avail_vars]))
-    w1_cor_melted$Correlation[as.numeric(w1_cor_melted$Var1) < as.numeric(factor(w1_cor_melted$Var2, levels = levels(w1_cor_melted$Var1)))] <- NA
+    x_cats <- unname(w1_display_names[w1_avail_vars])
+    y_cats <- rev(x_cats)
+    n_vars <- length(w1_avail_vars)
 
-    w1_cor_plot <- ggplot(w1_cor_melted, aes(x = Var1, y = Var2, fill = Correlation)) +
-      geom_tile(color = "white") +
-      geom_text(aes(label = ifelse(is.na(Correlation), "", sprintf("%.2f", Correlation))),
-        color = "black", size = 2.5) +
-      scale_fill_gradient2(low = "#E28D50", mid = "white", high = "#3D7271",
-        midpoint = 0, limits = c(-1, 1), na.value = "white") +
-      theme_minimal(base_size = 12) +
-      theme(
-        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-        axis.text.y = element_text(size = 10),
-        plot.title = element_text(size = 14, face = "bold", color = "#3D7271"),
-        legend.position = "right"
-      ) +
-      labs(title = transl("w1_cor_title", lang),
-        x = "", y = "", fill = "Correlation")
+    hc_points <- list()
+    idx <- 1L
+    for (i in seq_len(n_vars)) {
+      for (j in seq_len(n_vars)) {
+        # Lower triangle + diagonal: i >= j in original matrix
+        if (i >= j) {
+          val <- round(w1_cor_matrix[i, j], 2)
+          if (!is.na(val)) {
+            y_idx <- n_vars - j # 0-indexed in reversed y_cats
+            x_idx <- i - 1L
+            hc_points[[idx]] <- list(
+              x = x_idx,
+              y = y_idx,
+              value = val,
+              varX = x_cats[i],
+              varY = x_cats[j],
+              dataLabels = list(
+                color = if (abs(val) > 0.55) "#ffffff" else "#142d2c"
+              )
+            )
+            idx <- idx + 1L
+          }
+        }
+      }
+    }
+
+    cor_label <- if (lang == "nl") "Spearman correlatie" else "Spearman correlation"
+    w1_cor_hc <- highcharter::highchart() %>%
+      highcharter::hc_chart(
+        type = "heatmap",
+        style = list(fontFamily = "Fira Sans, sans-serif"),
+        marginTop = 50,
+        marginBottom = 95
+      ) %>%
+      highcharter::hc_title(
+        text = transl("w1_cor_title", lang),
+        align = "left",
+        style = list(color = "#3D7271", fontWeight = "bold", fontSize = "16px")
+      ) %>%
+      highcharter::hc_xAxis(
+        categories = x_cats,
+        labels = list(rotation = -40, style = list(fontSize = "11px", color = "#1e3332"))
+      ) %>%
+      highcharter::hc_yAxis(
+        categories = y_cats,
+        title = list(text = NULL),
+        labels = list(style = list(fontSize = "11px", color = "#1e3332"))
+      ) %>%
+      highcharter::hc_colorAxis(
+        min = -1,
+        max = 1,
+        stops = highcharter::color_stops(3, c("#E28D50", "#FFFFFF", "#3D7271"))
+      ) %>%
+      highcharter::hc_legend(
+        align = "right",
+        layout = "vertical",
+        margin = 0,
+        verticalAlign = "middle",
+        symbolHeight = 260
+      ) %>%
+      highcharter::hc_tooltip(
+        useHTML = TRUE,
+        pointFormat = paste0(
+          "<b>{point.varY} &times; {point.varX}</b><br/>",
+          cor_label, ": <b>{point.value:.2f}</b>"
+        )
+      ) %>%
+      highcharter::hc_add_series(
+        name = cor_label,
+        data = hc_points,
+        borderWidth = 1.5,
+        borderColor = "#ffffff",
+        dataLabels = list(
+          enabled = TRUE,
+          format = "{point.value:.2f}",
+          style = list(fontSize = "10px", fontWeight = "600", textOutline = "none")
+        )
+      )
   }
 
   # Build Wave sample content collection using dashboardr functions
@@ -5096,6 +5224,8 @@ build_wave_sample_content <- function(w_num) {
     add_reactable(w1_styled_reactable(w1_work_df))
 
   if (!is.null(w1_work2_df)) {
+    stat_hdr <- if (lang == "nl") "Statistiek" else "Statistic"
+    val_hdr <- if (lang == "nl") "Waarde" else "Value"
     w1_work2_rt <- reactable::reactable(w1_work2_df,
       compact = TRUE, borderless = TRUE, striped = TRUE,
       defaultPageSize = nrow(w1_work2_df), pagination = FALSE,
@@ -5104,8 +5234,8 @@ build_wave_sample_content <- function(w_num) {
         cellStyle = list(fontSize = "13px")
       ),
       columns = list(
-        Statistic = reactable::colDef(minWidth = 180),
-        Value = reactable::colDef(align = "right", minWidth = 80)
+        Statistic = reactable::colDef(name = stat_hdr, minWidth = 180),
+        Value = reactable::colDef(name = val_hdr, align = "right", minWidth = 80)
       )
     )
     wave_content <- wave_content %>%
@@ -5117,10 +5247,10 @@ build_wave_sample_content <- function(w_num) {
     add_text(paste0("### ", transl("w1_header_financial", lang))) %>%
     add_reactable(w1_styled_reactable(w1_fin_df))
 
-  if (!is.null(w1_cor_plot)) {
+  if (!is.null(w1_cor_hc)) {
     wave_content <- wave_content %>%
       add_text(paste0("## ", transl("w1_header_correlations", lang))) %>%
-      add_ggplot(w1_cor_plot, width = 14, height = 12)
+      add_hc(w1_cor_hc, height = "700px")
   }
 
   wave_content
@@ -5136,9 +5266,11 @@ dashboard <- dashboard %>%
   # Ronde 1 / Wave 1 page (in More Info dropdown)
   add_page(
     name = transl("page_name_ronde1", lang),
+    slug = "wave_1",
     icon = "ph:number-circle-one-fill",
     data = digicom_data,
     text = md_text(
+      unified_theme_css,
       "<div style='text-align: justify;'>",
       transl("ronde1_page_text", lang),
       "</div>",
@@ -5151,9 +5283,11 @@ dashboard <- dashboard %>%
   # Ronde 2 / Wave 2 page (in More Info dropdown)
   add_page(
     name = transl("page_name_ronde2", lang),
+    slug = "wave_2",
     icon = "ph:number-circle-two-fill",
     data = digicom_data,
     text = md_text(
+      unified_theme_css,
       "<div style='text-align: justify;'>",
       transl("ronde2_page_text", lang),
       "</div>",
@@ -5166,9 +5300,11 @@ dashboard <- dashboard %>%
   # Ronde 3 / Wave 3 page (in More Info dropdown)
   add_page(
     name = transl("page_name_ronde3", lang),
+    slug = "wave_3",
     icon = "ph:number-circle-three-fill",
     data = digicom_data,
     text = md_text(
+      unified_theme_css,
       "<div style='text-align: justify;'>",
       transl("ronde3_page_text", lang),
       "</div>",

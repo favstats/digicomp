@@ -3272,4 +3272,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
+<script>
+(function() {
+  function initDigIQNavEnhancements() {
+    var langLinks = document.querySelectorAll('a.nav-link[href*="favstats.github.io/digicomp"]');
+    var path = window.location.pathname || '';
+    var parts = path.split('/').filter(Boolean);
+    var lastPart = parts.length ? parts[parts.length - 1] : 'index.html';
+    var pageFile = (lastPart.indexOf('.html') !== -1) ? lastPart : 'index.html';
+    var isEN = path.indexOf('/en/') !== -1 || (parts.length && parts[parts.length - 1] === 'en');
+
+    function updateLangHrefs() {
+      var hash = window.location.hash || '';
+      langLinks.forEach(function(link) {
+        if (isEN) {
+          link.setAttribute('href', '../' + pageFile + hash);
+          link.setAttribute('title', 'Bekijk deze pagina in het Nederlands');
+        } else {
+          link.setAttribute('href', './en/' + pageFile + hash);
+          link.setAttribute('title', 'View this page in English');
+        }
+      });
+    }
+    updateLangHrefs();
+    window.addEventListener('hashchange', updateLangHrefs);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDigIQNavEnhancements);
+  } else {
+    initDigIQNavEnhancements();
+  }
+})();
+</script>
 </body></html>
